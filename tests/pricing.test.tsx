@@ -25,9 +25,22 @@ describe("the plans", () => {
   it("agrees with itself about the free account limit", () => {
     // The number appears in the tier summary, the comparison table and the
     // FAQ. Three copies is three chances to disagree after a change.
-    const row = comparison.find((r) => r.feature === "Financial accounts");
+    //
+    // Found by `id`, not by the visible label. The first version looked for
+    // the row called "Financial accounts", so rewording that label for a
+    // general reader broke a test about a number — a copy edit failing a
+    // check it has nothing to do with.
+    const row = comparison.find((r) => r.id === "accounts");
     expect(row?.free).toBe(String(MAX_FREE_ACCOUNTS));
     expect(tiers[0]?.summary).toContain(String(MAX_FREE_ACCOUNTS));
+  });
+
+  it("gives every comparison row a distinct id", () => {
+    // The ids are what the checks above hold, so two rows sharing one would
+    // make `find` return whichever came first and quietly stop checking the
+    // other.
+    const ids = comparison.map((row) => row.id);
+    expect(ids).toEqual([...new Set(ids)]);
   });
 
   it("marks exactly one tier as the recommendation", () => {
@@ -49,10 +62,9 @@ describe("the plans", () => {
     // A row where Free lacks something Premium has would be a new claim, and
     // one the application does not implement.
     const heldBack = comparison.filter(
-      (row) =>
-        row.free === false && row.premium === true && row.feature !== "Runs on your own hardware",
+      (row) => row.free === false && row.premium === true && row.id !== "own-hardware",
     );
-    expect(heldBack.map((r) => r.feature)).toEqual([]);
+    expect(heldBack.map((r) => r.id)).toEqual([]);
   });
 });
 
@@ -90,21 +102,59 @@ describe("the pricing page", () => {
   });
 });
 
+/** As React escapes it into the markup. */
+const escape = (text: string) =>
+  text.replaceAll("&", "&amp;").replaceAll("'", "&#x27;").replaceAll('"', "&quot;");
+
 describe("the FAQ", () => {
   it("answers the questions a limit actually raises", () => {
     const questions = faq.map((f) => f.q.toLowerCase()).join(" ");
-    for (const topic of ["more than three", "archived", "cancel", "self-hosting"]) {
+    /*
+     * Phrased the way a reader phrases them, which is the point of the list.
+     * It used to look for "archived" and "self-hosting" — both words the
+     * product uses about itself and neither one a reader would type, so the
+     * check was holding the page to the vocabulary the rewrite removed.
+     *
+     * The last one replaced "bank password". That question was built on a
+     * promise the site no longer makes — the product may yet pull
+     * transactions on a schedule — but "how does my spending get in" is the
+     * thing the reader actually needs answered, whatever the answer becomes.
+     */
+    for (const topic of [
+      "more than three",
+      "close an account",
+      "cancel",
+      "running it yourself",
+      "how does my spending get in",
+    ]) {
       expect(questions, `no question about ${topic}`).toContain(topic);
     }
   });
 
   it("publishes structured data whose answers are visible on the page", () => {
-    // Google treats markup describing invisible content as spam. These are
-    // the same strings the <details> elements render.
+    /*
+     * Google treats markup describing invisible content as spam, and
+     * `content.md` 5.13 is Binding about every field being true of something
+     * a reader can see.
+     *
+     * **The first version could not fail.** It searched the whole file for
+     * each question — and the questions are *in* the JSON-LD block it was
+     * meant to be validating against, so the assertion was satisfied by the
+     * thing under test. Deleting every `<details>` element would have kept it
+     * green. It also never looked at an answer at all, which is the half of
+     * the payload most likely to drift.
+     *
+     * So the script tags come out first, and both halves are checked against
+     * what is left.
+     */
     const html = readFileSync("out/pricing/index.html", "utf8");
     expect(html).toContain('"@type":"FAQPage"');
+
+    const visible = html.replaceAll(/<script[\s\S]*?<\/script>/g, "");
+
     for (const item of faq) {
-      expect(html).toContain(item.q.replaceAll("'", "&#x27;").replaceAll('"', "&quot;"));
+      expect(visible, `question not rendered: ${item.q}`).toContain(escape(item.q));
+      expect(visible, `answer not rendered: ${item.q}`).toContain(escape(item.a));
     }
   });
 });

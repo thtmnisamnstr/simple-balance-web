@@ -68,7 +68,7 @@ export const privacy = {
         "Our hosting provider, Netlify, processes the technical information any web server " +
           "receives in order to serve a page — your IP address, the page requested, your browser " +
           "and the time — and retains it briefly for operational and security purposes. We do " +
-          "not analyse it, and we cannot identify you from it.",
+          "not analyze it, and we cannot identify you from it.",
       ],
     },
     {
@@ -96,7 +96,7 @@ export const privacy = {
           "service to provide; **legitimate interests**, for security logging and fraud " +
           "prevention, balanced against your rights and kept to what is necessary; **legal " +
           "obligation**, for the financial records a payment processor and we must keep; and " +
-          "**consent**, for personalised advertising and for optional emails, which you may " +
+          "**consent**, for personalized advertising and for optional emails, which you may " +
           "withdraw at any time.",
       ],
     },
@@ -108,17 +108,23 @@ export const privacy = {
           "decides and the browser is never told the rule — a paid account does not load " +
           "Google's script at all.",
         "Google and its partners use cookies and similar technologies to serve ads. **Ads are " +
-          "requested as non-personalised by default**, which means they are based on the page " +
+          "requested as non-personalized by default**, which means they are based on the page " +
           "and your rough location rather than on a profile of you.",
-        "**Non-personalised is not the same as cookie-free.** Even these ads set cookies, for " +
+        "**Non-personalized is not the same as cookie-free.** Even these ads set cookies, for " +
           "frequency capping and fraud prevention, which is why consent is asked for in the " +
-          "EEA, the UK and Switzerland regardless of whether the ads are personalised. That " +
+          "EEA, the UK and Switzerland regardless of whether the ads are personalized. That " +
           "consent is collected through Google's own certified consent platform before any ad " +
           "cookie is set, and you can change or withdraw it at any time from the same notice. " +
           "Declining means no ads are served to you.",
-        "Ads are only ever personalised if you have consented to that specifically.",
+        "Ads are only ever personalized if you have consented to that specifically.",
+        "**What Google receives.** Our publisher id, and the address of the page the ad sits " +
+          "on. That address is not nothing: pages in the application carry record identifiers " +
+          "in their paths, so a URL identifies a row in your ledger, though not a person, a " +
+          "name or an amount. No account name, no balance, no figure, no email address and no " +
+          "identifier of yours is sent as a targeting parameter, and the browser's referrer is " +
+          "held to this origin so it does not travel either.",
         "Google's own description of how it uses data from sites that use its services is at " +
-          "policies.google.com/technologies/partner-sites. You can control ad personalisation " +
+          "policies.google.com/technologies/partner-sites. You can control ad personalization " +
           "across Google's products at myadcenter.google.com, and opt out of third-party vendor " +
           "cookies at aboutads.info and youronlinechoices.eu.",
         "Advertising never appears on the billing page or the sign-in screen.",
@@ -217,7 +223,7 @@ export const privacy = {
       paragraphs: [
         "**smpl.money sets no cookies at all.** No analytics, no tracking pixel, no third-party " +
           "script. There is nothing to ask you about, so there is no banner — a consent notice " +
-          "on a site that stores nothing would be theatre.",
+          "on a site that stores nothing would be theater.",
         "**The application sets two of its own.** A session cookie, which is strictly necessary " +
           "to keep you signed in, and a preference cookie remembering whether you chose the " +
           "light or dark theme. Neither is used for anything else, neither is shared, and " +
@@ -257,8 +263,8 @@ export const terms = {
   intro: [
     "These terms cover the hosted service at app.smpl.money and the website at smpl.money. " +
       "They do not cover a copy of Simple Balance you run yourself: that is governed by the " +
-      "AGPL-3.0 licence the software is published under, and nothing here restricts the rights " +
-      "that licence gives you.",
+      "AGPL-3.0 license the software is published under, and nothing here restricts the rights " +
+      "that license gives you.",
   ],
   sections: [
     {
@@ -284,13 +290,13 @@ export const terms = {
         "The free plan keeps up to three financial accounts and shows advertising. The Premium " +
           "plan is $20 per year or $2 per month, removes the account limit and removes the " +
           "advertising. Prices are in US dollars and exclude any tax that may apply where you are.",
-        "Subscriptions renew automatically at the end of each period until cancelled. We will " +
+        "Subscriptions renew automatically at the end of each period until canceled. We will " +
           "give at least 30 days' notice by email before any price increase, and you may cancel " +
           "before it takes effect.",
       ],
     },
     {
-      heading: "Cancelling, and refunds",
+      heading: "Canceling, and refunds",
       paragraphs: [
         "You can cancel at any time from the plan page. Cancellation takes effect at the end of " +
           "the period you have already paid for; you keep Premium until then.",

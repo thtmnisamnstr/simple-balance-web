@@ -206,6 +206,21 @@ for name in dashboard transactions budgets reports import; do
 done
 ```
 
+Then regenerate the narrow copies, or the new picture ships at one size and
+every phone gets the 1600px file:
+
+```sh
+npm run build:images
+```
+
+**Then open each new image and re-read its alt text against it.** This is the
+step that gets skipped, and it has already cost three wrong descriptions: an
+import shot described as a populated import when the capture is the empty drop
+target, a hero described as showing two currencies when it shows one, and a
+budgets shot described as a comparison when it is the form. Alt text is what a
+reader who cannot see the picture gets instead of it, so a screenshot that
+changes under its sentence is a silent lie. `web.md` 5.4.
+
 The application captures **every** screen; this site ships the handful it
 uses, because an unused screenshot is a file that goes stale unnoticed.
 `docs/standards/web.md` 5 governs them once they are here — and **the alt

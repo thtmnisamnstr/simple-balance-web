@@ -12,6 +12,29 @@
  * Every claim below is true of the shipped application. `docs/standards/content.md`
  * 2.1 is Binding about that: a marketing page for a ledger that overstates what
  * the ledger does is the one kind of copy that loses the reader permanently.
+ *
+ * **Who this is written for.** Somebody with no personal-finance software at
+ * all, who has never heard of double-entry bookkeeping and is not a developer.
+ * `docs/standards/content.md` 1.4 holds the vocabulary rule and the argument;
+ * the short version is that the previous copy assumed both a budgeting app the
+ * reader had already given up on and a server they already owned, and a reader
+ * who has neither could not tell what this was.
+ *
+ * **The page must not imply a bank connection, and must not promise there
+ * will never be one.** There is no automatic sync today, so copy describing
+ * one would be false — `docs/standards/content.md` 1.5 holds that. But the
+ * page also used to *lead* on "we never ask for your bank password", which is
+ * a promise about the future rather than a description of the present:
+ * pulling transactions on a schedule is a thing this product may do. A
+ * positioning built on a refusal has to be abandoned the day the refusal
+ * ends, and everything written around it goes with it.
+ *
+ * So the argument is the one thing that stays true either way: everything you
+ * hold on one page, and any figure you doubt opens into the entries that made
+ * it. An assistant reading the same record is a strong second — prominent,
+ * and deliberately not the headline, because a reader deciding whether this
+ * is for them is asking what it does with their money, not what it does with
+ * their chatbot.
  */
 
 export type Problem = {
@@ -30,9 +53,11 @@ export type Problem = {
   readonly problem: string;
   /** What the product does about it. One paragraph per idea, never one long one. */
   readonly answer: readonly string[];
-  /** A screenshot that shows the answer, where one does. Two of the four have
-   *  one: a picture of a ledger that ties out is worth more than the sentence
-   *  saying it does, and a picture of a page that merely exists is not. */
+  /** A screenshot that shows the answer, where one does. Three of the four
+   *  have one: a picture is worth more than the sentence where it is evidence
+   *  for a claim the reader has reason to doubt, and worth nothing where the
+   *  page it shows merely exists. The first section has none because "your
+   *  accounts on one page" is what the hero shot above it already shows. */
   readonly shot?: ScreenshotRef;
 };
 
@@ -43,7 +68,7 @@ type ScreenshotRef = {
   readonly caption: string;
 };
 
-/** Every shot is 1600x1000, written by `scripts/capture-screenshots.mjs`. */
+/** Every shot is 1600x1000, as the application publishes it. `sync-from-app` §4. */
 export const SHOT_WIDTH = 1600;
 export const SHOT_HEIGHT = 1000;
 
@@ -51,9 +76,13 @@ export const SHOT_HEIGHT = 1000;
  * The ledger in every screenshot is seeded demo data, and the page says so
  * once, plainly. A finance product showing invented balances without
  * disclosing it is the same defect as a testimonial from nobody.
+ *
+ * Worded for a reader rather than for a developer: "seeded demo data" is the
+ * accurate phrase and means nothing to somebody who has not written a
+ * fixture, so the sentence says what it means instead.
  */
 export const shotDisclosure =
-  "Screenshots show a demo ledger seeded with example transactions, captured from the running application.";
+  "The money in these pictures is made up. They are photographs of the real product, filled with example spending so there's something to look at.";
 
 export type Feature = {
   /** As `Problem["covers"]`. */
@@ -79,208 +108,295 @@ export const site = {
    * support question — so the split was sorting mail nobody had sent yet.
    */
   contactEmail: "info@smpl.money",
-  tagline: "Double-entry bookkeeping for your own money, on your own server.",
+  /**
+   * The sentence a link preview and a search engine get.
+   *
+   * It used to read "Double-entry bookkeeping for your own money, on your own
+   * server", which is two ideas a general reader cannot use: an accounting
+   * term with no consumer meaning, and a machine they do not have. What this
+   * says instead is the one thing no competitor can say at all.
+   */
+  tagline: "All your accounts on one page, and you can see what's behind every number.",
   /**
    * The tab and search-result form of the tagline, kept separate because the
    * two have different jobs. `tagline` is a sentence and ends like one;
    * this one has to survive a result listing, which truncates near sixty
-   * characters — the full sentence appended to the product name runs to
-   * seventy-nine and loses the half that says what it is.
+   * characters — the full sentence appended to the product name runs past it
+   * and loses the half that says what it is.
    */
-  titleTagline: "Self-hosted double-entry bookkeeping",
+  titleTagline: "All your accounts, numbers you can check",
 } as const;
 
 export const heroShot = {
   name: "dashboard",
-  alt: "The Simple Balance overview: balance, deposits, withdrawals and net cash flow for the month, then accounts and spending by category, reported separately for each currency the ledger holds.",
+  alt: "The Simple Balance overview for one month: a euro total with balance, deposits, withdrawals and net cash flow across the top, then a checking account with its balance, spending by category as bars, and budget bars showing what has gone against each limit.",
 } as const;
 
 export const hero = {
-  title: "Know where your money is, and where it went.",
+  /**
+   * The headline pairs what every reader in this category wants with the one
+   * thing most of them cannot get.
+   *
+   * "All your accounts in one place" on its own is table stakes — eight
+   * competitors open on it — and "know where your money went" is the line
+   * PocketSmith, Tiller, Quicken and Empower all already run. What makes the
+   * pair distinctive is the second half: the common complaint about budgeting
+   * apps is that the totals do not agree and there is no way to find out why.
+   *
+   * **Two headlines were tried and rejected before this one.** "We never ask
+   * for your bank password" was true and was a promise about a future this
+   * page does not decide. "Ask your records a question" put the assistant in
+   * the headline, which overstates it: an assistant is a reason to stay, not
+   * the reason a stranger reads on. It has its own section, third on the
+   * page, and a clause here.
+   */
+  title: "See everything you have. Check every number.",
   lede:
-    "Every account on one page, bank statements that file themselves, and reports that " +
-    "trace back to the entries that made them. Self-hosted, so the only copy of your " +
-    "transactions is the one you keep.",
+    "Checking, savings, credit cards, cash. They all sit on one page. Wonder where a number came " +
+    "from? Open it up and see every payment behind it. And if you use an AI assistant, it can " +
+    "read all of this too, so sometimes you can just ask.",
   /**
    * The app is not deployed yet, so this states the situation rather than
    * linking somewhere that 404s (`docs/standards/web.md` 6.1).
    *
-   * "Coming soon" on its own was two words that answered neither question a
-   * reader has: what is coming, and why would they wait for it. This names
-   * the thing — a version somebody else runs — which is the one capability
-   * the page has just finished saying it does not have.
+   * It names what is coming in the reader's word for it. "Hosted version" is
+   * the accurate phrase and asks a general reader to know what hosting is;
+   * what they are actually waiting for is the ability to sign up.
    */
-  primaryLabel: "Hosted version soon",
-  secondaryLabel: "Get the source",
+  primaryLabel: "Sign-ups open soon",
+  /**
+   * Not "Get the source". A general reader does not know what that offers
+   * them, and a repository is a dead end for anybody who is not going to run
+   * a machine. This says who the link is for, so the reader who is not that
+   * person does not have to find out by following it.
+   */
+  secondaryLabel: "See how to run it yourself",
   note:
-    "Self-host it today — AGPL-3.0, one machine and a PostgreSQL. A hosted " +
-    "version you do not have to run is coming.",
+    "The version we run for you isn't open yet. In the meantime you can run it yourself for " +
+    "free. That one is really for people who already run their own software, and you don't " +
+    "give anything up by doing it.",
+} as const;
+
+/**
+ * The problems section's own heading.
+ *
+ * Here rather than in `src/app/page.tsx` because `docs/standards/content.md`
+ * 3.1 says copy is checkable and markup is not: these two strings sat in the
+ * JSX and so were the only text on the homepage the banned-words test could
+ * not see.
+ */
+export const problemsSection = {
+  eyebrow: "What it's for",
+  title: "Four money problems, and what this does about them.",
 } as const;
 
 export const problems: readonly Problem[] = [
   {
-    covers: ["all-accounts-one-page"],
-    problem: "Your net worth is spread across eight logins.",
+    covers: ["all-accounts-one-page", "multi-currency"],
+    problem: "Your money is in five places and you never see it all at once.",
     answer: [
-      "Checking, savings, cards, cash, loans, investments and crypto wallets sit on one " +
-        "page, each in its own currency, with balances as of any date you ask for.",
-      "Currencies are never added together, because there are no exchange rates here to " +
-        "add them with. A total in dollars and a total in euros are two totals, reported " +
-        "side by side, and neither is a guess.",
-    ],
-  },
-  {
-    shot: {
-      name: "import",
-      alt: "A bank CSV part-way through import: the columns it worked out, the rows it will stage, and three flagged as possible duplicates of entries already in the ledger.",
-      caption: "The importer maps the columns itself, then shows you what it will do.",
-    },
-    covers: ["import-statements"],
-    problem: "Importing a statement costs you an evening.",
-    answer: [
-      "Point it at a CSV your bank exported and it works out the format, maps the columns, " +
-        "and files the payees and categories it recognises.",
-      "Anything that looks like a row you already have is opened beside the one it " +
-        "resembles, so you can fix either side. Nothing counts toward a balance until you " +
-        "say so.",
-    ],
-  },
-  {
-    covers: ["recurring"],
-    problem: "You find out about the annual renewal when it leaves the account.",
-    answer: [
-      "Rent, a salary, a subscription: set it up once and it proposes itself on the day, " +
-        "as a draft you approve rather than a transaction that appeared.",
-      "If you want an email about it, it sends one. If you never configure a mail server, " +
-        "everything else still works — nothing here breaks because a feature you did not " +
-        "set up is missing.",
+      "Checking, savings, credit cards, cash, a car loan. All on one page, for any day you pick.",
+      "If you hold more than one currency, they stay separate. We don't convert them, because " +
+        "today's exchange rate is wrong by tomorrow.",
     ],
   },
   {
     shot: {
       name: "reports",
-      alt: "The net worth report, with a separate table per currency: euro accounts totalled in euro, dollar accounts in dollars, and no combined figure.",
-      caption:
-        "Net worth, per currency, with closing balances that reconcile to the postings behind them.",
+      alt: "A report of what's owned and what's owed, with a separate table for each currency. Euro accounts are totaled in euros, dollar accounts in dollars, and no combined number appears anywhere.",
+      caption: "What you own and what you owe, each currency counted on its own.",
     },
-    covers: ["numbers-that-tie-out"],
-    problem: "The numbers in your budgeting app do not tie out.",
+    covers: ["numbers-that-tie-out", "register"],
+    problem: "The totals are wrong and there's no way to find out why.",
     answer: [
-      "Underneath this is real double-entry bookkeeping. Every transaction settles to zero " +
-        "in every currency it touches, checked before anything is written.",
-      "That is what lets any figure on any page be traced back to the entries that made " +
-        "it. When a number looks wrong you can open the register and find the row it went " +
-        "wrong on, instead of taking a dashboard's word for it.",
+      "Click into the account behind any number. You get every payment in date order, with the " +
+        "running balance next to it. That's how you find the one that's wrong.",
+      "Underneath, every dollar that goes out has to come from somewhere, and the two have to " +
+        "match before anything is saved. That's why the totals add up.",
+    ],
+  },
+  {
+    shot: {
+      name: "payees",
+      alt: "An alphabetical list of everyone paid, each with the number of payments recorded against them. Three for most, fifteen for the local market. A search box sits above the list.",
+      caption:
+        "Everyone you've ever paid, and how many times. A subscription you forgot about is somewhere in this list.",
+    },
+    covers: ["recurring", "payees"],
+    problem: "You forgot about that yearly renewal, and it already came out.",
+    answer: [
+      "Rent, payday, a subscription. Set it up once and it shows up on the day, waiting for you " +
+        "to okay it.",
+      "There's also a list of everyone you've ever paid. That's usually where you spot the " +
+        "one you forgot. Simple Balance can show you the charge, but you still cancel it yourself.",
+    ],
+  },
+  {
+    shot: {
+      name: "import",
+      alt: "The import screen before a file is picked: a step headed Choose a CSV file, an empty drop target reading Drop in a file or browse, and a preview panel saying no file has been chosen yet.",
+      caption:
+        "Where the file goes. It figures out the columns itself, and shows you every row before any of them count.",
+    },
+    covers: ["import-statements", "duplicates"],
+    problem: "Typing in a year of history would take all night.",
+    answer: [
+      "Download the file your bank gives you and drag it in. It figures out which column is the " +
+        "date, which is the amount, and who you paid.",
+      "If something looks like a payment you already have, it shows you both side by side. " +
+        "Nothing gets added until you say so.",
     ],
   },
 ] as const;
 
+/**
+ * The features section's own heading. Here rather than in the JSX, for the
+ * reason `problemsSection` gives.
+ */
+export const featuresSection = {
+  eyebrow: "What else is in it",
+  title: "The parts you only notice when they are missing.",
+} as const;
+
 export const features: readonly Feature[] = [
   {
-    icon: "wallet",
-    covers: ["multi-currency"],
-    title: "Currencies kept apart",
+    icon: "target",
+    covers: ["budgets"],
+    title: "What you don't spend stays there",
     body:
-      "A conversion records what left one account and what arrived in the other, and the " +
-      "rate it implies. No global rate table, no overnight revaluation, no figure that " +
-      "changes because a market moved.",
+      "Set a limit for groceries, gas, whatever you like. Anything you don't spend can roll " +
+      "into next month, and a refund goes back where it came from instead of looking like income.",
+  },
+  {
+    icon: "wallet",
+    covers: ["categories"],
+    title: "Where the money actually went",
+    body:
+      "Sort your spending the way you already think about it. Food, the car, the kids. Then see " +
+      "what each one really cost next to what you meant to spend.",
+  },
+  {
+    icon: "list",
+    covers: ["templates"],
+    title: "The things you type over and over",
+    body:
+      "Save the ones you enter every week, like the grocery run or the cash you pull out, and " +
+      "pick them off a list next time.",
   },
   {
     icon: "split",
     covers: ["splits"],
-    title: "One receipt, several categories",
+    title: "One trip, counted as two things",
     body:
-      "Split a transaction across as many categories as it actually covers, each " +
-      "attributed on its own. Recategorising a leg is one update and writes no new " +
-      "postings.",
-  },
-  {
-    icon: "target",
-    covers: ["budgets"],
-    title: "Budgets that carry",
-    body:
-      "Per category, per group, or for a single month. What a period did not spend rolls " +
-      "into the next if you want it to, and a back-dated correction changes every period " +
-      "after it.",
-  },
-  {
-    icon: "copy",
-    covers: ["duplicates"],
-    title: "Duplicates caught on the way in",
-    body:
-      "A row that resembles one you already have is shown next to it, before either " +
-      "counts. Import the same statement twice and you get one ledger, not two.",
+      "A grocery run that was half food and half stuff for the house counts as both, in the right " +
+      "amounts, from one line. Change your mind later and the amount moves instead of doubling.",
   },
   {
     icon: "layers",
     covers: ["bulk-edits"],
-    title: "Ten thousand rows at a time",
+    title: "Fix a whole year of it at once",
     body:
-      "Change or delete up to ten thousand transactions in one go, from any view, after " +
-      "seeing exactly what it will touch. It applies atomically or not at all.",
+      "Say a file came in with twelve months of groceries filed under the wrong thing. Fix all of " +
+      "it in one go, up to ten thousand lines, after seeing exactly what will change. It all " +
+      "changes or none of it does.",
   },
   {
-    icon: "list",
-    covers: ["register"],
-    title: "A register for every account",
+    icon: "copy",
+    covers: ["history"],
+    title: "A fix never erases what it fixed",
     body:
-      "Every posting with the balance before and after it. Corrections append rather than " +
-      "overwrite, so the history of a mistake survives the fix.",
+      "Corrections go on top of what was there, so you can always see what a number used to say " +
+      "and when it changed.",
   },
 ] as const;
 
 export const showcase = {
   eyebrow: "A look at it",
-  title: "The pages you would actually live in.",
+  title: "The two pages you will use most.",
   shots: [
     {
       name: "transactions",
-      alt: "The transactions list: dated rows with payee, account, category and amount, dollar and euro entries side by side, each amount signed and right-aligned.",
+      alt: "A list of payments by date, each with who was paid, which account it came from, what kind of spending it was and how much, with dollar and euro amounts side by side.",
       caption:
-        "Every entry, filterable, with transfers shown as one row moving between two accounts.",
+        "Everything you've entered, in one list you can filter. Money you moved between two of your own accounts shows up once, not twice.",
     },
     {
       name: "budgets",
-      alt: "The budgets page, showing each category's assigned amount against what was actually spent, with the remainder carried from the previous period.",
-      caption: "Budgets compared against what was really spent, including what a refund gave back.",
+      alt: "The budgets screen: a form for setting one, with fields for category, amount, currency and start date and a tickbox for carrying the remainder into next month, above a table of standing budgets for dining out and groceries.",
+      caption:
+        "Set a limit once and it runs every month. The tickbox is what carries the remainder forward.",
     },
   ],
 } as const;
 
+/**
+ * The section that answers the question a money product always raises.
+ *
+ * It is stated as a promise to the reader rather than as a property of the
+ * software. "This is software you run, not a service you join" was an earlier
+ * opening, and it asks the reader to translate an architecture into a reason
+ * to feel safe — a translation this reader cannot do, and the diagnosed
+ * reason the self-hosted alternatives fail to convert anybody who is not
+ * already a developer.
+ *
+ * **It used to open on "we never ask for your bank password".** That is a
+ * promise about the future, and this product may yet pull transactions on a
+ * schedule. What replaces it is the part that does not depend on how the data
+ * arrives: where the record lives, who can reach it, and that you can leave
+ * with all of it.
+ *
+ * Every sentence is scoped, because the honest answer differs between the
+ * version we run and the version you run. A privacy promise that one of the
+ * two disproves is worse than none.
+ */
 export const privacy = {
   /** As `Problem["covers"]`. */
   covers: ["own-your-data"],
-  eyebrow: "Self-hosted",
-  title: "The only copy of your transactions is yours.",
+  eyebrow: "Your records",
+  title: "Where your money lives, and who can see it.",
   body:
-    "This is software you run, not a service you join. There is no account on our side, " +
-    "because there is no our side — one deployment, one PostgreSQL, and whoever you " +
-    "choose to give an account to.",
+    "Run it on your own computer and nobody else has a copy. If we run it for you, our privacy " +
+    "policy spells out exactly what we keep.",
   points: [
-    "Your ledger sits on hardware you control, wherever you choose to put it.",
-    "No analytics, no telemetry, and nothing phoning home to be counted.",
-    "PostgreSQL is the only thing it needs. No queue, no cache, no object store.",
-    "AGPL-3.0, so the source is readable and stays that way.",
+    "Pull everything out as a spreadsheet any time you want. We never hold it back to keep you paying.",
+    "No analytics in the product itself. On the free plan the ads bring Google's script with them. Premium and your own copy have neither.",
+    "Nothing you put in is used to sell you anything, here or anywhere else.",
+    "Anyone can read the code, and that isn't going to change.",
   ],
 } as const;
 
+/**
+ * The agent section, and the page's lead argument.
+ *
+ * It used to be last, on the reasoning that it is the thing nothing else
+ * does — true, and an odd place to put it. It then spent a version *in the
+ * headline*, which is the opposite mistake: an assistant is a reason to stay
+ * rather than the reason a stranger reads on, and a page that opens on it is
+ * answering a question nobody arrived with.
+ *
+ * Third, after the four problems, is where it earns its place — the reader
+ * has been told what this does with their money before being told what it
+ * does with their assistant.
+ *
+ * The vocabulary it arrives in is still not the reader's. "Ships an MCP
+ * server", "a token carries scopes" and a shell transcript reading
+ * `$ ledger:stage` were three separate ways of saying this page is not for
+ * you. What survives is the capability and its limit.
+ */
 export const agents = {
   /** As `Problem["covers"]`. */
-  covers: ["agents"],
-  eyebrow: "For agents",
-  title: "Let an assistant do the filing, without handing over the keys.",
+  covers: ["agents", "find-anything"],
+  eyebrow: "If you use an AI assistant",
+  title: "Hook up an AI assistant and just ask.",
   body:
-    "Simple Balance ships an MCP server with the same capabilities as the web app, so an " +
-    "AI agent can import a statement, tidy categories and chase duplicates. What it " +
-    "cannot do is skip the part where you check its work: staged rows affect no balance " +
-    "until they are committed, and a token carries scopes that stop well short of " +
-    "spending money.",
+    "Your assistant sees the same things you see. Ask it when you last paid someone, or have it " +
+    "pull in a statement and file it. When you connect it you choose what it's allowed to do: " +
+    "keep it to suggesting, and nothing it lines up counts until you say yes.",
   sample: [
-    { kind: "comment", text: "# the agent proposes; nothing has moved yet" },
-    { kind: "prompt", text: "ledger:stage" },
-    { kind: "out", text: "  42 rows staged from statement-2026-08.csv" },
-    { kind: "out", text: "   3 flagged as possible duplicates" },
-    { kind: "comment", text: "# you commit, or you do not" },
+    { kind: "prompt", text: "What day did I pay the electric bill last month?" },
+    { kind: "out", text: "  August 12, to Meridian Power, out of checking." },
+    { kind: "out", text: "  The one before that was July 14." },
+    { kind: "comment", text: "Every answer points at the line it came from." },
   ],
 } as const;
 
@@ -300,16 +416,14 @@ export const contact = {
 } as const;
 
 export const footer = {
-  blurb:
-    "Simple Balance is free software for keeping your own books. Run it yourself; " +
-    "nobody else gets a copy.",
+  blurb: "Simple Balance keeps track of your money, and every number shows you what's behind it.",
   links: [
     { label: "Pricing", href: "/pricing/" },
     { label: "Privacy", href: "/privacy/" },
     { label: "Terms", href: "/terms/" },
-    { label: "Source", href: site.sourceUrl },
+    { label: "Source code", href: site.sourceUrl },
     { label: "License", href: `${site.sourceUrl}/blob/main/LICENSE` },
     { label: "Changelog", href: `${site.sourceUrl}/blob/main/CHANGELOG.md` },
-    { label: "Deployment guide", href: `${site.sourceUrl}/blob/main/docs/deployment.md` },
+    { label: "How to run it yourself", href: `${site.sourceUrl}/blob/main/docs/deployment.md` },
   ],
 } as const;

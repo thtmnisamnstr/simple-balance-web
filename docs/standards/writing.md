@@ -21,6 +21,19 @@ available proxy for a drifted sentence.
 **House.** A rule argues from the code, and names it: `` `src/app/page.tsx:42` ``.
 A rule with no citation is an opinion.
 
+**The skills are held to this too**, and were not for a while. `.claude/` was
+outside the citation test's scope, which is how `update-dependencies` and
+`guides-update` both went on pointing at `operations.md` 5.2 and 5.3 through a
+renumbering that made them 6.2 and 6.3 — and how `optimize` came to name a
+script that had been deleted. A wrong citation in a skill is worse than the
+same mistake in a guide: a skill is read by whoever is _about to do the work_,
+so it sends somebody to the wrong rule at the moment they are relying on it.
+
+Thirty-five section citations live in `.claude/` and none of them was checked.
+Both spellings count — a guide writes `` `operations.md` 6.2 `` and a skill
+usually writes the full path — and the pattern only ever allowed one directory
+segment, so the skills' own form was invisible to it twice over.
+
 Line numbers rot. That is accepted rather than solved: the citation test proves
 the file exists and the line is inside it and has something on it, and cannot
 prove the line still holds what the sentence claims. When code moves under a

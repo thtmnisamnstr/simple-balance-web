@@ -12,7 +12,7 @@ proposes affects a balance until you commit it.
 ## Export from your bank
 
 Any CSV will do. There is no required column order and no template to match —
-the importer reads the header row and maps what it recognises.
+the importer reads the header row and maps what it recognizes.
 
 <Callout kind="note">
 If your bank offers OFX or QIF as well, take the CSV. The other two carry less

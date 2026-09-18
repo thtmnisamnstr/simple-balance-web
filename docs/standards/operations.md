@@ -227,16 +227,33 @@ External rot is real and is a periodic job, not a merge gate.
 **House.** `npm outdated` is empty, and the `update-dependencies` skill is how
 it is kept that way.
 
-### 6.2 One dependency is pre-1.0, and it is named
+### 6.2 Every pre-1.0 dependency is named, with its fallback
 
-**Contested, recorded.** `rehype-pretty-code` is `0.x`.
+**Contested, recorded.** Three are `0.x`, and only one of them ships.
 
-It is the standard Shiki integration for MDX and is widely used, but a `0.x`
-version makes no compatibility promise. The fallback if it breaks is Shiki
-directly, which is a dependency this already has — so the exposure is a few
-hours of work, not a rewrite.
+**`rehype-pretty-code` — runtime.** The standard Shiki integration for MDX,
+widely used, and a `0.x` version makes no compatibility promise. Its output is
+in every docs page, so a change in behaviour is a change a reader sees. The
+fallback is Shiki directly, which is already a dependency here, so the
+exposure is a few hours of work rather than a rewrite.
 
-Every other dependency is at a stable major.
+**`sharp` — dev-only.** Draws `public/og.png` and the post covers in
+`scripts/build-images.mjs`. Its output is committed, so it runs on a
+developer's machine and never on Netlify: a break stops new images being
+drawn, it does not stop a deploy. The fallback is any rasteriser that reads
+SVG, and the drawings are SVG source in that one file.
+
+**`@xmldom/xmldom` — dev-only.** `tests/feeds.test.ts` parses the feeds with
+it rather than matching substrings, because an unescaped ampersand in a title
+is the classic break and a substring check sails straight past it. A break
+fails the suite loudly, which is the cheapest failure mode on this list.
+
+**This section said "one" for a while and there were three.** Two arrived
+without anybody re-reading the rule that counts them, which is why the count
+is now checked rather than written down.
+
+_Checked by:_ `tests/repo-references.test.ts` — every `0.x` dependency in
+`package.json` is named in this section.
 
 ### 6.3 Node is pinned to the LTS Netlify supports
 
@@ -247,17 +264,32 @@ Netlify supports 22, 24 and 26. Node 26 is Current and becomes LTS in October
 files carry the same number so a developer using nvm builds on what Netlify
 builds on.
 
-`sharp` and `playwright` are native and dev-only — they are used by the
-screenshot script, which never runs on Netlify — so the usual
-native-module-across-Node-versions hazard does not reach the build.
+`sharp` and `playwright` are native and dev-only, and neither runs on
+Netlify: `sharp` draws the images a developer commits, and the browser suite
+is skipped there by `SKIP_BROWSER_TESTS` and run on GitHub Actions instead.
+So the usual native-module-across-Node-versions hazard does not reach the
+build.
+
+They used to be described as "used by the screenshot script". That script is
+gone — the application publishes its own screenshots now (§4), and `sharp`
+outlived it.
 
 ## 7. What the build emits besides pages
 
 ### 7.1 A social card, built rather than rendered
 
-**House.** `scripts/build-images.mjs` draws `public/og.png` at build time and
-a cover per post. Next's `ImageResponse` renders per request, which is a
-server — the thing `output: "export"` exists to avoid.
+**House.** `scripts/build-images.mjs` draws three things: `public/og.png`, a
+cover per post in both themes, and a 1200px copy of every screenshot. Next's
+`ImageResponse` renders per request, which is a server — the thing
+`output: "export"` exists to avoid.
+
+It reads both palettes out of `brand.css` rather than carrying its own copy of
+them, so a token that changes in the contract changes the drawings on the next
+run and a token that is renamed fails loudly. The output is committed, which
+is why `sharp` never runs on Netlify (6.3).
+
+The screenshot copies are the one thing here it does not draw — it resizes
+what the application published, and `web.md` 5.2 has the measurements.
 
 A link to this site without one renders a blank rectangle, which on a
 marketing page is the one picture guaranteed to be seen.
@@ -339,14 +371,17 @@ Two that cost a day if they are wrong:
 
 ## 10. What is checked, and what is not
 
-| Rule                          | Held by                                         |
-| ----------------------------- | ----------------------------------------------- |
-| 1.1, 1.3 Export shape         | `tests/export-shape.test.ts`                    |
-| 2.1 No catch-all rewrite      | `tests/export-shape.test.ts`                    |
-| 2.2 No premature `ads.txt`    | `tests/export-shape.test.ts`                    |
-| 2.3 Content type              | `tests/export-shape.test.ts`                    |
-| 3.1, 3.2 Headers              | `tests/export-shape.test.ts`                    |
-| 1.2 `force-static`            | the build, which fails without it               |
-| 4 Screenshot provenance       | `human`                                         |
-| 5.1–5.3 Dependencies and Node | `human`, and the `update-dependencies` skill    |
-| 6 DNS                         | `human`. Nothing in this repository can see DNS |
+| Rule                        | Held by                                         |
+| --------------------------- | ----------------------------------------------- |
+| 1.1, 1.3 Export shape       | `tests/export-shape.test.ts`                    |
+| 2.1 No catch-all rewrite    | `tests/export-shape.test.ts`                    |
+| 2.2 No premature `ads.txt`  | `tests/export-shape.test.ts`                    |
+| 2.3 Content type            | `tests/export-shape.test.ts`                    |
+| 3.1, 3.2 Headers            | `tests/export-shape.test.ts`                    |
+| 6.2 Every pre-1.0 dep named | `tests/repo-references.test.ts`                 |
+| 7.4 Weight budget           | `tests/budget.test.ts`                          |
+| 1.2 `force-static`          | the build, which fails without it               |
+| 4 Screenshot provenance     | `human`                                         |
+| 5 Continuous integration    | `human` — the workflows are the record          |
+| 6.1, 6.3 Latest, and Node   | `human`, and the `update-dependencies` skill    |
+| 9 DNS                       | `human`. Nothing in this repository can see DNS |

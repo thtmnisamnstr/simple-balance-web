@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { feedAlternates } from "@/lib/feed";
 import { notFound } from "next/navigation";
 import { blogTags, postsByTag, tagLabel, tagSlug } from "@/content/collections";
 import { section, tagDescriptions } from "@/content/sections";
@@ -24,7 +25,7 @@ export async function generateMetadata({
     title: `Posts tagged ${label}`,
     description: tagDescriptions[tag] ?? `Everything on ${label}.`,
     robots: blog.announced ? undefined : { index: false, follow: false },
-    alternates: { canonical: `/blog/tags/${tag}/` },
+    alternates: feedAlternates(`/blog/tags/${tag}/`),
   };
 }
 

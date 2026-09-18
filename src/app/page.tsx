@@ -2,7 +2,9 @@ import {
   hero,
   heroShot,
   problems,
+  problemsSection,
   features,
+  featuresSection,
   showcase,
   privacy,
   agents,
@@ -18,12 +20,16 @@ import { SiteStructuredData } from "@/components/structured-data";
 /**
  * The homepage.
  *
- * Section order is an argument, not a layout: the reader arrives not knowing
- * what this is, so the hero says what it is, the problems say why they would
- * want it, the features say what else is in the box, self-hosting answers the
- * question a finance product always raises, and agents is the one thing here
- * nothing else does. Reordering it is fine; doing so without a reason is what
- * `docs/standards/content.md` 3.2 is about.
+ * Section order is an argument, not a layout. The reader arrives not knowing
+ * what this is: the hero says what it is, the problems say why they would
+ * want it, **agents comes third** because it is the thing nothing else does
+ * and the reader has by then been told what this does with their money, the
+ * showcase shows it, the features say what else is in the box, and privacy
+ * answers the question a money product always raises.
+ *
+ * Agents has been last (wrong — it is the distinctive part) and first (also
+ * wrong — it answers a question nobody arrives with).
+ * `docs/standards/content.md` 3.2.
  *
  * Every section is a landmark with its own heading, and the headings step
  * h1 -> h2 -> h3 with nothing skipped, because a screen reader's document
@@ -52,15 +58,16 @@ export default function HomePage() {
             width={SHOT_WIDTH}
             height={SHOT_HEIGHT}
             priority
+            span="half"
           />
         </div>
       </section>
 
       <section className="section" aria-labelledby="problems-title">
         <div className="page">
-          <p className="eyebrow">Why bother</p>
+          <p className="eyebrow">{problemsSection.eyebrow}</p>
           <h2 id="problems-title" className="section-title">
-            Four things that are true of almost every other way of doing this.
+            {problemsSection.title}
           </h2>
           <div className="problems">
             {problems.map((entry) => (
@@ -90,6 +97,34 @@ export default function HomePage() {
         </div>
       </section>
 
+      <section className="section" aria-labelledby="agents-title">
+        <div className="page band-inner">
+          <div>
+            <p className="eyebrow">{agents.eyebrow}</p>
+            <h2 id="agents-title" className="section-title">
+              {agents.title}
+            </h2>
+            <p className="prose">{agents.body}</p>
+          </div>
+          {/* An exchange, not a shell session. It used to render `$ ledger:stage`
+              and the name of a CSV file, which told a reader who is not a
+              developer that this page was not for them — and the thing being
+              shown is a conversation with an assistant, not a command. */}
+          <pre
+            className="terminal"
+            aria-label="Asking an assistant when a bill was paid, and the answer it gives"
+          >
+            <code>
+              {agents.sample.map((line) => (
+                <span key={line.text} className={line.kind === "out" ? undefined : line.kind}>
+                  {line.kind === "prompt" ? `You: ${line.text}` : line.text}
+                  {"\n"}
+                </span>
+              ))}
+            </code>
+          </pre>
+        </div>
+      </section>
       <section className="section" aria-labelledby="showcase-title">
         <div className="page">
           <p className="eyebrow">{showcase.eyebrow}</p>
@@ -99,7 +134,13 @@ export default function HomePage() {
           <div className="showcase">
             {showcase.shots.map((shot) => (
               <figure className="shot-figure" key={shot.name}>
-                <Shot name={shot.name} alt={shot.alt} width={SHOT_WIDTH} height={SHOT_HEIGHT} />
+                <Shot
+                  name={shot.name}
+                  alt={shot.alt}
+                  width={SHOT_WIDTH}
+                  height={SHOT_HEIGHT}
+                  span="half"
+                />
                 <figcaption className="shot-caption">{shot.caption}</figcaption>
               </figure>
             ))}
@@ -110,9 +151,9 @@ export default function HomePage() {
 
       <section className="section" aria-labelledby="features-title">
         <div className="page">
-          <p className="eyebrow">What else is in it</p>
+          <p className="eyebrow">{featuresSection.eyebrow}</p>
           <h2 id="features-title" className="section-title">
-            The parts you only notice when they are missing.
+            {featuresSection.title}
           </h2>
           <div className="grid">
             {features.map((feature) => {
@@ -150,28 +191,6 @@ export default function HomePage() {
               </li>
             ))}
           </ul>
-        </div>
-      </section>
-
-      <section className="section" aria-labelledby="agents-title">
-        <div className="page band-inner">
-          <div>
-            <p className="eyebrow">{agents.eyebrow}</p>
-            <h2 id="agents-title" className="section-title">
-              {agents.title}
-            </h2>
-            <p className="prose">{agents.body}</p>
-          </div>
-          <pre className="terminal" aria-label="An agent staging rows for review">
-            <code>
-              {agents.sample.map((line) => (
-                <span key={line.text} className={line.kind === "out" ? undefined : line.kind}>
-                  {line.kind === "prompt" ? `$ ${line.text}` : line.text}
-                  {"\n"}
-                </span>
-              ))}
-            </code>
-          </pre>
         </div>
       </section>
     </>

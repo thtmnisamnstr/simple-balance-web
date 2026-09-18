@@ -17,6 +17,27 @@ The pipeline is finished; writing is adding a Markdown file.
 
 If it would need "as of September 2026" to stay honest, it is a post.
 
+## The voice
+
+American English, with contractions. `docs/standards/content.md` 1.6, and
+`tests/copy.test.ts` fails the build on a British spelling anywhere under
+`content/`.
+
+This is not a preference. The site prices in US dollars and the application's
+screens say **Checking**; a docs page said "a current account, a savings
+account" on the page whose job is explaining what an account is, which
+disagreed with the product as well as with the reader. The banned list is in
+the test: recognise, organise, personalise, analyse, licence, centre,
+cancelling, colour, behaviour, whilst, current account, and the rest.
+
+Contractions where somebody talking would use them, not everywhere — uniform
+contraction reads as mechanical as none. Watch **"you have"**, which is not
+always "you've": a find-and-replace turned the homepage's "See everything you
+have" into "See everything you've."
+
+The guides under `docs/` are the exception and stay as they are. They are
+prose for somebody reading closely; this is copy for somebody skimming.
+
 ## 2. Frontmatter
 
 Required everywhere: `title`, `description`. Required for a post: `date`.

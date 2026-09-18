@@ -5,6 +5,7 @@ import "@/styles/brand.css";
 import "@/styles/site.css";
 
 import { SiteHeader } from "@/components/site-header";
+import { feedAlternates } from "@/lib/feed";
 import { SiteFooter } from "@/components/site-footer";
 import { site, hero } from "@/content/home";
 
@@ -33,12 +34,15 @@ export const metadata: Metadata = {
     title: `${site.name} — ${site.tagline}`,
     description: hero.lede,
     url: `https://${site.domain}`,
-    locale: "en_GB",
+    // The site sells in US dollars to a US reader and its copy is written in
+    // American English. It said en_GB, which is the locale a link preview and
+    // a crawler are told to expect.
+    locale: "en_US",
     /*
      * The card a link to this site shows in Slack, Bluesky, LinkedIn or a
      * message. Without it they render a blank rectangle, which on a marketing
      * page is the one picture guaranteed to be seen. Built by
-     * `scripts/build-og-image.mjs` rather than per request, because a
+     * `scripts/build-images.mjs` rather than per request, because a
      * per-request renderer is a server and this site does not have one.
      */
     images: [
@@ -56,15 +60,13 @@ export const metadata: Metadata = {
     description: hero.lede,
     images: ["/og.png"],
   },
-  alternates: {
-    canonical: "/",
-    // Advertised site-wide so a feed reader pointed at any page finds them.
-    types: {
-      "application/rss+xml": "/blog/feed.xml",
-      "application/atom+xml": "/blog/atom.xml",
-      "application/feed+json": "/blog/feed.json",
-    },
-  },
+  /*
+   * Advertised on every page, which this could not do on its own: Next
+   * replaces `alternates` rather than merging it, so every route declaring a
+   * canonical used to drop the feeds. `feedAlternates` is what makes the
+   * comment true — see `src/lib/feed.ts`.
+   */
+  alternates: feedAlternates("/"),
   /**
    * The same two files the application serves, copied rather than linked so
    * this origin has no cross-origin dependency for its own tab icon. iOS will

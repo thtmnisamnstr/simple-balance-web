@@ -40,7 +40,7 @@ actually needs.
 {
   "mcpServers": {
     "simple-balance": {
-      "url": "https://app.smpl.money/mcp",
+      "url": "https://your-deployment.example/mcp",
       "headers": { "Authorization": "Bearer sb_..." },
     },
   },

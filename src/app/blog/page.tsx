@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { feedAlternates } from "@/lib/feed";
 import { blogIndex, blogTags } from "@/content/collections";
 import { section } from "@/content/sections";
 import { EmptyState } from "@/components/empty-state";
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
   // An unannounced section is not indexed. One flag decides it, and the
   // sitemap reads the same one — `src/content/sections.ts`.
   robots: blog.announced ? undefined : { index: false, follow: false },
-  alternates: { canonical: blog.href },
+  alternates: feedAlternates(blog.href),
 };
 
 export default function BlogIndex() {

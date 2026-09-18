@@ -22,8 +22,9 @@
   # pre-LTS runtime earns its risk. `.nvmrc` carries the same number so a
   # developer using nvm builds on what Netlify builds on.
   #
-  # Two native dependencies — sharp and playwright — are dev-only and used by
-  # `scripts/capture-screenshots.mjs`, which never runs here, so the usual
+  # Two native dependencies — sharp and playwright — are dev-only and neither
+  # runs here: sharp draws the images a developer commits, and the browser
+  # suite is skipped by SKIP_BROWSER_TESTS below. So the usual
   # native-module-across-Node-versions hazard does not apply to this build.
   NODE_VERSION = "24"
   # See the build command above, and `tests/a11y.test.ts`.

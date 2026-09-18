@@ -30,7 +30,7 @@ export function CodeTab({
   readonly children: ReactNode;
 }) {
   return (
-    <section className="code-tab" aria-label={label}>
+    <section aria-label={label}>
       <p className="code-tab-label">{label}</p>
       {children}
     </section>

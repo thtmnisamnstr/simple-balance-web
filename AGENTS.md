@@ -76,11 +76,36 @@ Break one of these and the site is wrong rather than untidy.
   AdSense disclosures** — third-party cookies, the vendors that set them, and
   how to opt out. A generic policy is a false statement about somebody's data,
   and a missing disclosure is a breach whose penalty is suspension.
+- **A marketing claim is never stronger than the privacy policy it links to.**
+  The pricing page said ads were "requested without anything about you
+  attached" while the policy disclosed rough location and a cookie; the
+  homepage promised "nothing counts your clicks" beside a policy disclosing
+  server logs. Neither was written as a lie — both were a long document
+  summarised from memory. `content.md` 2.4, and `tests/legal.test.tsx` holds
+  the two surfaces together.
 - **No third-party branding.** No vendor logo, badge or "powered by" mark, and
   no script or image from a vendor's domain. The privacy policy naming the
   hosting provider and the payment processor is the one exception, and it is
   the opposite of branding. A host can inject its own badge into the response,
   which no test here can see — `operations.md` 8 carries those as launch steps.
+- **Nothing on the homepage or the pricing page may imply a bank connection —
+  and nothing may promise there will never be one.** There is none today: no
+  bank login, no background refresh, nothing that can go stale without saying
+  so, so copy describing one would be false. But the page also spent a while
+  leading on "we never ask for your bank password", which is a promise about
+  a future this page does not decide, and unwinding it cost the hero, the
+  tagline, the social card, a comparison row and two FAQ answers.
+  `docs/standards/content.md` 1.5 carries both halves and the trigger to
+  revisit.
+- **Those two pages are written for somebody who has never used a personal
+  finance product.** No accounting vocabulary, no operations vocabulary, and
+  nothing that presumes a budgeting app they already abandoned. The copy this
+  replaced said "the numbers do not tie out", "every posting with the balance
+  before and after it" and "AGPL-3.0, one machine and a PostgreSQL", and the
+  search result read "Self-hosted double-entry bookkeeping" — both of the two
+  words a general reader cannot parse, in the one string Google shows them.
+  `docs/standards/content.md` 1.4. The rest of the site is not held to this:
+  a deployment guide is read by somebody deploying.
 - **The application decides what the product does; this site decides how to
   say it.** `src/content/app-features.json` is its list, pulled verbatim and
   never edited here; `src/content/home.ts` is the rewrite for a reader who has
@@ -90,6 +115,14 @@ Break one of these and the site is wrong rather than untidy.
   inferred, because the first version matched the application's wording
   against the page's, which is precisely the wording a rewrite changes, and
   it could not fail.
+- **Everything a reader sees is American English with contractions** — both
+  marketing pages, the legal pages, and every Markdown file under `content/`.
+  The site prices in dollars and the application's own screens say _Checking_;
+  the copy said "current account", the docs said it on the page explaining
+  what an account is, and `layout.tsx` declared `en_GB`.
+  `docs/standards/content.md` 1.6, checked by `tests/copy.test.ts`, which also
+  records that a blind contraction pass turned "See everything you have" into
+  "you've".
 - **The copy is rewritten only where the product's description moved.**
   `src/content/copy-source.json` records what each section was written from;
   `tests/copy-provenance.test.ts` fails for anything reworded, added or

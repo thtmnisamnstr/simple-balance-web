@@ -19,8 +19,8 @@ Deleting a budget leaves your books exactly as they were.
 
 ## What you can budget
 
-- **A category** — "groceries, £400 a month".
-- **A group of categories** — "everything under Home, £1,200 a month".
+- **A category** — "groceries, $400 a month".
+- **A group of categories** — "everything under Home, $1,200 a month".
 
 A budget is about one or the other, never both, and a group budgeted as the sum
 of its categories cannot also hold a budget of its own — the two would disagree

@@ -56,7 +56,7 @@ Four specific things to check:
 
 - **A stated blocker that no longer blocks.** Grep the guides for the thing you
   just built. `content.md` 5.1 names a trigger to revisit the docs framework
-  decision; `operations.md` 5.2 names a fallback. Both are the kind of note
+  decision; `operations.md` 6.2 names a fallback for each pre-1.0 dependency. Both are the kind of note
   that outlives its reason.
 - **A `human` that is now checked.** Move it into the guide's "what is checked"
   table and name the test.

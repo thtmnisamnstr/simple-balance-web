@@ -46,8 +46,15 @@ The biggest lever on this site, because it ships screenshots.
 - **`loading="lazy"` on everything below the fold**, and `eager` with
   `fetchPriority="high"` on exactly one: the hero shot, which is the largest
   contentful paint.
-- **Re-run `build:images`** after changing the generator; the covers and the
-  social card are generated, not sourced.
+- **Two widths, not one.** Each screenshot also ships at 1200px and
+  `<picture>` picks. A `sizes` that does not match the CSS is worse than none,
+  because the browser trusts it and gets the wrong file silently —
+  `src/components/shot.tsx` names the two layouts and `web.md` 5.2 has the
+  measurements.
+- **Re-run `build:images`** after changing the generator, after pulling new
+  screenshots, or after touching `brand.css`. It makes three things — the
+  social card, a cover per post per theme, and the narrow screenshot copies —
+  and it reads its palette out of the contract.
 
 ```sh
 npm run build:images
@@ -56,7 +63,22 @@ npm run build:images
 ## 3. Fonts
 
 There is no webfont, and the stack matches the application's exactly
-(`web.md` 3.2). **If you add one, it is a change to both surfaces**, it is
+(`web.md` 3.2).
+
+**Check the match, not the absence.** Grepping this tree for `@font-face` and
+finding nothing proves only that no webfont was added _here_; the rule is
+about two surfaces agreeing, and the other one is in another repository. Read
+it over the network:
+
+```sh
+curl -fsSL "https://raw.githubusercontent.com/thtmnisamnstr/simple-balance/main/src/client/styles.css" \
+  | grep -A 6 "font-family"
+```
+
+The sans stacks are byte-identical. The **monospace** stacks are not, on
+purpose, and `web.md` 3.2 carries the argument and the condition that would
+end it — so a run that notices the difference should read that before
+"fixing" it. **If you add one, it is a change to both surfaces**, it is
 self-hosted on each origin because `default-src 'self'` permits same-origin
 fonts and forbids `fonts.gstatic.com`, and it needs `font-display: swap` and
 a subset.

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { feedAlternates } from "@/lib/feed";
 import { notFound } from "next/navigation";
 import {
   allEntries,
@@ -11,6 +12,7 @@ import {
 import { section } from "@/content/sections";
 import { authors } from "@/content/authors";
 import { Prose } from "@/components/prose";
+import { Cover } from "@/components/cover";
 import { Byline } from "@/components/byline";
 import { TagList } from "@/components/tag-list";
 import { Contents } from "@/components/contents";
@@ -47,14 +49,7 @@ export async function generateMetadata({
     robots: blog.announced ? undefined : { index: false, follow: false },
     // A post published elsewhere first says so, so the two copies do not
     // compete with each other in a search index.
-    alternates: {
-      canonical: meta.canonical ?? `/blog/${slug}/`,
-      types: {
-        "application/rss+xml": "/blog/feed.xml",
-        "application/atom+xml": "/blog/atom.xml",
-        "application/feed+json": "/blog/feed.json",
-      },
-    },
+    alternates: feedAlternates(meta.canonical ?? `/blog/${slug}/`),
     openGraph: {
       type: "article",
       title: meta.title,
@@ -103,9 +98,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
           readingMinutes={post.readingMinutes}
         />
 
-        {meta.image ? (
-          <img className="entry-cover" src={meta.image} alt={meta.imageAlt ?? ""} />
-        ) : null}
+        {meta.image ? <Cover src={meta.image} alt={meta.imageAlt ?? ""} priority /> : null}
 
         {meta.series ? <SeriesNav series={meta.series} parts={series} current={slug} /> : null}
 

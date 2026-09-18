@@ -47,6 +47,36 @@ describe("the stylesheets", () => {
     expect(dead, "these are defined in CSS and never used").toEqual([]);
   });
 
+  it("defines a rule for every class the markup actually writes", () => {
+    /*
+     * The other direction, and the one nothing was checking.
+     *
+     * A class in the markup with no rule behind it is inert: it reads as
+     * styling, it survives every refactor because deleting it looks risky,
+     * and it is invisible to the sweep above, which only ever asks whether
+     * CSS is reachable. Four had accumulated — on a `<section>` and a
+     * `<summary>` and two wrappers, every one of them an element that earns
+     * its place through `aria-label` or `aria-labelledby` rather than through
+     * anything visual.
+     *
+     * **Deliberately conservative.** It reads only plain string literals, so
+     * a composed name (`callout-${kind}`) or a conditional is skipped
+     * entirely rather than guessed at. It will miss some; it will never
+     * report one that is fine, which is the trade a gate wants.
+     */
+    const written = new Set<string>();
+    for (const file of sourceFiles("src", /\.tsx$/)) {
+      for (const [, list] of file.code.matchAll(/className="([^"{}$]+)"/g)) {
+        for (const name of list!.split(/\s+/)) if (name) written.add(name);
+      }
+    }
+
+    expect(written.size, "no classes found in the markup").toBeGreaterThan(30);
+
+    const unstyled = [...written].filter((name) => !defined.includes(name));
+    expect(unstyled, "these are in the markup and style nothing").toEqual([]);
+  });
+
   it("keeps the composed list to names that are actually composed", () => {
     // An entry here is an exception, not a licence. If the expression that
     // builds it has gone, the entry is stale and the CSS may be dead.

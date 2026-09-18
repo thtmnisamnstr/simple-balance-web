@@ -1,5 +1,7 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
+import { faq } from "@/content/pricing";
+import { privacy as privacySection } from "@/content/home";
 import { render } from "@testing-library/react";
 import PrivacyPage from "@/app/privacy/page";
 import TermsPage from "@/app/terms/page";
@@ -25,7 +27,7 @@ describe("the privacy policy", () => {
     // Google's programme policies: third-party cookies, the vendors that set
     // them, and how to opt out. Missing any of the three is a breach, and the
     // penalty is suspension rather than the ads not rendering.
-    for (const required of ["adsense", "cookies", "non-personalised", "opt out"]) {
+    for (const required of ["adsense", "cookies", "non-personalized", "opt out"]) {
       expect(text, `the policy never mentions "${required}"`).toContain(required);
     }
   });
@@ -66,11 +68,41 @@ describe("the privacy policy", () => {
   });
 
   it("does not claim non-personalised ads are cookie-free", () => {
-    // The mistake that would make this policy false. Non-personalised ads
+    // The mistake that would make this policy false. Non-personalized ads
     // still set cookies for frequency capping and fraud prevention, which is
     // why consent is asked for in the EEA regardless.
-    expect(text).toContain("non-personalised is not the same as cookie-free");
+    expect(text).toContain("non-personalized is not the same as cookie-free");
     expect(text).toMatch(/frequency capping/);
+  });
+
+  it("says what Google actually receives, because the pricing page promises it does", () => {
+    /*
+     * The pricing page's ad answer ends "the privacy policy covers the rest,
+     * including what does reach Google". It was shortened to that from a
+     * paragraph that said so itself, and the policy did not carry the detail
+     * — so the honest disclosure was deleted from the site by a cut made on
+     * a different page.
+     *
+     * The application documents it: the publisher id and the page address
+     * reach Google, and its paths carry record ids. A policy that omits that
+     * while the product's own docs state it is the policy that is wrong.
+     */
+    expect(text).toContain("what google receives");
+    expect(text).toContain("publisher id");
+    expect(text).toContain("address of the page");
+    // The limit matters as much as the disclosure: no balance, no name.
+    expect(text).toContain("targeting parameter");
+  });
+
+  it("is not promised something it does not contain", () => {
+    // Whatever the pricing page says the policy covers, it has to cover.
+    const pointer = faq.find((item) => /privacy policy/i.test(item.a));
+    expect(pointer, "no pricing answer points at the policy").toBeDefined();
+    if (/what does reach google/i.test(pointer!.a)) {
+      expect(text, "the pricing page points at a disclosure the policy lacks").toContain(
+        "what google receives",
+      );
+    }
   });
 
   it("says consent is collected before an ad cookie is set, and can be withdrawn", () => {
@@ -121,6 +153,63 @@ describe("the terms", () => {
 
   it("tells account holders which email they cannot opt out of", () => {
     expect(text).toContain("no unsubscribe from those");
+  });
+});
+
+describe("the marketing pages, against the policy", () => {
+  /**
+   * The two surfaces have to say the same thing about advertising.
+   *
+   * The policy is careful: a non-personalized ad is still chosen from the
+   * page and your rough location, and it still sets a cookie. A pricing page
+   * is where the temptation is to round that down to "nothing about you",
+   * and it did: the answer to "what are the ads like?" said they were
+   * "requested without anything about you attached", which the document it
+   * links to contradicts in its own words.
+   *
+   * This is the same failure `AGENTS.md` names for Premium and `plus` — two
+   * surfaces using different words at the same customer — except that here
+   * the customer who notices is reading a privacy policy, which is the worst
+   * possible moment to be caught rounding down.
+   */
+  const ads = faq.find((item) => /\bads\b/i.test(item.q));
+
+  it("answers what the ads are, somewhere on the pricing page", () => {
+    // Population check: the assertions below pass vacuously without it.
+    expect(ads, "no pricing question asks what the ads are").toBeDefined();
+  });
+
+  it("does not round the policy down to nothing about you", () => {
+    const answer = ads!.a.toLowerCase();
+    for (const overclaim of [
+      "nothing about you",
+      "no cookies",
+      "without anything about you",
+      "never tracked",
+    ]) {
+      expect(answer, `the pricing page claims "${overclaim}"; the policy does not`).not.toContain(
+        overclaim,
+      );
+    }
+  });
+
+  it("names the two things the policy names", () => {
+    // Personalisation and consent. The policy turns on both, so a pricing
+    // page that mentions neither is describing a different product.
+    const answer = ads!.a.toLowerCase();
+    expect(answer).toMatch(/personalised|personalized/);
+    expect(answer).toMatch(/agreed|consent|asked before/);
+  });
+
+  it("claims no more about tracking than the policy supports", () => {
+    // The homepage's privacy list used to promise "nothing counts your
+    // clicks", which the policy's own server-log paragraph contradicts for
+    // the hosted plan.
+    const points = privacySection.points.join(" ").toLowerCase();
+    for (const overclaim of ["counts your clicks", "no logs", "nothing is recorded"]) {
+      expect(points, `the homepage claims "${overclaim}"`).not.toContain(overclaim);
+    }
+    expect(points, "the homepage no longer says anything about analytics").toContain("analytics");
   });
 });
 

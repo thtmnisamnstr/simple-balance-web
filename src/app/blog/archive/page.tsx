@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { feedAlternates } from "@/lib/feed";
 import { postsByYear } from "@/content/collections";
 import { section } from "@/content/sections";
 import { formatDate } from "@/lib/format";
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
   title: "Archive",
   description: "Every post, by year.",
   robots: blog.announced ? undefined : { index: false, follow: false },
-  alternates: { canonical: "/blog/archive/" },
+  alternates: feedAlternates("/blog/archive/"),
 };
 
 /**

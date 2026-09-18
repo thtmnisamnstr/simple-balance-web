@@ -30,9 +30,39 @@
   --radius-pill: 999px;
 
   --measure: 68ch;
+  /* The sticky header's height, named because three rules carried `64px` as a
+     literal — this header's own `min-height`, and the two docs sidebar
+     offsets calculated from it. A header that changed height moved the page
+     and left the sidebar tucked underneath it, and nothing pointed from one
+     to the other. */
+  --header-h: 64px;
   --page: 1140px;
   --page-narrow: 860px;
 
+  /* The two steps below `--step--1`.
+     Thirteen places had invented their own size under it, across five values
+     — 0.72, 0.75, 0.78, 0.8 and 0.85rem — for three roles. `web.md` 3.1 says
+     no size is set in rem directly, and it was true of the six steps and
+     nothing else, because the scale stopped one step above where the site
+     actually needed it. */
+  /*
+   * The monospace stack, declared once because it was written out three times
+   * — the terminal, inline code and the code-block language label — and three
+   * copies of a value are three chances for it to disagree with itself.
+   *
+   * It is deliberately NOT the application's. The app has one mono rule, an
+   * 11px internal label, and its stack stops at `Menlo, monospace`; this site
+   * renders code blocks and a terminal, and `ui-monospace` has no
+   * implementation on Windows in several browsers, so without `Consolas` a
+   * code block there falls through to the generic `monospace` — usually
+   * Courier New. `web.md` 3.2 records the divergence and what would end it.
+   */
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  --step--2: clamp(0.72rem, 0.7rem + 0.1vw, 0.78rem);
+  /* Monospace reads larger than the UI face at the same nominal size, so code
+     surfaces shrink. A step rather than a literal because two of them do it
+     and they were 0.85rem twice. */
+  --step-mono: clamp(0.8rem, 0.78rem + 0.1vw, 0.85rem);
   --step--1: clamp(0.83rem, 0.8rem + 0.15vw, 0.9rem);
   --step-0: clamp(1rem, 0.96rem + 0.2vw, 1.09rem);
   --step-1: clamp(1.2rem, 1.12rem + 0.4vw, 1.4rem);
@@ -155,6 +185,8 @@ svg {
 .prose {
   color: var(--ink-soft);
   max-width: var(--measure);
+  /* As `.prose-body`. */
+  overflow-wrap: break-word;
 }
 
 .skip-link {
@@ -176,6 +208,14 @@ svg {
 
 /* ---------- header ---------- */
 
+/* An anchor has to clear the sticky header, or every in-page link — a docs
+   contents entry, a heading permalink — lands with its target hidden behind
+   it. `scroll-padding-top` on the scrolling element is what the browser
+   subtracts; it is not inherited from the header, so it has to say so here. */
+:root {
+  scroll-padding-top: calc(var(--header-h) + var(--s-4));
+}
+
 .site-header {
   position: sticky;
   top: 0;
@@ -190,7 +230,7 @@ svg {
   align-items: center;
   justify-content: space-between;
   gap: var(--s-4);
-  min-height: 64px;
+  min-height: var(--header-h);
 }
 
 .brand {
@@ -437,8 +477,8 @@ svg {
   color: var(--art-ink);
   border-radius: var(--radius-lg);
   padding: var(--s-5);
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
-  font-size: 0.85rem;
+  font-family: var(--mono);
+  font-size: var(--step-mono);
   line-height: 1.7;
   overflow-x: auto;
   border: 1px solid var(--art-hairline);
@@ -521,8 +561,48 @@ svg {
     padding-inline: var(--s-4);
   }
 
+  /*
+   * The header is one row until it cannot be.
+   *
+   * The brand, two links and the pending label come to 453px against a 390px
+   * viewport, and a flex row that cannot wrap does not clip — it pushes, so
+   * the *page* scrolls sideways. That fails WCAG 2.1 AA reflow (1.4.10) at
+   * 320px and it is the failure nobody sees on a desktop, because the row
+   * fits there.
+   *
+   * Wrapping costs a second row on a phone. The alternatives all cost a
+   * control: hiding the brand word leaves a link with no accessible name to
+   * fix afterwards, and dropping "Source" removes the only way a reader on a
+   * phone reaches the code. A taller header is the cheapest of the three.
+   */
+  .site-header-inner {
+    flex-wrap: wrap;
+    row-gap: var(--s-3);
+    padding-block: var(--s-3);
+    min-height: 0;
+  }
+
+  /*
+   * And once it has wrapped it stops following the reader.
+   *
+   * Wrapping takes the header to 112px at 390px and 146px at 320px. Sticky,
+   * that is 13% of a phone screen and 17% of the narrowest one, permanently,
+   * on a page somebody reads once in one pass. The header is worth its space
+   * on a desktop, where it is 64px and the viewport is not the constraint;
+   * on a phone the reader would rather have the page.
+   *
+   * It also keeps `--header-h` honest: every sticky offset derived from it
+   * applies only where the header really is that tall.
+   */
+  .site-header {
+    position: static;
+  }
+
+  /* And the nav wraps within itself, so 320px fits too — the narrowest width
+     `web.md` 3.1 says this page is read at. */
   .header-actions {
     gap: var(--s-3);
+    flex-wrap: wrap;
   }
 
   .hero-actions .button {
@@ -632,6 +712,14 @@ svg {
   max-width: var(--measure);
   color: var(--ink-soft);
   margin-top: var(--s-6);
+  /* Long unbreakable tokens break rather than push the page.
+     The privacy policy has to print `policies.google.com/technologies/partner-sites`
+     as text, because a disclosure that hides where it points is not a
+     disclosure — and forty-six characters with no space in them are wider than
+     a 320px screen, so without this the page scrolls sideways on the one page
+     that must be readable. `break-word` breaks only where a word would not
+     otherwise fit, so ordinary prose is untouched. */
+  overflow-wrap: break-word;
 }
 
 .prose-body > * + * {
@@ -665,7 +753,10 @@ svg {
 }
 
 .prose-body code {
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-family: var(--mono);
+  /* `em`, not a step: inline code has to track the size of the sentence it
+     sits in, and a step would make it the same size inside a heading and a
+     footnote. `web.md` 3.1 names this as the exception. */
   font-size: 0.9em;
   background: var(--fill-subtle);
   border: 1px solid var(--line-soft);
@@ -680,7 +771,7 @@ svg {
   border-radius: var(--radius-lg);
   padding: var(--s-5);
   overflow-x: auto;
-  font-size: 0.85rem;
+  font-size: var(--step-mono);
   line-height: 1.7;
 }
 
@@ -789,7 +880,7 @@ svg {
 
 .docs-nav {
   position: sticky;
-  top: calc(64px + var(--s-5));
+  top: calc(var(--header-h) + var(--s-5));
   display: grid;
   gap: var(--s-5);
   font-size: var(--step--1);
@@ -805,7 +896,7 @@ svg {
   color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  font-size: 0.75rem;
+  font-size: var(--step--2);
   font-weight: var(--weight-semi);
   margin: 0 0 var(--s-2);
 }
@@ -899,6 +990,8 @@ svg {
 .avatar-initials {
   display: grid;
   place-items: center;
+  /* Glyph inside a fixed circle: it scales with the avatar, not with the
+     page's type scale. `web.md` 3.1. */
   font-size: 0.8rem;
   font-weight: var(--weight-semi);
   color: var(--green-dark);
@@ -924,7 +1017,7 @@ svg {
 
 .byline-title {
   color: var(--muted);
-  font-size: 0.8rem;
+  font-size: var(--step--1);
 }
 
 .tag-list {
@@ -937,7 +1030,7 @@ svg {
 }
 
 .tag {
-  font-size: 0.78rem;
+  font-size: var(--step--1);
   color: var(--ink-soft);
   background: var(--fill-subtle);
   border: 1px solid var(--line);
@@ -947,6 +1040,15 @@ svg {
 
 .tag-summary {
   margin-top: var(--s-6);
+}
+
+/* The `<picture>` that carries the two theme files has no box of its own.
+   `<picture>` is inline by default, which would put an inline wrapper — and
+   its baseline gap — around an image that was previously a direct child.
+   `display: contents` keeps `.entry-cover` laid out exactly where it was, so
+   adding the dark variant changed no layout at all. */
+.cover {
+  display: contents;
 }
 
 .entry-cover {
@@ -1095,7 +1197,7 @@ svg {
 }
 
 .doc-pager-label {
-  font-size: 0.78rem;
+  font-size: var(--step--1);
   color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -1198,6 +1300,7 @@ svg {
 .avatar-large {
   width: 72px;
   height: 72px;
+  /* As `.avatar-initials`. */
   font-size: 1.4rem;
 }
 
@@ -1331,16 +1434,16 @@ svg {
 }
 
 .code-language {
-  font-size: 0.72rem;
+  font-size: var(--step--2);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--muted);
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-family: var(--mono);
 }
 
 .copy-button {
   font: inherit;
-  font-size: 0.75rem;
+  font-size: var(--step--2);
   font-weight: var(--weight-medium);
   color: var(--ink-soft);
   background: var(--surface);
@@ -1365,6 +1468,14 @@ svg {
 
 .code-tabs {
   display: grid;
+  /* `minmax(0, 1fr)` rather than the default `1fr`, which is `minmax(auto,
+     1fr)` and refuses to shrink a track below its content's intrinsic width.
+     A code sample's longest line has no space in it to break at, so the track
+     grew to fit it and pushed the page sideways instead of letting the block
+     scroll inside itself — 482px of grid against a 320px screen. The same
+     shape appears wherever a grid holds something unbreakable; `web.md` 9.2
+     is the rule. */
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--s-4);
   margin: var(--s-5) 0;
 }
@@ -1395,7 +1506,7 @@ svg {
   display: grid;
   gap: var(--s-4);
   position: sticky;
-  top: calc(64px + var(--s-5));
+  top: calc(var(--header-h) + var(--s-5));
 }
 
 .docs-nav-details > summary {
@@ -1487,7 +1598,7 @@ svg {
 
 .docs-search-section {
   color: var(--muted);
-  font-size: 0.75rem;
+  font-size: var(--step--2);
 }
 
 .docs-search-empty {
@@ -1545,6 +1656,18 @@ svg {
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
   padding: var(--s-6);
+  /*
+   * Room in the top padding for the featured card's flag, on every card.
+   *
+   * The flag used to be the first child of a flex column, so on the featured
+   * card it pushed the heading down by its own height plus a gap and the
+   * three headings no longer lined up — a label about one card changing the
+   * layout of that card alone reads as an accident rather than emphasis.
+   * Reserving the space everywhere and taking the flag out of the flow is
+   * what keeps the row aligned; `.tier-flag` sits in this padding.
+   */
+  padding-top: calc(var(--s-6) + var(--s-5));
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: var(--s-3);
@@ -1559,8 +1682,14 @@ svg {
 }
 
 .tier-flag {
+  /* In the padding, out of the flow — see `.tier`. Bounded left and right so
+     a longer label wraps inside the card rather than widening it. */
+  position: absolute;
+  top: var(--s-6);
+  left: var(--s-6);
+  right: var(--s-6);
   margin: 0;
-  font-size: 0.75rem;
+  font-size: var(--step--2);
   font-weight: var(--weight-semi);
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -1616,6 +1745,16 @@ svg {
    the page, which is what stops a phone scrolling horizontally. */
 .table-wrap {
   overflow-x: auto;
+  /* `position: relative` is load-bearing and looks removable.
+     Every tick and dash in the table carries a `.visually-hidden` word beside
+     it, and that class is `position: absolute`. An absolutely positioned box
+     is only clipped by a scroll container that is in its containing-block
+     chain — so while this element was static, those spans were laid out
+     against the page, sat at x=452 inside a table scrolled out of view, and
+     made the *page* 453px wide on a 390px phone. The table was never the
+     thing overflowing: its own scroller held it. One word a reader cannot see
+     was. */
+  position: relative;
   margin-top: var(--s-6);
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
@@ -1641,7 +1780,7 @@ svg {
   color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  font-size: 0.72rem;
+  font-size: var(--step--2);
   background: var(--surface-soft);
   position: sticky;
   top: 0;
@@ -1657,7 +1796,7 @@ svg {
 .compare-note {
   font-weight: var(--weight-normal);
   color: var(--muted);
-  font-size: 0.78rem;
+  font-size: var(--step--1);
   max-width: 42ch;
 }
 
@@ -1705,7 +1844,7 @@ svg {
 .docs-search-snippet {
   display: block;
   color: var(--muted);
-  font-size: 0.75rem;
+  font-size: var(--step--1);
   line-height: 1.5;
   margin-top: 2px;
 }

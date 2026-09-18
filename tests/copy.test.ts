@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
 import * as content from "@/content/home";
+import * as pricingContent from "@/content/pricing";
+import * as legalContent from "@/content/legal";
+import { readFileSync } from "node:fs";
+import { sourceFiles } from "./support/source";
 
 /**
  * The copy, held to `docs/standards/content.md`.
@@ -146,5 +150,188 @@ describe("the page title", () => {
     // The domain is in the address bar already; a tab that spends its first
     // characters repeating it tells the reader nothing new.
     expect(content.site.titleTagline).not.toContain(content.site.domain);
+  });
+});
+
+describe("the claim this site must never make", () => {
+  /*
+   * `docs/standards/content.md` 1.5. There is no bank connection — no login,
+   * nothing in the background, nothing that goes stale without saying so —
+   * and a reader arriving from any competitor assumes the opposite, because
+   * every hosted competitor works that way.
+   *
+   * **Narrow on purpose.** The obvious spelling of this bans "connect" and
+   * "sync", and it fires on correct copy: the page says "nothing to connect
+   * and nothing to break", "no connection to any bank to maintain", and "you
+   * can connect an AI assistant". Those are the denial and a different
+   * subject. `code/testing.md` 2.5 — a check that fires on correct code gets
+   * narrowed rather than obeyed, so this matches only the affirmative
+   * constructions, where the product is the thing doing the fetching.
+   *
+   * It covers the pricing page as well as the homepage, because 1.5 does.
+   */
+  const IMPLIES_A_CONNECTION = [
+    // `link(s|ed|ing)?`, not `linked?` — the latter is "linke" with an
+    // optional "d" and never matched the bare "Link your accounts", which is
+    // the commonest phrasing of all. The fixture below found it.
+    /\b(connect(s|ed|ing)?|link(s|ed|ing)?)\s+(to\s+)?(your\s+)?(bank|accounts?|institution)/i,
+    /\b(syncs?|syncing|synced|synchroni[sz]e)/i,
+    /\bautomatically\s+(updated?|imported?|fetch|pulls?|refreshe?d?)/i,
+    /\b(kept|keeps?)\s+up\s+to\s+date\b/i,
+    /\breal[\s-]time\b/i,
+    /\blive\s+balances?\b/i,
+    /\bset\s+it\s+and\s+forget\s+it\b/i,
+  ];
+
+  const everything = [...strings(content), ...strings(pricingContent, "pricing")];
+
+  it("has both pages' copy to check", () => {
+    expect(everything.length).toBeGreaterThan(80);
+  });
+
+  it("never implies the product logs in to a bank", () => {
+    const offenders: string[] = [];
+    for (const [path, text] of everything) {
+      for (const pattern of IMPLIES_A_CONNECTION) {
+        const hit = pattern.exec(text);
+        if (hit) offenders.push(`${path}: "${hit[0]}" — ${text.slice(0, 60)}`);
+      }
+    }
+    expect(offenders).toEqual([]);
+  });
+
+  it("still allows the sentences that are about something else", () => {
+    /*
+     * A guard on the guard: proof the patterns above have not been widened
+     * into a ban on the word rather than the claim.
+     *
+     * It used to assert that a particular sentence was still in the copy,
+     * which made it fail the moment that sentence was rewritten — the same
+     * coupling `code/testing.md` 2.6 is about, in miniature. Fixtures test
+     * the patterns directly and do not care what the page currently says.
+     */
+    const allowed = [
+      "There is nothing to connect and nothing to break.",
+      "You can connect an AI assistant and let it bring a statement in.",
+      "no connection to any bank to maintain",
+      "Money moved between two of your own accounts shows as one line.",
+    ];
+    for (const sentence of allowed) {
+      const hit = IMPLIES_A_CONNECTION.find((pattern) => pattern.test(sentence));
+      expect(hit, `the ban is too wide: it would reject "${sentence}"`).toBeUndefined();
+    }
+  });
+
+  it("catches the claim however it is phrased", () => {
+    // The other half: fixtures a competitor's page would carry happily.
+    const banned = [
+      "It connects to your bank and files everything.",
+      "Link your accounts and we do the rest.",
+      "Your balances are kept up to date.",
+      "It syncs overnight.",
+      "See live balances as they change.",
+      "Set it and forget it.",
+    ];
+    for (const sentence of banned) {
+      const hit = IMPLIES_A_CONNECTION.find((pattern) => pattern.test(sentence));
+      expect(hit, `the ban misses "${sentence}"`).toBeDefined();
+    }
+  });
+});
+
+describe("the reader is American", () => {
+  /*
+   * `docs/standards/content.md` 1.6. The site prices in US dollars and the
+   * application's own screens say Checking; the copy said "current account",
+   * and `layout.tsx` declared `en_GB` to every crawler and link preview.
+   *
+   * **The rule's own first draft argued this could not be mechanised**,
+   * on the grounds that "a word list would catch the spellings and miss the
+   * register". That is an argument for a word list on the spellings, not
+   * against one. The register — contractions, whether it sounds like
+   * somebody talking — is what stays `human`, exactly as 1.4 does. The
+   * spellings are this.
+   */
+  const BRITISH =
+    /\b(recognis\w+|organis\w+|personalis\w+|analys\w+|apologis\w+|realis\w+|cancelling|colour\w*|behaviour\w*|favour\w*|whilst|licence|centre|catalogue|programme|cheque|grey|per cent|current account)\b/i;
+
+  /** Every string a reader sees: the two marketing pages and the legal pages. */
+  const readerFacing = [
+    ...strings(content),
+    ...strings(pricingContent, "pricing"),
+    ...strings(legalContent, "legal"),
+  ];
+
+  it("has copy to check", () => {
+    expect(readerFacing.length).toBeGreaterThan(150);
+  });
+
+  it("uses American spelling everywhere a reader can see", () => {
+    const offenders = readerFacing
+      .filter(([, text]) => BRITISH.test(text))
+      .map(([path, text]) => `${path}: ${BRITISH.exec(text)?.[0]} — ${text.slice(0, 50)}`);
+    expect(offenders).toEqual([]);
+  });
+
+  it("uses American spelling in the published Markdown too", () => {
+    /*
+     * `content/` is the blog and the docs. The docs said "a current account,
+     * a savings account" — both British and a disagreement with the
+     * application's own interface — on the page that explains what an account
+     * is.
+     *
+     * **Two passes, because the first one has a blind spot.** Reading line by
+     * line gives a line number, which is what makes a failure actionable, and
+     * it cannot see a phrase Markdown has wrapped: a blog post carried "your
+     * own current\naccount", which a reader sees as "current account" and a
+     * per-line check never matches. So the whole file is swept again with its
+     * whitespace collapsed, at the cost of a line number on that one.
+     */
+    const offenders: string[] = [];
+    for (const file of sourceFiles("content", /\.md$/)) {
+      for (const [index, line] of file.code.split("\n").entries()) {
+        const hit = BRITISH.exec(line);
+        if (hit) offenders.push(`${file.path}:${index + 1} ${hit[0]}`);
+      }
+      const wrapped = BRITISH.exec(file.code.replaceAll(/\s+/g, " "));
+      if (wrapped && !offenders.some((o) => o.startsWith(file.path))) {
+        offenders.push(`${file.path} (wrapped across lines) ${wrapped[0]}`);
+      }
+    }
+    expect(offenders).toEqual([]);
+  });
+
+  it("draws the social card from the copy, not from a third tagline", () => {
+    /*
+     * The card carried its headline and tagline as literals. By the time
+     * anybody looked, the copy had been rewritten four times and the card was
+     * advertising a sentence that appeared nowhere on the site.
+     *
+     * It reads `src/content/home.ts` now, so this asserts the mechanism
+     * rather than the words: no literal, and the page's own strings present.
+     */
+    const script = readFileSync("scripts/build-images.mjs", "utf8");
+    expect(script, "the card should read the title, not carry one").toContain('pick("title")');
+    expect(script).toContain('pick("titleTagline")');
+  });
+
+  it("tells a crawler the locale the copy is actually written in", () => {
+    // Nothing caught `locale: "en_GB"` on a page priced in US dollars.
+    expect(readFileSync("src/app/layout.tsx", "utf8")).toContain('locale: "en_US"');
+    expect(readFileSync("out/index.html", "utf8")).toContain("en_US");
+  });
+
+  it("keeps the em dash out of the copy, whatever the guides do", () => {
+    /*
+     * Seventeen of them in 2,349 words was the loudest tell in the rewrite,
+     * and the count is the point rather than the character: one em dash is
+     * punctuation, seventeen is a voice. The guides in `docs/` use them
+     * freely and should — they are prose for somebody reading closely, not
+     * copy for somebody skimming.
+     */
+    const offenders = [...strings(content), ...strings(pricingContent, "pricing")]
+      .filter(([, text]) => text.includes("\u2014"))
+      .map(([path]) => path);
+    expect(offenders).toEqual([]);
   });
 });

@@ -12,7 +12,7 @@ seriesOrder: 1
 ---
 
 Double-entry bookkeeping is six hundred years old and was invented for
-merchants who had to answer to somebody. If you are tracking your own current
+merchants who had to answer to somebody. If you are tracking your own checking
 account, nobody is going to audit you. So why carry the machinery?
 
 Because the machinery is not about the audit. It is about the arithmetic being
