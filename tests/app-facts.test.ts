@@ -98,9 +98,16 @@ describe("what this site claims about price", () => {
     const monthly = Number(facts.declared.prices.monthly);
     const paidTier = tiers.find((t) => t.key === "premium")!;
 
-    // "$20" and "a year, or $2 a month" — the figures, not the phrasing.
-    expect(paidTier.price).toContain(String(yearly));
-    expect(paidTier.priceNote).toContain(String(monthly));
+    /*
+     * Both figures, somewhere on the card — not "the yearly one is in
+     * `price`". Which field leads is a presentation decision (it led with the
+     * year, then with the month), and a check that encodes it fails when
+     * somebody reorders the words rather than when a price moves.
+     * `code/testing.md` 2.6.
+     */
+    const card = `${paidTier.price} ${paidTier.priceNote}`;
+    expect(card, "the yearly price is not on the card").toContain(String(yearly));
+    expect(card, "the monthly price is not on the card").toContain(String(monthly));
   });
 
   it("agrees with the terms page, which quotes the same two figures", () => {

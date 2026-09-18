@@ -168,7 +168,10 @@ describe("the claim this site must never make", () => {
    * It covers the pricing page as well as the homepage, because 1.5 does.
    */
   const IMPLIES_A_CONNECTION = [
-    /\b(connects?|connecting|linked?|linking)\s+(to\s+)?(your\s+)?(bank|accounts?|institution)/i,
+    // `link(s|ed|ing)?`, not `linked?` — the latter is "linke" with an
+    // optional "d" and never matched the bare "Link your accounts", which is
+    // the commonest phrasing of all. The fixture below found it.
+    /\b(connect(s|ed|ing)?|link(s|ed|ing)?)\s+(to\s+)?(your\s+)?(bank|accounts?|institution)/i,
     /\b(syncs?|syncing|synced|synchroni[sz]e)/i,
     /\bautomatically\s+(updated?|imported?|fetch|pulls?|refreshe?d?)/i,
     /\b(kept|keeps?)\s+up\s+to\s+date\b/i,
@@ -194,10 +197,41 @@ describe("the claim this site must never make", () => {
     expect(offenders).toEqual([]);
   });
 
-  it("still allows the denial, which is the whole position", () => {
-    // A guard on the guard. If this ever fails, the check above has been
-    // widened into something that bans the sentence the page is built on.
-    const prose = everything.map(([, text]) => text).join(" ");
-    expect(prose).toContain("nothing to connect");
+  it("still allows the sentences that are about something else", () => {
+    /*
+     * A guard on the guard: proof the patterns above have not been widened
+     * into a ban on the word rather than the claim.
+     *
+     * It used to assert that a particular sentence was still in the copy,
+     * which made it fail the moment that sentence was rewritten — the same
+     * coupling `code/testing.md` 2.6 is about, in miniature. Fixtures test
+     * the patterns directly and do not care what the page currently says.
+     */
+    const allowed = [
+      "There is nothing to connect and nothing to break.",
+      "You can connect an AI assistant and let it bring a statement in.",
+      "no connection to any bank to maintain",
+      "Money moved between two of your own accounts shows as one line.",
+    ];
+    for (const sentence of allowed) {
+      const hit = IMPLIES_A_CONNECTION.find((pattern) => pattern.test(sentence));
+      expect(hit, `the ban is too wide: it would reject "${sentence}"`).toBeUndefined();
+    }
+  });
+
+  it("catches the claim however it is phrased", () => {
+    // The other half: fixtures a competitor's page would carry happily.
+    const banned = [
+      "It connects to your bank and files everything.",
+      "Link your accounts and we do the rest.",
+      "Your balances are kept up to date.",
+      "It syncs overnight.",
+      "See live balances as they change.",
+      "Set it and forget it.",
+    ];
+    for (const sentence of banned) {
+      const hit = IMPLIES_A_CONNECTION.find((pattern) => pattern.test(sentence));
+      expect(hit, `the ban misses "${sentence}"`).toBeDefined();
+    }
   });
 });

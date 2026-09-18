@@ -20,12 +20,16 @@ import { SiteStructuredData } from "@/components/structured-data";
 /**
  * The homepage.
  *
- * Section order is an argument, not a layout: the reader arrives not knowing
- * what this is, so the hero says what it is, the problems say why they would
- * want it, the features say what else is in the box, self-hosting answers the
- * question a finance product always raises, and agents is the one thing here
- * nothing else does. Reordering it is fine; doing so without a reason is what
- * `docs/standards/content.md` 3.2 is about.
+ * Section order is an argument, not a layout. The reader arrives not knowing
+ * what this is: the hero says what it is, **agents comes straight after it**
+ * because asking your own records a question is the one claim here a reader
+ * cannot get from eight other products, then the problems say why they would
+ * want the rest, the showcase shows it, the features say what else is in the
+ * box, and privacy answers the question a money product always raises.
+ *
+ * Agents used to be last, on the reasoning that it is the thing nothing else
+ * does — which is an argument for putting it first.
+ * `docs/standards/content.md` 3.2.
  *
  * Every section is a landmark with its own heading, and the headings step
  * h1 -> h2 -> h3 with nothing skipped, because a screen reader's document
@@ -59,6 +63,34 @@ export default function HomePage() {
         </div>
       </section>
 
+      <section className="section" aria-labelledby="agents-title">
+        <div className="page band-inner">
+          <div>
+            <p className="eyebrow">{agents.eyebrow}</p>
+            <h2 id="agents-title" className="section-title">
+              {agents.title}
+            </h2>
+            <p className="prose">{agents.body}</p>
+          </div>
+          {/* An exchange, not a shell session. It used to render `$ ledger:stage`
+              and the name of a CSV file, which told a reader who is not a
+              developer that this page was not for them — and the thing being
+              shown is a conversation with an assistant, not a command. */}
+          <pre
+            className="terminal"
+            aria-label="An assistant offering to bring in a statement, waiting to be approved"
+          >
+            <code>
+              {agents.sample.map((line) => (
+                <span key={line.text} className={line.kind === "out" ? undefined : line.kind}>
+                  {line.kind === "prompt" ? `You: ${line.text}` : line.text}
+                  {"\n"}
+                </span>
+              ))}
+            </code>
+          </pre>
+        </div>
+      </section>
       <section className="section" aria-labelledby="problems-title">
         <div className="page">
           <p className="eyebrow">{problemsSection.eyebrow}</p>
@@ -159,35 +191,6 @@ export default function HomePage() {
               </li>
             ))}
           </ul>
-        </div>
-      </section>
-
-      <section className="section" aria-labelledby="agents-title">
-        <div className="page band-inner">
-          <div>
-            <p className="eyebrow">{agents.eyebrow}</p>
-            <h2 id="agents-title" className="section-title">
-              {agents.title}
-            </h2>
-            <p className="prose">{agents.body}</p>
-          </div>
-          {/* An exchange, not a shell session. It used to render `$ ledger:stage`
-              and the name of a CSV file, which told a reader who is not a
-              developer that this page was not for them — and the thing being
-              shown is a conversation with an assistant, not a command. */}
-          <pre
-            className="terminal"
-            aria-label="An assistant offering to bring in a statement, waiting to be approved"
-          >
-            <code>
-              {agents.sample.map((line) => (
-                <span key={line.text} className={line.kind === "out" ? undefined : line.kind}>
-                  {line.kind === "prompt" ? `You: ${line.text}` : line.text}
-                  {"\n"}
-                </span>
-              ))}
-            </code>
-          </pre>
         </div>
       </section>
     </>

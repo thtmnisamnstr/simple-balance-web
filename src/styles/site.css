@@ -1656,6 +1656,18 @@ svg {
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
   padding: var(--s-6);
+  /*
+   * Room in the top padding for the featured card's flag, on every card.
+   *
+   * The flag used to be the first child of a flex column, so on the featured
+   * card it pushed the heading down by its own height plus a gap and the
+   * three headings no longer lined up — a label about one card changing the
+   * layout of that card alone reads as an accident rather than emphasis.
+   * Reserving the space everywhere and taking the flag out of the flow is
+   * what keeps the row aligned; `.tier-flag` sits in this padding.
+   */
+  padding-top: calc(var(--s-6) + var(--s-5));
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: var(--s-3);
@@ -1670,6 +1682,12 @@ svg {
 }
 
 .tier-flag {
+  /* In the padding, out of the flow — see `.tier`. Bounded left and right so
+     a longer label wraps inside the card rather than widening it. */
+  position: absolute;
+  top: var(--s-6);
+  left: var(--s-6);
+  right: var(--s-6);
   margin: 0;
   font-size: var(--step--2);
   font-weight: var(--weight-semi);

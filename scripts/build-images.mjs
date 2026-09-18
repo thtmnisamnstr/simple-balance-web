@@ -105,12 +105,12 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" 
   </g>
 
   <text x="84" y="316" font-family="Inter, ui-sans-serif, system-ui, sans-serif"
-        font-size="66" font-weight="600" fill="${INK}" letter-spacing="-1.5">All your accounts,</text>
+        font-size="66" font-weight="600" fill="${INK}" letter-spacing="-1.5">Ask your records.</text>
   <text x="84" y="396" font-family="Inter, ui-sans-serif, system-ui, sans-serif"
-        font-size="66" font-weight="600" fill="${INK}" letter-spacing="-1.5">on one page.</text>
+        font-size="66" font-weight="600" fill="${INK}" letter-spacing="-1.5">Check the answer.</text>
 
   <text x="84" y="472" font-family="Inter, ui-sans-serif, system-ui, sans-serif"
-        font-size="30" fill="${MUTED}">We never ask for your bank password</text>
+        font-size="30" fill="${MUTED}">A record of your money you can ask questions of</text>
 
   <rect x="84" y="528" width="1032" height="1" fill="${LINE}"/>
   <text x="84" y="574" font-family="Inter, ui-sans-serif, system-ui, sans-serif"

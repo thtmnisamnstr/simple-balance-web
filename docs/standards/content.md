@@ -68,20 +68,31 @@ _Checked by:_ `human`. A word list in a test would catch the spellings and
 miss the sentence, and the failure is a register rather than a vocabulary —
 the previous copy contained no banned word at all.
 
-### 1.5 The page never implies a bank connection
+### 1.5 The page describes how data gets in today, and promises nothing about tomorrow
 
-**Binding.** There is no automatic sync: no bank login, nothing running in the
-background, nothing that goes stale without saying so. Banned outright:
-"syncs", "connects to your bank", "link your accounts", "automatically
-updated", "kept up to date", "real time", "live balances", "set it and forget
-it".
+**Binding, and contingent.** There is no automatic sync **today**: no bank
+login, nothing running in the background, nothing that goes stale without
+saying so. So these are banned while that holds: "syncs", "connects to your
+bank", "link your accounts", "automatically updated", "kept up to date", "real
+time", "live balances", "set it and forget it".
 
 A reader arriving from any competitor assumes otherwise, because every hosted
-competitor works that way. So the reader's own action — downloading a file
-from their bank and dropping it in — is visible in the hero rather than
-softened. The lede used to say statements "file themselves", which is the
-sentence somebody leaving a dead budgeting app reads as sync, and the product
-disproves it on the first afternoon.
+competitor works that way. The lede once said statements "file themselves",
+which is the sentence somebody leaving a dead budgeting app reads as sync, and
+the product disproves it on the first afternoon.
+
+**The opposite mistake cost more.** The page then spent a while _leading_ on
+"we never ask for your bank password" — true, popular, and a promise about the
+future made by a page that does not get to decide the future. Pulling
+transactions on a schedule is a thing this product may do, and when it does,
+a positioning built on the refusal has to be abandoned along with the hero,
+the tagline, the social card, a comparison row and two FAQ answers that were
+all written around it. It was.
+
+So: describe the mechanism, never promise its absence. **The trigger to
+revisit** is the product gaining a scheduled pull — at which point this rule
+inverts rather than disappears, because the page will then have to stop
+implying there is no connection.
 
 This is 2.1 applied to the one claim this page is most likely to make by
 accident, which is why it is written down separately.

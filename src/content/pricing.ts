@@ -58,7 +58,7 @@ export const pricing = {
   reassurances: [
     "No card to start, and nothing to cancel on the free plan.",
     "Your record leaves with you, as a spreadsheet, whenever you want it.",
-    "Neither plan asks for your bank password. Nothing here logs in to your bank.",
+    "An AI assistant can read your records on every plan, and can change nothing without your yes.",
     "Stop paying and you keep every account you have. Nothing is deleted.",
   ],
   note:
@@ -66,7 +66,7 @@ export const pricing = {
     "the two whenever you like. The version we run for you is not open yet; running it yourself " +
     "is available today and always will be.",
   /** The flag over the recommended tier. */
-  featuredFlag: "Most people who outgrow Free",
+  featuredFlag: "If you outgrow Free or hate ads",
   compareTitle: "What each one includes.",
   /**
    * The three rows at the top are the only rows that differ. The other
@@ -87,7 +87,7 @@ export const tiers: readonly Tier[] = [
     key: "free",
     name: "Free",
     price: "$0",
-    priceNote: "forever",
+    priceNote: "",
     summary: `Up to ${MAX_FREE_ACCOUNTS} accounts, and you see ads.`,
     who: "Most people, most of the time. A current account, a savings account and a card is three.",
     // One string, shared with the header's control, because a header saying
@@ -98,8 +98,8 @@ export const tiers: readonly Tier[] = [
   {
     key: "premium",
     name: "Premium",
-    price: "$20",
-    priceNote: "a year, or $2 a month",
+    price: "$2",
+    priceNote: "a month, or $20 a year",
     summary: "As many accounts as you need, and no ads.",
     who: "Anyone keeping more than three accounts, or anyone who would rather not be sold something on a page showing their balances.",
     cta: { label: hero.primaryLabel, pending: true },
@@ -165,14 +165,7 @@ export const comparison: readonly Row[] = [
     premium: false,
     self: true,
   },
-  {
-    id: "bank-password",
-    feature: "Asks for your bank password",
-    free: "Never",
-    premium: "Never",
-    self: "Never",
-    note: "There is nothing to log in to. It reads a file you downloaded yourself.",
-  },
+
   {
     id: "payments",
     feature: "Payments you can record",
@@ -276,8 +269,8 @@ export const comparison: readonly Row[] = [
 
 export const faq: readonly { readonly q: string; readonly a: string }[] = [
   {
-    q: "Do I have to give you my bank password?",
-    a: "No, and there is nowhere to put one. Simple Balance never logs in to your bank. You download what you spent from your bank yourself — the file that opens in a spreadsheet — and drag it in. That is also why it makes no difference whether your bank is large, small, foreign, or a credit union: there is no list of supported banks to be missing from.",
+    q: "How does my spending get in?",
+    a: "You bring it in yourself, from the file your bank lets you download — the kind that opens in a spreadsheet. Drag it in and Simple Balance works out which column is which, files the names it recognises, and shows you anything that looks like something you already have before it counts. You can also type an entry straight in, or let a connected AI assistant stage one for you to approve.",
   },
   {
     q: "What do I actually get for free?",
@@ -314,7 +307,7 @@ export const faq: readonly { readonly q: string; readonly a: string }[] = [
   },
   {
     q: "Why is it $20 when everything else costs more? Will you still be here next year?",
-    a: "Because there is not much to pay for: no connection to any bank to maintain, and nobody's data to look after beyond your own. And the answer to the second question is a fact rather than a promise — the whole product is free to run yourself, and what you take out is built to load straight into your own copy. If this stops, your record does not.",
+    a: "Because there is not much to pay for: one small program, and nobody's data to look after beyond your own. And the answer to the second question is a fact rather than a promise — the whole product is free to run yourself, and what you take out is built to load straight into your own copy. If this stops, your record does not.",
   },
   {
     q: "What is the difference between paying and running it yourself?",

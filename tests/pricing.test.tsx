@@ -115,16 +115,17 @@ describe("the FAQ", () => {
      * product uses about itself and neither one a reader would type, so the
      * check was holding the page to the vocabulary the rewrite removed.
      *
-     * "bank password" is the addition: it is the question this product can
-     * answer and no competitor can, and a pricing page that drops it has
-     * dropped the reason somebody is reading it.
+     * The last one replaced "bank password". That question was built on a
+     * promise the site no longer makes — the product may yet pull
+     * transactions on a schedule — but "how does my spending get in" is the
+     * thing the reader actually needs answered, whatever the answer becomes.
      */
     for (const topic of [
       "more than three",
       "close an account",
       "cancel",
       "running it yourself",
-      "bank password",
+      "how does my spending get in",
     ]) {
       expect(questions, `no question about ${topic}`).toContain(topic);
     }

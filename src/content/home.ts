@@ -20,14 +20,18 @@
  * reader had already given up on and a server they already owned, and a reader
  * who has neither could not tell what this was.
  *
- * **The one claim this page must never imply is a bank connection.** There is
- * no automatic sync here: no bank login, nothing running in the background,
- * nothing that goes stale without saying so. A reader arriving from any
- * competitor assumes otherwise, so the reader's own action — downloading a
- * file and dropping it in — is visible in the hero rather than softened. The
- * previous lede said statements "file themselves", which is the sentence a
- * refugee from a dead budgeting app reads as sync, and the product disproves
- * it on day one.
+ * **The page must not imply a bank connection, and must not promise there
+ * will never be one.** There is no automatic sync today, so copy describing
+ * one would be false — `docs/standards/content.md` 1.5 holds that. But the
+ * page also used to *lead* on "we never ask for your bank password", which is
+ * a promise about the future rather than a description of the present:
+ * pulling transactions on a schedule is a thing this product may do. A
+ * positioning built on a refusal has to be abandoned the day the refusal
+ * ends, and everything written around it goes with it.
+ *
+ * So the argument is the one thing that stays true either way: this is a
+ * record you can interrogate. An assistant can read it, and every answer
+ * names the entry behind it.
  */
 
 export type Problem = {
@@ -109,7 +113,7 @@ export const site = {
    * term with no consumer meaning, and a machine they do not have. What this
    * says instead is the one thing no competitor can say at all.
    */
-  tagline: "See all your accounts on one page, without giving anyone your bank password.",
+  tagline: "A record of your money you can ask questions of, and answers you can check.",
   /**
    * The tab and search-result form of the tagline, kept separate because the
    * two have different jobs. `tagline` is a sentence and ends like one;
@@ -117,7 +121,7 @@ export const site = {
    * characters — the full sentence appended to the product name runs past it
    * and loses the half that says what it is.
    */
-  titleTagline: "All your accounts, no bank password",
+  titleTagline: "Ask your records, check the answer",
 } as const;
 
 export const heroShot = {
@@ -127,21 +131,23 @@ export const heroShot = {
 
 export const hero = {
   /**
-   * The refusal is the headline, because it is the only claim in this
-   * category nobody else can make.
+   * The headline is the thing nothing else in the category offers, and the
+   * thing that stays true however the product gets its data in.
    *
-   * Two in three people say they are uncomfortable giving a bank username
-   * and password to an app, and every hosted competitor requires exactly
-   * that. The products that do not require it are unusable by this reader.
-   * Leading with the outcome instead — "know where your money went" — is the
-   * line PocketSmith, Tiller, Quicken and Empower all already run, so it
-   * identifies the product as one of a crowd of eight.
+   * It led on "we never ask for your bank password" for a while. That was
+   * true, and it was a promise about the future made by a page that does not
+   * get to decide the future. Leading on the outcome instead — "know where
+   * your money went" — is the line PocketSmith, Tiller, Quicken and Empower
+   * all already run, which identifies the product as one of a crowd of eight.
+   *
+   * What is left is the honest difference: this is a record you can ask
+   * things of, and the answers open.
    */
-  title: "All your accounts on one page. We never ask for your bank password.",
+  title: "Ask your records a question. Check the answer yourself.",
   lede:
-    "Your bank lets you download what you spent as a file. Drag it in, and Simple Balance works " +
-    "out which column is which and shows you where the month went. There is no login to your " +
-    "bank, so there is nothing to connect and nothing to break.",
+    "Simple Balance keeps a proper record of what you earn and what you spend, and an AI " +
+    "assistant can read it — so you can ask in plain words and get an answer that names the " +
+    "entry it came from.",
   /**
    * The app is not deployed yet, so this states the situation rather than
    * linking somewhere that 404s (`docs/standards/web.md` 6.1).
@@ -191,18 +197,19 @@ export const problems: readonly Problem[] = [
   },
   {
     shot: {
-      name: "import",
-      alt: "A file from a bank part-way through being brought in: the columns it worked out on its own, the rows it is ready to add, and three marked as things that look like payments already recorded.",
-      caption: "It works out the columns itself, then shows you what it is about to do.",
+      name: "reports",
+      alt: "A report of what is owned and what is owed, with a separate table for each currency: euro accounts totalled in euro, dollar accounts in dollars, and no combined figure anywhere.",
+      caption: "What you own and what you owe, each currency counted on its own.",
     },
-    covers: ["import-statements", "duplicates"],
-    problem: "Typing it all in is the reason you gave up last time.",
+    covers: ["numbers-that-tie-out", "register"],
+    problem: "The totals are wrong and there is no way to find out why.",
     answer: [
-      "Your bank has a button that downloads what you spent as a file — the kind that opens in a " +
-        "spreadsheet. Drag it in and Simple Balance works out which column is the date, which is " +
-        "the amount and who you paid, then files the names it recognises.",
-      "Anything that looks like a payment you already have is put side by side with it, so you " +
-        "can drop whichever one is the spare. Nothing counts towards your money until you say so.",
+      "Every figure can be traced back to what made it. Open the account behind a number and you " +
+        "get every entry in date order with the balance before it and after it, so you can find " +
+        "the exact line that went wrong instead of taking a chart's word for it.",
+      "That works because of how the record is kept underneath: every amount has a place it came " +
+        "from and a place it went, and both sides have to agree before anything is written down. " +
+        "You never have to think about that. It is the reason the totals match.",
     ],
   },
   {
@@ -224,19 +231,18 @@ export const problems: readonly Problem[] = [
   },
   {
     shot: {
-      name: "reports",
-      alt: "A report of what is owned and what is owed, with a separate table for each currency: euro accounts totalled in euro, dollar accounts in dollars, and no combined figure anywhere.",
-      caption: "What you own and what you owe, each currency counted on its own.",
+      name: "import",
+      alt: "A file from a bank part-way through being brought in: the columns it worked out on its own, the rows it is ready to add, and three marked as things that look like payments already recorded.",
+      caption: "It works out the columns itself, then shows you what it is about to do.",
     },
-    covers: ["numbers-that-tie-out", "register"],
-    problem: "The totals are wrong and there is no way to find out why.",
+    covers: ["import-statements", "duplicates"],
+    problem: "Getting a year of history in should not cost you an evening.",
     answer: [
-      "Every figure can be traced back to what made it. Open the account behind a number and you " +
-        "get every entry in date order with the balance before it and after it, so you can find " +
-        "the exact line that went wrong instead of taking a chart's word for it.",
-      "That works because of how the record is kept underneath: every amount has a place it came " +
-        "from and a place it went, and both sides have to agree before anything is written down. " +
-        "You never have to think about that. It is the reason the totals match.",
+      "Your bank has a button that downloads what you spent as a file — the kind that opens in a " +
+        "spreadsheet. Drag it in and Simple Balance works out which column is the date, which is " +
+        "the amount and who you paid, then files the names it recognises.",
+      "Anything that looks like a payment you already have is put side by side with it, so you " +
+        "can drop whichever one is the spare. Nothing counts towards your money until you say so.",
     ],
   },
 ] as const;
@@ -270,11 +276,11 @@ export const features: readonly Feature[] = [
   },
   {
     icon: "list",
-    covers: ["find-anything"],
-    title: "Find anything you have ever paid for",
+    covers: ["templates"],
+    title: "The things you type over and over",
     body:
-      "Search by who you paid, what it was for, which account it came out of, how much or when. " +
-      "“When did I last pay for that?” takes one box and a few letters.",
+      "Save an entry you record often — the weekly shop, the cash you take out — and pick it from " +
+      "a list next time instead of typing it again.",
   },
   {
     icon: "split",
@@ -327,60 +333,70 @@ export const showcase = {
  * The section that answers the question a money product always raises.
  *
  * It is stated as a promise to the reader rather than as a property of the
- * software. "This is software you run, not a service you join" was the
- * previous opening, and it asks the reader to translate an architecture into
- * a reason to feel safe — a translation this reader cannot do, and the
- * diagnosed reason the self-hosted alternatives fail to convert anybody who
- * is not already a developer.
+ * software. "This is software you run, not a service you join" was an earlier
+ * opening, and it asks the reader to translate an architecture into a reason
+ * to feel safe — a translation this reader cannot do, and the diagnosed
+ * reason the self-hosted alternatives fail to convert anybody who is not
+ * already a developer.
  *
- * **Every sentence here is true of both the version we run and the version
- * you run.** The stronger claim — that nobody anywhere has a copy — is true
- * only of self-hosting, so it is the last point and it is conditional. A
- * privacy promise that the hosted plan disproves is worse than none.
+ * **It used to open on "we never ask for your bank password".** That is a
+ * promise about the future, and this product may yet pull transactions on a
+ * schedule. What replaces it is the part that does not depend on how the data
+ * arrives: where the record lives, who can reach it, and that you can leave
+ * with all of it.
+ *
+ * Every sentence is scoped, because the honest answer differs between the
+ * version we run and the version you run. A privacy promise that one of the
+ * two disproves is worse than none.
  */
 export const privacy = {
   /** As `Problem["covers"]`. */
   covers: ["own-your-data"],
-  eyebrow: "Your privacy",
-  title: "We never ask for your bank password.",
+  eyebrow: "Your records",
+  title: "Where your money sits, and who can reach it.",
   body:
-    "Most money apps need the username and password you use at your bank, and then a company " +
-    "you have never heard of is holding the keys to your account. Simple Balance never asks, " +
-    "because it never logs in anywhere. It reads a file you downloaded yourself.",
+    "If we run it for you, your record is on our server and the privacy policy says exactly what " +
+    "is kept and who can touch it. Run it yourself and there is no copy anywhere but yours. " +
+    "Either way, what you put in is yours to take out.",
   points: [
-    "No bank password, ever. There is no key for anyone to lose, sell, or leave switched on after you have gone.",
-    "Your bank being small, foreign, or a credit union makes no difference. There is no list of supported banks to be missing from.",
     "Take everything with you as a spreadsheet whenever you want. Your own record is never held back to keep you paying.",
     "The product itself has no analytics and nothing that profiles you. On the free plan the ads bring Google's script with them — that is what the ads cost you, and neither Premium nor your own copy has it.",
-    "Run it on a computer you own and there is no copy anywhere but yours.",
+    "Run it on a computer you own and nobody else has a copy, including us.",
+    "The source is readable and stays that way, so how it handles your money is not something you have to take on trust.",
   ],
 } as const;
 
 /**
- * The agent section.
+ * The agent section, and the page's lead argument.
  *
- * The capability is real and worth saying; the vocabulary it arrives in is
- * not. "Ships an MCP server", "a token carries scopes" and a shell transcript
- * reading `$ ledger:stage` were three separate ways of telling a general
- * reader this page was not for them. What survives is the part they care
- * about: an assistant can do the filing and cannot move any money.
+ * It used to be last, on the reasoning that it is the thing nothing else
+ * does — true, and an odd place to put it. It is now the section directly
+ * under the hero, because "you can ask your own records a question" is the
+ * only claim here a reader cannot get from eight other products, and because
+ * it survives the product gaining a bank connection, which the old headline
+ * did not.
+ *
+ * The vocabulary it arrives in is still not the reader's. "Ships an MCP
+ * server", "a token carries scopes" and a shell transcript reading
+ * `$ ledger:stage` were three separate ways of saying this page is not for
+ * you. What survives is the capability and its limit.
  */
 export const agents = {
   /** As `Problem["covers"]`. */
-  covers: ["agents"],
-  eyebrow: "If you use an AI assistant",
-  title: "Let an assistant do the filing, without giving it the keys.",
+  covers: ["agents", "find-anything"],
+  eyebrow: "The part nothing else does",
+  title: "Point an assistant at your records and just ask.",
   body:
-    "You can connect an AI assistant and let it bring a statement in, tidy up where things were " +
-    "filed, and chase the payments that look like duplicates. What it cannot do is skip the " +
-    "part where you check its work: anything it proposes is waiting for you, counts towards " +
-    "nothing until you approve it, and it is never able to spend money.",
+    "Simple Balance can be connected to an AI assistant, which then has the same reach over your " +
+    "records that you have on the web. Ask it when you last paid something, where a month went, " +
+    "or to bring a statement in and tidy up where things were filed. What it cannot do is skip " +
+    "you: anything it proposes sits and waits, counts toward nothing until you say yes, and it " +
+    "is never able to move money.",
   sample: [
-    { kind: "comment", text: "Nothing has moved yet." },
-    { kind: "prompt", text: "Bring in last month's statement." },
-    { kind: "out", text: "  42 lines ready to add." },
-    { kind: "out", text: "   3 look like payments you already have." },
-    { kind: "comment", text: "It waits here until you say yes." },
+    { kind: "prompt", text: "What day did I pay the electric bill last month?" },
+    { kind: "out", text: "  12 August, to Meridian Power, from the current account." },
+    { kind: "out", text: "  The one before it was 14 July." },
+    { kind: "comment", text: "Every answer names the entry it came from." },
   ],
 } as const;
 
@@ -401,8 +417,8 @@ export const contact = {
 
 export const footer = {
   blurb:
-    "Simple Balance keeps a record of your money that you can check, built from the file your " +
-    "bank already gives you. No bank password, ever.",
+    "Simple Balance keeps a record of your money you can ask questions of, and answers that name " +
+    "the entry they came from.",
   links: [
     { label: "Pricing", href: "/pricing/" },
     { label: "Privacy", href: "/privacy/" },

@@ -172,9 +172,9 @@ describe("the marketing pages, against the policy", () => {
   });
 
   it("claims no more about tracking than the policy supports", () => {
-    // The homepage sells "we never ask for your bank password", and the
-    // neighbouring promise used to read "nothing counts your clicks" — which
-    // the policy's own server-log paragraph contradicts for the hosted plan.
+    // The homepage's privacy list used to promise "nothing counts your
+    // clicks", which the policy's own server-log paragraph contradicts for
+    // the hosted plan.
     const points = privacySection.points.join(" ").toLowerCase();
     for (const overclaim of ["counts your clicks", "no logs", "nothing is recorded"]) {
       expect(points, `the homepage claims "${overclaim}"`).not.toContain(overclaim);

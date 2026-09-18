@@ -88,13 +88,15 @@ Break one of these and the site is wrong rather than untidy.
   hosting provider and the payment processor is the one exception, and it is
   the opposite of branding. A host can inject its own badge into the response,
   which no test here can see — `operations.md` 8 carries those as launch steps.
-- **Nothing on the homepage or the pricing page may imply a bank connection.**
-  There is none: no bank login, no background refresh, nothing that can go
-  stale without saying so. The reader downloads a file from their bank and
-  drops it in, and that action is visible in the hero rather than softened —
-  the lede used to say statements "file themselves", which is the sentence a
-  refugee from a dead budgeting app reads as sync, and the product disproves
-  it on the first afternoon. `docs/standards/content.md` 1.5.
+- **Nothing on the homepage or the pricing page may imply a bank connection —
+  and nothing may promise there will never be one.** There is none today: no
+  bank login, no background refresh, nothing that can go stale without saying
+  so, so copy describing one would be false. But the page also spent a while
+  leading on "we never ask for your bank password", which is a promise about
+  a future this page does not decide, and unwinding it cost the hero, the
+  tagline, the social card, a comparison row and two FAQ answers.
+  `docs/standards/content.md` 1.5 carries both halves and the trigger to
+  revisit.
 - **Those two pages are written for somebody who has never used a personal
   finance product.** No accounting vocabulary, no operations vocabulary, and
   nothing that presumes a budgeting app they already abandoned. The copy this
