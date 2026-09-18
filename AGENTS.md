@@ -1,7 +1,23 @@
 # Simple Balance website agent guide
 
-The marketing site at **smpl.money**. The application it advertises lives in a
-separate repository and is served from **app.smpl.money**.
+The marketing site at **smpl.money**. The application it advertises is a
+separate, public repository, served from **app.smpl.money**.
+
+|                 | Repository                                            | Served at        |
+| --------------- | ----------------------------------------------------- | ---------------- |
+| This site       | `https://github.com/thtmnisamnstr/simple-balance-web` | `smpl.money`     |
+| The application | `https://github.com/thtmnisamnstr/simple-balance`     | `app.smpl.money` |
+
+**Read the application over the network, by URL — never from a folder beside
+this one.** A local checkout is whatever state it was left in, and checking a
+claim against a stale working tree is worse than not checking, because it
+comes with confidence. `app-alignment` does it properly, including resolving
+which ref actually holds the release this site advertises: unreleased work
+sits on a branch, and today the plans, prices and advertising this site
+describes are **not on the application's default branch**.
+
+The one exception is `capture-screenshots`, which has to _run_ the
+application and so needs it cloned.
 
 ## Architecture boundaries
 

@@ -2,7 +2,7 @@
  * The brand token contract, shared with the Simple Balance application.
  *
  * Every value here is copied from the app's `src/client/styles.css`, which is
- * the source. A token whose value disagrees with the app is a bug in this
+ * the source, with one named addition (`--art-ink`, below). A token whose value disagrees with the app is a bug in this
  * file, never in the app — the product is the thing people see second, and a
  * marketing page that is a slightly different green reads as a different
  * company. `tests/brand-tokens.test.ts` holds the two blocks below to one key
@@ -72,12 +72,19 @@
   --brand-from: #257a59;
   --brand-to: #0d4b34;
 
-  /* An always-dark surface, for the terminal sample. These four are identical
+  /* An always-dark surface, for the terminal sample. These five are identical
      in both themes on purpose and the application does the same with its
      `--art-*` set: the surface is a picture of a dark thing, not a panel that
      follows the page, so re-picking it for dark mode would make it stop being
      the thing it depicts. `tests/brand-tokens.test.ts` names them as the
-     exception to "every token differs between themes". */
+     exception to "every token differs between themes".
+
+     `--art-ink` is THIS SITE'S OWN and has no counterpart in the
+     application, which is why it is called out rather than left to look
+     copied: the app's art surface carries no solid text, so it never needed
+     one. The value is the app's dark-theme `--ink`, so the colour is still
+     the app's even though the token is not. `app-alignment` §4 names it as
+     the one line that comparison is expected to report. */
   --art-base: #123e2d;
   --art-ink: #e7ede9;
   --art-bar: #86ceb0;

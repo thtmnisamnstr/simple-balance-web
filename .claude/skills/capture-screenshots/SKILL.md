@@ -11,15 +11,24 @@ traps.
 
 ## Why this is not in `npm run verify`
 
-It needs a checkout of the application, a throwaway PostgreSQL, two dev servers
-and about a minute. Run it when the application's look changes, not on every
-commit.
+It needs the application **running**, which means a clone rather than a read —
+this is the one procedure here that cannot work over the network. Plus a
+throwaway PostgreSQL, two dev servers and about a minute. Run it when the
+application's look changes, not on every commit.
+
+```sh
+git clone https://github.com/thtmnisamnstr/simple-balance
+```
+
+Check out the ref that matches the release this site advertises, which is not
+always the default branch — `app-alignment` §0 explains how to find it, and
+getting it wrong here means screenshots of the wrong version of the product.
 
 ## The order
 
 1. **A throwaway database.** Not the development one, and not on 5432 — that
    port usually already has something on it.
-2. **The application**, from its own checkout, against that database.
+2. **The application**, from the clone above, against that database.
 3. **`node scripts/capture-screenshots.mjs`** from this repository.
 
 The exact commands are in `operations.md` 4. Copy them from there rather than

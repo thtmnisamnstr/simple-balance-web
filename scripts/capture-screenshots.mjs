@@ -7,7 +7,9 @@
  * is the worst possible place to be caught approximating.
  *
  * WHAT THIS NEEDS, and it is not wired into `npm run verify` for exactly this
- * reason: a checkout of the application, a throwaway PostgreSQL, the API on
+ * reason: a clone of https://github.com/thtmnisamnstr/simple-balance running
+ * locally (this is the one procedure that cannot read the repository over the
+ * network, because it has to drive the app), a throwaway PostgreSQL, the API on
  * :3000 and Vite on :5173. `docs/standards/operations.md` 4 has the runbook.
  * Run it when the app's look changes, not on every commit.
  *

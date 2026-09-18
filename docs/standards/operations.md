@@ -154,9 +154,10 @@ carry the argument.
 **House.** `scripts/capture-screenshots.mjs` drives a real instance with
 Playwright and writes WebP at 1600px into `public/screenshots/`.
 
-It is not in `npm run verify`, deliberately: it needs a checkout of the
-application, a throwaway PostgreSQL, the API on :3000 and Vite on :5173, and
-the better part of a minute. Run it when the application's look changes, not on
+It is not in `npm run verify`, deliberately: it needs the application
+**running** — a clone of `https://github.com/thtmnisamnstr/simple-balance`,
+not a read of it — plus a throwaway PostgreSQL, the API on :3000 and Vite on
+:5173, and the better part of a minute. Run it when the application's look changes, not on
 every commit.
 
 The runbook:
@@ -166,7 +167,8 @@ The runbook:
 docker run -d --name sb-shots-pg -e POSTGRES_PASSWORD=postgres \
   -e POSTGRES_USER=postgres -e POSTGRES_DB=sb_shots -p 55432:5432 postgres:18-alpine
 
-# 2. the application, from its own checkout
+# 2. the application — cloned, because this has to RUN it
+#    git clone https://github.com/thtmnisamnstr/simple-balance
 DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:55432/sb_shots \
 APP_BASE_URL=http://localhost:5173 PORT=3000 AUTH_MODE=local ALLOWED_EMAILS='*' \
 AUTH_SECRET=screenshot-capture-secret-long-enough-for-the-validator-01 \
