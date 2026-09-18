@@ -22,13 +22,37 @@ Each item says what it is, why it is not done, and what done looks like.
 
 ## 2. Waiting on an account or an asset
 
-| #   | Item                                                                                            | What is needed                                                                                                                                                                                                                                          |
-| --- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2.1 | **`public/ads.txt` does not exist**, and `tests/export-shape.test.ts` asserts that it does not. | The AdSense publisher id. Then the file lands and that expectation is inverted **in the same commit** — `docs/adsense.md` §6 has the exact contents and §2 explains why a premature file is worse than none.                                            |
-| 2.2 | **AdSense account and approval.**                                                               | Days to weeks, and the longest lead time in the project. `docs/adsense.md` §3 has the order to do things in. The privacy policy it requires is written and live at `/privacy/`.                                                                         |
-| 2.3 | **No author photo.** Bylines render initials.                                                   | A square image in `public/authors/`, and `avatar` set in `src/content/authors.ts`. Initials are a deliberate fallback rather than a placeholder — the page is not broken without one.                                                                   |
-| 2.4 | **Netlify site and DNS.**                                                                       | Being handled by the owner. `netlify.toml` already carries the build, the gate, the headers and the `www` redirect; `operations.md` 7 has the DNS records and the two that cost a day if they are wrong.                                                |
-| 2.5 | **Announcing the blog and the docs.**                                                           | `announced: true` in `src/content/sections.ts`. One flag moves the header link, the `noindex` and the sitemap together, and `tests/sections.test.tsx` fails until its expectations move with it. Deliberately off: this is the owner's call, not a gap. |
+| #   | Item                                                                                            | What is needed                                                                                                                                                                                                                                                                                                                                  |
+| --- | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2.1 | **`public/ads.txt` does not exist**, and `tests/export-shape.test.ts` asserts that it does not. | The AdSense publisher id. Then the file lands and that expectation is inverted **in the same commit** — `docs/adsense.md` §6 has the exact contents and §2 explains why a premature file is worse than none.                                                                                                                                    |
+| 2.2 | **AdSense account and approval.**                                                               | Days to weeks, and the longest lead time in the project. `docs/adsense.md` §3 has the order to do things in. The privacy policy it requires is written and live at `/privacy/`.                                                                                                                                                                 |
+| 2.3 | **No author photo.** Bylines render initials.                                                   | A square image in `public/authors/`, and `avatar` set in `src/content/authors.ts`. Initials are a deliberate fallback rather than a placeholder — the page is not broken without one.                                                                                                                                                           |
+| 2.4 | **Netlify site and DNS.**                                                                       | Being handled by the owner. `netlify.toml` already carries the build, the gate, the headers and the `www` redirect; `operations.md` 9 has the DNS records and the two that cost a day if they are wrong.                                                                                                                                        |
+| 2.6 | **Six settings that live in a dashboard**, not in this tree.                                    | `operations.md` 8 lists all six with the reason for each. The "Powered by Netlify" badge — on by default for free projects created after 19 August 2026 — **has been turned off**; the rest are launch steps. `tests/branding.test.ts` holds only the half that is ours, because no test here can see a response this repository did not write. |
+| 2.5 | **Announcing the blog and the docs.**                                                           | `announced: true` in `src/content/sections.ts`. One flag moves the header link, the `noindex` and the sitemap together, and `tests/sections.test.tsx` fails until its expectations move with it. Deliberately off: this is the owner's call, not a gap.                                                                                         |
+
+## 2a. How this site knows the product changed
+
+Worth reading before anything else, because it is the mechanism that makes
+the rest of this list maintainable.
+
+The application publishes its user-facing contract at
+`docs/product-facts.json` — plans, labels, the free account limit, which plan
+sees advertising, prices, capabilities — generated from its own constants and
+held to them by its own test. `src/content/app-facts.json` is a snapshot of
+it, recording the commit it came from, and `tests/app-facts.test.ts` holds
+this site's claims against that snapshot on every build.
+
+So there are two different questions with two different answers:
+
+| Question                                      | Answered by                         |
+| --------------------------------------------- | ----------------------------------- |
+| Does this site still agree with the snapshot? | `npm run verify`, every build       |
+| Has the application moved since the snapshot? | `app-alignment` §0, a one-line diff |
+
+**Never refresh the snapshot to make a test pass.** It is the external
+referent; moving it to match the site turns the check green and leaves the
+page wrong. Fix the page, then refresh, in that order and the same commit.
 
 ## 3. Decided, with the argument
 

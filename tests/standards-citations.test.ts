@@ -50,6 +50,41 @@ describe("the guides' citations", () => {
     expect(drifted).toEqual([]);
   });
 
+  it("cites section numbers that exist in the guide named", () => {
+    /*
+     * Prose citations of the form `` `operations.md` 9 `` — a filename and a
+     * section number, with no line number for the existing check to hold.
+     *
+     * **What it catches, and what it does not.** It proves the section
+     * number exists in the guide named. It cannot prove it is the *right*
+     * section, and the bug that prompted it would have walked straight past:
+     * `docs/roadmap.md` cited `operations.md` 7 for the DNS records, and
+     * renumbering had moved DNS to 9 while 7 became something else. Seven
+     * still existed, so this check would have passed it.
+     *
+     * It is worth having anyway, for the half it does catch — a renumber
+     * that shortens a guide, and a number somebody invented — and it is
+     * documented here so nobody trusts it further. A citation that landed on
+     * a real but wrong section is a person's read, the same way
+     * `writing.md` §Citations says a drifted line number is.
+     */
+    const CITE = /`((?:[a-z-]+\/)?[a-z-]+\.md)` (\d+)(?:\.\d+)?\b/g;
+    const broken: string[] = [];
+
+    for (const guide of guides) {
+      for (const [, name, section] of guide.code.matchAll(CITE)) {
+        const target = guides.find((g) => g.path.endsWith(`/${name}`) || g.path === name);
+        if (!target) continue; // the filename check above owns this case
+        const headings = [...target.code.matchAll(/^## (\d+)\./gm)].map((m) => m[1]);
+        if (headings.length === 0) continue; // a guide with no numbered sections
+        if (!headings.includes(section!)) {
+          broken.push(`${guide.path} cites ${name} ${section}, which has no such section`);
+        }
+      }
+    }
+    expect(broken).toEqual([]);
+  });
+
   it("links to guide pages that exist", () => {
     const broken: string[] = [];
     const LINK = /\]\((?!https?:|#)([^)#]+)(?:#[^)]*)?\)/g;
