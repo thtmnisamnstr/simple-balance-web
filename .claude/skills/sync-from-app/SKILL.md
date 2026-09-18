@@ -44,7 +44,20 @@ direction.
 
 ## 1. Has anything moved?
 
-Most runs end here.
+Most runs end here, and you may already know the answer: a weekly workflow
+(`.github/workflows/app-sync.yml`) asks this and opens an issue when it
+changes. If there is no such issue open, there is probably nothing to do.
+
+```sh
+node scripts/check-app-sync.mjs
+```
+
+That exits 0 in sync, 1 when something moved, and **2 when it could not
+tell** — the third is distinct on purpose, because "the application has not
+changed" and "I could not reach it" must never look alike. A 2 usually means
+`docs/product/` is not on the tracked ref yet.
+
+For the detail:
 
 ```sh
 kit facts.json > /tmp/facts.json
@@ -90,6 +103,43 @@ creative step in this skill.
 Copy the new list into `src/content/app-features.json` verbatim — that is the
 record of what was pulled — and then write the site's own words in
 `src/content/home.ts`.
+
+### Rewrite only what moved
+
+**This is the part that keeps the site's voice steady across releases.**
+
+```sh
+npx vitest run tests/copy-provenance.test.ts
+```
+
+`src/content/copy-source.json` holds the application's description of each
+feature **as it was when the copy here was written**. That test compares it
+against the new pull and fails for each feature whose description moved,
+showing the old sentence and the new one.
+
+So a release that changes three features prompts three rewrites. The other
+fourteen keep wording somebody already agreed was good, and the homepage does
+not quietly become a different homepage every quarter for no reason a reader
+could name.
+
+When the copy is updated:
+
+```sh
+npm run copy:accept              # everything
+npm run copy:accept -- budgets   # one feature
+```
+
+**After changing the copy, never instead of.** Accepting without rewriting
+turns the test green and leaves the page describing the old product — the
+same trap as refreshing the facts snapshot, and both files say so at the top.
+
+A feature the application **added** also fails that test, because taking it
+or declining it must be a decision rather than an oversight. Declining is
+fine: accept it to note it as seen, and leave the page alone.
+
+A feature **re-tiered** fails too. Tier decides where a feature belongs on
+the page, so a promotion from C to A that the site ignores is the
+application saying "this matters most" while the page buries it.
 
 ### What the rewrite is for
 

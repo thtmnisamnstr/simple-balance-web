@@ -102,6 +102,23 @@ against with the argument.
 `ads.txt` rule that makes this site responsible for revenue earned on a
 different domain.
 
+## Staying in sync with the application
+
+The application publishes `docs/product/` — its contract, a feature list
+tiered by how much a general reader would care, and a screenshot of every
+screen. This site consumes it:
+
+|                                        |                                            |
+| -------------------------------------- | ------------------------------------------ |
+| Does the site agree with its snapshot? | `npm run verify`, every build              |
+| Has the application moved?             | A weekly workflow, which opens an issue    |
+| Which sections need rewriting?         | `tests/copy-provenance.test.ts` names them |
+| Do the rewrite                         | The `sync-from-app` skill                  |
+| Record that it is done                 | `npm run copy:accept`                      |
+
+Only the sections whose source description changed get rewritten, which is
+what keeps the voice steady between releases.
+
 ## Standards
 
 [`docs/standards/`](docs/standards/index.md) for the design, content and

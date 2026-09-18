@@ -90,6 +90,18 @@ Break one of these and the site is wrong rather than untidy.
   inferred, because the first version matched the application's wording
   against the page's, which is precisely the wording a rewrite changes, and
   it could not fail.
+- **The copy is rewritten only where the product's description moved.**
+  `src/content/copy-source.json` records what each section was written from;
+  `tests/copy-provenance.test.ts` fails for anything reworded, added or
+  re-tiered since. `npm run copy:accept` is the explicit act of saying the
+  words have been re-read, and it comes **after** the rewrite, never instead
+  of it. This is what stops the homepage becoming a different homepage every
+  release for no reason a reader could name.
+- **Nothing here reaches the application over the network except on a
+  schedule.** `.github/workflows/app-sync.yml` asks weekly whether the
+  product moved and opens an issue; it changes nothing, because the work it
+  prompts is a rewrite and copy is a judgement. A network call in a test
+  would fail on somebody else's outage.
 - **Every claim on this site is true of the shipped application.** Nothing here
   can check that, because the application is a different repository. It is the
   rule that most needs a person.

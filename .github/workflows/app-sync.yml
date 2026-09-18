@@ -1,0 +1,83 @@
+name: app sync
+
+# Asks, on a schedule, whether the application has changed in a way this site
+# should reflect. It opens an issue and changes nothing: the work it is
+# prompting is a rewrite, and copy is a judgement. An automated pull request
+# that rewrote the homepage would be the wrong shape and would get merged
+# unread.
+on:
+  schedule:
+    # Monday morning. The application does not release daily, and a check
+    # that runs more often than the thing it watches produces noise people
+    # learn to close without reading.
+    - cron: "0 8 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: app-sync
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+
+      - name: Check the application
+        id: check
+        run: |
+          set +e
+          node scripts/check-app-sync.mjs > /tmp/report.txt 2>&1
+          echo "code=$?" >> "$GITHUB_OUTPUT"
+          {
+            echo 'report<<REPORT_EOF'
+            cat /tmp/report.txt
+            echo 'REPORT_EOF'
+          } >> "$GITHUB_OUTPUT"
+          cat /tmp/report.txt
+
+      # One issue, reopened and updated rather than a new one each week — a
+      # weekly duplicate is how a reminder becomes something people mute.
+      - name: Open or update the issue
+        if: steps.check.outputs.code == '1'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPORT: ${{ steps.check.outputs.report }}
+        run: |
+          TITLE="The application has changed"
+          BODY=$(printf '%s\n\n---\n\nRun the `sync-from-app` skill. It diffs the contract, pulls the feature list and screenshots, and rewrites only the sections whose source descriptions moved — `tests/copy-provenance.test.ts` names those.\n\nThis issue is updated weekly while the difference remains, and closed when it does not.\n' "$REPORT")
+          EXISTING=$(gh issue list --state open --search "$TITLE in:title" --json number -q '.[0].number')
+          if [ -n "$EXISTING" ]; then
+            gh issue edit "$EXISTING" --body "$BODY"
+            echo "updated issue #$EXISTING"
+          else
+            gh issue create --title "$TITLE" --body "$BODY" --label "" || gh issue create --title "$TITLE" --body "$BODY"
+          fi
+
+      - name: Close the issue when it is back in sync
+        if: steps.check.outputs.code == '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          EXISTING=$(gh issue list --state open --search "The application has changed in:title" --json number -q '.[0].number')
+          if [ -n "$EXISTING" ]; then
+            gh issue close "$EXISTING" --comment "Back in sync."
+            echo "closed issue #$EXISTING"
+          fi
+
+      # Exit 2 means the check could not tell — the kit is not on the tracked
+      # ref, or GitHub was unreachable. Deliberately not a failure and
+      # deliberately not silence: "nothing changed" and "I could not look"
+      # must never be reported the same way.
+      - name: Note that it could not tell
+        if: steps.check.outputs.code == '2'
+        run: |
+          echo "::notice title=App sync::Could not compare. See the log."
+          cat /tmp/report.txt

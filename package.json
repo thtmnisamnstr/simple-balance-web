@@ -12,6 +12,7 @@
     "dev": "next dev",
     "build": "next build",
     "build:images": "node scripts/build-images.mjs",
+    "copy:accept": "node scripts/accept-copy.mjs",
     "start": "serve out",
     "typecheck": "tsc --noEmit",
     "lint": "oxlint --deny-warnings src tests",

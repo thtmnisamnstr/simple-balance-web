@@ -340,6 +340,32 @@ _Checked by:_ `tests/legal.test.tsx`, which asserts the AdSense disclosures,
 that every processor is named, the GDPR and CCPA rights, and that the terms
 do not purport to restrict the AGPL.
 
+### 6.5 The copy is rewritten only where the product's description moved
+
+**Binding.** `src/content/copy-source.json` holds the application's
+description of each feature as it was when this site's words were written,
+and `tests/copy-provenance.test.ts` fails for any feature whose description
+has since changed — naming it, and showing both sentences.
+
+**This is what keeps the site's voice steady.** Without it every sync is an
+open invitation to rewrite the homepage, and the page drifts release to
+release for no reason a reader could name. With it, a release that changes
+three descriptions prompts three rewrites and the other fourteen keep wording
+somebody already agreed was good.
+
+Three things fail that test, and each is a decision rather than a chore: a
+**reworded** description, an **added** feature (taking it or declining it must
+be deliberate; declining is fine), and a **re-tiered** one, because tier
+decides where a feature belongs on the page and a promotion the site ignores
+is the application saying "this matters most" while the page buries it.
+
+Accepting is explicit — `npm run copy:accept` — and is done **after** changing
+the copy, never instead of it. Accepting without rewriting turns the test
+green and leaves the page describing the old product.
+
+_Checked by:_ `tests/copy-provenance.test.ts`, mutation-proved on all three:
+a reworded description, a promotion from C to A, and a new feature.
+
 ## 7. Announced versus built
 
 ### 7.1 One flag decides three things
