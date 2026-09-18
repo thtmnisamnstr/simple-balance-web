@@ -29,9 +29,12 @@
  * positioning built on a refusal has to be abandoned the day the refusal
  * ends, and everything written around it goes with it.
  *
- * So the argument is the one thing that stays true either way: this is a
- * record you can interrogate. An assistant can read it, and every answer
- * names the entry behind it.
+ * So the argument is the one thing that stays true either way: everything you
+ * hold on one page, and any figure you doubt opens into the entries that made
+ * it. An assistant reading the same record is a strong second — prominent,
+ * and deliberately not the headline, because a reader deciding whether this
+ * is for them is asking what it does with their money, not what it does with
+ * their chatbot.
  */
 
 export type Problem = {
@@ -113,7 +116,7 @@ export const site = {
    * term with no consumer meaning, and a machine they do not have. What this
    * says instead is the one thing no competitor can say at all.
    */
-  tagline: "A record of your money you can ask questions of, and answers you can check.",
+  tagline: "Everything you have on one page, and any number you doubt opens into what made it.",
   /**
    * The tab and search-result form of the tagline, kept separate because the
    * two have different jobs. `tagline` is a sentence and ends like one;
@@ -121,7 +124,7 @@ export const site = {
    * characters — the full sentence appended to the product name runs past it
    * and loses the half that says what it is.
    */
-  titleTagline: "Ask your records, check the answer",
+  titleTagline: "All your accounts, numbers you can check",
 } as const;
 
 export const heroShot = {
@@ -131,23 +134,27 @@ export const heroShot = {
 
 export const hero = {
   /**
-   * The headline is the thing nothing else in the category offers, and the
-   * thing that stays true however the product gets its data in.
+   * The headline pairs what every reader in this category wants with the one
+   * thing most of them cannot get.
    *
-   * It led on "we never ask for your bank password" for a while. That was
-   * true, and it was a promise about the future made by a page that does not
-   * get to decide the future. Leading on the outcome instead — "know where
-   * your money went" — is the line PocketSmith, Tiller, Quicken and Empower
-   * all already run, which identifies the product as one of a crowd of eight.
+   * "All your accounts in one place" on its own is table stakes — eight
+   * competitors open on it — and "know where your money went" is the line
+   * PocketSmith, Tiller, Quicken and Empower all already run. What makes the
+   * pair distinctive is the second half: the common complaint about budgeting
+   * apps is that the totals do not agree and there is no way to find out why.
    *
-   * What is left is the honest difference: this is a record you can ask
-   * things of, and the answers open.
+   * **Two headlines were tried and rejected before this one.** "We never ask
+   * for your bank password" was true and was a promise about a future this
+   * page does not decide. "Ask your records a question" put the assistant in
+   * the headline, which overstates it: an assistant is a reason to stay, not
+   * the reason a stranger reads on. It has its own section, third on the
+   * page, and a clause here.
    */
-  title: "Ask your records a question. Check the answer yourself.",
+  title: "See everything you have. Check every number.",
   lede:
-    "Simple Balance keeps a proper record of what you earn and what you spend, and an AI " +
-    "assistant can read it — so you can ask in plain words and get an answer that names the " +
-    "entry it came from.",
+    "Every account you hold on one page, each in its own currency, and any figure you doubt " +
+    "opens into the entries that made it. An AI assistant can read the same record, so when it " +
+    "is easier to ask than to look, you can just ask.",
   /**
    * The app is not deployed yet, so this states the situation rather than
    * linking somewhere that 404s (`docs/standards/web.md` 6.1).
@@ -370,11 +377,14 @@ export const privacy = {
  * The agent section, and the page's lead argument.
  *
  * It used to be last, on the reasoning that it is the thing nothing else
- * does — true, and an odd place to put it. It is now the section directly
- * under the hero, because "you can ask your own records a question" is the
- * only claim here a reader cannot get from eight other products, and because
- * it survives the product gaining a bank connection, which the old headline
- * did not.
+ * does — true, and an odd place to put it. It then spent a version *in the
+ * headline*, which is the opposite mistake: an assistant is a reason to stay
+ * rather than the reason a stranger reads on, and a page that opens on it is
+ * answering a question nobody arrived with.
+ *
+ * Third, after the four problems, is where it earns its place — the reader
+ * has been told what this does with their money before being told what it
+ * does with their assistant.
  *
  * The vocabulary it arrives in is still not the reader's. "Ships an MCP
  * server", "a token carries scopes" and a shell transcript reading
@@ -384,7 +394,7 @@ export const privacy = {
 export const agents = {
   /** As `Problem["covers"]`. */
   covers: ["agents", "find-anything"],
-  eyebrow: "The part nothing else does",
+  eyebrow: "If you use an AI assistant",
   title: "Point an assistant at your records and just ask.",
   body:
     "Simple Balance can be connected to an AI assistant, which then has the same reach over your " +
@@ -417,8 +427,8 @@ export const contact = {
 
 export const footer = {
   blurb:
-    "Simple Balance keeps a record of your money you can ask questions of, and answers that name " +
-    "the entry they came from.",
+    "Simple Balance keeps a record of your money where every figure opens into the entries " +
+    "that made it.",
   links: [
     { label: "Pricing", href: "/pricing/" },
     { label: "Privacy", href: "/privacy/" },
