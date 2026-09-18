@@ -60,9 +60,13 @@ Break one of these and the site is wrong rather than untidy.
   `Disallow` on an unannounced section is the reflex and is exactly wrong: a
   crawler that cannot fetch the page never sees the `noindex`.
 - **Every price and limit on the pricing page is what the application
-  enforces.** Three accounts free, unlimited on Premium, $20 a year or $2 a
-  month, and nothing else held back from either. This is the page whose error
-  a customer discovers personally.
+  enforces**, and `tests/app-facts.test.ts` proves it. The application
+  publishes `docs/product-facts.json`; `src/content/app-facts.json` is a
+  snapshot of it with the commit it came from. **Never refresh that snapshot
+  to make a test pass** — it is the external referent, and moving it to match
+  the site turns the check green while leaving the page wrong. Fix the page,
+  then refresh. Whether the contract itself has moved is `app-alignment` §0,
+  a one-line diff.
 - **The paid tier is "Premium" to a reader and `plus` on the wire**, in both
   repositories. Two surfaces using different words at a customer is the
   failure to avoid; renaming the wire value would break clients, renaming the
@@ -146,8 +150,9 @@ Nine skills in `.claude/skills/` hold the procedures that repeat:
   traps already paid for.
 - `write-content` — write a post or a documentation page, with the frontmatter
   contract and the traps that fail a build.
-- `app-alignment` — check every claim, price, limit, token and screenshot
-  against the application, which no test here can see.
+- `app-alignment` — diff the application's published contract against the
+  snapshot this repository holds, and reconcile whatever moved. Most runs end
+  at the diff.
 - `legal-review` — bring the privacy policy and terms back to true when
   something changes what data is handled or who handles it.
 - `optimize` — page weight, images, fonts, metadata and findability, beyond

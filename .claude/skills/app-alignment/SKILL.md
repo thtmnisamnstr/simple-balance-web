@@ -31,70 +31,99 @@ APP=thtmnisamnstr/simple-balance
 app() { curl -fsSL "https://raw.githubusercontent.com/$APP/$REF/$1"; }
 ```
 
-## 0. Resolve the ref first, and do not assume `main`
+## 0. Is anything out of date at all?
 
-**This is the step that goes wrong.** Unreleased work sits on a branch behind
-an open pull request, so the claims this site makes may describe code that is
-not on the default branch yet.
+**Start here, and most runs end here.** The application publishes its
+user-facing contract at `docs/product-facts.json` — plans, labels, the free
+account limit, which plan sees ads, prices, capabilities — generated from its
+own constants and held to them by its own test. This repository keeps a
+snapshot at `src/content/app-facts.json` with the commit it came from.
+
+So "does the site need updating" is a diff, not a reading exercise:
+
+```sh
+REF=$(node -p "require('./src/content/app-facts.json').source.ref")
+curl -fsSL "https://raw.githubusercontent.com/$APP/$REF/docs/product-facts.json" -o /tmp/facts.json
+diff <(node -p "JSON.stringify(require('./src/content/app-facts.json').facts,null,2)") \
+     <(node -p "JSON.stringify(require('/tmp/facts.json'),null,2)")
+```
+
+**No output means the contract has not moved**, and §1 and §3 are already
+guaranteed by `tests/app-facts.test.ts`, which runs on every build. Skip to
+§4.
+
+Output means something a reader can see has changed. Read the diff before
+changing anything — it names exactly what moved.
+
+### Which ref, and why it is not always `main`
+
+Unreleased work sits on a branch, and the snapshot records which one it was
+taken from. The command above follows that. To move to a different ref —
+because a release landed, or because the branch changed name — resolve it
+first:
 
 ```sh
 gh repo view "$APP" --json defaultBranchRef -q .defaultBranchRef.name
 gh pr list --repo "$APP" --state open --json number,headRefName,title
 ```
 
-Pick the ref that actually holds the release this site is advertising, and
-set it once:
-
-```sh
-REF=main          # or the branch an open PR is landing
-```
-
 At the time of writing, everything about plans, prices and advertising lives
 on `deployment-and-monetization` and **not** on `main` — `MAX_FREE_ACCOUNTS`
-does not exist there at all. A check run against `main` would find nothing
-and conclude the site was wrong about everything.
+does not exist there at all. A check against `main` would find nothing and
+conclude the site was wrong about everything.
 
-**A lookup that finds nothing is a failed check, not a passed one.** If a
-grep below returns empty, resolve why before moving on.
+**A fetch that 404s is a failed check, not a passed one.** `curl -f` exits
+non-zero; do not carry on past it.
 
-## 1. The numbers
+## 1. Apply what the contract says
 
-These appear on the pricing page, in the FAQ and in the privacy policy, and
-`tests/pricing.test.tsx` holds them only to _each other_. The application is
-the source.
-
-| Claim here                       | Where it is true or false                                   |
-| -------------------------------- | ----------------------------------------------------------- |
-| Free keeps 3 accounts            | `MAX_FREE_ACCOUNTS` in `src/shared/domain.ts`               |
-| Premium is unlimited             | `accountAllowance` — the paid branch returns `{ ok: true }` |
-| $20 a year, $2 a month           | `docs/monetization.md` §The prices                          |
-| Archived accounts count          | `docs/monetization.md` §What the two plans are              |
-| Accounts over the limit are kept | Same section                                                |
-| Paid accounts see no ads         | `getAdPlacement` in `src/server/services/billing.ts`        |
+Change the site to match, then refresh the snapshot in the same commit:
 
 ```sh
-app src/shared/domain.ts | grep -n "MAX_FREE_ACCOUNTS ="
-app docs/monetization.md | grep -nE '\$20|\$2 a month|a year'
-app src/server/services/billing.ts | grep -n "entitlement.plan !== \"free\""
+SHA=$(gh api "repos/$APP/commits/$REF" -q .sha)
+node -e '
+const fs = require("node:fs");
+const snap = require("./src/content/app-facts.json");
+snap.facts = JSON.parse(fs.readFileSync("/tmp/facts.json","utf8"));
+snap.source.commit = process.argv[1];
+snap.source.fetched = new Date().toISOString().slice(0,10);
+fs.writeFileSync("src/content/app-facts.json", JSON.stringify(snap,null,2)+"\n");
+' "$SHA"
+npx vitest run tests/app-facts.test.ts
 ```
 
-**A number that has moved is a number in three places here**: the tier
-summary, the comparison table and the FAQ. `content.md` 6.1.
+That test is what tells you which claims on the site now disagree — the tier
+name, the limit in three places, the advertising row. **Refreshing the
+snapshot without fixing the site turns a failing test green while leaving the
+page wrong**, so fix first and refresh last.
+
+## 1a. What the contract does not carry
+
+Three things are not in it, because they cannot be:
+
+- **Prose.** The FAQ answers and the privacy policy describe behaviour in
+  sentences. §6 and §7.
+- **The look.** §4 and §5.
+- **Anything the application has not thought to publish.** If you find
+  yourself wanting a field, add it to the application's generator rather than
+  grepping for it here — that is the whole point of the file existing.
 
 ## 2. The feature list
 
-`comparison` in `src/content/pricing.ts` claims eighteen things. Each must be
-something the application does, and **nothing may be listed as held back from
-the free plan** — the product's position is that Premium raises a limit and
-removes ads, nothing else.
+`comparison` in `src/content/pricing.ts` claims eighteen things; the
+contract's `declared.capabilities` is the application's own list of what it
+does. `tests/app-facts.test.ts` holds the count loosely — the table's wording
+is marketing and the contract's is description, so they are not compared
+sentence by sentence.
+
+Walk it in both directions by eye: capabilities the table has missed, and
+capabilities the table claims that the contract no longer lists. **The second
+direction is the one nobody checks**, and it is where a page keeps advertising
+something that was removed.
 
 ```sh
-app README.md | sed -n '1,80p'
+node -p "require('/tmp/facts.json').declared.capabilities.join('\n')"
 ```
-
-Walk it in both directions: capabilities the table has missed, and
-capabilities the table claims that the application has dropped. The second
-direction is the one nobody checks.
 
 ## 3. The words
 

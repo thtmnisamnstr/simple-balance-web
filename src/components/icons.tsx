@@ -35,7 +35,7 @@ function Svg({ size = 20, children }: IconProps & { readonly children: ReactNode
   );
 }
 
-export function WalletIcon(props: IconProps) {
+function WalletIcon(props: IconProps) {
   return (
     <Svg {...props}>
       <path d="M3 7.5A2.5 2.5 0 0 1 5.5 5H18a2 2 0 0 1 2 2v1" />
@@ -45,7 +45,7 @@ export function WalletIcon(props: IconProps) {
   );
 }
 
-export function SplitIcon(props: IconProps) {
+function SplitIcon(props: IconProps) {
   return (
     <Svg {...props}>
       <path d="M3 12h4l3-6 4 12 3-6h4" />
@@ -53,7 +53,7 @@ export function SplitIcon(props: IconProps) {
   );
 }
 
-export function TargetIcon(props: IconProps) {
+function TargetIcon(props: IconProps) {
   return (
     <Svg {...props}>
       <circle cx="12" cy="12" r="8" />
@@ -62,7 +62,7 @@ export function TargetIcon(props: IconProps) {
   );
 }
 
-export function CopyIcon(props: IconProps) {
+function CopyIcon(props: IconProps) {
   return (
     <Svg {...props}>
       <rect x="9" y="9" width="11" height="11" rx="2" />
@@ -71,7 +71,7 @@ export function CopyIcon(props: IconProps) {
   );
 }
 
-export function LayersIcon(props: IconProps) {
+function LayersIcon(props: IconProps) {
   return (
     <Svg {...props}>
       <path d="m12 3 8 4.5-8 4.5-8-4.5z" />
@@ -80,7 +80,7 @@ export function LayersIcon(props: IconProps) {
   );
 }
 
-export function ListIcon(props: IconProps) {
+function ListIcon(props: IconProps) {
   return (
     <Svg {...props}>
       <path d="M8 6h12M8 12h12M8 18h12" />
@@ -111,7 +111,13 @@ export function LogoMark({ size = 18 }: IconProps) {
   );
 }
 
-/** The closed icon set a feature card may name. Keyed to `Feature["icon"]`. */
+/**
+ * The closed icon set a feature card may name. Keyed to `Feature["icon"]`.
+ *
+ * The six are not exported individually: this map is the only way in, which
+ * is what makes `Feature["icon"]` a closed set rather than a suggestion.
+ * `CheckIcon` and `LogoMark` are exported because they are used directly.
+ */
 export const featureIcons = {
   wallet: WalletIcon,
   split: SplitIcon,

@@ -126,10 +126,6 @@ svg {
   padding-block: var(--s-9);
 }
 
-.section-tight {
-  padding-block: var(--s-8);
-}
-
 .section + .section {
   border-top: 1px solid var(--line-soft);
 }
@@ -322,101 +318,6 @@ svg {
   color: var(--muted);
   margin-top: var(--s-4);
 }
-
-/* ---------- the ledger figure ---------- */
-
-.figure-card {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-pop);
-  padding: var(--s-5);
-  display: grid;
-  gap: var(--s-4);
-}
-
-.figure-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--s-4);
-}
-
-.figure-title {
-  font-size: var(--step--1);
-  font-weight: var(--weight-semi);
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-
-.figure-total {
-  font-size: var(--step-2);
-  font-weight: var(--weight-semi);
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.02em;
-}
-
-.figure-rows {
-  display: grid;
-  gap: var(--s-1);
-  margin: 0;
-}
-
-.figure-row {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: var(--s-4);
-  align-items: center;
-  padding: var(--s-3) 0;
-  border-top: 1px solid var(--line-soft);
-  font-size: var(--step--1);
-}
-
-.figure-row dt {
-  color: var(--ink-soft);
-  margin: 0;
-}
-
-.figure-row dd {
-  margin: 0;
-  font-variant-numeric: tabular-nums;
-  text-align: right;
-  font-weight: var(--weight-medium);
-}
-
-.amount-in {
-  color: var(--green);
-}
-
-.amount-out {
-  color: var(--red);
-}
-
-.figure-foot {
-  display: flex;
-  align-items: center;
-  gap: var(--s-2);
-  font-size: var(--step--1);
-  color: var(--muted);
-  border-top: 1px solid var(--line-soft);
-  padding-top: var(--s-4);
-}
-
-.balance-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--s-2);
-  padding: var(--s-1) var(--s-3);
-  border-radius: var(--radius-pill);
-  background: var(--green-soft);
-  color: var(--green-dark);
-  border: 1px solid var(--green-line);
-  font-size: var(--step--1);
-  font-weight: var(--weight-medium);
-}
-
-/* ---------- problem / answer pairs ---------- */
 
 .problems {
   display: grid;
@@ -651,12 +552,6 @@ svg {
   font-size: var(--step-3);
   max-width: 24ch;
   margin-top: var(--s-3);
-}
-
-.figure-caption {
-  color: var(--muted);
-  font-size: var(--step--1);
-  margin: 0;
 }
 
 .footer-cols {

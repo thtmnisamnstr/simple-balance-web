@@ -209,11 +209,12 @@ whether the contrast is right is `human`, and it was found by looking.
 
 ### 6.1 A control that cannot act is not a control
 
-**Binding.** The sign-in affordance reads "Coming soon" and is a `<span>`.
+**Binding.** The sign-in affordance is a `<span>`, not a control. What it says
+is 6.2's problem; that it is not a button is this one's.
 
 A `<button disabled>` implies something on this page could enable it. A link to
-`app.smpl.money` would 404 for every reader. A word that states the situation is
-the honest control, and when the app ships this becomes a link in the same
+`app.smpl.money` would 404 for every reader. A phrase that states the situation
+is the honest control, and when the app ships this becomes a link in the same
 commit that makes it true.
 
 _Checked by:_ `tests/home-page.test.tsx`, which asserts the label is neither a

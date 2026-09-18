@@ -22,10 +22,10 @@ export type Problem = {
   /** A screenshot that shows the answer, where one does. Two of the four have
    *  one: a picture of a ledger that ties out is worth more than the sentence
    *  saying it does, and a picture of a page that merely exists is not. */
-  readonly shot?: Shot;
+  readonly shot?: ScreenshotRef;
 };
 
-export type Shot = {
+type ScreenshotRef = {
   /** Base name under `public/screenshots`, without theme or extension. */
   readonly name: string;
   readonly alt: string;

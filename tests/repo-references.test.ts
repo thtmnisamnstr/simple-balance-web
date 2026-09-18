@@ -54,8 +54,13 @@ describe("references to the application", () => {
     // sits on a branch, and a check against the wrong ref finds nothing and
     // concludes the site is wrong about everything.
     const alignment = docs.find((d) => d.path.endsWith("app-alignment/SKILL.md"))!;
-    expect(alignment.code).toMatch(/do not assume `main`/i);
+    // Matching the caution rather than one wording of it: the phrasing has
+    // already changed once, and pinning a sentence makes a rewrite fail for
+    // no reason while pinning nothing lets the caution disappear.
+    expect(alignment.code).toMatch(/not always `main`|do not assume `main`/i);
     expect(alignment.code).toContain("gh pr list");
+    // And it must actually read the published contract rather than grep.
+    expect(alignment.code).toContain("product-facts.json");
   });
 
   it("lets only the procedures that must run the app ask for a clone", () => {

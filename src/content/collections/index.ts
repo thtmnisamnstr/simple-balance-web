@@ -37,7 +37,7 @@ export type Collection = "blog" | "docs";
  * error, and failing a build over one would make adding a feature a two-step
  * change.
  */
-export type Frontmatter = {
+type Frontmatter = {
   readonly title: string;
   readonly description: string;
 

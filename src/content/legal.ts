@@ -16,7 +16,7 @@
 /** Bumped whenever either document changes materially. Rendered on both. */
 export const legalUpdated = "2026-09-18";
 
-export const operator = {
+const operator = {
   /** Who is responsible for the hosted deployment, in the legal sense. */
   name: "Gavin Johnson",
   contact: "info@smpl.money",
@@ -38,6 +38,16 @@ export const privacy = {
       "money, and that is the whole reason this policy is worth reading rather than skimming.",
   ],
   sections: [
+    {
+      heading: "Who is responsible",
+      paragraphs: [
+        "The data controller for smpl.money and for the hosted application at app.smpl.money " +
+          `is **${operator.name}**, contactable at ${operator.contact}.`,
+        "For a copy of Simple Balance that somebody else runs, the controller is whoever runs " +
+          "it. That is the whole point of self-hosting, and it means this policy does not " +
+          "describe their deployment and we have no access to it.",
+      ],
+    },
     {
       heading: "The short version",
       paragraphs: [
