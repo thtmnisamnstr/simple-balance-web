@@ -195,11 +195,8 @@ export const problems: readonly Problem[] = [
     covers: ["all-accounts-one-page", "multi-currency"],
     problem: "Your money is in five places and you never see it all at once.",
     answer: [
-      "Current account, savings, credit cards, cash, a loan, whatever you hold — they sit on one " +
-        "page, each showing what is in it, on whatever day you ask about.",
-      "Money in different currencies is never added together. Dollars are totalled with dollars " +
-        "and euros with euros, because an exchange rate from this morning would turn the total " +
-        "into a guess by tomorrow.",
+      "Current account, savings, cards, cash, a loan — on one page, as of any date you ask for.",
+      "Currencies are never added together. A rate from this morning is a guess by tomorrow.",
     ],
   },
   {
@@ -211,12 +208,10 @@ export const problems: readonly Problem[] = [
     covers: ["numbers-that-tie-out", "register"],
     problem: "The totals are wrong and there is no way to find out why.",
     answer: [
-      "Every figure can be traced back to what made it. Open the account behind a number and you " +
-        "get every entry in date order with the balance before it and after it, so you can find " +
-        "the exact line that went wrong instead of taking a chart's word for it.",
-      "That works because of how the record is kept underneath: every amount has a place it came " +
-        "from and a place it went, and both sides have to agree before anything is written down. " +
-        "You never have to think about that. It is the reason the totals match.",
+      "Open the account behind any number: every entry in date order, with the balance before and " +
+        "after. The line that went wrong is right there.",
+      "Underneath, every amount has a place it came from and a place it went, and both must " +
+        "agree. That is why the totals match.",
     ],
   },
   {
@@ -229,11 +224,9 @@ export const problems: readonly Problem[] = [
     covers: ["recurring", "payees"],
     problem: "The yearly renewal you forgot about has already left your account.",
     answer: [
-      "Rent, payday, a subscription: set it up once and it turns up on the day, waiting for you " +
-        "to say yes. Nothing is added behind your back.",
-      "For the ones you have not set up, there is a list of everyone you have ever paid and " +
-        "everything you paid them. That is usually where a subscription you forgot about turns " +
-        "up. Simple Balance can show you the charge; it cannot cancel it for you.",
+      "Rent, payday, a subscription: set it up once and it arrives on the day for your yes.",
+      "The list of everyone you have ever paid is where a forgotten one turns up. Simple Balance " +
+        "shows the charge; cancelling is yours.",
     ],
   },
   {
@@ -245,11 +238,9 @@ export const problems: readonly Problem[] = [
     covers: ["import-statements", "duplicates"],
     problem: "Getting a year of history in should not cost you an evening.",
     answer: [
-      "Your bank has a button that downloads what you spent as a file — the kind that opens in a " +
-        "spreadsheet. Drag it in and Simple Balance works out which column is the date, which is " +
-        "the amount and who you paid, then files the names it recognises.",
-      "Anything that looks like a payment you already have is put side by side with it, so you " +
-        "can drop whichever one is the spare. Nothing counts towards your money until you say so.",
+      "Download the file your bank gives you, drag it in, and it works out which column is which.",
+      "Anything that looks like a payment you already have is shown beside it. Nothing counts " +
+        "until you say so.",
     ],
   },
 ] as const;
@@ -362,14 +353,13 @@ export const privacy = {
   eyebrow: "Your records",
   title: "Where your money sits, and who can reach it.",
   body:
-    "If we run it for you, your record is on our server and the privacy policy says exactly what " +
-    "is kept and who can touch it. Run it yourself and there is no copy anywhere but yours. " +
-    "Either way, what you put in is yours to take out.",
+    "Run it yourself and there is no copy but yours. If we run it for you, the privacy policy " +
+    "says exactly what is kept.",
   points: [
-    "Take everything with you as a spreadsheet whenever you want. Your own record is never held back to keep you paying.",
-    "The product itself has no analytics and nothing that profiles you. On the free plan the ads bring Google's script with them — that is what the ads cost you, and neither Premium nor your own copy has it.",
+    "Take everything out as a spreadsheet, any time — never held back to keep you paying.",
+    "No analytics in the product. On the free plan the ads bring Google's script; Premium and your own copy have neither.",
     "Run it on a computer you own and nobody else has a copy, including us.",
-    "The source is readable and stays that way, so how it handles your money is not something you have to take on trust.",
+    "The source is readable and stays that way.",
   ],
 } as const;
 
@@ -397,11 +387,9 @@ export const agents = {
   eyebrow: "If you use an AI assistant",
   title: "Point an assistant at your records and just ask.",
   body:
-    "Simple Balance can be connected to an AI assistant, which then has the same reach over your " +
-    "records that you have on the web. Ask it when you last paid something, where a month went, " +
-    "or to bring a statement in and tidy up where things were filed. What it cannot do is skip " +
-    "you: anything it proposes sits and waits, counts toward nothing until you say yes, and it " +
-    "is never able to move money.",
+    "Connect an AI assistant and it reads your records the way you do: ask when you last paid " +
+    "something, or have it bring a statement in. It can propose. Only you approve, and it never " +
+    "moves money.",
   sample: [
     { kind: "prompt", text: "What day did I pay the electric bill last month?" },
     { kind: "out", text: "  12 August, to Meridian Power, from the current account." },

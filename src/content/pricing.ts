@@ -41,11 +41,10 @@ export const MAX_FREE_ACCOUNTS = 3;
 
 export const pricing = {
   eyebrow: "Pricing",
-  title: "What it costs, and why the free plan has ads.",
+  title: "What it costs, and what you get.",
   lede:
     "Nothing in the product is held back on any plan. What you pay for is how many accounts you " +
-    "keep, and whether you see ads — and the free plan does show ads, because that is what pays " +
-    "for it.",
+    "keep, and whether you see ads.",
   /**
    * The strip under the prices that answers "what am I risking".
    *
@@ -101,7 +100,7 @@ export const tiers: readonly Tier[] = [
     price: "$2",
     priceNote: "a month, or $20 a year",
     summary: "As many accounts as you need, and no ads.",
-    who: "Anyone keeping more than three accounts, or anyone who would rather not be sold something on a page showing their balances.",
+    who: "Anyone keeping more than three accounts, or who would rather not see ads beside their balances.",
     cta: { label: hero.primaryLabel, pending: true },
     featured: true,
   },
@@ -295,7 +294,15 @@ export const faq: readonly { readonly q: string; readonly a: string }[] = [
      * together now, because a pricing page that undersells what is collected
      * is the same failure as a policy that oversells it.
      */
-    a: "They are the ordinary Google ads you see elsewhere on the web, and they never appear on the billing page or the sign-in screen. They are not picked from what you spend: by default they are chosen from the page you are looking at and your rough location, never from a profile of you, and they are only ever personalised if you have specifically agreed to that. What does go to Google is the address of the page the ad sits on, and on some pages an address names one of your own records — which is the plainest reason to prefer a plan without ads. In the UK, the EEA and Switzerland you are asked before any advertising cookie is set, and saying no means you see no ads at all.",
+    /*
+     * Shorter than it was, and still holding the two things
+     * `content.md` 2.4 requires of it: it must name personalisation and
+     * consent, and it must not round the policy down to "nothing about you".
+     * The detail it used to carry — what does reach Google, and that a page
+     * address can name a record — lives in the policy, which this now points
+     * at rather than paraphrasing.
+     */
+    a: "Ordinary Google ads, never on the billing page or the sign-in screen. They are not picked from what you spend, and they are only personalised if you have specifically agreed to that. In the UK, the EEA and Switzerland you are asked before any advertising cookie is set, and saying no means you see none. The privacy policy sets out the rest, including what does reach Google.",
   },
   {
     q: "How do I cancel, and will you keep charging me?",
