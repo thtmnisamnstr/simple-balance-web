@@ -15,6 +15,17 @@
  */
 
 export type Problem = {
+  /**
+   * Which entries in the application's own feature list this section is the
+   * rewrite of (`src/content/app-features.json`).
+   *
+   * Declared rather than inferred. The first version of the check that reads
+   * this matched the application's wording against the page's, which is
+   * exactly the wording the rewrite exists to change — it matched the word
+   * "statement" somewhere else entirely and could not fail. An explicit
+   * mapping is the only honest way to ask "is tier A covered".
+   */
+  readonly covers: readonly string[];
   /** The reader's situation, in their words, as a statement rather than a question. */
   readonly problem: string;
   /** What the product does about it. One paragraph per idea, never one long one. */
@@ -45,6 +56,8 @@ export const shotDisclosure =
   "Screenshots show a demo ledger seeded with example transactions, captured from the running application.";
 
 export type Feature = {
+  /** As `Problem["covers"]`. */
+  readonly covers: readonly string[];
   readonly title: string;
   readonly body: string;
   /** Key into the icon map in `components/icons.tsx`. A closed set, so a typo
@@ -106,6 +119,7 @@ export const hero = {
 
 export const problems: readonly Problem[] = [
   {
+    covers: ["all-accounts-one-page"],
     problem: "Your net worth is spread across eight logins.",
     answer: [
       "Checking, savings, cards, cash, loans, investments and crypto wallets sit on one " +
@@ -121,6 +135,7 @@ export const problems: readonly Problem[] = [
       alt: "A bank CSV part-way through import: the columns it worked out, the rows it will stage, and three flagged as possible duplicates of entries already in the ledger.",
       caption: "The importer maps the columns itself, then shows you what it will do.",
     },
+    covers: ["import-statements"],
     problem: "Importing a statement costs you an evening.",
     answer: [
       "Point it at a CSV your bank exported and it works out the format, maps the columns, " +
@@ -131,6 +146,7 @@ export const problems: readonly Problem[] = [
     ],
   },
   {
+    covers: ["recurring"],
     problem: "You find out about the annual renewal when it leaves the account.",
     answer: [
       "Rent, a salary, a subscription: set it up once and it proposes itself on the day, " +
@@ -147,6 +163,7 @@ export const problems: readonly Problem[] = [
       caption:
         "Net worth, per currency, with closing balances that reconcile to the postings behind them.",
     },
+    covers: ["numbers-that-tie-out"],
     problem: "The numbers in your budgeting app do not tie out.",
     answer: [
       "Underneath this is real double-entry bookkeeping. Every transaction settles to zero " +
@@ -161,6 +178,7 @@ export const problems: readonly Problem[] = [
 export const features: readonly Feature[] = [
   {
     icon: "wallet",
+    covers: ["multi-currency"],
     title: "Currencies kept apart",
     body:
       "A conversion records what left one account and what arrived in the other, and the " +
@@ -169,6 +187,7 @@ export const features: readonly Feature[] = [
   },
   {
     icon: "split",
+    covers: ["splits"],
     title: "One receipt, several categories",
     body:
       "Split a transaction across as many categories as it actually covers, each " +
@@ -177,6 +196,7 @@ export const features: readonly Feature[] = [
   },
   {
     icon: "target",
+    covers: ["budgets"],
     title: "Budgets that carry",
     body:
       "Per category, per group, or for a single month. What a period did not spend rolls " +
@@ -185,6 +205,7 @@ export const features: readonly Feature[] = [
   },
   {
     icon: "copy",
+    covers: ["duplicates"],
     title: "Duplicates caught on the way in",
     body:
       "A row that resembles one you already have is shown next to it, before either " +
@@ -192,6 +213,7 @@ export const features: readonly Feature[] = [
   },
   {
     icon: "layers",
+    covers: ["bulk-edits"],
     title: "Ten thousand rows at a time",
     body:
       "Change or delete up to ten thousand transactions in one go, from any view, after " +
@@ -199,6 +221,7 @@ export const features: readonly Feature[] = [
   },
   {
     icon: "list",
+    covers: ["register"],
     title: "A register for every account",
     body:
       "Every posting with the balance before and after it. Corrections append rather than " +
@@ -225,6 +248,8 @@ export const showcase = {
 } as const;
 
 export const privacy = {
+  /** As `Problem["covers"]`. */
+  covers: ["own-your-data"],
   eyebrow: "Self-hosted",
   title: "The only copy of your transactions is yours.",
   body:
@@ -240,6 +265,8 @@ export const privacy = {
 } as const;
 
 export const agents = {
+  /** As `Problem["covers"]`. */
+  covers: ["agents"],
   eyebrow: "For agents",
   title: "Let an assistant do the filing, without handing over the keys.",
   body:

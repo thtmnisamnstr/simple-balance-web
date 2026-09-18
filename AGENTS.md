@@ -11,13 +11,14 @@ separate, public repository, served from **app.smpl.money**.
 **Read the application over the network, by URL — never from a folder beside
 this one.** A local checkout is whatever state it was left in, and checking a
 claim against a stale working tree is worse than not checking, because it
-comes with confidence. `app-alignment` does it properly, including resolving
-which ref actually holds the release this site advertises: unreleased work
-sits on a branch, and today the plans, prices and advertising this site
-describes are **not on the application's default branch**.
+comes with confidence. `sync-from-app` does it properly, reading
+`docs/product/` — the contract, the feature list and every screenshot — from
+the ref that holds the released behaviour.
 
-The one exception is `capture-screenshots`, which has to _run_ the
-application and so needs it cloned.
+**Nothing here runs the application.** It used to: this repository captured
+its own screenshots. The application now publishes them, because it is the
+only repository that can run itself, and a picture taken here of a version
+checked out here was a picture nobody could reproduce.
 
 ## Architecture boundaries
 
@@ -65,7 +66,7 @@ Break one of these and the site is wrong rather than untidy.
   snapshot of it with the commit it came from. **Never refresh that snapshot
   to make a test pass** — it is the external referent, and moving it to match
   the site turns the check green while leaving the page wrong. Fix the page,
-  then refresh. Whether the contract itself has moved is `app-alignment` §0,
+  then refresh. Whether the contract itself has moved is `sync-from-app` §1,
   a one-line diff.
 - **The paid tier is "Premium" to a reader and `plus` on the wire**, in both
   repositories. Two surfaces using different words at a customer is the
@@ -80,6 +81,15 @@ Break one of these and the site is wrong rather than untidy.
   hosting provider and the payment processor is the one exception, and it is
   the opposite of branding. A host can inject its own badge into the response,
   which no test here can see — `operations.md` 8 carries those as launch steps.
+- **The application decides what the product does; this site decides how to
+  say it.** `src/content/app-features.json` is its list, pulled verbatim and
+  never edited here; `src/content/home.ts` is the rewrite for a reader who has
+  never heard of double-entry bookkeeping. The site may say **less** than the
+  product does and never more, and `tests/app-features.test.ts` holds both
+  directions through an explicit `covers` mapping — declared rather than
+  inferred, because the first version matched the application's wording
+  against the page's, which is precisely the wording a rewrite changes, and
+  it could not fail.
 - **Every claim on this site is true of the shipped application.** Nothing here
   can check that, because the application is a different repository. It is the
   rule that most needs a person.
@@ -130,14 +140,14 @@ mistakes:
 npm run dev
 npm run verify
 npm run build && npx serve out
-node scripts/capture-screenshots.mjs
+npm run build:images
 ```
 
 `npm run verify` is `typecheck → lint → format:check → build → test`.
 
 ## Recurring tasks
 
-Nine skills in `.claude/skills/` hold the procedures that repeat:
+Eight skills in `.claude/skills/` hold the procedures that repeat:
 
 - `merge-prep` — verify everything, commit, push, ready to merge. Does not
   merge.
@@ -146,13 +156,12 @@ Nine skills in `.claude/skills/` hold the procedures that repeat:
 - `guides-update` — bring the guides and `CHANGELOG.md` back to true.
 - `design-review` — review the rendered pages against `web.md`, in both themes
   and at both widths.
-- `capture-screenshots` — re-capture the application screenshots, with the four
-  traps already paid for.
+
 - `write-content` — write a post or a documentation page, with the frontmatter
   contract and the traps that fail a build.
-- `app-alignment` — diff the application's published contract against the
-  snapshot this repository holds, and reconcile whatever moved. Most runs end
-  at the diff.
+- `sync-from-app` — pull the application's contract, feature list and
+  screenshots, rewrite the features for a general reader, and update the site.
+  Most runs end at the diff in §1.
 - `legal-review` — bring the privacy policy and terms back to true when
   something changes what data is handled or who handles it.
 - `optimize` — page weight, images, fonts, metadata and findability, beyond

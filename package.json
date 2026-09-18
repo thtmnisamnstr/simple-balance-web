@@ -12,7 +12,6 @@
     "dev": "next dev",
     "build": "next build",
     "build:images": "node scripts/build-images.mjs",
-    "screenshots": "node scripts/capture-screenshots.mjs",
     "start": "serve out",
     "typecheck": "tsc --noEmit",
     "lint": "oxlint --deny-warnings src tests",

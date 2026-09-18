@@ -149,43 +149,38 @@ Next for this page. Both are real options and neither is worth it today.
 _Checked by:_ `tests/export-shape.test.ts` asserts the two directives that
 carry the argument.
 
-## 4. Screenshots
+## 4. Screenshots come from the application
 
-**House.** `scripts/capture-screenshots.mjs` drives a real instance with
-Playwright and writes WebP at 1600px into `public/screenshots/`.
+**House.** This repository takes no screenshots. The application publishes
+every screen of itself, in both themes, at `docs/product/screenshots/`, and
+`sync-from-app` pulls the handful this site uses into `public/screenshots/`.
 
-It is not in `npm run verify`, deliberately: it needs the application
-**running** — a clone of `https://github.com/thtmnisamnstr/simple-balance`,
-not a read of it — plus a throwaway PostgreSQL, the API on :3000 and Vite on
-:5173, and the better part of a minute. Run it when the application's look changes, not on
-every commit.
+**It used to capture its own**, which meant cloning the application, seeding
+a database and driving two dev servers from here. That worked and was wrong
+in a way worth recording: a picture taken here, of whatever revision happened
+to be checked out, was a picture nobody could reproduce — and the repository
+that can actually run the application is the application's.
 
-The runbook:
+What this side owns is which shots ship and what they claim. The application
+photographs all thirteen screens; this site uses five, because an unused
+screenshot is a file that goes stale with nothing to notice. `web.md` 5
+governs them once they are here, and **the alt text describes what the
+picture shows**, so a refreshed screenshot means re-reading the alt text —
+the thing most likely to be left behind.
 
 ```sh
-# 1. a throwaway database — NOT the development one
-docker run -d --name sb-shots-pg -e POSTGRES_PASSWORD=postgres \
-  -e POSTGRES_USER=postgres -e POSTGRES_DB=sb_shots -p 55432:5432 postgres:18-alpine
-
-# 2. the application — cloned, because this has to RUN it
-#    git clone https://github.com/thtmnisamnstr/simple-balance
-DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:55432/sb_shots \
-APP_BASE_URL=http://localhost:5173 PORT=3000 AUTH_MODE=local ALLOWED_EMAILS='*' \
-AUTH_SECRET=screenshot-capture-secret-long-enough-for-the-validator-01 \
-RECURRENCE_SCHEDULER=false npx tsx src/server/index.ts &
-npx vite --port 5173 --strictPort &
-
-# 3. capture
-node scripts/capture-screenshots.mjs
+APP=thtmnisamnstr/simple-balance
+curl -fsSL "https://raw.githubusercontent.com/$APP/main/docs/product/screenshots/dashboard-light.webp" \
+  -o public/screenshots/dashboard-light.webp
 ```
 
-The seed is idempotent — it looks up accounts and categories by name before
-creating them, and the transaction idempotency keys are stable — so a
-half-finished capture resumes rather than colliding with itself.
+**They are only on `main` once the release lands.** Until 0.2.0 merges,
+`docs/product/` exists on a branch, and a fetch against `main` returns 404
+rather than something stale — which is the right failure and an easy one to
+misread as "no screenshots".
 
-**Why the current month.** Every page in the application defaults to a
-this-month range. A ledger seeded evenly across ninety days renders a dashboard
-reporting almost nothing, which is what the first capture produced.
+_Checked by:_ `tests/home-page.test.tsx` for alt text and dimensions;
+`tests/budget.test.ts` for weight. Whether a picture is any good is `human`.
 
 ## 5. Continuous integration
 

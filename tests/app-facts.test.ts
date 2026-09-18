@@ -9,7 +9,7 @@ import { site } from "@/content/home";
  * The application publishes `docs/product-facts.json` — generated from its
  * own constants and held to them by its own test — and
  * `src/content/app-facts.json` is a snapshot of it, refreshed by the
- * `app-alignment` skill and never edited by hand.
+ * `sync-from-app` skill and never edited by hand.
  *
  * **That snapshot is what makes drift a CI failure rather than something
  * somebody notices.** Before it, every test here held the site to itself: the

@@ -31,7 +31,7 @@ src/styles/         brand.css (shared with the app) and site.css
 content/blog/       posts, as Markdown with frontmatter
 content/docs/       documentation pages
 docs/standards/     the design, content and code standards
-.claude/skills/     nine procedures that repeat
+.claude/skills/     eight procedures that repeat
 scripts/            the screenshot capture
 ```
 

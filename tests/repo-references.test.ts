@@ -10,19 +10,23 @@ import { sourceFiles } from "./support/source";
  * against a stale working tree is worse than an unchecked claim: it arrives
  * with confidence.
  *
- * `capture-screenshots` is the exception and says so — it has to *run* the
- * application, which a URL cannot do.
+ * There is no exception any more. This repository used to capture its own
+ * screenshots, which meant cloning the application to run it; the
+ * application publishes them now, so nothing here needs a clone at all.
  */
 
 const APP_REPO = "https://github.com/thtmnisamnstr/simple-balance";
 const docs = sourceFiles("docs", /\.md$/).concat(sourceFiles(".claude", /\.md$/));
 
-/** Files allowed to describe a local clone, with the reason each is. */
-const NEEDS_A_CLONE: Record<string, string> = {
-  ".claude/skills/capture-screenshots/SKILL.md":
-    "Drives the running application with Playwright, which a URL cannot do.",
-  "docs/standards/operations.md": "Carries the screenshot runbook, for the same reason.",
-};
+/**
+ * Files allowed to describe a local clone.
+ *
+ * Empty, and that is the point: the application publishes its own
+ * screenshots now, so no procedure here needs to run it. An entry appearing
+ * in this record is a procedure that has started needing a checkout, which
+ * is a decision worth seeing in a diff.
+ */
+const NEEDS_A_CLONE: Record<string, string> = {};
 
 describe("references to the application", () => {
   it("found documents to check", () => {
@@ -43,8 +47,8 @@ describe("references to the application", () => {
   it("names the repository by its URL wherever it reads it", () => {
     // The alignment skill is the one that reads the application. If it
     // stopped naming the URL, it would be reading something else.
-    const alignment = docs.find((d) => d.path.endsWith("app-alignment/SKILL.md"));
-    expect(alignment, "the app-alignment skill exists").toBeTruthy();
+    const alignment = docs.find((d) => d.path.endsWith("sync-from-app/SKILL.md"));
+    expect(alignment, "the sync-from-app skill exists").toBeTruthy();
     expect(alignment!.code).toContain(APP_REPO);
     expect(alignment!.code).toContain("raw.githubusercontent.com");
   });
@@ -53,14 +57,17 @@ describe("references to the application", () => {
     // Reading the default branch is the failure this guards: unreleased work
     // sits on a branch, and a check against the wrong ref finds nothing and
     // concludes the site is wrong about everything.
-    const alignment = docs.find((d) => d.path.endsWith("app-alignment/SKILL.md"))!;
+    const alignment = docs.find((d) => d.path.endsWith("sync-from-app/SKILL.md"))!;
     // Matching the caution rather than one wording of it: the phrasing has
     // already changed once, and pinning a sentence makes a rewrite fail for
     // no reason while pinning nothing lets the caution disappear.
-    expect(alignment.code).toMatch(/not always `main`|do not assume `main`/i);
+    // The caution, not one wording of it: the phrasing has already changed
+    // twice, and pinning a sentence makes a rewrite fail for no reason while
+    // pinning nothing lets the caution disappear.
+    expect(alignment.code).toMatch(/usually `main`|not always `main`|do not assume `main`/i);
     expect(alignment.code).toContain("gh pr list");
-    // And it must actually read the published contract rather than grep.
-    expect(alignment.code).toContain("product-facts.json");
+    // And it must read the published kit rather than grep the source.
+    expect(alignment.code).toContain("docs/product/");
   });
 
   it("lets only the procedures that must run the app ask for a clone", () => {

@@ -18,7 +18,7 @@ Each item says what it is, why it is not done, and what done looks like.
 | --- | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1.1 | **Four "Hosted version soon" controls** — the header, the hero, and both pricing CTAs. | They become links to `app.smpl.money`. `web.md` 6.1 is the rule; `tests/home-page.test.tsx` and `tests/pricing.test.tsx` both assert the current state, so **they fail on purpose** when you change it. Updating them in the same commit is the checklist. |
 | 1.2 | **No screenshot of the plan and billing tab.**                                         | Once the app is deployed with Stripe configured, capture it (`capture-screenshots`) and use it on the pricing page.                                                                                                                                        |
-| 1.3 | **Screenshots show a locally seeded ledger.**                                          | They are real captures of the real application and are correctly disclosed, so this is a refresh rather than a gap. Re-run `capture-screenshots` whenever the app's look changes.                                                                          |
+| 1.3 | **Screenshots show a seeded ledger.**                                                  | They are real captures of the real application, taken by the application's own `product-kit` against a committed seed, and correctly disclosed. Run `sync-from-app` to pull fresh ones whenever the app's look changes.                                    |
 
 ## 2. Waiting on an account or an asset
 
@@ -108,7 +108,8 @@ product rather than being finished.
   adapts rather than needing writing.
 - **Keeping dependencies current.** `update-dependencies`, which is a skill
   rather than a note because it is a thing that repeats.
-- **Refreshing screenshots** when the application's look changes.
+- **Refreshing screenshots and the feature list** when the application
+  changes. `sync-from-app` pulls both; the application builds them.
 
 ## 5. How to pick something up
 
