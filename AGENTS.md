@@ -55,6 +55,11 @@ Break one of these and the site is wrong rather than untidy.
   AdSense disclosures** — third-party cookies, the vendors that set them, and
   how to opt out. A generic policy is a false statement about somebody's data,
   and a missing disclosure is a breach whose penalty is suspension.
+- **No third-party branding.** No vendor logo, badge or "powered by" mark, and
+  no script or image from a vendor's domain. The privacy policy naming the
+  hosting provider and the payment processor is the one exception, and it is
+  the opposite of branding. A host can inject its own badge into the response,
+  which no test here can see — `operations.md` 8 carries those as launch steps.
 - **Every claim on this site is true of the shipped application.** Nothing here
   can check that, because the application is a different repository. It is the
   rule that most needs a person.
@@ -112,7 +117,7 @@ node scripts/capture-screenshots.mjs
 
 ## Recurring tasks
 
-Six skills in `.claude/skills/` hold the procedures that repeat:
+Nine skills in `.claude/skills/` hold the procedures that repeat:
 
 - `merge-prep` — verify everything, commit, push, ready to merge. Does not
   merge.
@@ -125,6 +130,12 @@ Six skills in `.claude/skills/` hold the procedures that repeat:
   traps already paid for.
 - `write-content` — write a post or a documentation page, with the frontmatter
   contract and the traps that fail a build.
+- `app-alignment` — check every claim, price, limit, token and screenshot
+  against the application, which no test here can see.
+- `legal-review` — bring the privacy policy and terms back to true when
+  something changes what data is handled or who handles it.
+- `optimize` — page weight, images, fonts, metadata and findability, beyond
+  what the budget gates.
 
 `docs/roadmap.md` records that there is no outstanding engineering work, and
 what remains waits on the application, on an account, or was decided against

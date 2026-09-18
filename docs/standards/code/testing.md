@@ -73,11 +73,24 @@ Each now strips what it should never have been reading.
 
 ## 3. Tiers
 
-One tier: Vitest in jsdom. There is no integration tier because there is no
-server, and no browser tier yet.
+Two, and there is no integration tier because there is no server.
 
-**What jsdom cannot see** is the same list as anywhere: layout, rhythm,
-alignment, focus order, anything computed from CSS. Every visual rule in
-`web.md` is therefore `human`, and `design-review` is that pass. A browser tier
-becomes worth adding the first time a responsive or focus defect reaches the
-live site.
+**jsdom**, for everything that is a fact about markup, content or the built
+output — the great majority of this suite, and fast.
+
+**A browser**, for the one thing jsdom cannot do at all. `tests/a11y.test.ts`
+serves `out/` itself, drives Chromium through Playwright, and runs axe over
+every emitted page in both themes. Colour contrast is the reason it exists:
+jsdom has no layout engine and no computed styles, so a token change that
+makes text unreadable is invisible to every other test here and to every
+reviewer who did not happen to open that page in that theme.
+
+It is the only test that needs a browser, and it is skippable by one named
+variable — `SKIP_BROWSER_TESTS=1`, set in `netlify.toml` and nowhere else,
+because Netlify's build image is not guaranteed to have the libraries Chromium
+needs. `operations.md` 5 explains why the skip is explicit rather than
+conditional on Chromium being present.
+
+**What neither tier can see** is rhythm, alignment, balance, and whether a
+section is in a sensible place. Those rules in `web.md` are `human`, and
+`design-review` is that pass.

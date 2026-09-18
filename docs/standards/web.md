@@ -220,7 +220,25 @@ _Checked by:_ `tests/home-page.test.tsx`, which asserts the label is neither a
 link nor a button — so making it one is a deliberate change with a failing test
 attached.
 
-### 6.2 A breadcrumb's current page is not a link
+### 6.2 A control that is waiting says what it is waiting for
+
+**House.** The pending control reads **"Hosted version soon"**, not "Coming
+soon".
+
+Two words that name nothing answer neither question a reader has — what is
+coming, and why would they wait for it. This names the thing, and the thing it
+names is the one capability the page has just finished saying the product does
+not have: a version somebody else runs.
+
+The label is one string in `src/content/home.ts` and one in
+`src/content/pricing.ts`, and they say the same words on purpose. A header
+that says one thing and a pricing button that says another describes two
+different states.
+
+_Checked by:_ `tests/home-page.test.tsx` and `tests/pricing.test.tsx` for the
+control being text rather than a control; the wording is `human`.
+
+### 6.3 A breadcrumb's current page is not a link
 
 **House.** The last crumb is a `<span>` with `aria-current="page"`. A link to
 the page you are on is a control that does nothing.
@@ -229,11 +247,37 @@ The separator is a CSS pseudo-element rather than a character in the markup, so
 a screen reader reads "Docs, Reference, Configuration" and not "Docs slash
 Reference slash Configuration".
 
-### 6.3 Link text makes a promise it keeps
+### 6.4 Link text makes a promise it keeps
 
 **House.** No "click here", no "read more". The text says where it goes.
 
 _Checked by:_ `tests/home-page.test.tsx`.
+
+### 6.5 No third-party branding, anywhere this repository controls
+
+**Binding.** No vendor logo, badge, "powered by" mark, or script and image
+loaded from a vendor's domain.
+
+A marketing site is an argument about one product. A second brand in the
+corner is advertising the reader did not ask for, and on a page about
+somebody's money it is a second party to wonder about. It is also somebody
+else's decision about what this page says.
+
+**One exception, and it is the opposite of branding.** The privacy policy
+names the hosting provider and the payment processor, because a policy that
+hides who processes the data is not a policy. `tests/branding.test.ts` names
+those two pages and requires them to exist.
+
+**A host can inject its own badge into the response**, which no test here can
+see. Netlify does exactly that on free projects created on or after 19 August
+2026, and it is turned off in **Project configuration → General → Powered by
+Netlify badge** — a dashboard setting, not a repository one.
+`operations.md` 8 carries it as a launch step, because a rule whose violation
+arrives from outside the repository needs somewhere to live that is not a
+test.
+
+_Checked by:_ `tests/branding.test.ts`, for the half that is ours: no vendor
+word in any page's visible markup, and no subresource from a vendor's domain.
 
 ## 7. Structure
 

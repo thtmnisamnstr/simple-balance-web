@@ -254,7 +254,72 @@ builds on.
 screenshot script, which never runs on Netlify — so the usual
 native-module-across-Node-versions hazard does not reach the build.
 
-## 7. DNS
+## 7. What the build emits besides pages
+
+### 7.1 A social card, built rather than rendered
+
+**House.** `scripts/build-images.mjs` draws `public/og.png` at build time and
+a cover per post. Next's `ImageResponse` renders per request, which is a
+server — the thing `output: "export"` exists to avoid.
+
+A link to this site without one renders a blank rectangle, which on a
+marketing page is the one picture guaranteed to be seen.
+
+_Checked by:_ `human` that it looks right; `tests/budget.test.ts` that it is
+not oversized.
+
+### 7.2 Icons and a manifest
+
+**House.** `favicon.svg` and `apple-touch-icon.png` are byte-identical copies
+of the application's, so the two surfaces carry one mark. A 48px PNG sits
+beside the SVG for clients that will not take one, and `manifest.ts` supplies
+the name and icon for a home-screen shortcut.
+
+The `.ico` container is deliberately absent: it exists for browsers this site
+does not otherwise support.
+
+### 7.3 The sitemap is a list, and a test holds it to the build
+
+**Binding.** `src/app/sitemap.ts` is maintained by hand, so a page added
+without touching it is a page nothing is told about — and nothing else would
+notice, because the page works perfectly.
+
+`tests/sitemap.test.ts` compares it against the routes the export actually
+emitted, in both directions: nothing missing, and nothing listed that does not
+exist. The error page is the named exception.
+
+### 7.4 A weight budget, on transferred bytes
+
+**House.** `tests/budget.test.ts` measures gzipped size, because that is what
+crosses the network; raw bytes overstate text threefold and would make every
+number a fact about disk.
+
+The budgets sit just above what the site currently meets, so the check fails
+on a change of _kind_ — a fourth island, a charting library, an analytics tag
+— rather than on a change of degree. About 170 KB of the JavaScript is Next
+and React themselves (1.1), and pretending that floor away would make the
+budget a lie.
+
+Deliberately **not** a Lighthouse run: it measures a network and a CPU that
+are not the same twice, and a flaky performance gate is one people learn to
+re-run rather than read.
+
+## 8. Settings that live in a dashboard
+
+**Recorded here because a rule whose violation arrives from outside the
+repository needs somewhere to live that is not a test.** None of these can be
+set from this tree, and each is a launch step.
+
+| Where                                     | Setting                           | Why                                                                                                                                                                                          |
+| ----------------------------------------- | --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Netlify → Project configuration → General | **Powered by Netlify badge: off** | On by default for free projects created on or after 19 August 2026. It is third-party branding on the page, which `web.md` 6.5 forbids from this repository and cannot forbid from the host. |
+| Netlify → Project configuration → Build   | Build command is `npm run verify` | Set from `netlify.toml`, but confirm it took. A deploy that only ran `next build` is a deploy with no gate.                                                                                  |
+| Netlify → Deploy previews                 | On                                | The preview is the only place anybody looks at a change before it ships.                                                                                                                     |
+| GitHub → Branch protection                | Require the `verify` check        | Otherwise Actions reports a failure nothing acts on.                                                                                                                                         |
+| AdSense → Privacy and messaging           | A European regulations message    | Required before ads may serve to the EEA, the UK or Switzerland. `docs/adsense.md` §5.                                                                                                       |
+| AdSense → account                         | Auto ads **off**                  | An account setting no code can override, injecting formats the application promises not to show.                                                                                             |
+
+## 9. DNS
 
 The apex serves this site; `app.` serves the application, from different
 infrastructure.
@@ -275,7 +340,7 @@ Two that cost a day if they are wrong:
   Netlify's CA breaks its renewal with no symptom but a retry loop. Publish
   none, or name both.
 
-## 8. What is checked, and what is not
+## 10. What is checked, and what is not
 
 | Rule                          | Held by                                         |
 | ----------------------------- | ----------------------------------------------- |

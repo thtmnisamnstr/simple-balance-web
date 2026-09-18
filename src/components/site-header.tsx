@@ -4,11 +4,11 @@ import { LogoMark } from "@/components/icons";
 /**
  * The header.
  *
- * The sign-in control is a `<span>` carrying the "Coming soon" label, not a
- * disabled `<button>` or a link to app.smpl.money. The app is not deployed, so
- * a link would 404 and a disabled button would imply something on this page
- * could enable it. A word that states the situation is the honest control.
- * `docs/standards/web.md` 6.4.
+ * The sign-in control is a `<span>` carrying the pending label, not a disabled
+ * `<button>` or a link to app.smpl.money. The app is not deployed, so a link
+ * would 404 and a disabled button would imply something on this page could
+ * enable it. A phrase that states the situation is the honest control.
+ * `docs/standards/web.md` 6.1.
  */
 export function SiteHeader() {
   return (

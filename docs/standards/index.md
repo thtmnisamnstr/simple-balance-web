@@ -21,6 +21,12 @@ picking this up:
   this site's `ads.txt` authorises them, and the one mistake that costs revenue
   with no symptom.
 
+Nine skills in `../../.claude/skills/` turn the recurring work into
+procedures: preparing a branch for merge, updating dependencies, writing
+content, keeping the guides true, reviewing the design, re-capturing
+screenshots, checking alignment with the application, reviewing the legal
+pages, and optimising what ships.
+
 `../../AGENTS.md` sits above all of them and holds the invariants — the rules
 that, broken, make this site wrong rather than untidy. Where a guide and
 `AGENTS.md` disagree, `AGENTS.md` wins and the guide records the disagreement

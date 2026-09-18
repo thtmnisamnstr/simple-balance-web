@@ -88,11 +88,20 @@ export const hero = {
     "Every account on one page, bank statements that file themselves, and reports that " +
     "trace back to the entries that made them. Self-hosted, so the only copy of your " +
     "transactions is the one you keep.",
-  /** The app is not deployed yet, so the sign-in control states that plainly
-   *  rather than linking somewhere that 404s. `docs/standards/web.md` 6.4. */
-  primaryLabel: "Coming soon",
+  /**
+   * The app is not deployed yet, so this states the situation rather than
+   * linking somewhere that 404s (`docs/standards/web.md` 6.1).
+   *
+   * "Coming soon" on its own was two words that answered neither question a
+   * reader has: what is coming, and why would they wait for it. This names
+   * the thing — a version somebody else runs — which is the one capability
+   * the page has just finished saying it does not have.
+   */
+  primaryLabel: "Hosted version soon",
   secondaryLabel: "Get the source",
-  note: "AGPL-3.0. Runs on one machine with PostgreSQL, and nothing else.",
+  note:
+    "Self-host it today — AGPL-3.0, one machine and a PostgreSQL. A hosted " +
+    "version you do not have to run is coming.",
 } as const;
 
 export const problems: readonly Problem[] = [

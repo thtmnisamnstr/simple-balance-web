@@ -82,13 +82,32 @@ describe("the homepage copy", () => {
   });
 
   it("does not offer a link to the app while the app is not deployed", () => {
-    // The whole reason the control says "Coming soon". A link to app.smpl.money
+    // The whole reason the control is a label rather than a link. One to
     // anywhere in the copy would 404 for every reader.
     const linking = all.filter(
       ([path, text]) => path !== "content.site.appUrl" && text.includes("app.smpl.money"),
     );
     expect(linking).toEqual([]);
-    expect(content.hero.primaryLabel).toBe("Coming soon");
+  });
+
+  it("says what is coming, not merely that something is", () => {
+    // "Coming soon" answered neither question a reader has: what, and why
+    // wait. `web.md` 6.2. This asserts the shape rather than the exact
+    // words, so rewording stays free and going back to two empty words
+    // does not.
+    const label = content.hero.primaryLabel;
+    expect(label.length, `"${label}" is too short to name anything`).toBeGreaterThan(12);
+    expect(label.toLowerCase()).not.toBe("coming soon");
+    expect(label.length, `"${label}" will not fit a button`).toBeLessThanOrEqual(24);
+  });
+
+  it("uses the same pending label everywhere", () => {
+    // A header saying one thing and a pricing button saying another
+    // describes two different states.
+    const labels = new Set(
+      all.filter(([, text]) => /\bsoon\b/i.test(text) && text.length <= 24).map(([, text]) => text),
+    );
+    expect([...labels]).toEqual([content.hero.primaryLabel]);
   });
 
   it("publishes exactly one contact address", () => {

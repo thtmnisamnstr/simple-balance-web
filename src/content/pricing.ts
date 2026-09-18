@@ -37,7 +37,8 @@ export const pricing = {
     "keep, and whether the page carries an ad.",
   note:
     "Prices are in US dollars. The annual plan is two months cheaper than paying monthly, and " +
-    "you can move between them whenever you like.",
+    "you can move between them whenever you like. The hosted version is not open yet; " +
+    "self-hosting is available today and always will be.",
 } as const;
 
 export const tiers: readonly Tier[] = [
@@ -48,7 +49,7 @@ export const tiers: readonly Tier[] = [
     priceNote: "forever",
     summary: `Up to ${MAX_FREE_ACCOUNTS} accounts, with ads.`,
     who: "Most people, most of the time. A current account, a savings account and a card is three.",
-    cta: { label: "Coming soon", pending: true },
+    cta: { label: "Hosted version soon", pending: true },
   },
   {
     key: "premium",
@@ -57,7 +58,7 @@ export const tiers: readonly Tier[] = [
     priceNote: "a year, or $2 a month",
     summary: "As many accounts as you need, and no ads.",
     who: "Anyone tracking more than three accounts, or anyone who would simply rather not see an ad on a page showing their balances.",
-    cta: { label: "Coming soon", pending: true },
+    cta: { label: "Hosted version soon", pending: true },
     featured: true,
   },
   {
