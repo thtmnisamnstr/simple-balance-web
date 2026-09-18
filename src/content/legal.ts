@@ -14,7 +14,7 @@
  */
 
 /** Bumped whenever either document changes materially. Rendered on both. */
-export const legalUpdated = "2026-09-17";
+export const legalUpdated = "2026-09-18";
 
 export const operator = {
   /** Who is responsible for the hosted deployment, in the legal sense. */
@@ -99,9 +99,14 @@ export const privacy = {
           "Google's script at all.",
         "Google and its partners use cookies and similar technologies to serve ads. **Ads are " +
           "requested as non-personalised by default**, which means they are based on the page " +
-          "and your rough location rather than on a profile of you. Where a consent management " +
-          "platform is in use for readers in the EEA and the UK, ads are personalised only if " +
-          "you consent, and you can change that choice at any time through the consent control.",
+          "and your rough location rather than on a profile of you.",
+        "**Non-personalised is not the same as cookie-free.** Even these ads set cookies, for " +
+          "frequency capping and fraud prevention, which is why consent is asked for in the " +
+          "EEA, the UK and Switzerland regardless of whether the ads are personalised. That " +
+          "consent is collected through Google's own certified consent platform before any ad " +
+          "cookie is set, and you can change or withdraw it at any time from the same notice. " +
+          "Declining means no ads are served to you.",
+        "Ads are only ever personalised if you have consented to that specifically.",
         "Google's own description of how it uses data from sites that use its services is at " +
           "policies.google.com/technologies/partner-sites. You can control ad personalisation " +
           "across Google's products at myadcenter.google.com, and opt out of third-party vendor " +
@@ -123,9 +128,19 @@ export const privacy = {
     {
       heading: "Email",
       paragraphs: [
-        "The application sends email only for things you asked for: confirming your address, " +
-          "resetting a password, and reminders about recurring transactions if you turn them on. " +
-          "There is no marketing email and no newsletter.",
+        "**Email you asked for.** Confirming your address, resetting a password, and reminders " +
+          "about recurring transactions if you turn them on. These stop when you stop asking " +
+          "for them.",
+        "**Email about the service itself** — planned maintenance, a change that affects your " +
+          "data, a feature being retired, a security matter. These are part of running the " +
+          "service rather than marketing, so they are sent to every account and there is no " +
+          "unsubscribe from them. We keep them rare and we keep them factual.",
+        "**Occasional email about the product**, such as a significant new capability. Every " +
+          "one carries an unsubscribe link that works immediately and without signing in, and " +
+          "unsubscribing from these does not affect the two kinds above. If you would rather " +
+          "not receive any, say so when you create the account or unsubscribe from the first.",
+        "There is no newsletter, nothing is sold to a mailing-list broker, and your address is " +
+          "never shared for anybody else's marketing.",
         "A deployment configured with no mail server sends none of these, and the features that " +
           "need them are simply absent rather than broken.",
       ],
@@ -188,12 +203,23 @@ export const privacy = {
       ],
     },
     {
-      heading: "Cookies",
+      heading: "Cookies, and why this site has no banner",
       paragraphs: [
-        "The website sets none.",
-        "The application sets a session cookie, which is strictly necessary to keep you signed " +
-          "in and is not used for anything else, and a preference cookie remembering your theme. " +
-          "On the free plan, Google sets cookies for advertising as described above.",
+        "**smpl.money sets no cookies at all.** No analytics, no tracking pixel, no third-party " +
+          "script. There is nothing to ask you about, so there is no banner — a consent notice " +
+          "on a site that stores nothing would be theatre.",
+        "**The application sets two of its own.** A session cookie, which is strictly necessary " +
+          "to keep you signed in, and a preference cookie remembering whether you chose the " +
+          "light or dark theme. Neither is used for anything else, neither is shared, and " +
+          "neither requires consent: one is essential to a service you asked for, the other " +
+          "stores a choice you made.",
+        "**On the free plan, Google sets cookies for advertising**, and those are the ones that " +
+          "do require your consent. If you are in the EEA, the UK or Switzerland, you will be " +
+          "asked before any of them are set, through a consent notice provided by Google's own " +
+          "certified consent platform. You can change or withdraw that choice at any time from " +
+          "the same notice.",
+        "Declining means you see no advertising. It does not limit the product in any other " +
+          "way, and nothing about your account changes.",
       ],
     },
     {
@@ -273,6 +299,17 @@ export const terms = {
           "knowledge, to attack or overload the service, or to try to reach another person's " +
           "account. Automated access through the provided API and MCP interfaces is expected and " +
           "welcome, within the documented rate limits.",
+      ],
+    },
+    {
+      heading: "Email we will send you",
+      paragraphs: [
+        "Holding an account means we can email you about the service: maintenance, a change " +
+          "that affects your data, a retirement, a security matter. There is no unsubscribe " +
+          "from those, because they are how we tell you something you need to know.",
+        "Anything else — occasional news about the product — carries an unsubscribe link that " +
+          "works immediately, and unsubscribing does not affect your account or the messages " +
+          "above. The privacy policy sets out the lawful basis for each.",
       ],
     },
     {

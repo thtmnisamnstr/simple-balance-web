@@ -54,8 +54,37 @@ describe("the privacy policy", () => {
     expect(privacy.intro.join(" ").toLowerCase()).toContain("somebody else runs");
   });
 
-  it("gives a contact address that is one of the two published ones", () => {
-    expect(text).toMatch(/support@smpl\.money|info@smpl\.money/);
+  it("gives a contact address that is the published one", () => {
+    expect(text).toContain("info@smpl.money");
+  });
+
+  it("says why this site has no cookie banner, rather than leaving it unsaid", () => {
+    // The question a reader has, answered in the document rather than in a
+    // support email. The site sets nothing, so a banner would be theatre.
+    expect(text).toContain("sets no cookies at all");
+    expect(text).toContain("no banner");
+  });
+
+  it("does not claim non-personalised ads are cookie-free", () => {
+    // The mistake that would make this policy false. Non-personalised ads
+    // still set cookies for frequency capping and fraud prevention, which is
+    // why consent is asked for in the EEA regardless.
+    expect(text).toContain("non-personalised is not the same as cookie-free");
+    expect(text).toMatch(/frequency capping/);
+  });
+
+  it("says consent is collected before an ad cookie is set, and can be withdrawn", () => {
+    expect(text).toContain("before any ad cookie is set");
+    expect(text).toContain("withdraw");
+  });
+
+  it("separates service email from product email, and only one has an unsubscribe", () => {
+    // Service mail rests on the contract and has no unsubscribe; product mail
+    // rests on legitimate interests and must carry one in every message.
+    // Conflating them is how a maintenance notice ends up unsendable.
+    expect(text).toContain("there is no unsubscribe from them");
+    expect(text).toContain("unsubscribe link that works immediately");
+    expect(text).toContain("legitimate interests");
   });
 });
 
@@ -88,6 +117,10 @@ describe("the terms", () => {
 
   it("promises notice before the service could disappear", () => {
     expect(text).toContain("60 days");
+  });
+
+  it("tells account holders which email they cannot opt out of", () => {
+    expect(text).toContain("no unsubscribe from those");
   });
 });
 
