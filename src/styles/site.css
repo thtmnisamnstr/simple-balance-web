@@ -665,18 +665,8 @@ svg {
 }
 
 .footer-contact {
-  list-style: none;
   margin: 0;
-  padding: 0;
-  display: grid;
-  gap: var(--s-2);
   font-size: var(--step--1);
-}
-
-/* The label is what makes two addresses useful rather than a choice the
-   reader has to guess at. `docs/standards/content.md` 4.1. */
-.footer-contact-label {
-  color: var(--muted);
 }
 
 .footer-contact a {

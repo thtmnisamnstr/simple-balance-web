@@ -93,12 +93,14 @@ describe("the homepage", () => {
     expect(vague).toEqual([]);
   });
 
-  it("offers both contact addresses as mailto links", () => {
+  it("offers one contact address as a mailto link", () => {
+    // One, and the count is the assertion: `content.md` 4.1 records why the
+    // second was removed, so a third appearing should fail rather than pass.
     const { container } = render(<SiteFooter />);
     const mailtos = [...container.querySelectorAll('a[href^="mailto:"]')].map((a) =>
       a.getAttribute("href"),
     );
-    expect(mailtos).toEqual(["mailto:info@smpl.money", "mailto:support@smpl.money"]);
+    expect(mailtos).toEqual(["mailto:info@smpl.money"]);
   });
 
   it("marks decorative icons hidden from assistive technology", () => {

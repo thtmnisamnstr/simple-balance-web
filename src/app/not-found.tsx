@@ -30,7 +30,7 @@ export default function NotFound() {
             Go to the homepage
           </a>
           <a className="button button-secondary" href={site.sourceUrl}>
-            Read the source
+            Get the source
           </a>
         </div>
       </div>

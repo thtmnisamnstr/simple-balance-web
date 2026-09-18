@@ -20,7 +20,6 @@ export const operator = {
   /** Who is responsible for the hosted deployment, in the legal sense. */
   name: "Gavin Johnson",
   contact: "info@smpl.money",
-  privacyContact: "support@smpl.money",
 } as const;
 
 export type Section = { readonly heading: string; readonly paragraphs: readonly string[] };
@@ -207,8 +206,8 @@ export const privacy = {
     {
       heading: "Contact",
       paragraphs: [
-        "Write to support@smpl.money for anything about your data, or info@smpl.money for " +
-          "anything else. There is a person at the other end.",
+        "Write to info@smpl.money about anything on this page, or anything else. There is a " +
+          "person at the other end.",
       ],
     },
   ] satisfies readonly Section[],

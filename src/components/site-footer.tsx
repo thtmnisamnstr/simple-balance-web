@@ -15,14 +15,12 @@ export function SiteFooter() {
             ))}
           </nav>
 
-          <ul className="footer-contact">
-            {contact.lines.map((line) => (
-              <li key={line.address}>
-                <span className="footer-contact-label">{line.label}</span>{" "}
-                <a href={`mailto:${line.address}`}>{line.address}</a>
-              </li>
-            ))}
-          </ul>
+          {/* One address, so no label: a single mailto under the word
+              "General" is a category with nothing to distinguish it from.
+              `docs/standards/content.md` 4.1. */}
+          <p className="footer-contact">
+            <a href={`mailto:${contact.address}`}>{contact.address}</a>
+          </p>
         </div>
       </div>
 

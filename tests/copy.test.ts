@@ -91,14 +91,15 @@ describe("the homepage copy", () => {
     expect(content.hero.primaryLabel).toBe("Coming soon");
   });
 
-  it("labels both contact addresses", () => {
-    const addresses = content.contact.lines.map((line) => line.address);
-    expect(addresses).toEqual(["info@smpl.money", "support@smpl.money"]);
-    for (const line of content.contact.lines) {
-      expect(line.label.length, `${line.address} needs a label saying which it is`).toBeGreaterThan(
-        2,
-      );
-    }
+  it("publishes exactly one contact address", () => {
+    // Two was the previous design and `content.md` 4.1 records why it was
+    // wrong for this surface. This asserts the count, not just the value, so
+    // adding a second is a decision with a failing test attached.
+    expect(content.contact.address).toBe("info@smpl.money");
+    const addresses = all
+      .flatMap(([, text]) => [...text.matchAll(/[\w.]+@smpl\.money/g)].map((m) => m[0]))
+      .filter((address, index, list) => list.indexOf(address) === index);
+    expect(addresses).toEqual(["info@smpl.money"]);
   });
 
   it("has no doubled spaces or stray whitespace", () => {

@@ -57,10 +57,15 @@ export const site = {
   domain: "smpl.money",
   appUrl: "https://app.smpl.money",
   sourceUrl: "https://github.com/thtmnisamnstr/simple-balance",
-  /** General enquiries. Support has its own address so a question about a
-   *  deployment does not land in the same place as a press email. */
+  /**
+   * One address, deliberately.
+   *
+   * There was a second for support. Publishing two asks the reader to
+   * classify their own message before they have written it, and a marketing
+   * site is where somebody arrives *before* they are a customer with a
+   * support question — so the split was sorting mail nobody had sent yet.
+   */
   contactEmail: "info@smpl.money",
-  supportEmail: "support@smpl.money",
   tagline: "Double-entry bookkeeping for your own money, on your own server.",
   /**
    * The tab and search-result form of the tagline, kept separate because the
@@ -86,7 +91,7 @@ export const hero = {
   /** The app is not deployed yet, so the sign-in control states that plainly
    *  rather than linking somewhere that 404s. `docs/standards/web.md` 6.4. */
   primaryLabel: "Coming soon",
-  secondaryLabel: "Read the source",
+  secondaryLabel: "Get the source",
   note: "AGPL-3.0. Runs on one machine with PostgreSQL, and nothing else.",
 } as const;
 
@@ -251,12 +256,11 @@ export const primaryNav = [{ label: "Pricing", href: "/pricing/" }] as const;
 
 export const contact = {
   eyebrow: "Get in touch",
-  /** Two addresses, and the page says which is which. An unlabelled mailto is
-   *  how a support question reaches a mailbox nobody reads on a weekday. */
-  lines: [
-    { label: "General", address: "info@smpl.money" },
-    { label: "Support", address: "support@smpl.money" },
-  ],
+  /**
+   * One address, so there is no label. A single mailto under a heading
+   * reading "General" is a category with nothing to distinguish it from.
+   */
+  address: "info@smpl.money",
 } as const;
 
 export const footer = {

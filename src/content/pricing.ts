@@ -67,7 +67,7 @@ export const tiers: readonly Tier[] = [
     priceNote: "it is your server",
     summary: "Everything, unlimited, no ads, no account with us.",
     who: "Anyone who would rather their transactions never left their own hardware. This is the same software, not a cut-down edition.",
-    cta: { label: "Read the source", href: "https://github.com/thtmnisamnstr/simple-balance" },
+    cta: { label: "Get the source", href: "https://github.com/thtmnisamnstr/simple-balance" },
   },
 ];
 
