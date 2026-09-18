@@ -1,0 +1,67 @@
+{
+  "capturedAt": "2026-09-18",
+  "viewport": "1440x900@2x",
+  "shippedWidth": 1600,
+  "images": [
+    {
+      "file": "public/screenshots/dashboard-light.webp",
+      "kb": 42,
+      "w": 1600,
+      "h": 1000
+    },
+    {
+      "file": "public/screenshots/transactions-light.webp",
+      "kb": 63,
+      "w": 1600,
+      "h": 1000
+    },
+    {
+      "file": "public/screenshots/budgets-light.webp",
+      "kb": 62,
+      "w": 1600,
+      "h": 1000
+    },
+    {
+      "file": "public/screenshots/reports-light.webp",
+      "kb": 45,
+      "w": 1600,
+      "h": 1000
+    },
+    {
+      "file": "public/screenshots/import-light.webp",
+      "kb": 36,
+      "w": 1600,
+      "h": 1000
+    },
+    {
+      "file": "public/screenshots/dashboard-dark.webp",
+      "kb": 42,
+      "w": 1600,
+      "h": 1000
+    },
+    {
+      "file": "public/screenshots/transactions-dark.webp",
+      "kb": 63,
+      "w": 1600,
+      "h": 1000
+    },
+    {
+      "file": "public/screenshots/budgets-dark.webp",
+      "kb": 62,
+      "w": 1600,
+      "h": 1000
+    },
+    {
+      "file": "public/screenshots/reports-dark.webp",
+      "kb": 45,
+      "w": 1600,
+      "h": 1000
+    },
+    {
+      "file": "public/screenshots/import-dark.webp",
+      "kb": 36,
+      "w": 1600,
+      "h": 1000
+    }
+  ]
+}

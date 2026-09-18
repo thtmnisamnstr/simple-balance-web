@@ -1,0 +1,4 @@
+{
+  "//": "Sidebar group order. A section not named here sorts last, so adding a group is a one-file change. Page order within a group comes from each page's `order`.",
+  "order": ["Install", "Using it", "Reference", "Operations"]
+}

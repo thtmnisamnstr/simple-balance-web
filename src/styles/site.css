@@ -1,0 +1,1244 @@
+/*
+ * Site styles. `brand.css` owns colour and is shared with the application;
+ * everything here is this site's own — the scales, the layout and the handful
+ * of components a marketing page needs.
+ *
+ * The scales live here rather than in `brand.css` on purpose. Colour is a
+ * brand fact and has to match the app exactly. Rhythm is a layout decision,
+ * and a marketing page's rhythm is not an app's: this page is read once, in
+ * one pass, on a phone as often as not, so it is built on larger type and more
+ * air than a dense ledger table could afford.
+ */
+
+:root {
+  /* Spacing. Every margin, padding and gap comes from this scale.
+     `docs/standards/web.md` 3.1 is the rule and the reason. */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  --s-7: 3rem;
+  --s-8: 4rem;
+  --s-9: 6rem;
+  --s-10: 8rem;
+
+  --radius-sm: 6px;
+  --radius: 10px;
+  --radius-lg: 16px;
+  --radius-pill: 999px;
+
+  --measure: 68ch;
+  --page: 1140px;
+  --page-narrow: 860px;
+
+  --step--1: clamp(0.83rem, 0.8rem + 0.15vw, 0.9rem);
+  --step-0: clamp(1rem, 0.96rem + 0.2vw, 1.09rem);
+  --step-1: clamp(1.2rem, 1.12rem + 0.4vw, 1.4rem);
+  --step-2: clamp(1.45rem, 1.3rem + 0.75vw, 1.85rem);
+  --step-3: clamp(1.8rem, 1.5rem + 1.4vw, 2.5rem);
+  --step-4: clamp(2.2rem, 1.6rem + 2.8vw, 3.6rem);
+
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-semi: 600;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  /* Inter is named first to match the application's stack exactly. Neither
+     surface loads a webfont, so both render in the system UI face and stay
+     identical. `docs/standards/web.md` 4.1 records what adding a webfont
+     would then owe the other surface. */
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  font-synthesis: none;
+  font-size: var(--step-0);
+  line-height: 1.6;
+  color: var(--ink);
+  background: var(--ground);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  font-weight: var(--weight-semi);
+  text-wrap: balance;
+}
+
+p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+a {
+  color: var(--green);
+  text-underline-offset: 0.2em;
+}
+
+:where(a, button, [tabindex]):focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+img,
+svg {
+  max-width: 100%;
+  display: block;
+}
+
+/* ---------- layout primitives ---------- */
+
+.page {
+  width: 100%;
+  max-width: var(--page);
+  margin-inline: auto;
+  padding-inline: var(--s-5);
+}
+
+.page-narrow {
+  max-width: var(--page-narrow);
+}
+
+.section {
+  padding-block: var(--s-9);
+}
+
+.section-tight {
+  padding-block: var(--s-8);
+}
+
+.section + .section {
+  border-top: 1px solid var(--line-soft);
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+  align-items: start;
+}
+
+.eyebrow {
+  font-size: var(--step--1);
+  font-weight: var(--weight-semi);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--green);
+  margin: 0;
+}
+
+.lede {
+  font-size: var(--step-1);
+  color: var(--ink-soft);
+  max-width: var(--measure);
+}
+
+.prose {
+  color: var(--ink-soft);
+  max-width: var(--measure);
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--s-4);
+  top: var(--s-4);
+  z-index: 100;
+  padding: var(--s-2) var(--s-4);
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  transform: translateY(-200%);
+}
+
+.skip-link:focus-visible {
+  transform: none;
+}
+
+/* ---------- header ---------- */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--chrome);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.site-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+  min-height: 64px;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-3);
+  font-weight: var(--weight-semi);
+  color: var(--ink);
+  text-decoration: none;
+  letter-spacing: -0.01em;
+}
+
+.brand-mark {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: linear-gradient(145deg, var(--brand-from), var(--brand-to));
+  display: grid;
+  place-items: center;
+  color: var(--on-accent);
+  flex: none;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+}
+
+.header-link {
+  color: var(--ink-soft);
+  text-decoration: none;
+  font-size: var(--step--1);
+  font-weight: var(--weight-medium);
+}
+
+.header-link:hover {
+  color: var(--ink);
+}
+
+/* ---------- buttons ---------- */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  padding: var(--s-3) var(--s-5);
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  font: inherit;
+  font-size: var(--step--1);
+  font-weight: var(--weight-semi);
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.button-primary {
+  background: var(--green-fill);
+  color: var(--on-accent);
+  box-shadow: 0 1px 2px var(--accent-glow);
+}
+
+.button-primary:hover {
+  background: var(--green-fill-hover);
+}
+
+.button-secondary {
+  background: var(--surface);
+  color: var(--ink);
+  border-color: var(--line-strong);
+}
+
+.button-secondary:hover {
+  background: var(--fill-subtle);
+}
+
+/* The sign-in control while the app is not yet deployed. It is a <span>, not a
+   disabled <button>: there is no action to perform and nothing to enable
+   later on this page, so rendering a control that cannot be pressed would be
+   a promise the markup does not keep. `docs/standards/web.md` 6.4. */
+.button-pending {
+  background: var(--green-soft);
+  color: var(--green-dark);
+  border-color: var(--green-line);
+  cursor: default;
+}
+
+/* ---------- hero ---------- */
+
+.hero {
+  padding-block: var(--s-9) var(--s-8);
+  background: radial-gradient(80ch 40ch at 15% -10%, var(--ambient), transparent 70%);
+}
+
+.hero-inner {
+  display: grid;
+  gap: var(--s-7);
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  align-items: center;
+}
+
+.hero h1 {
+  font-size: var(--step-4);
+  max-width: 18ch;
+}
+
+.hero-lede {
+  font-size: var(--step-1);
+  color: var(--ink-soft);
+  max-width: 46ch;
+  margin-top: var(--s-5);
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  margin-top: var(--s-6);
+}
+
+.hero-note {
+  font-size: var(--step--1);
+  color: var(--muted);
+  margin-top: var(--s-4);
+}
+
+/* ---------- the ledger figure ---------- */
+
+.figure-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-pop);
+  padding: var(--s-5);
+  display: grid;
+  gap: var(--s-4);
+}
+
+.figure-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-4);
+}
+
+.figure-title {
+  font-size: var(--step--1);
+  font-weight: var(--weight-semi);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.figure-total {
+  font-size: var(--step-2);
+  font-weight: var(--weight-semi);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.figure-rows {
+  display: grid;
+  gap: var(--s-1);
+  margin: 0;
+}
+
+.figure-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--s-4);
+  align-items: center;
+  padding: var(--s-3) 0;
+  border-top: 1px solid var(--line-soft);
+  font-size: var(--step--1);
+}
+
+.figure-row dt {
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+.figure-row dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  font-weight: var(--weight-medium);
+}
+
+.amount-in {
+  color: var(--green);
+}
+
+.amount-out {
+  color: var(--red);
+}
+
+.figure-foot {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-size: var(--step--1);
+  color: var(--muted);
+  border-top: 1px solid var(--line-soft);
+  padding-top: var(--s-4);
+}
+
+.balance-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: var(--s-1) var(--s-3);
+  border-radius: var(--radius-pill);
+  background: var(--green-soft);
+  color: var(--green-dark);
+  border: 1px solid var(--green-line);
+  font-size: var(--step--1);
+  font-weight: var(--weight-medium);
+}
+
+/* ---------- problem / answer pairs ---------- */
+
+.problems {
+  display: grid;
+  gap: var(--s-6);
+  margin-top: var(--s-7);
+}
+
+.problem {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: var(--s-6);
+  padding: var(--s-6);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+
+.problem-q {
+  font-size: var(--step-2);
+  font-weight: var(--weight-semi);
+  letter-spacing: -0.02em;
+  margin: 0;
+  color: var(--ink);
+}
+
+.problem-a {
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+.problem-a + .problem-a {
+  margin-top: var(--s-4);
+}
+
+/* ---------- feature grid ---------- */
+
+.grid {
+  display: grid;
+  gap: var(--s-5);
+  grid-template-columns: repeat(auto-fit, minmax(clamp(15rem, 28%, 20rem), 1fr));
+  margin-top: var(--s-7);
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: var(--s-5);
+  display: grid;
+  gap: var(--s-3);
+  align-content: start;
+  box-shadow: var(--shadow);
+}
+
+.card h3 {
+  font-size: var(--step-1);
+}
+
+.card p {
+  color: var(--ink-soft);
+  font-size: var(--step--1);
+  line-height: 1.65;
+}
+
+.card-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius);
+  background: var(--green-soft);
+  color: var(--green-dark);
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--green-line);
+}
+
+/* ---------- banded section ---------- */
+
+.band {
+  background: var(--green-wash);
+  border-block: 1px solid var(--green-line);
+}
+
+.band-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--s-7);
+  align-items: center;
+}
+
+.checklist {
+  list-style: none;
+  padding: 0;
+  margin: var(--s-5) 0 0;
+  display: grid;
+  gap: var(--s-3);
+}
+
+.checklist li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--s-3);
+  align-items: start;
+  color: var(--ink-soft);
+}
+
+.check {
+  color: var(--green);
+  margin-top: 0.15em;
+  flex: none;
+}
+
+/* ---------- code sample ---------- */
+
+.terminal {
+  background: var(--art-base);
+  color: var(--art-ink);
+  border-radius: var(--radius-lg);
+  padding: var(--s-5);
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.85rem;
+  line-height: 1.7;
+  overflow-x: auto;
+  border: 1px solid var(--art-hairline);
+}
+
+.terminal .prompt {
+  color: var(--art-bar);
+}
+
+.terminal .comment {
+  color: var(--on-art-muted);
+}
+
+/* ---------- footer ---------- */
+
+.site-footer {
+  border-top: 1px solid var(--line);
+  background: var(--surface-soft);
+  padding-block: var(--s-7);
+  margin-top: var(--s-8);
+}
+
+.footer-inner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-5);
+  justify-content: space-between;
+  align-items: start;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-5);
+}
+
+.footer-links a {
+  color: var(--ink-soft);
+  text-decoration: none;
+  font-size: var(--step--1);
+}
+
+.footer-links a:hover {
+  color: var(--ink);
+  text-decoration: underline;
+}
+
+.footer-note {
+  color: var(--muted);
+  font-size: var(--step--1);
+  max-width: 44ch;
+}
+
+/* ---------- responsive ----------
+   One breakpoint, and it is the point at which two columns stop fitting rather
+   than a device width. `docs/standards/web.md` 9.1. */
+
+@media (max-width: 62rem) {
+  .hero-inner,
+  .problem,
+  .band-inner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .hero-inner {
+    gap: var(--s-6);
+  }
+
+  .section {
+    padding-block: var(--s-8);
+  }
+
+  .hero h1 {
+    max-width: none;
+  }
+}
+
+@media (max-width: 34rem) {
+  .page {
+    padding-inline: var(--s-4);
+  }
+
+  .header-actions {
+    gap: var(--s-3);
+  }
+
+  .hero-actions .button {
+    flex: 1 1 auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.footer-legal {
+  margin-top: var(--s-5);
+}
+
+/* A section's own heading. Deliberately not `.problem-q`: that one belongs to
+   the cards inside the problems section, and a shared class between a section
+   title and a card title is how the two stop being able to differ. */
+.section-title {
+  font-size: var(--step-3);
+  max-width: 24ch;
+  margin-top: var(--s-3);
+}
+
+.figure-caption {
+  color: var(--muted);
+  font-size: var(--step--1);
+  margin: 0;
+}
+
+.footer-cols {
+  display: grid;
+  gap: var(--s-5);
+}
+
+.footer-contact {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--s-2);
+  font-size: var(--step--1);
+}
+
+/* The label is what makes two addresses useful rather than a choice the
+   reader has to guess at. `docs/standards/content.md` 4.1. */
+.footer-contact-label {
+  color: var(--muted);
+}
+
+.footer-contact a {
+  color: var(--ink-soft);
+  text-decoration: none;
+}
+
+.footer-contact a:hover {
+  color: var(--ink);
+  text-decoration: underline;
+}
+
+/* ---------- screenshots ---------- */
+
+.shot {
+  display: block;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-pop);
+  background: var(--surface);
+}
+
+.shot-img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* A figure pairing a shot with a caption, used inside a problem card and in
+   the showcase grid. */
+.shot-figure {
+  margin: 0;
+  display: grid;
+  gap: var(--s-3);
+}
+
+.shot-caption {
+  color: var(--muted);
+  font-size: var(--step--1);
+  margin: 0;
+}
+
+.showcase {
+  display: grid;
+  gap: var(--s-6);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 26rem), 1fr));
+  margin-top: var(--s-7);
+}
+
+/* A problem card that carries a screenshot puts it below the prose on narrow
+   screens and beside it on wide ones. The card's own two-column rule already
+   collapses at 62rem, so this only has to widen the image column. */
+.problem-shot {
+  grid-column: 1 / -1;
+  margin-top: var(--s-2);
+}
+
+.shot-disclosure {
+  margin-top: var(--s-5);
+}
+
+/* ---------- long-form content: /blog and /docs ----------
+   One set of prose styles for both, because a docs page and a post are the
+   same typographic problem and two sets would drift. */
+
+.prose-body {
+  max-width: var(--measure);
+  color: var(--ink-soft);
+  margin-top: var(--s-6);
+}
+
+.prose-body > * + * {
+  margin-top: var(--s-4);
+}
+
+.prose-body h2 {
+  font-size: var(--step-2);
+  color: var(--ink);
+  margin-top: var(--s-7);
+}
+
+.prose-body h3 {
+  font-size: var(--step-1);
+  color: var(--ink);
+  margin-top: var(--s-6);
+}
+
+.prose-body ul,
+.prose-body ol {
+  padding-left: var(--s-5);
+  display: grid;
+  gap: var(--s-2);
+}
+
+.prose-body blockquote {
+  margin: 0;
+  padding-left: var(--s-5);
+  border-left: 3px solid var(--green-line);
+  color: var(--muted);
+}
+
+.prose-body code {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.9em;
+  background: var(--fill-subtle);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-sm);
+  padding: 0.1em 0.35em;
+}
+
+.prose-body pre {
+  background: var(--art-base);
+  color: var(--art-ink);
+  border: 1px solid var(--art-hairline);
+  border-radius: var(--radius-lg);
+  padding: var(--s-5);
+  overflow-x: auto;
+  font-size: 0.85rem;
+  line-height: 1.7;
+}
+
+/* A code block's own border and background come from the <pre>; the <code>
+   inside must not paint a second card on top of it. */
+.prose-body pre code {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-size: inherit;
+  color: inherit;
+}
+
+.prose-body table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--step--1);
+}
+
+.prose-body th,
+.prose-body td {
+  text-align: left;
+  padding: var(--s-3);
+  border-bottom: 1px solid var(--line-soft);
+}
+
+/* ---------- entry lists ---------- */
+
+.entry-list {
+  list-style: none;
+  padding: 0;
+  margin: var(--s-6) 0 0;
+  display: grid;
+  gap: var(--s-5);
+}
+
+.entry {
+  display: grid;
+  gap: var(--s-2);
+  padding-bottom: var(--s-5);
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.entry-title {
+  font-size: var(--step-1);
+  margin: 0;
+}
+
+.entry-title a {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.entry-title a:hover {
+  color: var(--green);
+  text-decoration: underline;
+}
+
+.entry-heading {
+  font-size: var(--step-3);
+  margin-top: var(--s-3);
+}
+
+.entry-meta {
+  color: var(--muted);
+  font-size: var(--step--1);
+}
+
+.entry-summary {
+  color: var(--ink-soft);
+  max-width: var(--measure);
+}
+
+/* ---------- empty states ---------- */
+
+.empty-state {
+  margin-top: var(--s-7);
+  padding: var(--s-7) var(--s-6);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-lg);
+  background: var(--surface-soft);
+  display: grid;
+  gap: var(--s-2);
+  justify-items: center;
+  text-align: center;
+}
+
+.empty-title {
+  font-weight: var(--weight-semi);
+  color: var(--ink);
+}
+
+.empty-body {
+  color: var(--muted);
+  max-width: 48ch;
+}
+
+/* ---------- the docs two-column ---------- */
+
+.docs-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
+  gap: var(--s-8);
+  align-items: start;
+}
+
+.docs-nav {
+  position: sticky;
+  top: calc(64px + var(--s-5));
+  display: grid;
+  gap: var(--s-5);
+  font-size: var(--step--1);
+}
+
+.docs-nav-home {
+  font-weight: var(--weight-semi);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.docs-nav-heading {
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  font-weight: var(--weight-semi);
+  margin: 0 0 var(--s-2);
+}
+
+.docs-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--s-2);
+}
+
+.docs-nav a {
+  color: var(--ink-soft);
+  text-decoration: none;
+}
+
+.docs-nav a:hover {
+  color: var(--ink);
+}
+
+/* The current page, marked with aria-current so the styling and the
+   accessible state are the same fact rather than two. */
+.docs-nav a[aria-current="page"] {
+  color: var(--green);
+  font-weight: var(--weight-semi);
+}
+
+.docs-article {
+  min-width: 0;
+}
+
+@media (max-width: 62rem) {
+  .docs-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-6);
+  }
+
+  .docs-nav {
+    position: static;
+    padding-bottom: var(--s-5);
+    border-bottom: 1px solid var(--line-soft);
+  }
+}
+
+/* ---------- byline, tags, contents, callouts, pager ---------- */
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.byline {
+  display: grid;
+  gap: var(--s-3);
+  margin-top: var(--s-5);
+}
+
+.byline-people {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-5);
+}
+
+.byline-person {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-pill);
+  flex: none;
+  object-fit: cover;
+  border: 1px solid var(--line);
+  background: var(--fill-subtle);
+}
+
+.avatar-initials {
+  display: grid;
+  place-items: center;
+  font-size: 0.8rem;
+  font-weight: var(--weight-semi);
+  color: var(--green-dark);
+  background: var(--green-soft);
+  border-color: var(--green-line);
+}
+
+.byline-names {
+  display: grid;
+  line-height: 1.3;
+}
+
+.byline-name {
+  font-weight: var(--weight-medium);
+  color: var(--ink);
+  text-decoration: none;
+  font-size: var(--step--1);
+}
+
+.byline-name:hover {
+  text-decoration: underline;
+}
+
+.byline-title {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.tag-list {
+  list-style: none;
+  margin: var(--s-4) 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+.tag {
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  background: var(--fill-subtle);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  padding: 0.15em 0.7em;
+}
+
+.tag-summary {
+  margin-top: var(--s-6);
+}
+
+.entry-cover {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line);
+  margin-top: var(--s-5);
+}
+
+.entry-featured {
+  padding: var(--s-5);
+  background: var(--surface);
+  border: 1px solid var(--green-line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+
+.featured {
+  margin-top: var(--s-6);
+}
+
+.doc-group-title {
+  font-size: var(--step-1);
+  margin-top: var(--s-7);
+}
+
+.contents {
+  margin-top: var(--s-6);
+  padding: var(--s-5);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface-soft);
+  font-size: var(--step--1);
+}
+
+.contents-title {
+  margin: 0 0 var(--s-3);
+  font-weight: var(--weight-semi);
+  color: var(--ink);
+}
+
+.contents ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--s-2);
+}
+
+.contents a {
+  color: var(--ink-soft);
+  text-decoration: none;
+}
+
+.contents a:hover {
+  color: var(--green);
+  text-decoration: underline;
+}
+
+.contents-sub {
+  padding-left: var(--s-4);
+}
+
+/* A heading's self-link. Invisible until the heading is hovered or the link
+   is focused, so the prose is not littered with hashes. */
+.heading-anchor {
+  margin-left: var(--s-2);
+  color: var(--line-strong);
+  text-decoration: none;
+  opacity: 0;
+}
+
+:is(h2, h3, h4):hover .heading-anchor,
+.heading-anchor:focus-visible {
+  opacity: 1;
+}
+
+.callout {
+  margin: var(--s-5) 0;
+  padding: var(--s-4) var(--s-5);
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  border-left-width: 3px;
+  background: var(--surface-soft);
+  display: grid;
+  gap: var(--s-2);
+}
+
+.callout-label {
+  margin: 0;
+  font-weight: var(--weight-semi);
+  font-size: var(--step--1);
+  color: var(--ink);
+}
+
+.callout-body > * + * {
+  margin-top: var(--s-3);
+}
+
+.callout-note {
+  border-left-color: var(--blue);
+  background: var(--blue-soft);
+}
+
+.callout-tip {
+  border-left-color: var(--green);
+  background: var(--green-soft);
+}
+
+.callout-warning {
+  border-left-color: var(--amber);
+  background: var(--amber-soft);
+}
+
+.callout-danger {
+  border-left-color: var(--red);
+  background: var(--red-soft);
+}
+
+.doc-pager {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-4);
+  margin-top: var(--s-8);
+  padding-top: var(--s-5);
+  border-top: 1px solid var(--line-soft);
+}
+
+.doc-pager-link {
+  display: grid;
+  gap: var(--s-1);
+  padding: var(--s-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  text-decoration: none;
+  background: var(--surface);
+}
+
+.doc-pager-link:hover {
+  border-color: var(--green-line-strong);
+}
+
+.doc-pager-next {
+  text-align: right;
+}
+
+.doc-pager-label {
+  font-size: 0.78rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.doc-pager-title {
+  color: var(--ink);
+  font-weight: var(--weight-medium);
+}
+
+/* Shiki emits both themes as custom properties on the same markup, so one
+   highlighted block answers light and dark without a second copy. */
+.prose-body pre code span {
+  color: var(--shiki-light);
+}
+
+@media (prefers-color-scheme: dark) {
+  .prose-body pre code span {
+    color: var(--shiki-dark);
+  }
+}
+
+@media (max-width: 34rem) {
+  .doc-pager {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .doc-pager-next {
+    text-align: left;
+  }
+}
