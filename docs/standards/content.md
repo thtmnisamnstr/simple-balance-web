@@ -209,34 +209,6 @@ carrying punctuation, inline code and formatting.
 
 _Checked by:_ `tests/content.test.ts`.
 
-## 6. Announced versus built
-
-### 6.1 One flag decides three things
-
-**Binding.** `announced` in `src/content/sections.ts` controls whether a
-section is linked, whether its pages are indexed, and whether it enters the
-sitemap.
-
-Today both sections are built, styled, reachable by URL, and announced nowhere.
-That is the shipped state: the machinery is finished so that publishing is
-writing a Markdown file rather than building a blog, and an empty blog
-advertised in the header is worse than no blog.
-
-One flag rather than three habits, because a section half-launched by somebody
-adding a link is the failure this prevents.
-
-_Checked by:_ `tests/sections.test.tsx`, which asserts all three.
-
-### 6.2 Crawling is allowed; indexing is not
-
-**Binding.** `robots.txt` allows everything. Unannounced pages carry `noindex`.
-
-`Disallow: /blog` is the reflex and it is exactly wrong: a crawler that cannot
-fetch the page never sees the `noindex`, so a URL somebody links to can still
-be indexed — as a bare link with no description, which is the worst of both.
-
-_Checked by:_ `tests/sections.test.tsx`.
-
 ### 5.9 Three feeds, not one
 
 **House.** RSS 2.0, Atom 1.0 and JSON Feed 1.1, all generated from one module.
@@ -316,3 +288,31 @@ The JSON is emitted with `<` escaped, because a literal `</script>` inside a
 string ends the element early and turns the rest of the payload into markup.
 
 _Checked by:_ `tests/docs-features.test.ts`.
+
+## 6. Announced versus built
+
+### 6.1 One flag decides three things
+
+**Binding.** `announced` in `src/content/sections.ts` controls whether a
+section is linked, whether its pages are indexed, and whether it enters the
+sitemap.
+
+Today both sections are built, styled, reachable by URL, and announced nowhere.
+That is the shipped state: the machinery is finished so that publishing is
+writing a Markdown file rather than building a blog, and an empty blog
+advertised in the header is worse than no blog.
+
+One flag rather than three habits, because a section half-launched by somebody
+adding a link is the failure this prevents.
+
+_Checked by:_ `tests/sections.test.tsx`, which asserts all three.
+
+### 6.2 Crawling is allowed; indexing is not
+
+**Binding.** `robots.txt` allows everything. Unannounced pages carry `noindex`.
+
+`Disallow: /blog` is the reflex and it is exactly wrong: a crawler that cannot
+fetch the page never sees the `noindex`, so a URL somebody links to can still
+be indexed — as a bare link with no description, which is the worst of both.
+
+_Checked by:_ `tests/sections.test.tsx`.

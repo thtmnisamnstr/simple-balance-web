@@ -177,14 +177,34 @@ half-finished capture resumes rather than colliding with itself.
 this-month range. A ledger seeded evenly across ninety days renders a dashboard
 reporting almost nothing, which is what the first capture produced.
 
-## 5. Dependencies
+## 5. Continuous integration
 
-### 5.1 Everything is on its latest release
+**House.** `.github/workflows/verify.yml` runs `npm run verify` on every push
+and pull request, plus an internal link check as a second job.
+
+Node comes from `.nvmrc` via `node-version-file`, so CI, Netlify and a
+developer using nvm cannot drift apart — one number, three consumers.
+
+Chromium is installed because `tests/a11y.test.ts` drives a real browser.
+Chromium only: the WCAG rules it checks do not vary by engine, and three
+browsers would triple the run for nothing.
+
+**The link check is internal only.** An external link checker fails when
+somebody else's site is down, which trains people to ignore a red build.
+External rot is real and is a periodic job, not a merge gate.
+
+**Netlify builds separately from this.** CI proves the build is sound; Netlify
+produces the deploy. Neither gates the other, which means a green CI run is not
+a deployed site — check the Netlify dashboard for that.
+
+## 6. Dependencies
+
+### 6.1 Everything is on its latest release
 
 **House.** `npm outdated` is empty, and the `update-dependencies` skill is how
 it is kept that way.
 
-### 5.2 One dependency is pre-1.0, and it is named
+### 6.2 One dependency is pre-1.0, and it is named
 
 **Contested, recorded.** `rehype-pretty-code` is `0.x`.
 
@@ -195,7 +215,7 @@ hours of work, not a rewrite.
 
 Every other dependency is at a stable major.
 
-### 5.3 Node is pinned to the LTS Netlify supports
+### 6.3 Node is pinned to the LTS Netlify supports
 
 **House.** `24`, in both `.nvmrc` and `netlify.toml`.
 
@@ -208,7 +228,7 @@ builds on.
 screenshot script, which never runs on Netlify — so the usual
 native-module-across-Node-versions hazard does not reach the build.
 
-## 6. DNS
+## 7. DNS
 
 The apex serves this site; `app.` serves the application, from different
 infrastructure.
@@ -229,7 +249,7 @@ Two that cost a day if they are wrong:
   Netlify's CA breaks its renewal with no symptom but a retry loop. Publish
   none, or name both.
 
-## 7. What is checked, and what is not
+## 8. What is checked, and what is not
 
 | Rule                          | Held by                                         |
 | ----------------------------- | ----------------------------------------------- |

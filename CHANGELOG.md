@@ -7,7 +7,41 @@ than a contract with readers.
 
 ## Unreleased
 
+### Fixed
+
+**Five subsections of the content standard sat after the section that followed
+them.** They were appended to the file and landed below `## 6`, so `5.9` to
+`5.13` were orphaned. Every one read correctly on its own and the document was
+wrong. `tests/guide-structure.test.ts` now refuses it, because appending is
+both the natural way to add a rule and the natural way to get this wrong.
+
+**`AGENTS.md` said there were five skills when there were six**, and did not
+list the sixth.
+
+**`npm start` fetched an unpinned `serve` through `npx`.** It is a
+devDependency now.
+
 ### Added
+
+**A social preview card.** A link to this site pasted anywhere used to render a
+blank rectangle. `scripts/build-og-image.mjs` draws one at build time — the
+alternative renders per request, which is a server, which is the thing the
+static export exists to avoid.
+
+**Continuous integration.** `npm run verify` and an internal link check on
+every push and pull request, with Node taken from `.nvmrc` so CI, Netlify and a
+developer using nvm cannot drift apart.
+
+**An accessibility audit in the test suite.** axe against nine pages in both
+themes, in a real browser, as part of `npm run verify`. It is the only test
+here that runs a browser and it earns it: contrast and computed styles cannot
+be checked in jsdom, and a token change is exactly the sort of edit nobody
+renders before committing.
+
+**A roadmap and an AdSense guide.** `docs/roadmap.md` lists every outstanding
+item with why it is not done and what done looks like; `docs/adsense.md` is the
+full procedure, including why this site's `ads.txt` authorises revenue earned
+on a different domain.
 
 **The site, at smpl.money.** A single marketing page: what the product is, four
 problems it addresses, screenshots of the running application, what

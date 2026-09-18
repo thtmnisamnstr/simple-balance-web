@@ -96,7 +96,7 @@ node scripts/capture-screenshots.mjs
 
 ## Recurring tasks
 
-Five skills in `.claude/skills/` hold the procedures that repeat:
+Six skills in `.claude/skills/` hold the procedures that repeat:
 
 - `merge-prep` — verify everything, commit, push, ready to merge. Does not
   merge.
@@ -107,6 +107,8 @@ Five skills in `.claude/skills/` hold the procedures that repeat:
   and at both widths.
 - `capture-screenshots` — re-capture the application screenshots, with the four
   traps already paid for.
+- `write-content` — write a post or a documentation page, with the frontmatter
+  contract and the traps that fail a build.
 
 ## Definition of done
 

@@ -33,8 +33,29 @@ export const metadata: Metadata = {
     title: `${site.name} — ${site.tagline}`,
     description: hero.lede,
     url: `https://${site.domain}`,
+    locale: "en_GB",
+    /*
+     * The card a link to this site shows in Slack, Bluesky, LinkedIn or a
+     * message. Without it they render a blank rectangle, which on a marketing
+     * page is the one picture guaranteed to be seen. Built by
+     * `scripts/build-og-image.mjs` rather than per request, because a
+     * per-request renderer is a server and this site does not have one.
+     */
+    images: [
+      {
+        url: "/og.png",
+        width: 1200,
+        height: 630,
+        alt: `${site.name} — ${site.titleTagline}`,
+      },
+    ],
   },
-  twitter: { card: "summary_large_image", title: site.name, description: hero.lede },
+  twitter: {
+    card: "summary_large_image",
+    title: site.name,
+    description: hero.lede,
+    images: ["/og.png"],
+  },
   alternates: {
     canonical: "/",
     // Advertised site-wide so a feed reader pointed at any page finds them.
@@ -50,7 +71,12 @@ export const metadata: Metadata = {
    * not take an SVG, which is why the raster exists at all.
    */
   icons: {
-    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      // A raster fallback for clients that will not take an SVG, and for the
+      // crawlers that ask for a PNG by size rather than reading the markup.
+      { url: "/favicon-48.png", type: "image/png", sizes: "48x48" },
+    ],
     apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
   },
 };

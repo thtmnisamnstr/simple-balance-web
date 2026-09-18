@@ -12,6 +12,15 @@ Two sets, and neither restates the other.
 - **[`code/`](code/index.md)** — the source. TypeScript strictness, components,
   tests, comments, and the linter and formatter settings.
 
+Two documents sit outside the standards and are the first things to read when
+picking this up:
+
+- **[`../roadmap.md`](../roadmap.md)** — everything known to be outstanding,
+  each item with why it is not done and what done looks like.
+- **[`../adsense.md`](../adsense.md)** — how ads reach the application, why
+  this site's `ads.txt` authorises them, and the one mistake that costs revenue
+  with no symptom.
+
 `../../AGENTS.md` sits above all of them and holds the invariants — the rules
 that, broken, make this site wrong rather than untidy. Where a guide and
 `AGENTS.md` disagree, `AGENTS.md` wins and the guide records the disagreement

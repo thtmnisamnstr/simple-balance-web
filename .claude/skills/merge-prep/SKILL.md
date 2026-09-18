@@ -108,8 +108,12 @@ npm run verify
 `typecheck → lint → format:check → build → test`. The build is before the tests
 on purpose — `code/index.md` 4 says why.
 
-Then look at it. jsdom has no layout engine, so nothing in the suite can see
-the thing a reader sees:
+`verify` now includes an accessibility audit that drives a real browser over
+nine pages in both themes (`tests/a11y.test.ts`), so contrast and computed
+styles are covered. What it still cannot see is rhythm, alignment, balance, and
+whether a section is in a sensible place.
+
+Then look at it:
 
 ```sh
 npx serve out
@@ -148,6 +152,9 @@ reporting off the first workflow to finish:
 ```sh
 gh pr checks "$(git branch --show-current)" --watch
 ```
+
+Two checks: `verify` and `links`. A green run is not a deployed site — Netlify
+builds separately, and its dashboard is where a deploy is confirmed.
 
 **Report, plainly:**
 

@@ -1,0 +1,67 @@
+name: verify
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# A second push to the same branch cancels the first. A marketing site's CI
+# has nothing to learn from finishing a run whose commit is already superseded.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          # From .nvmrc, so CI and Netlify and a developer's nvm cannot drift
+          # apart. `docs/standards/operations.md` 5.3.
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      # `tests/a11y.test.ts` drives a real browser, because contrast and
+      # computed styles cannot be checked in jsdom. Chromium only — the rules
+      # it checks do not vary by engine, and three browsers would triple the
+      # run for nothing.
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Verify
+        run: npm run verify
+
+      # The export is what actually ships, so keep it when something fails:
+      # a page that renders wrongly is far easier to diagnose from the HTML
+      # than from a test name.
+      - name: Upload the export
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: out
+          path: out
+          retention-days: 7
+
+  links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+
+      # Internal links only. An external link checker fails on somebody
+      # else's outage and trains people to ignore a red build.
+      - name: Check internal links
+        run: node scripts/check-links.mjs

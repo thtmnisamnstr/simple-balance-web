@@ -83,6 +83,16 @@ Netlify, publishing `out/`. Node 24.
 **`netlify.toml` must never gain a catch-all rewrite** — `AGENTS.md` says why,
 and it is the one mistake here that costs money silently.
 
+## Outstanding work
+
+[`docs/roadmap.md`](docs/roadmap.md) is the full list — what is blocked on the
+application shipping, what needs a decision, what AdSense requires, and the
+limitations that are decisions rather than omissions.
+
+[`docs/adsense.md`](docs/adsense.md) is the AdSense procedure, including the
+`ads.txt` rule that makes this site responsible for revenue earned on a
+different domain.
+
 ## Standards
 
 [`docs/standards/`](docs/standards/index.md) for the design, content and
