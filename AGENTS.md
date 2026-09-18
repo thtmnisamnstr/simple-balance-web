@@ -115,11 +115,14 @@ Break one of these and the site is wrong rather than untidy.
   inferred, because the first version matched the application's wording
   against the page's, which is precisely the wording a rewrite changes, and
   it could not fail.
-- **The homepage and pricing page are American English with contractions.**
+- **Everything a reader sees is American English with contractions** — both
+  marketing pages, the legal pages, and every Markdown file under `content/`.
   The site prices in dollars and the application's own screens say _Checking_;
-  the copy said "current account" and `layout.tsx` declared `en_GB`.
-  `docs/standards/content.md` 1.6, which also records that a blind
-  contraction pass turned "See everything you have" into "you've".
+  the copy said "current account", the docs said it on the page explaining
+  what an account is, and `layout.tsx` declared `en_GB`.
+  `docs/standards/content.md` 1.6, checked by `tests/copy.test.ts`, which also
+  records that a blind contraction pass turned "See everything you have" into
+  "you've".
 - **The copy is rewritten only where the product's description moved.**
   `src/content/copy-source.json` records what each section was written from;
   `tests/copy-provenance.test.ts` fails for anything reworded, added or

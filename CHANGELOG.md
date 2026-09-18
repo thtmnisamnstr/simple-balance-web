@@ -66,6 +66,22 @@ banned-words test could not see.
 
 ### Fixed
 
+**The privacy policy, the terms and two docs pages were still British after
+the marketing pages were fixed.** The first version of the rule scoped itself
+to "the homepage and the pricing page", which left the rest of the site in the
+other dialect: the policy said personalised, analyse and licence, and
+`content/docs/accounts-and-transactions.md` said "a current account, a savings
+account" on the page whose whole job is explaining what an account is. That is
+the same two-surfaces-one-customer failure the Premium-and-plus rule exists
+for.
+
+It is checked now rather than remembered. `tests/copy.test.ts` sweeps both
+marketing pages, both legal pages and every Markdown file under `content/`,
+plus the declared locale and the em dash. The rule had argued this could not
+be mechanised, on the grounds that a word list "would catch the spellings and
+miss the register" — which is an argument for a word list on the spellings.
+The check found one the hand pass had missed on its first run.
+
 **The copy was written in British English for an American reader.** The site
 prices in US dollars and the application's own screens say _Checking_, while
 the page said "current account", along with "recognises", "totalled",

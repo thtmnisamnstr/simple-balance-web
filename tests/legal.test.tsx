@@ -27,7 +27,7 @@ describe("the privacy policy", () => {
     // Google's programme policies: third-party cookies, the vendors that set
     // them, and how to opt out. Missing any of the three is a breach, and the
     // penalty is suspension rather than the ads not rendering.
-    for (const required of ["adsense", "cookies", "non-personalised", "opt out"]) {
+    for (const required of ["adsense", "cookies", "non-personalized", "opt out"]) {
       expect(text, `the policy never mentions "${required}"`).toContain(required);
     }
   });
@@ -68,10 +68,10 @@ describe("the privacy policy", () => {
   });
 
   it("does not claim non-personalised ads are cookie-free", () => {
-    // The mistake that would make this policy false. Non-personalised ads
+    // The mistake that would make this policy false. Non-personalized ads
     // still set cookies for frequency capping and fraud prevention, which is
     // why consent is asked for in the EEA regardless.
-    expect(text).toContain("non-personalised is not the same as cookie-free");
+    expect(text).toContain("non-personalized is not the same as cookie-free");
     expect(text).toMatch(/frequency capping/);
   });
 
@@ -130,7 +130,7 @@ describe("the marketing pages, against the policy", () => {
   /**
    * The two surfaces have to say the same thing about advertising.
    *
-   * The policy is careful — a non-personalised ad is still chosen from the
+   * The policy is careful: a non-personalized ad is still chosen from the
    * page and your rough location, and it still sets a cookie. A pricing page
    * is where the temptation is to round that down to "nothing about you",
    * and it did: the answer to "what are the ads like?" said they were

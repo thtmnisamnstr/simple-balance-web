@@ -11,8 +11,8 @@ decides what happens to the books, so it is worth two minutes.
 
 ## Accounts
 
-An account is somewhere money sits: a current account, a savings account, a
-card, a loan, cash in a drawer, a wallet. Each has one currency, an opening
+An account is somewhere money sits: a checking account, a savings account, a
+credit card, a loan, cash in a drawer, a wallet. Each has one currency, an opening
 date and an opening balance.
 
 **A card or a loan opens negative.** A credit card with 500 outstanding opens

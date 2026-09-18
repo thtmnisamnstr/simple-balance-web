@@ -113,29 +113,49 @@ happily.
 
 ### 1.6 American English, and contractions
 
-**Binding.** The homepage and the pricing page are written in American English,
-with contractions, for a reader in the United States.
+**Binding.** Everything a reader sees is written in American English, with
+contractions where somebody talking would use them. That is the homepage, the
+pricing page, the privacy policy, the terms, and every Markdown file under
+`content/`.
 
 The site prices in US dollars and the application's own screens say
 **Checking**. The copy said "current account", "recognises", "totalled",
-"personalised" and "cancelling", and `layout.tsx` told every crawler and link
-preview `locale: "en_GB"`. None of that is a style preference: to an American
-reader "current account" is not the thing they have, and it disagrees with
-the product's own interface.
+"personalised", "analyse", "licence" and "cancelling", and `layout.tsx` told
+every crawler and link preview `locale: "en_GB"`. None of that is a style
+preference: to an American reader a current account is not the thing they
+have, and `content/docs/accounts-and-transactions.md` used the phrase on the
+page whose job is explaining what an account _is_ — disagreeing with the
+product's own interface.
+
+**The scope was wrong the first time this rule was written.** It said "the
+homepage and the pricing page", which left the legal pages and the docs in
+British English on the same site, and that is 6.3's failure again: two
+surfaces using different words at one customer.
 
 **Contractions are the register, not a lapse.** "It is not", "do not",
 "cannot" and "that is" read as written-down English; "isn't", "don't",
-"can't" and "that's" read as somebody talking. Formal prose is the right
-register for these guides and the wrong one for a page trying to sound like a
-person.
+"can't" and "that's" read as somebody talking. Formal prose is right for
+these guides and wrong for a page trying to sound like a person.
 
 Not every instance — uniform contraction is as mechanical as none. And
 **"you have" is not always "you've"**: the hero reads "See everything you
-have", where _have_ is the verb rather than an auxiliary, and a blind pass
-turned it into "See everything you've."
+have", where _have_ is the verb rather than an auxiliary, and a blind
+find-and-replace turned it into "See everything you've."
 
-_Checked by:_ `human`. A word list would catch the spellings and miss the
-register, which is the same reason 1.4 is not mechanised.
+**Em dashes belong in these guides and not in the copy.** The rewrite carried
+seventeen in 2,349 words, which is the loudest tell there is. The count is
+the point rather than the character: one is punctuation, seventeen is a
+voice. Guides are prose for somebody reading closely; copy is for somebody
+skimming.
+
+_Checked by:_ `tests/copy.test.ts` for the spellings, the `locale`, and the
+em dash. The **register** is `human`, for the same reason 1.4 is.
+
+**The first draft of this rule claimed none of it could be mechanised**, on
+the grounds that "a word list would catch the spellings and miss the
+register". That is an argument for a word list on the spellings, not against
+one — and the check found a spelling the hand pass had missed on its first
+run.
 
 ## 2. Claims
 

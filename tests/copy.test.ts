@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import * as content from "@/content/home";
 import * as pricingContent from "@/content/pricing";
+import * as legalContent from "@/content/legal";
+import { readFileSync } from "node:fs";
+import { sourceFiles } from "./support/source";
 
 /**
  * The copy, held to `docs/standards/content.md`.
@@ -233,5 +236,75 @@ describe("the claim this site must never make", () => {
       const hit = IMPLIES_A_CONNECTION.find((pattern) => pattern.test(sentence));
       expect(hit, `the ban misses "${sentence}"`).toBeDefined();
     }
+  });
+});
+
+describe("the reader is American", () => {
+  /*
+   * `docs/standards/content.md` 1.6. The site prices in US dollars and the
+   * application's own screens say Checking; the copy said "current account",
+   * and `layout.tsx` declared `en_GB` to every crawler and link preview.
+   *
+   * **The rule's own first draft argued this could not be mechanised**,
+   * on the grounds that "a word list would catch the spellings and miss the
+   * register". That is an argument for a word list on the spellings, not
+   * against one. The register — contractions, whether it sounds like
+   * somebody talking — is what stays `human`, exactly as 1.4 does. The
+   * spellings are this.
+   */
+  const BRITISH =
+    /\b(recognis\w+|organis\w+|personalis\w+|analys\w+|apologis\w+|realis\w+|cancelling|colour\w*|behaviour\w*|favour\w*|whilst|licence|centre|catalogue|programme|cheque|grey|per cent|current account)\b/i;
+
+  /** Every string a reader sees: the two marketing pages and the legal pages. */
+  const readerFacing = [
+    ...strings(content),
+    ...strings(pricingContent, "pricing"),
+    ...strings(legalContent, "legal"),
+  ];
+
+  it("has copy to check", () => {
+    expect(readerFacing.length).toBeGreaterThan(150);
+  });
+
+  it("uses American spelling everywhere a reader can see", () => {
+    const offenders = readerFacing
+      .filter(([, text]) => BRITISH.test(text))
+      .map(([path, text]) => `${path}: ${BRITISH.exec(text)?.[0]} — ${text.slice(0, 50)}`);
+    expect(offenders).toEqual([]);
+  });
+
+  it("uses American spelling in the published Markdown too", () => {
+    // `content/` is the blog and the docs. The docs said "a current account,
+    // a savings account", which is both British and a disagreement with the
+    // application's own interface, on the page that explains what an account
+    // is.
+    const offenders: string[] = [];
+    for (const file of sourceFiles("content", /\.md$/)) {
+      for (const [index, line] of file.code.split("\n").entries()) {
+        const hit = BRITISH.exec(line);
+        if (hit) offenders.push(`${file.path}:${index + 1} ${hit[0]}`);
+      }
+    }
+    expect(offenders).toEqual([]);
+  });
+
+  it("tells a crawler the locale the copy is actually written in", () => {
+    // Nothing caught `locale: "en_GB"` on a page priced in US dollars.
+    expect(readFileSync("src/app/layout.tsx", "utf8")).toContain('locale: "en_US"');
+    expect(readFileSync("out/index.html", "utf8")).toContain("en_US");
+  });
+
+  it("keeps the em dash out of the copy, whatever the guides do", () => {
+    /*
+     * Seventeen of them in 2,349 words was the loudest tell in the rewrite,
+     * and the count is the point rather than the character: one em dash is
+     * punctuation, seventeen is a voice. The guides in `docs/` use them
+     * freely and should — they are prose for somebody reading closely, not
+     * copy for somebody skimming.
+     */
+    const offenders = [...strings(content), ...strings(pricingContent, "pricing")]
+      .filter(([, text]) => text.includes("\u2014"))
+      .map(([path]) => path);
+    expect(offenders).toEqual([]);
   });
 });
