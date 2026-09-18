@@ -24,7 +24,7 @@ HTML, CSS and JS with no server. That is deliberate: the artefact runs on
 Netlify today and would run unchanged on any other static host.
 
 ```
-src/app/            routes — /, /blog, /blog/[slug], /docs, /docs/[slug]
+src/app/            routes — /, /pricing, /privacy, /terms, /blog/*, /docs/*
 src/components/     the components, all server components
 src/content/        the homepage copy, the authors, the section flags
 src/styles/         brand.css (shared with the app) and site.css
@@ -78,16 +78,25 @@ sitemap together. Publishing is flipping it.
 
 ## Deployment
 
-Netlify, publishing `out/`. Node 24.
+Netlify, publishing `out/`, Node 24. Its build command is `npm run verify`,
+not `npm run build` — a deploy preview whose tests fail is a preview somebody
+approves. GitHub Actions runs the two things Netlify's image cannot: the
+accessibility audit, which needs Chromium, and the internal link check.
 
 **`netlify.toml` must never gain a catch-all rewrite** — `AGENTS.md` says why,
 and it is the one mistake here that costs money silently.
 
+## Pages
+
+`/` the homepage, `/pricing` the two plans and self-hosting, `/privacy` and
+`/terms`. `/blog` and `/docs` are built and announced nowhere.
+
 ## Outstanding work
 
-[`docs/roadmap.md`](docs/roadmap.md) is the full list — what is blocked on the
-application shipping, what needs a decision, what AdSense requires, and the
-limitations that are decisions rather than omissions.
+**There is none in this repository.** [`docs/roadmap.md`](docs/roadmap.md)
+says so and shows the working: what waits on the application being deployed,
+what waits on an account or asset only the owner has, and what was decided
+against with the argument.
 
 [`docs/adsense.md`](docs/adsense.md) is the AdSense procedure, including the
 `ads.txt` rule that makes this site responsible for revenue earned on a

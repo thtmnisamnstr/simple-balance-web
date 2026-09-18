@@ -4,6 +4,8 @@ description: Money coming back into a spending category is not income, and treat
 date: 2026-09-17
 authors: [gavin]
 tags: [bookkeeping]
+image: /covers/what-a-refund-actually-is.webp
+imageAlt: A typographic cover reading “What a refund actually is”, in the Simple Balance palette.
 series: Keeping your own books
 seriesOrder: 2
 ---

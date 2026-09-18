@@ -30,6 +30,29 @@ export type SearchDoc = {
  * description match outranks a body match. Nobody should have to guess why a
  * result is where it is.
  */
+/**
+ * The words around a match, with the match marked.
+ *
+ * A result list of titles alone makes somebody open three pages to find
+ * which one meant it. Showing the sentence the match is in answers that in
+ * the list, and it is why the index carries the flattened body at all.
+ *
+ * Module scope rather than inside the component: it captures nothing, so
+ * defining it per render would rebuild it for no reason and make it a
+ * dependency of the memo below.
+ */
+function snippet(text: string, needle: string): readonly { text: string; hit: boolean }[] | null {
+  const at = text.indexOf(needle);
+  if (at === -1) return null;
+  const start = Math.max(0, at - 45);
+  const end = Math.min(text.length, at + needle.length + 75);
+  return [
+    { text: (start > 0 ? "…" : "") + text.slice(start, at), hit: false },
+    { text: text.slice(at, at + needle.length), hit: true },
+    { text: text.slice(at + needle.length, end) + (end < text.length ? "…" : ""), hit: false },
+  ];
+}
+
 export function DocsSearch() {
   const [query, setQuery] = useState("");
   const [docs, setDocs] = useState<readonly SearchDoc[] | undefined>(undefined);
@@ -88,7 +111,8 @@ export function DocsSearch() {
       })
       .filter((scored) => scored.score > 0)
       .toSorted((a, b) => b.score - a.score)
-      .slice(0, 8);
+      .slice(0, 8)
+      .map((scored) => ({ ...scored, snippet: snippet(scored.doc.text, needle) }));
   }, [query, docs]);
 
   const open = query.trim().length >= 2;
@@ -138,11 +162,26 @@ export function DocsSearch() {
             </p>
           ) : (
             <ul>
-              {results.map(({ doc }) => (
+              {results.map(({ doc, snippet: parts }) => (
                 <li key={doc.slug}>
                   <a href={`/docs/${doc.slug}/`}>
                     <span className="docs-search-title">{doc.title}</span>
                     <span className="docs-search-section">{doc.section}</span>
+                    {parts ? (
+                      <span className="docs-search-snippet">
+                        {parts.map((part) =>
+                          part.hit ? (
+                            // <mark> rather than a span with a class: the
+                            // element means "relevant in this context", which
+                            // is exactly what a search hit is, and a screen
+                            // reader can announce it.
+                            <mark key={part.text}>{part.text}</mark>
+                          ) : (
+                            part.text
+                          ),
+                        )}
+                      </span>
+                    ) : null}
                   </a>
                 </li>
               ))}

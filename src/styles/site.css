@@ -1641,3 +1641,193 @@ svg {
     justify-self: center;
   }
 }
+
+/* ---------- pricing ---------- */
+
+.tiers {
+  display: grid;
+  gap: var(--s-5);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  margin-top: var(--s-7);
+  /* Stretch rather than start, so the cards are the same height and their
+     buttons line up. With `start` the featured card's extra label pushed its
+     button below the other two, which reads as a layout accident. */
+  align-items: stretch;
+}
+
+.tier {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: var(--s-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  box-shadow: var(--shadow);
+}
+
+/* The recommended tier is marked with a border and a label, not with colour
+   alone — the same rule the application follows for its charts. */
+.tier-featured {
+  border-color: var(--green-line-strong);
+  box-shadow: var(--shadow-pop);
+}
+
+.tier-flag {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: var(--weight-semi);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--green);
+}
+
+.tier-name {
+  font-size: var(--step-1);
+  margin: 0;
+}
+
+.tier-price {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-2);
+  flex-wrap: wrap;
+}
+
+.tier-price strong {
+  font-size: var(--step-3);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.tier-price span {
+  color: var(--muted);
+  font-size: var(--step--1);
+}
+
+.tier-summary {
+  color: var(--ink);
+  font-weight: var(--weight-medium);
+}
+
+.tier-who {
+  color: var(--ink-soft);
+  font-size: var(--step--1);
+}
+
+/* Pushed to the bottom of the card, so the three buttons share a baseline
+   however much prose sits above them. */
+.tier .button {
+  margin-top: auto;
+  align-self: start;
+}
+
+.tier-note {
+  margin-top: var(--s-5);
+}
+
+/* The comparison table scrolls inside its own container rather than widening
+   the page, which is what stops a phone scrolling horizontally. */
+.table-wrap {
+  overflow-x: auto;
+  margin-top: var(--s-6);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+
+.compare {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--step--1);
+  min-width: 34rem;
+}
+
+.compare th,
+.compare td {
+  text-align: left;
+  padding: var(--s-3) var(--s-4);
+  border-bottom: 1px solid var(--line-soft);
+  vertical-align: top;
+}
+
+.compare thead th {
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.72rem;
+  background: var(--surface-soft);
+  position: sticky;
+  top: 0;
+}
+
+.compare tbody th {
+  font-weight: var(--weight-medium);
+  color: var(--ink);
+  display: grid;
+  gap: var(--s-1);
+}
+
+.compare-note {
+  font-weight: var(--weight-normal);
+  color: var(--muted);
+  font-size: 0.78rem;
+  max-width: 42ch;
+}
+
+.compare-yes {
+  color: var(--green);
+}
+
+.compare-no {
+  color: var(--muted);
+}
+
+/* ---------- FAQ ---------- */
+
+.faq {
+  margin-top: var(--s-6);
+  display: grid;
+  gap: var(--s-2);
+}
+
+.faq-item {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: var(--s-4) var(--s-5);
+}
+
+.faq-item summary {
+  cursor: pointer;
+  font-weight: var(--weight-medium);
+  color: var(--ink);
+}
+
+.faq-item p {
+  margin-top: var(--s-3);
+  color: var(--ink-soft);
+  max-width: var(--measure);
+}
+
+.legal-note {
+  margin-top: var(--s-7);
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--line-soft);
+}
+
+.docs-search-snippet {
+  display: block;
+  color: var(--muted);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  margin-top: 2px;
+}
+
+.docs-search-snippet mark {
+  background: var(--amber-soft);
+  color: var(--ink);
+  border-radius: 3px;
+  padding: 0 1px;
+}

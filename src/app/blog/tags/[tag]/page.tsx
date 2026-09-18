@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { blogTags, postsByTag, tagLabel, tagSlug } from "@/content/collections";
-import { section } from "@/content/sections";
+import { section, tagDescriptions } from "@/content/sections";
 import { PostCard } from "@/components/post-card";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { BreadcrumbStructuredData } from "@/components/structured-data";
@@ -22,7 +22,7 @@ export async function generateMetadata({
   if (!label) return {};
   return {
     title: `Posts tagged ${label}`,
-    description: `Everything on ${label}.`,
+    description: tagDescriptions[tag] ?? `Everything on ${label}.`,
     robots: blog.announced ? undefined : { index: false, follow: false },
     alternates: { canonical: `/blog/tags/${tag}/` },
   };
@@ -49,7 +49,8 @@ export default async function TagPage({ params }: { params: Promise<{ tag: strin
         <h1 id="tag-title" className="section-title">
           {label}
         </h1>
-        <p className="lede">
+        {tagDescriptions[tag] ? <p className="lede">{tagDescriptions[tag]}</p> : null}
+        <p className="entry-meta">
           {posts.length} {posts.length === 1 ? "post" : "posts"}.
         </p>
         <ul className="entry-list">

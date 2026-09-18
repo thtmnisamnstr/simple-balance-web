@@ -1,108 +1,99 @@
 # What is left to do
 
-Everything known to be outstanding on this site, in one place, so that picking
-it up does not require reconstructing it from commit messages.
+**There is no outstanding engineering work.** Everything in this repository
+that could be built has been built. What remains is in three groups, and none
+of it can be closed from inside this repository:
 
-Each item says **what**, **why it is not done**, and **what done looks like**.
-An item with no "what done looks like" is not ready to be worked on; write that
-first.
+1. **Waiting on the application being deployed.**
+2. **Waiting on an account or an asset only the owner has.**
+3. **Decided not to build**, with the argument, so nobody reopens it blind.
 
-Nothing here is blocked on anything in this repository unless it says so.
+Each item says what it is, why it is not done, and what done looks like.
 
 ---
 
-## 1. Blocked on the application being deployed
+## 1. Waiting on the application
 
-| #   | Item                                               | What done looks like                                                                                                                                                                                                                       |
-| --- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 1.1 | **The sign-in control is the word "Coming soon".** | It becomes a link to `https://app.smpl.money`. `web.md` 6.1 is the rule and `tests/home-page.test.tsx` asserts the current state — **that test fails on purpose** when you change it, and updating it in the same commit is the checklist. |
-| 1.2 | **No screenshot of the plan and billing tab.**     | The app's pricing page exists; when it does, capture it (`capture-screenshots`) and use it wherever pricing is described.                                                                                                                  |
+| #   | Item                                                                            | What done looks like                                                                                                                                                                                                                                       |
+| --- | ------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.1 | **Three "Coming soon" controls** — the header, the hero, and both pricing CTAs. | They become links to `app.smpl.money`. `web.md` 6.1 is the rule; `tests/home-page.test.tsx` and `tests/pricing.test.tsx` both assert the current state, so **they fail on purpose** when you change it. Updating them in the same commit is the checklist. |
+| 1.2 | **No screenshot of the plan and billing tab.**                                  | Once the app is deployed with Stripe configured, capture it (`capture-screenshots`) and use it on the pricing page.                                                                                                                                        |
+| 1.3 | **Screenshots show a locally seeded ledger.**                                   | They are real captures of the real application and are correctly disclosed, so this is a refresh rather than a gap. Re-run `capture-screenshots` whenever the app's look changes.                                                                          |
 
-## 2. Blocked on a decision only you can make
+## 2. Waiting on an account or an asset
 
-| #   | Item                                                                                                                 | The decision                                                                                                                                                                                                                                                                |
-| --- | -------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2.1 | **Pricing is not on this site.** The app sells a plan at $20/year or $2/month; the marketing site never mentions it. | Whether the marketing site sells, or whether pricing lives only in the app. A self-hosted product that also sells a hosted plan usually needs a pricing page; one that sells only a cap-raise on a self-hosted install often does not. Decide before writing it.            |
-| 2.2 | **No analytics of any kind.**                                                                                        | Whether to have any. If yes, the constraint is `operations.md` 3.2: this origin currently talks to nothing, and `connect-src 'self'` is what makes the CSP's `'unsafe-inline'` tolerable. A self-hosted, cookieless counter keeps that property; Google Analytics does not. |
-| 2.3 | **No newsletter capture.**                                                                                           | Whether the blog has a subscription at all, given three feeds already exist. If yes it needs a vendor, a form, a CSP exception and a privacy line.                                                                                                                          |
-| 2.4 | **No comparison or FAQ page.**                                                                                       | Whether either earns a page. Both are SEO-motivated and both are work to keep honest.                                                                                                                                                                                       |
+| #   | Item                                                                                            | What is needed                                                                                                                                                                                                                                          |
+| --- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2.1 | **`public/ads.txt` does not exist**, and `tests/export-shape.test.ts` asserts that it does not. | The AdSense publisher id. Then the file lands and that expectation is inverted **in the same commit** — `docs/adsense.md` §6 has the exact contents and §2 explains why a premature file is worse than none.                                            |
+| 2.2 | **AdSense account and approval.**                                                               | Days to weeks, and the longest lead time in the project. `docs/adsense.md` §3 has the order to do things in. The privacy policy it requires is written and live at `/privacy/`.                                                                         |
+| 2.3 | **No author photo.** Bylines render initials.                                                   | A square image in `public/authors/`, and `avatar` set in `src/content/authors.ts`. Initials are a deliberate fallback rather than a placeholder — the page is not broken without one.                                                                   |
+| 2.4 | **Netlify site and DNS.**                                                                       | Being handled by the owner. `netlify.toml` already carries the build, the gate, the headers and the `www` redirect; `operations.md` 7 has the DNS records and the two that cost a day if they are wrong.                                                |
+| 2.5 | **Announcing the blog and the docs.**                                                           | `announced: true` in `src/content/sections.ts`. One flag moves the header link, the `noindex` and the sitemap together, and `tests/sections.test.tsx` fails until its expectations move with it. Deliberately off: this is the owner's call, not a gap. |
 
-## 3. Legal and compliance — needed before ads, and arguably before launch
+## 3. Decided, with the argument
 
-| #   | Item                             | What done looks like                                                                                                                                                                                       |
-| --- | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 3.1 | **No privacy policy.**           | A page at `/privacy/`. **Required by Google's terms before AdSense may serve**, and independently right: the application handles financial data, and a reader will look for one. See `docs/adsense.md` §4. |
-| 3.2 | **No terms of use.**             | A page at `/terms/`. Needed if this site ever sells anything; optional while it only links to source.                                                                                                      |
-| 3.3 | **No cookie or consent notice.** | Only needed once something sets a cookie or serves personalised ads. Today nothing does. `docs/adsense.md` §5 covers the EEA/UK case.                                                                      |
+These are not omissions. They are here so nobody reopens them without reading
+why.
 
-## 4. AdSense
+- **No analytics.** This origin talks to nothing, and `connect-src 'self'` is
+  what makes the CSP's `'unsafe-inline'` tolerable (`operations.md` 3.2).
+  Netlify's own request logs already answer "how many people came". If a
+  counter is ever wanted, a self-hosted cookieless one keeps the property; a
+  third-party tag does not.
+- **No newsletter.** Three feeds already exist (`content.md` 5.9). A
+  subscription form means a vendor, a CSP exception, a consent question and a
+  list to look after, in exchange for a channel the reader already has.
+- **No separate comparison page.** The pricing table is the comparison, and a
+  page comparing this to named competitors is work to keep honest and ages
+  badly.
+- **No cookie banner on this site.** It sets no cookies. The _application_
+  needs a consent platform for EEA and UK traffic once ads are on, which is
+  covered in `docs/adsense.md` §5 and is the application's problem.
+- **No documentation versioning**, and **no multi-level sidebar.**
+  `content.md` 5.1 and 5.5. Both are large structural changes, and building
+  either early means maintaining it before anything uses it. The trigger for
+  versioning is a released version whose docs must stay readable after the
+  next one ships; for a deeper sidebar it is a section past roughly ten pages.
+- **No search service.** `content.md` 5.10 names the index size at which the
+  in-browser search stops being the right answer.
+- **No theme toggle.** `web.md` 1.2 — `localStorage` is per-origin, so a
+  toggle here could never have shared a choice made in the application.
+- **The page weight floor is the framework's.** About 170 KB gzipped of the
+  JavaScript is Next.js and React, and the homepage pays it while containing
+  no client component at all. That is the cost of choosing Next for
+  portability (`operations.md` 1.1), and `tests/budget.test.ts` budgets just
+  above it so a change of _kind_ fails while the floor is not pretended away.
+  If page weight ever genuinely matters, the lever is the framework, not the
+  code.
+- **`script-src` carries `'unsafe-inline'`.** `operations.md` 3.2, with the
+  two ways out and why neither is worth it yet.
+- **Emptying `content/blog/` breaks the build.** `operations.md` 1.4 — a
+  dynamic route with no params is a build error under `output: "export"`.
+- **One dependency is pre-1.0.** `operations.md` 6.2 names it and its
+  fallback.
 
-**`docs/adsense.md` is the full procedure.** The one-line summary: the app
-serves the ads, and this site's `ads.txt` is what authorises them — so a
-mistake here costs revenue on a domain this repository does not otherwise
-touch.
+## 4. Ongoing, by nature
 
-| #   | Item                                                                 | What done looks like                                                                                                                                                                     |
-| --- | -------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 4.1 | **`public/ads.txt` does not exist**, and a test asserts it does not. | It exists, contains the real publisher id, and `tests/export-shape.test.ts` has its expectation inverted — in the same commit. `AGENTS.md` says why a premature file is worse than none. |
-| 4.2 | **No AdSense account, so nothing is approved.**                      | Approval takes days to weeks and needs a live site with real content. It is the longest lead time in this document; start it early.                                                      |
-| 4.3 | **Thin content is the usual rejection.**                             | Ship the docs and a few posts, and announce them, before applying.                                                                                                                       |
+Not work items, and not a backlog. These are things that grow with the
+product rather than being finished.
 
-## 5. The blog
+- **Writing posts.** Two exist and both are real. `write-content` is the
+  procedure.
+- **Documentation coverage.** Seven pages across four sections. The
+  application's own `docs/` directory is the source for more, and much of it
+  adapts rather than needing writing.
+- **Keeping dependencies current.** `update-dependencies`, which is a skill
+  rather than a note because it is a thing that repeats.
+- **Refreshing screenshots** when the application's look changes.
 
-| #   | Item                                                                              | What done looks like                                                                                                                                                                                    |
-| --- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 5.1 | **Two posts, both written as examples.**                                          | Enough posts that the index is worth reading. Keep or replace the two; they are real and correct, not lorem ipsum.                                                                                      |
-| 5.2 | **The section is unannounced.**                                                   | `announced: true` in `src/content/sections.ts`. That one flag changes the header link, the `noindex` and the sitemap together, and `tests/sections.test.tsx` fails until its expectations move with it. |
-| 5.3 | **No author photo.** `authors.gavin` has no `avatar`, so bylines render initials. | A square image in `public/authors/`, and `avatar` set. Initials are a deliberate fallback, not a placeholder to be embarrassed by.                                                                      |
-| 5.4 | **No cover images**, so featured posts render without one.                        | `image` and `imageAlt` on the posts worth it. Both or neither — the parser refuses an image with no alt.                                                                                                |
-| 5.5 | **Tags have no descriptions.**                                                    | Optional. A tag page currently shows the tag and a count.                                                                                                                                               |
-
-## 6. The documentation
-
-| #   | Item                                                                    | What done looks like                                                                                                                                                                                                                                                                     |
-| --- | ----------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 6.1 | **Four pages, covering install, import, configuration and backups.**    | Coverage that matches what the application actually does — the app's own `docs/` directory is the source, and much of it can be adapted rather than written.                                                                                                                             |
-| 6.2 | **The section is unannounced.**                                         | As 5.2.                                                                                                                                                                                                                                                                                  |
-| 6.3 | **The sidebar is two levels.** Sections hold pages; pages hold nothing. | Only needed if a section grows past roughly ten pages. `content.md` 5.5 owns the ordering.                                                                                                                                                                                               |
-| 6.4 | **No versioning.**                                                      | Only needed when a released version's documentation must stay readable after the next one ships. That is a real day for a self-hosted product and it is not today. Deliberately not built: it is a large structural change and building it early means maintaining it before it is used. |
-| 6.5 | **Search does not highlight the matched text.**                         | Results show title and section. Highlighting means returning a snippet with offsets; worth it once pages are long enough that a title is not enough to choose between results.                                                                                                           |
-
-## 7. Launch
-
-| #   | Item                               | What done looks like                                                                                                                                                                                            |
-| --- | ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 7.1 | **No Netlify site exists.**        | Site created, linked to this repository, publishing `out/`. `netlify.toml` already carries the build, the headers and the `www` redirect.                                                                       |
-| 7.2 | **DNS not pointed.**               | The apex at Netlify, `app.` at the application, and **no CAA record** — `operations.md` 6 explains why one would break the app's certificate renewal, and why DNSSEC must be disabled before a nameserver move. |
-| 7.3 | **No deploy previews configured.** | Netlify does this by default for pull requests; confirm it is on, because the CI in this repository builds but does not deploy.                                                                                 |
-| 7.4 | **No performance budget.**         | The site is small and static and currently fast. A Lighthouse budget in CI is worth adding the first time a page gets heavy — most likely when cover images arrive.                                             |
-
-## 8. Known limitations, accepted
-
-These are decisions, not omissions. They are here so nobody re-opens them
-without reading the argument.
-
-- **`script-src` carries `'unsafe-inline'`.** Next emits its hydration payload
-  inline and a static export has no request in which to mint a nonce.
-  `operations.md` 3.2 has the full argument and the two ways out.
-- **Emptying `content/blog/` breaks the build.** A dynamic route with no params
-  is a build error under `output: "export"`. `operations.md` 1.4.
-- **One dependency is pre-1.0** (`rehype-pretty-code`). `operations.md` 5.2
-  names the fallback.
-- **The theme cannot be toggled**, and follows the operating system.
-  `web.md` 1.2 — `localStorage` is per-origin, so a toggle here could not have
-  shared a choice made in the application anyway.
-- **No search service.** `content.md` 5.10 names the size at which that
-  changes.
-
-## 9. How to pick something up
+## 5. How to pick something up
 
 1. Read `AGENTS.md`. It holds the invariants — the things that make the site
-   _wrong_, not untidy — and it wins over every guide.
-2. Read the guide for the surface: `docs/standards/web.md`,
-   `content.md`, `operations.md`, or `code/`.
-3. For content, use the **`write-content`** skill. For anything else, make the
-   change and then use **`merge-prep`**, which verifies, commits and pushes.
+   _wrong_ rather than untidy — and it wins over every guide.
+2. Read the guide for the surface: `docs/standards/web.md`, `content.md`,
+   `operations.md`, or `code/`.
+3. For content, use **`write-content`**. For anything else, make the change
+   and then use **`merge-prep`**, which verifies, commits and pushes.
 4. If the change makes a document false, change the document in the same
-   commit. `writing.md` §Keeping a document true — and `guides-update` is that
+   commit — `writing.md` §Keeping a document true, and `guides-update` is that
    step done systematically.

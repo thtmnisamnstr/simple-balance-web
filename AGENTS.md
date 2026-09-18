@@ -43,6 +43,18 @@ Break one of these and the site is wrong rather than untidy.
 - **Crawling is allowed everywhere; indexing is controlled per page.**
   `Disallow` on an unannounced section is the reflex and is exactly wrong: a
   crawler that cannot fetch the page never sees the `noindex`.
+- **Every price and limit on the pricing page is what the application
+  enforces.** Three accounts free, unlimited on Premium, $20 a year or $2 a
+  month, and nothing else held back from either. This is the page whose error
+  a customer discovers personally.
+- **The paid tier is "Premium" to a reader and `plus` on the wire**, in both
+  repositories. Two surfaces using different words at a customer is the
+  failure to avoid; renaming the wire value would break clients, renaming the
+  label would not.
+- **The privacy policy names the real processors and carries the three
+  AdSense disclosures** — third-party cookies, the vendors that set them, and
+  how to opt out. A generic policy is a false statement about somebody's data,
+  and a missing disclosure is a breach whose penalty is suspension.
 - **Every claim on this site is true of the shipped application.** Nothing here
   can check that, because the application is a different repository. It is the
   rule that most needs a person.
@@ -59,7 +71,11 @@ Break one of these and the site is wrong rather than untidy.
 - **A dynamic route must generate at least one page** under `output: "export"`,
   which is why page one of the blog exists at two URLs with a canonical tag.
 - **`npm run verify` builds before it tests**, because the tests read the built
-  output — `noindex`, the sitemap and `robots.txt` are what a crawler sees.
+  output — `noindex`, the sitemap, `robots.txt` and the shipped weight are all
+  facts about the artefact rather than about the source.
+- **Netlify runs the gate, not just the build.** Its build command is
+  `npm run verify`, so a failing test fails the deploy instead of producing a
+  preview somebody approves.
 
 ## Standards
 
@@ -109,6 +125,10 @@ Six skills in `.claude/skills/` hold the procedures that repeat:
   traps already paid for.
 - `write-content` — write a post or a documentation page, with the frontmatter
   contract and the traps that fail a build.
+
+`docs/roadmap.md` records that there is no outstanding engineering work, and
+what remains waits on the application, on an account, or was decided against
+with the argument. `docs/adsense.md` is the AdSense procedure.
 
 ## Definition of done
 

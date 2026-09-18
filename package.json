@@ -11,7 +11,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "build:og": "node scripts/build-og-image.mjs",
+    "build:images": "node scripts/build-images.mjs",
     "start": "serve out",
     "typecheck": "tsc --noEmit",
     "lint": "oxlint --deny-warnings src tests",

@@ -153,8 +153,15 @@ reporting off the first workflow to finish:
 gh pr checks "$(git branch --show-current)" --watch
 ```
 
-Two checks: `verify` and `links`. A green run is not a deployed site — Netlify
-builds separately, and its dashboard is where a deploy is confirmed.
+**Netlify is the gate** and runs `npm run verify` as its build command, so a
+failing test fails the deploy rather than producing a preview somebody
+approves. Open the deploy preview it posts on the pull request and _look at
+it_ — that is the only step in this skill no machine performs.
+
+GitHub Actions runs the two things Netlify's build image cannot be relied on
+for: the accessibility suite, which needs Chromium, and the internal link
+check. Both must be green as well; `operations.md` 5 says why the work is
+split this way.
 
 **Report, plainly:**
 

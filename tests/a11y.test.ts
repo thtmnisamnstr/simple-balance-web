@@ -1,4 +1,4 @@
-import { createReadStream, existsSync, statSync } from "node:fs";
+import { createReadStream, existsSync, readdirSync, statSync } from "node:fs";
 import { createServer, type Server } from "node:http";
 import { extname, join, normalize } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
@@ -22,6 +22,22 @@ import AxeBuilder from "@axe-core/playwright";
  * `prefers-color-scheme` block and a light-only audit would never read it.
  */
 
+/*
+ * The one test that needs a browser, and the one that can be skipped.
+ *
+ * Netlify's build image is not guaranteed to have the system libraries
+ * Chromium needs, and a deploy that fails because a browser would not install
+ * is a deploy that fails for a reason unrelated to the change. So the Netlify
+ * build sets `SKIP_BROWSER_TESTS=1` (see `netlify.toml`) and GitHub Actions
+ * does not — the gate that must always run it is the one that installs it.
+ *
+ * The skip is explicit and named rather than "skip if Chromium is missing",
+ * because the second form is indistinguishable from a machine where Chromium
+ * silently stopped installing, and a suite that quietly stops checking
+ * contrast is worse than one that fails.
+ */
+const SKIPPED = process.env.SKIP_BROWSER_TESTS === "1";
+
 const PORT = 4399;
 const TYPES: Record<string, string> = {
   ".html": "text/html; charset=utf-8",
@@ -35,22 +51,40 @@ const TYPES: Record<string, string> = {
   ".txt": "text/plain; charset=utf-8",
 };
 
-const PAGES = [
-  "/",
-  "/blog/",
-  "/blog/what-a-refund-actually-is/",
-  "/blog/tags/bookkeeping/",
-  "/blog/authors/gavin/",
-  "/blog/archive/",
-  "/docs/",
-  "/docs/configuration/",
-  "/404.html",
-];
+/**
+ * Every page the build emitted, discovered rather than listed.
+ *
+ * This was a list of nine, and it went stale the moment pricing, privacy and
+ * terms were added — three new pages, none of them audited, and nothing said
+ * so. That is precisely the failure `code/testing.md` 2.2 is about: a list is
+ * a claim about what exists, made once, by somebody who could not see what
+ * would be added.
+ *
+ * There are no exceptions. Every page this site serves is a page somebody can
+ * open, so every one is audited; if a page ever needs excusing, it is named
+ * here with the argument, not quietly dropped.
+ */
+function emittedPages(dir = "out", prefix = "/"): readonly string[] {
+  const out: string[] = [];
+  for (const entry of readdirSync(dir)) {
+    const full = join(dir, entry);
+    if (statSync(full).isDirectory()) {
+      if (entry === "_next") continue;
+      out.push(...emittedPages(full, `${prefix}${entry}/`));
+    } else if (entry === "index.html") {
+      out.push(prefix);
+    }
+  }
+  return out;
+}
+
+const PAGES = SKIPPED ? [] : emittedPages().toSorted();
 
 let server: Server;
 let browser: Browser;
 
 beforeAll(async () => {
+  if (SKIPPED) return;
   server = createServer((request, response) => {
     // `normalize` on a path joined under `out` is what stops `..` escaping it.
     const requested = normalize(decodeURIComponent((request.url ?? "/").split("?")[0]!));
@@ -72,11 +106,13 @@ afterAll(async () => {
   await new Promise<void>((resolve) => server?.close(() => resolve()));
 });
 
-describe("accessibility", () => {
+describe.skipIf(SKIPPED)("accessibility", () => {
   it("has pages to audit", () => {
     // `out/` is missing if somebody ran the tests without building. Say so,
-    // rather than auditing nothing and passing.
+    // rather than auditing nothing and passing — an empty population passes
+    // every claim made over it.
     expect(existsSync("out/index.html"), "run `npm run build` first").toBe(true);
+    expect(PAGES.length, "no pages discovered in out/").toBeGreaterThan(12);
   });
 
   for (const scheme of ["light", "dark"] as const) {

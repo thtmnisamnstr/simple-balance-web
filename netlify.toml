@@ -5,7 +5,15 @@
 # whole integration.
 
 [build]
-  command = "npm run build"
+  # The gate, not just the build. A deploy preview that renders a page whose
+  # tests fail is a preview somebody approves, so the tests run here and a
+  # failing one fails the deploy.
+  #
+  # `SKIP_BROWSER_TESTS` below is what makes that affordable: the accessibility
+  # suite drives Chromium, and this build image is not guaranteed to have the
+  # libraries it needs. GitHub Actions installs Chromium and runs it there, so
+  # the check exists — it simply does not gate the deploy.
+  command = "npm run verify"
   publish = "out"
 
 [build.environment]
@@ -18,6 +26,8 @@
   # `scripts/capture-screenshots.mjs`, which never runs here, so the usual
   # native-module-across-Node-versions hazard does not apply to this build.
   NODE_VERSION = "24"
+  # See the build command above, and `tests/a11y.test.ts`.
+  SKIP_BROWSER_TESTS = "1"
 
 # NO CATCH-ALL REDIRECT.
 #

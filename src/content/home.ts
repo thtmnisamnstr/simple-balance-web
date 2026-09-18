@@ -243,6 +243,12 @@ export const agents = {
   ],
 } as const;
 
+/**
+ * The pages announced in the header. Blog and docs are deliberately absent —
+ * `src/content/sections.ts` holds that decision and the flag behind it.
+ */
+export const primaryNav = [{ label: "Pricing", href: "/pricing/" }] as const;
+
 export const contact = {
   eyebrow: "Get in touch",
   /** Two addresses, and the page says which is which. An unlabelled mailto is
@@ -258,6 +264,9 @@ export const footer = {
     "Simple Balance is free software for keeping your own books. Run it yourself; " +
     "nobody else gets a copy.",
   links: [
+    { label: "Pricing", href: "/pricing/" },
+    { label: "Privacy", href: "/privacy/" },
+    { label: "Terms", href: "/terms/" },
     { label: "Source", href: site.sourceUrl },
     { label: "License", href: `${site.sourceUrl}/blob/main/LICENSE` },
     { label: "Changelog", href: `${site.sourceUrl}/blob/main/CHANGELOG.md` },

@@ -79,3 +79,18 @@ export function section(key: SectionKey): Section {
 export function announcedSections(): readonly Section[] {
   return sections.filter((s) => s.announced);
 }
+
+/**
+ * What a tag is about, where saying so adds something.
+ *
+ * Optional by design: a tag page without one shows the tag and a count, which
+ * is honest. A description that restates the tag ("Posts about bookkeeping")
+ * is worse than none, so this holds only the ones that earn a sentence, and
+ * `tests/blog-features.test.ts` refuses a description that merely repeats its
+ * own tag.
+ */
+export const tagDescriptions: Readonly<Record<string, string>> = {
+  bookkeeping:
+    "Why double-entry is worth the second entry when the only person you answer to is yourself.",
+  design: "Decisions about how the product works, and the ones that were wrong first.",
+};

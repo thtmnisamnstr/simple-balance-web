@@ -5,6 +5,8 @@ date: 2026-09-10
 authors: [gavin]
 tags: [bookkeeping, design]
 featured: true
+image: /covers/double-entry-for-one-person.webp
+imageAlt: A typographic cover reading “Double-entry bookkeeping, for one person”, in the Simple Balance palette.
 series: Keeping your own books
 seriesOrder: 1
 ---

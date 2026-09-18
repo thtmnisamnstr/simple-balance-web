@@ -98,6 +98,34 @@ export function DocStructuredData({ entry }: { readonly entry: Entry }) {
   );
 }
 
+/**
+ * The pricing page's questions, as an `FAQPage`.
+ *
+ * Google renders these as expandable results, and the policy condition is the
+ * same one 2.1 states: the question and the answer must both be visible on the
+ * page. They are — the `<details>` elements carry exactly this text — which is
+ * what makes the markup a description rather than a claim.
+ */
+export function FaqStructuredData({
+  items,
+}: {
+  readonly items: readonly { readonly q: string; readonly a: string }[];
+}) {
+  return (
+    <Ld
+      data={{
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: items.map((item) => ({
+          "@type": "Question",
+          name: item.q,
+          acceptedAnswer: { "@type": "Answer", text: item.a },
+        })),
+      }}
+    />
+  );
+}
+
 export type Crumb = { readonly name: string; readonly href: string };
 
 export function BreadcrumbStructuredData({ trail }: { readonly trail: readonly Crumb[] }) {

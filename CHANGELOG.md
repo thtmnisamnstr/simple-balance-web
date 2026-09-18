@@ -23,6 +23,23 @@ devDependency now.
 
 ### Added
 
+**A pricing page.** Two plans and a third column for self-hosting, a
+feature-by-feature comparison, and eight questions a plan with a limit
+actually raises. Every figure is what the application enforces: three accounts
+free, unlimited on Premium at $20 a year or $2 a month, and nothing else held
+back from either. Self-hosting is on the page because a product that tells you
+how to avoid paying it is making an honest case for paying it.
+
+**A privacy policy and terms of use.** Written for this product rather than
+from a template — the actual processors, the actual lawful bases, the actual
+retention — and carrying the three disclosures Google requires of a site
+serving AdSense. The privacy policy is what unblocks the AdSense application.
+
+**Three more documentation pages** on entries, budgets and agents, taking the
+docs to seven across four sections. **Generated cover images** for posts, in
+the product's palette. **Tag descriptions**, **search result snippets** with
+the match highlighted, and a **weight budget** on what the build ships.
+
 **A social preview card.** A link to this site pasted anywhere used to render a
 blank rectangle. `scripts/build-og-image.mjs` draws one at build time — the
 alternative renders per request, which is a server, which is the thing the
@@ -32,8 +49,8 @@ static export exists to avoid.
 every push and pull request, with Node taken from `.nvmrc` so CI, Netlify and a
 developer using nvm cannot drift apart.
 
-**An accessibility audit in the test suite.** axe against nine pages in both
-themes, in a real browser, as part of `npm run verify`. It is the only test
+**An accessibility audit in the test suite.** axe against every page the build
+emits, in both themes, in a real browser, as part of `npm run verify`. It is the only test
 here that runs a browser and it earns it: contrast and computed styles cannot
 be checked in jsdom, and a token change is exactly the sort of edit nobody
 renders before committing.

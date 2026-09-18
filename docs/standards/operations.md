@@ -16,6 +16,14 @@ rewrite.
 
 The cost is every server-only Next.js feature — route handlers, middleware,
 ISR, and the built-in image optimiser. A marketing page needs none of them.
+
+**And about 170 KB gzipped of JavaScript**, which is Next and React
+themselves. The homepage pays nearly all of it while containing no client
+component at all. That is the honest price of the portability above, it is not
+something this repository chose line by line, and `tests/budget.test.ts`
+budgets just above it so that a change of _kind_ — a fourth island, a charting
+library, an analytics tag — fails while the floor is not pretended away. If
+page weight ever genuinely matters, the lever is the framework.
 **The day one is genuinely wanted, the decision to revisit is the host, not the
 export**: adding a server here quietly makes the site Netlify-shaped again.
 
@@ -179,23 +187,41 @@ reporting almost nothing, which is what the first capture produced.
 
 ## 5. Continuous integration
 
-**House.** `.github/workflows/verify.yml` runs `npm run verify` on every push
-and pull request, plus an internal link check as a second job.
+**House.** Two systems, and they do different jobs.
 
-Node comes from `.nvmrc` via `node-version-file`, so CI, Netlify and a
-developer using nvm cannot drift apart — one number, three consumers.
+**Netlify is the gate.** Its build command is `npm run verify`, not
+`npm run build` — so typecheck, lint, formatting and the whole test suite run
+before anything is published, and a failing test fails the deploy. That
+matters more than it sounds on a host with deploy previews: a preview that
+renders a page whose tests fail is a preview somebody approves.
 
-Chromium is installed because `tests/a11y.test.ts` drives a real browser.
-Chromium only: the WCAG rules it checks do not vary by engine, and three
-browsers would triple the run for nothing.
+It builds a preview for every pull request and every push to one, and deploys
+`main`. `SKIP_BROWSER_TESTS=1` is set there, and only there.
+
+**GitHub Actions runs what Netlify cannot.** `tests/a11y.test.ts` drives
+Chromium, and this build image is not guaranteed to have the libraries it
+needs — a deploy that fails because a browser would not install is a deploy
+that failed for a reason unrelated to the change. So the accessibility suite
+runs in Actions, which installs Chromium, alongside an internal link check.
+
+The skip is an explicit named variable rather than "skip if Chromium is
+missing", because the second form is indistinguishable from a machine where
+Chromium silently stopped installing, and a suite that quietly stops checking
+contrast is worse than one that fails.
+
+**Turn on branch protection** requiring the `verify` check, or Actions reports
+a failure that nothing acts on.
+
+Node comes from `.nvmrc` via `node-version-file` in Actions and from
+`NODE_VERSION` in `netlify.toml`, and both say 24 — one number, three
+consumers, and `update-dependencies` moves them together.
+
+Chromium only, in Actions: the WCAG rules axe checks do not vary by engine,
+and three browsers would triple the run for nothing.
 
 **The link check is internal only.** An external link checker fails when
 somebody else's site is down, which trains people to ignore a red build.
 External rot is real and is a periodic job, not a merge gate.
-
-**Netlify builds separately from this.** CI proves the build is sound; Netlify
-produces the deploy. Neither gates the other, which means a green CI run is not
-a deployed site — check the Netlify dashboard for that.
 
 ## 6. Dependencies
 

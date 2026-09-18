@@ -1,4 +1,4 @@
-import { site, hero } from "@/content/home";
+import { site, hero, primaryNav } from "@/content/home";
 import { LogoMark } from "@/components/icons";
 
 /**
@@ -22,6 +22,11 @@ export function SiteHeader() {
         </a>
 
         <nav className="header-actions" aria-label="Site">
+          {primaryNav.map((item) => (
+            <a className="header-link" key={item.href} href={item.href}>
+              {item.label}
+            </a>
+          ))}
           <a className="header-link" href={site.sourceUrl}>
             Source
           </a>

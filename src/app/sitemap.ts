@@ -13,8 +13,17 @@ const base = `https://${site.domain}`;
  * the flag both read.
  */
 export default function sitemap(): MetadataRoute.Sitemap {
+  /*
+   * The announced pages of the site itself. A list rather than a walk of
+   * `src/app`, and `tests/sitemap.test.ts` is what stops it going stale: it
+   * compares this against the routes the build actually emitted, so a new
+   * page missing from here fails rather than quietly never being indexed.
+   */
   const entries: MetadataRoute.Sitemap = [
     { url: `${base}/`, changeFrequency: "monthly", priority: 1 },
+    { url: `${base}/pricing/`, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${base}/privacy/`, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${base}/terms/`, changeFrequency: "yearly", priority: 0.3 },
   ];
 
   for (const announced of announcedSections()) {

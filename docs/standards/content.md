@@ -289,9 +289,60 @@ string ends the element early and turns the rest of the payload into markup.
 
 _Checked by:_ `tests/docs-features.test.ts`.
 
-## 6. Announced versus built
+## 6. Pricing and legal copy
 
-### 6.1 One flag decides three things
+### 6.1 A price claim is checked against the application
+
+**Binding.** Every number on the pricing page is true of what the application
+enforces: three accounts on the free plan, unlimited on Premium, $20 a year or
+$2 a month, and no feature held back from either.
+
+Nothing here can read the application — it is a different repository — so
+`tests/pricing.test.tsx` holds what it can: that the limit agrees with itself
+across the tier summary, the comparison table and the FAQ, and that no row
+claims a feature Free lacks and Premium has. A pricing page that overstates is
+the one page whose error the customer discovers personally.
+
+_Checked by:_ `tests/pricing.test.tsx` for internal agreement; `human` for
+agreement with the application.
+
+### 6.2 Self-hosting is a column on the pricing page
+
+**House.** Most pricing pages would leave it out. It is the reason to believe
+the other two columns: a product that tells you how to avoid paying it is a
+product making an honest case for paying it.
+
+### 6.3 The paid tier is "Premium" here and `plus` on the wire
+
+**Binding.** The application's `plans` enum, session payload and `whoami` all
+carry `plus`. The word a person reads is **Premium**, in both repositories.
+
+Renaming the wire value would break every client that has seen it; renaming
+the label would not. What must never happen is the two surfaces using
+different words at a customer — which is what would have shipped, because the
+application had "Plus" in exactly one string.
+
+_Checked by:_ `human`, across two repositories. Worth knowing when either
+changes.
+
+### 6.4 A legal page describes this product, not a template
+
+**Binding.** The privacy policy names the actual processors — Stripe, Google,
+Netlify — the actual lawful bases, and the actual retention. A generic policy
+is not merely unhelpful: it is a false statement about what happens to
+somebody's data.
+
+It also carries the three disclosures Google requires of a site serving
+AdSense — third-party cookies, the vendors that set them, and how to opt out —
+because missing any one is a breach whose penalty is suspension.
+
+_Checked by:_ `tests/legal.test.tsx`, which asserts the AdSense disclosures,
+that every processor is named, the GDPR and CCPA rights, and that the terms
+do not purport to restrict the AGPL.
+
+## 7. Announced versus built
+
+### 7.1 One flag decides three things
 
 **Binding.** `announced` in `src/content/sections.ts` controls whether a
 section is linked, whether its pages are indexed, and whether it enters the
@@ -307,7 +358,7 @@ adding a link is the failure this prevents.
 
 _Checked by:_ `tests/sections.test.tsx`, which asserts all three.
 
-### 6.2 Crawling is allowed; indexing is not
+### 7.2 Crawling is allowed; indexing is not
 
 **Binding.** `robots.txt` allows everything. Unannounced pages carry `noindex`.
 
