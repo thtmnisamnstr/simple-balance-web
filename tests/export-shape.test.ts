@@ -61,10 +61,16 @@ describe("the published shape", () => {
   });
 
   it("sends the security headers a static marketing page owes", () => {
+    // All six `operations.md` 3.1 names. It asserted four, and the coverage
+    // table in `operations.md` 10 credited this test with the whole rule — so
+    // deleting `X-Frame-Options` or `Permissions-Policy` kept the suite green
+    // while a guide said otherwise.
     for (const header of [
       "X-Content-Type-Options",
       "Referrer-Policy",
       "Strict-Transport-Security",
+      "X-Frame-Options",
+      "Permissions-Policy",
       "Content-Security-Policy",
     ]) {
       expect(netlify, `${header} is not set`).toContain(header);
@@ -74,5 +80,9 @@ describe("the published shape", () => {
     // tolerable, so they are the ones worth asserting.
     expect(netlify).toContain("connect-src 'self'");
     expect(netlify).toContain("form-action 'none'");
+    // The CSP's own clickjacking defence, which supersedes X-Frame-Options in
+    // current browsers. Asserting the header and not this left the modern
+    // half of the pair untested.
+    expect(netlify).toContain("frame-ancestors 'none'");
   });
 });

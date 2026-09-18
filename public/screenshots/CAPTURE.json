@@ -62,6 +62,18 @@
       "kb": 36,
       "w": 1600,
       "h": 1000
+    },
+    {
+      "file": "public/screenshots/payees-light.webp",
+      "kb": 53,
+      "w": 1600,
+      "h": 1000
+    },
+    {
+      "file": "public/screenshots/payees-dark.webp",
+      "kb": 52,
+      "w": 1600,
+      "h": 1000
     }
   ]
 }

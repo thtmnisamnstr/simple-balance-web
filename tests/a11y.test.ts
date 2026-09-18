@@ -140,3 +140,101 @@ describe.skipIf(SKIPPED)("accessibility", () => {
     }
   }
 });
+
+/**
+ * WCAG 2.1 AA reflow (1.4.10), which axe cannot decide.
+ *
+ * The criterion is that content is readable at 320 CSS pixels without
+ * scrolling in two directions. axe has no rule for it because deciding it
+ * needs layout and a chosen width, so it is the accessibility failure a clean
+ * axe report is most likely to be hiding — and it is invisible on a desktop,
+ * because the row that overflows fits there.
+ *
+ * Three separate causes were live when this was written, and none of them
+ * looked like an overflow in the source:
+ *
+ *  - the header was a flex row that could not wrap, so the brand, two links
+ *    and the pending label pushed the page to 453px;
+ *  - every tick in the pricing table carries a `.visually-hidden` word, and
+ *    that class is `position: absolute` — so those words escaped the table's
+ *    own scroll container, which was unpositioned, and sat at x=452;
+ *  - `.code-tabs` is a grid, and a grid track will not shrink below its
+ *    content's intrinsic width, so one unbreakable line of a code sample made
+ *    it 482px wide.
+ *
+ * The table was never the thing overflowing. That is why this checks the
+ * document rather than any element: the cause is somewhere new every time,
+ * and the symptom is always the same one number.
+ *
+ * 390px is the second width because it is an ordinary phone rather than the
+ * floor, and a page can pass at the floor while failing just above it.
+ */
+describe.skipIf(SKIPPED)("reflow", () => {
+  for (const width of [320, 390]) {
+    for (const path of PAGES) {
+      it(`does not scroll sideways at ${width}px: ${path}`, async () => {
+        const context = await browser.newContext({ viewport: { width, height: 900 } });
+        const page = await context.newPage();
+        await page.goto(`http://localhost:${PORT}${path}`);
+        await page.waitForLoadState("networkidle").catch(() => {});
+
+        const {
+          viewport,
+          document: scrollWidth,
+          widest,
+        } = await page.evaluate(() => {
+          const vw = window.document.documentElement.clientWidth;
+          /*
+           * The thing that actually extends the page, so a failure names a
+           * culprit rather than only a number.
+           *
+           * "Widest thing past the edge" is the obvious version and it is
+           * wrong: the pricing table is 561px wide and overflows nothing,
+           * because its own scroll container clips it. What made the page
+           * 453px was a one-pixel `.visually-hidden` span inside it. So a
+           * candidate only counts if its right edge is within the document's
+           * scroll width — anything past that is being clipped by something
+           * and is not the cause.
+           *
+           * Text runs are measured too: a long URL overflows its paragraph
+           * without the paragraph's own box moving, which is how the privacy
+           * policy failed.
+           */
+          const limit = window.document.documentElement.scrollWidth + 0.5;
+          let worst = { what: "nothing", right: 0 };
+          for (const element of window.document.querySelectorAll("*")) {
+            const box = element.getBoundingClientRect();
+            if (box.right > vw + 0.5 && box.right <= limit && box.right > worst.right) {
+              worst = {
+                what: `<${element.tagName.toLowerCase()} class="${element.className}">`,
+                right: box.right,
+              };
+            }
+          }
+          const walker = window.document.createTreeWalker(
+            window.document.body,
+            NodeFilter.SHOW_TEXT,
+          );
+          for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+            if (!node.nodeValue?.trim()) continue;
+            const range = window.document.createRange();
+            range.selectNodeContents(node);
+            for (const box of range.getClientRects()) {
+              if (box.right > vw + 0.5 && box.right <= limit && box.right > worst.right) {
+                worst = { what: `text "${node.nodeValue.trim().slice(0, 40)}"`, right: box.right };
+              }
+            }
+          }
+          return {
+            viewport: vw,
+            document: window.document.documentElement.scrollWidth,
+            widest: `${worst.what} reaches ${Math.round(worst.right)}px`,
+          };
+        });
+
+        await context.close();
+        expect(scrollWidth, `${path} at ${width}px: ${widest}`).toBeLessThanOrEqual(viewport);
+      }, 30_000);
+    }
+  }
+});

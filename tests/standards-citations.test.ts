@@ -14,16 +14,39 @@ import { sourceFiles } from "./support/source";
  * mechanical signal available.
  */
 
-const guides = sourceFiles("docs", /\.md$/).concat(
-  existsSync("AGENTS.md") ? [{ path: "AGENTS.md", code: readFileSync("AGENTS.md", "utf8") }] : [],
-);
+/**
+ * Every document that cites a rule, which includes the skills.
+ *
+ * `.claude/` was outside this for a while, and that is exactly how the
+ * `update-dependencies` skill went on pointing at `operations.md` 5.2 and 5.3
+ * through a renumbering that made them 6.2 and 6.3. A skill is read by
+ * whoever is about to do the work, so a wrong citation there sends somebody
+ * to the wrong rule at the moment they are relying on it — which is worse
+ * than the same mistake in a guide, where the reader is already browsing.
+ */
+const guides = sourceFiles("docs", /\.md$/)
+  .concat(sourceFiles(".claude", /\.md$/))
+  .concat(
+    existsSync("AGENTS.md") ? [{ path: "AGENTS.md", code: readFileSync("AGENTS.md", "utf8") }] : [],
+  );
 
 /** `src/app/page.tsx:42` or `src/app/page.tsx:42-51`, inside backticks. */
 const CITATION = /`((?:src|tests|scripts|content)\/[\w./[\]-]+?):(\d+)(?:-(\d+))?`/g;
 
 describe("the guides' citations", () => {
-  it("found guides to check", () => {
-    expect(guides.length).toBeGreaterThan(5);
+  it("found guides to check, including the skills", () => {
+    /*
+     * Both halves, named separately. `code/testing.md` 2.1 — a sweep asserts
+     * its population first — and here the population has two sources, so a
+     * bare count would stay green if `.claude/` stopped being read: `docs/`
+     * alone clears any threshold worth setting, and the check would quietly
+     * return to the scope that let the stale citation through.
+     */
+    expect(guides.filter((g) => g.path.startsWith("docs/")).length).toBeGreaterThan(5);
+    expect(
+      guides.filter((g) => g.path.startsWith(".claude/")).length,
+      "the skills are no longer being read",
+    ).toBeGreaterThan(5);
   });
 
   it("names files that exist", () => {
@@ -67,8 +90,14 @@ describe("the guides' citations", () => {
      * documented here so nobody trusts it further. A citation that landed on
      * a real but wrong section is a person's read, the same way
      * `writing.md` §Citations says a drifted line number is.
+     *
+     * **Any depth of directory**, because both spellings occur: a guide
+     * writes `` `operations.md` 6.2 `` and a skill writes
+     * `` `docs/standards/operations.md` 6.3 ``. The pattern allowed one
+     * segment, so the second form — the one the skills mostly use — was never
+     * checked, which is half of why the stale citation survived a renumber.
      */
-    const CITE = /`((?:[a-z-]+\/)?[a-z-]+\.md)` (\d+)(?:\.\d+)?\b/g;
+    const CITE = /`((?:[a-z-]+\/)*[a-z-]+\.md)` (\d+)(?:\.\d+)?\b/g;
     const broken: string[] = [];
 
     for (const guide of guides) {

@@ -1,5 +1,7 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
+import { faq } from "@/content/pricing";
+import { privacy as privacySection } from "@/content/home";
 import { render } from "@testing-library/react";
 import PrivacyPage from "@/app/privacy/page";
 import TermsPage from "@/app/terms/page";
@@ -121,6 +123,63 @@ describe("the terms", () => {
 
   it("tells account holders which email they cannot opt out of", () => {
     expect(text).toContain("no unsubscribe from those");
+  });
+});
+
+describe("the marketing pages, against the policy", () => {
+  /**
+   * The two surfaces have to say the same thing about advertising.
+   *
+   * The policy is careful — a non-personalised ad is still chosen from the
+   * page and your rough location, and it still sets a cookie. A pricing page
+   * is where the temptation is to round that down to "nothing about you",
+   * and it did: the answer to "what are the ads like?" said they were
+   * "requested without anything about you attached", which the document it
+   * links to contradicts in its own words.
+   *
+   * This is the same failure `AGENTS.md` names for Premium and `plus` — two
+   * surfaces using different words at the same customer — except that here
+   * the customer who notices is reading a privacy policy, which is the worst
+   * possible moment to be caught rounding down.
+   */
+  const ads = faq.find((item) => /\bads\b/i.test(item.q));
+
+  it("answers what the ads are, somewhere on the pricing page", () => {
+    // Population check: the assertions below pass vacuously without it.
+    expect(ads, "no pricing question asks what the ads are").toBeDefined();
+  });
+
+  it("does not round the policy down to nothing about you", () => {
+    const answer = ads!.a.toLowerCase();
+    for (const overclaim of [
+      "nothing about you",
+      "no cookies",
+      "without anything about you",
+      "never tracked",
+    ]) {
+      expect(answer, `the pricing page claims "${overclaim}"; the policy does not`).not.toContain(
+        overclaim,
+      );
+    }
+  });
+
+  it("names the two things the policy names", () => {
+    // Personalisation and consent. The policy turns on both, so a pricing
+    // page that mentions neither is describing a different product.
+    const answer = ads!.a.toLowerCase();
+    expect(answer).toMatch(/personalised|personalized/);
+    expect(answer).toMatch(/agreed|consent|asked before/);
+  });
+
+  it("claims no more about tracking than the policy supports", () => {
+    // The homepage sells "we never ask for your bank password", and the
+    // neighbouring promise used to read "nothing counts your clicks" — which
+    // the policy's own server-log paragraph contradicts for the hosted plan.
+    const points = privacySection.points.join(" ").toLowerCase();
+    for (const overclaim of ["counts your clicks", "no logs", "nothing is recorded"]) {
+      expect(points, `the homepage claims "${overclaim}"`).not.toContain(overclaim);
+    }
+    expect(points, "the homepage no longer says anything about analytics").toContain("analytics");
   });
 });
 

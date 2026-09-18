@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { feedAlternates } from "@/lib/feed";
 import { notFound } from "next/navigation";
 import {
   allEntries,
@@ -34,7 +35,7 @@ export async function generateMetadata({
     title: entry.frontmatter.title,
     description: entry.frontmatter.description,
     robots: docs.announced ? undefined : { index: false, follow: false },
-    alternates: { canonical: entry.frontmatter.canonical ?? `/docs/${slug}/` },
+    alternates: feedAlternates(entry.frontmatter.canonical ?? `/docs/${slug}/`),
     openGraph: {
       type: "article",
       title: entry.frontmatter.title,

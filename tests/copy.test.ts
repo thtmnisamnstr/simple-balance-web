@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import * as content from "@/content/home";
+import * as pricingContent from "@/content/pricing";
 
 /**
  * The copy, held to `docs/standards/content.md`.
@@ -146,5 +147,57 @@ describe("the page title", () => {
     // The domain is in the address bar already; a tab that spends its first
     // characters repeating it tells the reader nothing new.
     expect(content.site.titleTagline).not.toContain(content.site.domain);
+  });
+});
+
+describe("the claim this site must never make", () => {
+  /*
+   * `docs/standards/content.md` 1.5. There is no bank connection — no login,
+   * nothing in the background, nothing that goes stale without saying so —
+   * and a reader arriving from any competitor assumes the opposite, because
+   * every hosted competitor works that way.
+   *
+   * **Narrow on purpose.** The obvious spelling of this bans "connect" and
+   * "sync", and it fires on correct copy: the page says "nothing to connect
+   * and nothing to break", "no connection to any bank to maintain", and "you
+   * can connect an AI assistant". Those are the denial and a different
+   * subject. `code/testing.md` 2.5 — a check that fires on correct code gets
+   * narrowed rather than obeyed, so this matches only the affirmative
+   * constructions, where the product is the thing doing the fetching.
+   *
+   * It covers the pricing page as well as the homepage, because 1.5 does.
+   */
+  const IMPLIES_A_CONNECTION = [
+    /\b(connects?|connecting|linked?|linking)\s+(to\s+)?(your\s+)?(bank|accounts?|institution)/i,
+    /\b(syncs?|syncing|synced|synchroni[sz]e)/i,
+    /\bautomatically\s+(updated?|imported?|fetch|pulls?|refreshe?d?)/i,
+    /\b(kept|keeps?)\s+up\s+to\s+date\b/i,
+    /\breal[\s-]time\b/i,
+    /\blive\s+balances?\b/i,
+    /\bset\s+it\s+and\s+forget\s+it\b/i,
+  ];
+
+  const everything = [...strings(content), ...strings(pricingContent, "pricing")];
+
+  it("has both pages' copy to check", () => {
+    expect(everything.length).toBeGreaterThan(80);
+  });
+
+  it("never implies the product logs in to a bank", () => {
+    const offenders: string[] = [];
+    for (const [path, text] of everything) {
+      for (const pattern of IMPLIES_A_CONNECTION) {
+        const hit = pattern.exec(text);
+        if (hit) offenders.push(`${path}: "${hit[0]}" — ${text.slice(0, 60)}`);
+      }
+    }
+    expect(offenders).toEqual([]);
+  });
+
+  it("still allows the denial, which is the whole position", () => {
+    // A guard on the guard. If this ever fails, the check above has been
+    // widened into something that bans the sentence the page is built on.
+    const prose = everything.map(([, text]) => text).join(" ");
+    expect(prose).toContain("nothing to connect");
   });
 });

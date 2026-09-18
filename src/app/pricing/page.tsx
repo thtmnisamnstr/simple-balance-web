@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { feedAlternates } from "@/lib/feed";
 import { comparison, faq, pricing, tiers } from "@/content/pricing";
 import { site } from "@/content/home";
 import { CheckIcon } from "@/components/icons";
@@ -8,13 +9,14 @@ import { BreadcrumbStructuredData, FaqStructuredData } from "@/components/struct
 export const metadata: Metadata = {
   title: "Pricing",
   description:
-    "Free for up to three accounts. Premium is $20 a year for unlimited accounts and no ads. " +
-    "Self-host it and there is no plan at all.",
-  alternates: { canonical: "/pricing/" },
+    "Free for up to three accounts, with ads. Premium is $20 a year for as many accounts as you " +
+    "like and no ads. Run it yourself and there is no plan at all.",
+  alternates: feedAlternates("/pricing/"),
   openGraph: {
     type: "website",
     title: `Pricing — ${site.name}`,
-    description: "Free for three accounts, $20 a year for unlimited, or self-host it for nothing.",
+    description:
+      "Free for three accounts, $20 a year for as many as you like, or run it yourself for nothing.",
   },
 };
 
@@ -67,7 +69,7 @@ export default function PricingPage() {
                 key={tier.key}
                 aria-labelledby={`tier-${tier.key}`}
               >
-                {tier.featured ? <p className="tier-flag">Most people who outgrow Free</p> : null}
+                {tier.featured ? <p className="tier-flag">{pricing.featuredFlag}</p> : null}
                 <h2 className="tier-name" id={`tier-${tier.key}`}>
                   {tier.name}
                 </h2>
@@ -93,6 +95,20 @@ export default function PricingPage() {
             ))}
           </div>
 
+          {/* The strip every competitor closes its price block with and this
+              page had none of: what the reader is risking, answered beside the
+              number rather than eight questions into the FAQ. */}
+          <ul className="checklist">
+            {pricing.reassurances.map((point) => (
+              <li key={point}>
+                <span className="check" aria-hidden="true">
+                  <CheckIcon size={18} />
+                </span>
+                <span>{point}</span>
+              </li>
+            ))}
+          </ul>
+
           <p className="entry-meta tier-note">{pricing.note}</p>
         </div>
       </section>
@@ -100,26 +116,27 @@ export default function PricingPage() {
       <section className="section" aria-labelledby="compare-title">
         <div className="page">
           <h2 id="compare-title" className="section-title">
-            What each one includes.
+            {pricing.compareTitle}
           </h2>
+          <p className="lede">{pricing.compareLede}</p>
           {/* The table scrolls inside its own container rather than widening
               the page, which is what stops a phone scrolling horizontally. */}
           <div className="table-wrap">
             <table className="compare">
-              <caption className="visually-hidden">
-                Features by plan: Free, Premium and self-hosted
-              </caption>
+              <caption className="visually-hidden">{pricing.compareCaption}</caption>
               <thead>
                 <tr>
                   <th scope="col">Feature</th>
-                  <th scope="col">Free</th>
-                  <th scope="col">Premium</th>
-                  <th scope="col">Self-hosted</th>
+                  {pricing.columns.map((column) => (
+                    <th scope="col" key={column}>
+                      {column}
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
                 {comparison.map((row) => (
-                  <tr key={row.feature}>
+                  <tr key={row.id}>
                     <th scope="row">
                       {row.feature}
                       {row.note ? <span className="compare-note">{row.note}</span> : null}
@@ -138,7 +155,7 @@ export default function PricingPage() {
       <section className="section" aria-labelledby="faq-title">
         <div className="page page-narrow">
           <h2 id="faq-title" className="section-title">
-            Questions people actually ask.
+            {pricing.faqTitle}
           </h2>
           <div className="faq">
             {faq.map((item) => (

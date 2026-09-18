@@ -71,6 +71,43 @@ check reported the product's own name and the repository URL, and the
 whitespace check reported the deliberate indentation inside a terminal sample.
 Each now strips what it should never have been reading.
 
+### 2.6 A check finds its subject by identity, not by what it is called
+
+**House.** When a check is about a fact, it locates that fact by a stable
+identifier. Matching the visible label couples a check about behaviour to a
+decision about wording, and the two change for different reasons, at different
+times, at the hands of different people.
+
+Four checks broke in one afternoon on a copy rewrite that changed no behaviour
+any of them was testing:
+
+- `tests/app-facts.test.ts` found the account-limit row by its label,
+  `"Financial accounts"`. Rewording that heading for a general reader turned
+  three lookups into `undefined` and failed **the check that holds this site's
+  prices to the application's contract** — for a reason that had nothing to do
+  with prices. Rows carry an `id` now.
+- `tests/pricing.test.tsx` required an FAQ question containing `"archived"`
+  and another containing `"self-hosting"` — both the product's words for
+  things, neither one a reader would type. The check was holding the page to
+  the vocabulary the rewrite existed to remove.
+- `tests/home-page.test.tsx` asserted the screenshot disclosure by searching
+  for `"demo ledger"`. It now asserts the exported string itself, so the
+  sentence is free to be rewritten and its absence still fails.
+
+**The obvious alternative is to match the visible string**, and it is why this
+keeps happening: it reads naturally, it passes on the day it is written, and
+the coupling is invisible until somebody edits prose. A test that fails when
+the page is reworded is not protecting the fact it names; it is protecting a
+sentence nobody promised to keep.
+
+The tell is a string literal in a test that also appears on a page. If the
+same words are in `src/content/`, the test should be reaching for the value,
+not retyping it.
+
+_Checked by:_ `human`. The failure names the wrong subject when it happens,
+which is the signal — a check about a number failing with "expected undefined"
+after a copy edit is this rule, every time.
+
 ## 3. Tiers
 
 Two, and there is no integration tier because there is no server.

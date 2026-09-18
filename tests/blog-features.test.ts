@@ -1,5 +1,6 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
+import { darkVariant } from "@/components/cover";
 import {
   allEntries,
   blogNeighbours,
@@ -134,5 +135,49 @@ describe("the archive", () => {
         expect(post.frontmatter.date?.slice(0, 4)).toBe(group.year);
       }
     }
+  });
+});
+
+/**
+ * The cover a post opens with, in both themes.
+ *
+ * A post used to open with one cover, drawn in the light palette, so reading
+ * it in dark mode began with a bright white card across the top of a dark
+ * page — the defect `docs/standards/web.md` 5.2 describes for screenshots,
+ * on the one image this site draws for itself rather than photographs.
+ *
+ * The dark file's name is a convention rather than a stored value, which is
+ * the part that can rot quietly: nothing fails if `build-images.mjs` stops
+ * writing the pair, because `<source>` simply does not match and the light
+ * file is served. That is a silent return to the original bug, so it is what
+ * these check.
+ */
+describe("post covers", () => {
+  it("derives the dark file's name from the light one", () => {
+    expect(darkVariant("/covers/a-post.webp")).toBe("/covers/a-post-dark.webp");
+    // Degrades to the input rather than to a 404 when there is no extension.
+    expect(darkVariant("/covers/a-post")).toBe("/covers/a-post");
+  });
+
+  it("ships both themes for every post that has a cover", () => {
+    const covered = posts.filter((post) => post.frontmatter.image);
+    expect(covered.length, "no post has a cover to check").toBeGreaterThan(0);
+
+    const missing = covered
+      .flatMap((post) => {
+        const light = String(post.frontmatter.image);
+        return [light, darkVariant(light)];
+      })
+      .filter((src) => !existsSync(`public${src}`));
+
+    expect(missing, "run `npm run build:images`").toEqual([]);
+  });
+
+  it("offers the dark file to a browser that asks for it", () => {
+    // The built page, not the component: what matters is that a `<source>`
+    // carrying the dark file reaches the reader.
+    const html = readFileSync("out/blog/what-a-refund-actually-is/index.html", "utf8");
+    expect(html).toContain("prefers-color-scheme: dark");
+    expect(html).toContain("what-a-refund-actually-is-dark.webp");
   });
 });

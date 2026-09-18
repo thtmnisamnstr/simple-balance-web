@@ -206,6 +206,13 @@ for name in dashboard transactions budgets reports import; do
 done
 ```
 
+Then regenerate the narrow copies, or the new picture ships at one size and
+every phone gets the 1600px file:
+
+```sh
+npm run build:images
+```
+
 The application captures **every** screen; this site ships the handful it
 uses, because an unused screenshot is a file that goes stale unnoticed.
 `docs/standards/web.md` 5 governs them once they are here — and **the alt

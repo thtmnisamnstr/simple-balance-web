@@ -24,13 +24,13 @@ export function DocsSidebar({ current }: { readonly current?: string }) {
       <DocsSearch />
 
       <details className="docs-nav-details" open>
-        <summary className="docs-nav-summary">Documentation</summary>
+        <summary>Documentation</summary>
         <nav className="docs-nav" aria-label="Documentation">
           <a className="docs-nav-home" href={docs.href}>
             All pages
           </a>
           {groups.map((group) => (
-            <div className="docs-nav-group" key={group.section}>
+            <div key={group.section}>
               <p className="docs-nav-heading">{group.section}</p>
               <ul>
                 {group.entries.map((item) => (

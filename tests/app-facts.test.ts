@@ -41,11 +41,30 @@ describe("the snapshot itself", () => {
   });
 });
 
+/**
+ * Rows are found by `id`, never by their visible label.
+ *
+ * The first version of the checks below looked for the row called "Financial
+ * accounts". Rewording that label for a general reader turned all three
+ * lookups into `undefined`, and `undefined` is not what any of them assert,
+ * so they failed loudly — but a check comparing the application's enforced
+ * limit against this page must fail because the *number* moved, not because
+ * somebody edited a heading. `id` is the part that means the row rather than
+ * the part that says it.
+ */
+const row = (id: string) => comparison.find((r) => r.id === id);
+
 describe("what this site claims about plans", () => {
+  it("has the rows these claims are about", () => {
+    // Without this, a renamed id makes every lookup below return undefined
+    // and each assertion fails for a reason that hides the real one.
+    expect(row("accounts"), "no row with id 'accounts'").toBeDefined();
+    expect(row("ads"), "no row with id 'ads'").toBeDefined();
+  });
+
   it("uses the free account limit the application enforces", () => {
     expect(MAX_FREE_ACCOUNTS).toBe(free.accountLimit);
-    const row = comparison.find((r) => r.feature === "Financial accounts");
-    expect(row?.free).toBe(String(free.accountLimit));
+    expect(row("accounts")?.free).toBe(String(free.accountLimit));
   });
 
   it("calls the paid plan what the application calls it", () => {
@@ -61,13 +80,13 @@ describe("what this site claims about plans", () => {
 
   it("gives the paid plan no account limit, as the application does", () => {
     expect(paid.accountLimit).toBeNull();
-    expect(comparison.find((r) => r.feature === "Financial accounts")?.premium).toBe("Unlimited");
+    expect(row("accounts")?.premium).toBe("Unlimited");
   });
 
   it("shows ads on exactly the plan the application shows them on", () => {
     expect(free.advertising).toBe(true);
     expect(paid.advertising).toBe(false);
-    const ads = comparison.find((r) => r.feature === "Advertising");
+    const ads = row("ads");
     expect(ads?.free).toBe("Yes");
     expect(ads?.premium).toBe("None");
   });
@@ -97,11 +116,13 @@ describe("what this site claims the paid plan adds", () => {
     // third thing here would be a capability held back from the free plan,
     // which is a different product from the one the application ships.
     expect(facts.declared.paidPlanAdds).toHaveLength(2);
+    // Excluded by id, for the reason the helper above exists: the label on
+    // that row is copy and changed with the rewrite, and an exclusion keyed
+    // to a label that no longer exists is an exclusion that stops excluding.
     const heldBack = comparison.filter(
-      (row) =>
-        row.free === false && row.premium === true && row.feature !== "Runs on your own hardware",
+      (r) => r.free === false && r.premium === true && r.id !== "own-hardware",
     );
-    expect(heldBack.map((r) => r.feature)).toEqual([]);
+    expect(heldBack.map((r) => r.id)).toEqual([]);
   });
 
   it("claims no capability the application does not publish", () => {

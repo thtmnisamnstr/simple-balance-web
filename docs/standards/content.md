@@ -36,6 +36,70 @@ That Carry".
 _Checked by:_ `tests/copy.test.ts`, which counts capitalised words past the
 first.
 
+### 1.4 The reader has never used a personal finance product
+
+**Binding.** Every word on the homepage and the pricing page is one a reader
+with about a ninth-grade education understands without looking it up. No
+accounting vocabulary, no operations vocabulary, and no vocabulary that
+presumes a budgeting app they already gave up on.
+
+Banned from those two pages unless the sentence glosses them on the spot:
+double-entry, bookkeeping, ledger, register, posting, entry, leg, reconcile,
+tie out, trial balance, balance sheet, cash flow, net worth, self-host,
+deployment, server, PostgreSQL, Docker, AGPL, open source, repository, CSV,
+MCP, API, token, scope, telemetry, staged, commit, atomically.
+
+The copy this replaced failed in both directions at once. It opened on "Know
+where your money is, and where it went" — the line PocketSmith, Tiller,
+Quicken and Empower all already run, so it identified the product as one of a
+crowd — and then spent the rest of the page in a vocabulary none of them use:
+"the numbers do not tie out", "a register for every account", "every posting
+with the balance before and after it", "AGPL-3.0, one machine and a
+PostgreSQL". A reader who has no budgeting app and no server could not tell
+what this was, and the tab and the search result said "Self-hosted double-entry
+bookkeeping" — both of the two words they cannot parse, in the one string
+Google shows them.
+
+**The plain word is not the vague word.** "What you own minus what you owe" is
+longer than "net worth" and says more. Where the accurate word is also the
+plain one, it stays.
+
+_Checked by:_ `human`. A word list in a test would catch the spellings and
+miss the sentence, and the failure is a register rather than a vocabulary —
+the previous copy contained no banned word at all.
+
+### 1.5 The page never implies a bank connection
+
+**Binding.** There is no automatic sync: no bank login, nothing running in the
+background, nothing that goes stale without saying so. Banned outright:
+"syncs", "connects to your bank", "link your accounts", "automatically
+updated", "kept up to date", "real time", "live balances", "set it and forget
+it".
+
+A reader arriving from any competitor assumes otherwise, because every hosted
+competitor works that way. So the reader's own action — downloading a file
+from their bank and dropping it in — is visible in the hero rather than
+softened. The lede used to say statements "file themselves", which is the
+sentence somebody leaving a dead budgeting app reads as sync, and the product
+disproves it on the first afternoon.
+
+This is 2.1 applied to the one claim this page is most likely to make by
+accident, which is why it is written down separately.
+
+**Unlike 1.4, a word list is the right check here.** 1.4 is about register and
+a list would catch the spellings and miss the sentence; this is about specific
+affirmative constructions whose presence _is_ the defect.
+
+The check is narrow, and had to be: the obvious spelling bans "connect" and
+"sync", and fires on the copy that states the position — "nothing to connect
+and nothing to break", "no connection to any bank to maintain", "you can
+connect an AI assistant". Those are the denial and a different subject.
+`code/testing.md` 2.5.
+
+_Checked by:_ `tests/copy.test.ts`, over the homepage **and** the pricing
+page, mutation-proved on four sentences a competitor's site would carry
+happily.
+
 ## 2. Claims
 
 ### 2.1 Every claim is true of the shipped application
@@ -65,6 +129,34 @@ empty or `#` hrefs.
 
 _Checked by:_ `tests/copy.test.ts` and `tests/home-page.test.tsx`.
 
+### 2.4 The marketing pages and the privacy policy say the same thing
+
+**Binding.** A claim on the homepage or the pricing page is no stronger than
+the policy it links to.
+
+The policy is careful about advertising, because it has to be: a
+non-personalised ad is still chosen from the page and the reader's rough
+location, and it still sets a cookie. A pricing page is where the temptation
+is to round that down, and it did — the answer to "what are the ads like?"
+said they were "requested without anything about you attached", which the
+document one click away contradicts in its own words. The homepage did the
+same to logging, promising that "nothing counts your clicks" beside a policy
+that discloses server logs with request paths.
+
+This is 6.3's failure — two surfaces using different words at one customer —
+except that the customer who notices is reading a privacy policy, which is the
+worst possible moment to be caught rounding down. Neither claim was a lie
+anybody wrote on purpose; both were a long document summarised from memory.
+
+**The obvious alternative is to trust that whoever writes the copy has read
+the policy.** They had. The contradiction was two levels into a sub-clause
+about frequency capping, and the summary was the sentence any honest person
+would write from a general memory of it.
+
+_Checked by:_ `tests/legal.test.tsx`, which holds the ad answer and the
+homepage's privacy points against what the policy supports — the claim, not
+the prose.
+
 ## 3. Structure
 
 ### 3.1 Copy lives in a module, not in markup
@@ -83,20 +175,31 @@ because of this.
 
 **House.** The reader arrives not knowing what this is: the hero says what it
 is, the problems say why they would want it, the showcase shows it, the
-features say what else is in the box, self-hosting answers the question a
-finance product always raises, and agents is the thing nothing else does.
+features say what else is in the box, privacy answers the question a finance
+product always raises, and agents is the thing nothing else does.
+
+The privacy section is stated as a promise to the reader — "we never ask for
+your bank password" — rather than as a property of the software. "This is
+software you run, not a service you join" was the previous opening, and it
+asks the reader to translate an architecture into a reason to feel safe, which
+is the translation this reader cannot do.
 
 Reordering is fine. Reordering without a reason is what this rule is about.
 
 ## 4. Contact
 
-### 4.1 Two addresses, each labelled
+### 4.1 One address, and therefore no label
 
-**House.** `info@smpl.money` for general enquiries, `support@smpl.money` for
-help with a deployment.
+**House.** `info@smpl.money`, and nothing else.
 
-An unlabelled pair is how a support question reaches a mailbox nobody reads on
-a weekday.
+There were two — a second for help with a deployment — on the argument that an
+unlabelled pair is how a support question reaches a mailbox nobody reads on a
+weekday. The pair was the worse problem: publishing two asks the reader to
+classify their own message before they have written it, and a marketing site
+is where somebody arrives _before_ they are a customer with a support
+question, so the split was sorting mail nobody had sent. A single address
+needs no label, and a lone `mailto:` under a heading reading "General" is a
+category with nothing to distinguish it from.
 
 _Checked by:_ `tests/copy.test.ts` and `tests/home-page.test.tsx`.
 
@@ -224,9 +327,20 @@ that the post is at the other end of it. Twenty items, because a feed carrying
 everything ever written grows without bound and is re-downloaded in full on
 every poll.
 
+**Advertised on every page, and that took a helper.** Next _replaces_
+`alternates` rather than merging it, so the root layout's declaration was lost
+on every route that set its own canonical — ten of them, including `/blog/`,
+which is the one page a feed reader would think to look at. One route had
+re-declared the three by hand, which is what a patch to the symptom looks
+like. `feedAlternates` in `src/lib/feed.ts` is the single place that knows,
+and the count is recounted rather than written down here twice.
+
 _Checked by:_ `tests/feeds.test.ts`, which **parses** the XML rather than
 matching strings — an unescaped ampersand in a title is the classic break and a
-substring check sails straight past it.
+substring check sails straight past it. It also holds every emitted page to
+advertising all three, and recounts the twenty above against `FEED_ITEMS`:
+the item assertions compare the feed to `feedPosts()`, so both sides move
+together and the cap itself would otherwise go unchecked.
 
 ### 5.10 Search is in the browser, until it cannot be
 

@@ -33,10 +33,45 @@ export function rfc3339(day: string): string {
   return new Date(`${day}T00:00:00Z`).toISOString();
 }
 
+/**
+ * The three feeds, as a page's `alternates.types`.
+ *
+ * **Next replaces `alternates`, it does not merge it.** Declaring a canonical
+ * on a page therefore drops whatever the root layout put there, so ten routes
+ * that set only a canonical were silently losing feed autodiscovery — `/blog/`
+ * among them, which is the URL a reader is most likely handed. One route had
+ * re-declared the three by hand, which is the shape of a patch applied to the
+ * symptom.
+ *
+ * So a route asks for its alternates rather than writing them, and forgetting
+ * is no longer possible. `tests/feeds.test.ts` holds every emitted page to it.
+ */
+export const FEED_TYPES = {
+  "application/rss+xml": "/blog/feed.xml",
+  "application/atom+xml": "/blog/atom.xml",
+  "application/feed+json": "/blog/feed.json",
+} as const;
+
+/** A page's `alternates`: its own canonical, and the feeds every page advertises. */
+export function feedAlternates(canonical: string) {
+  return { canonical, types: FEED_TYPES } as const;
+}
+
+/**
+ * How many items a feed carries.
+ *
+ * Twenty is the conventional cap: a feed carrying every post ever written
+ * grows without bound and is re-downloaded in full by every poll.
+ *
+ * Named rather than inlined because `content.md` 5.9 states the number in
+ * prose, and `writing.md` §Measured numbers says a number in a guide is
+ * either recounted by a test or marked as illustrative. This is the thing the
+ * test recounts.
+ */
+export const FEED_ITEMS = 20;
+
 export function feedPosts(): readonly Entry[] {
-  // Twenty is the conventional cap. A feed carrying every post ever written
-  // grows without bound and is re-downloaded in full by every poll.
-  return allEntries("blog").slice(0, 20);
+  return allEntries("blog").slice(0, FEED_ITEMS);
 }
 
 export function postUrl(entry: Entry): string {

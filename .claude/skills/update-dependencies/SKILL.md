@@ -19,7 +19,7 @@ npm ls --depth=0
 
 Then the two versions no `npm outdated` will tell you about:
 
-- **Node.** `docs/standards/operations.md` 5.3 pins it to the LTS Netlify
+- **Node.** `docs/standards/operations.md` 6.3 pins it to the LTS Netlify
   supports, in **both** `.nvmrc` and `netlify.toml`. Check what Netlify
   supports now, and what is LTS now, before changing either. They must agree
   with each other.
@@ -34,8 +34,8 @@ Not every update is wanted on the day it lands.
   minutes.
 - **A major on a build tool** (Vitest, TypeScript, oxlint) — usually safe, and
   the failure is loud.
-- **A pre-1.0 dependency.** This repository has one, named in `operations.md`
-  5.2 with its fallback. A `0.x` minor is a major in every sense but the
+- **A pre-1.0 dependency.** This repository has three, named in `operations.md`
+  6.2 with their fallbacks. A `0.x` minor is a major in every sense but the
   number.
 - **Node moving to a new LTS** — take it, and move both files together.
 
@@ -104,9 +104,9 @@ commit — `writing.md` §Keeping a document true.
 
 The three that go stale on an update:
 
-- `operations.md` 5.2, if the pre-1.0 dependency stopped being pre-1.0, or a
-  new one arrived.
-- `operations.md` 5.3, if Node moved. Both files and the prose.
+- `operations.md` 6.2, if a pre-1.0 dependency stopped being pre-1.0, or a
+  new one arrived. `tests/repo-references.test.ts` fails when one is unnamed.
+- `operations.md` 6.3, if Node moved. Both files and the prose.
 - `CHANGELOG.md`, under `## Unreleased`. A dependency bump earns an entry when
   it changes something a maintainer can rely on; a patch sweep does not.
 

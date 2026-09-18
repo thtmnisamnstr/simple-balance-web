@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { feedAlternates } from "@/lib/feed";
 import { notFound } from "next/navigation";
 import { postsByAuthor } from "@/content/collections";
 import { authors, initialsOf, isAuthorKey } from "@/content/authors";
@@ -33,7 +34,7 @@ export async function generateMetadata({
     title: `Posts by ${person.name}`,
     description: `Everything ${person.name} has written here.`,
     robots: blog.announced ? undefined : { index: false, follow: false },
-    alternates: { canonical: `/blog/authors/${author}/` },
+    alternates: feedAlternates(`/blog/authors/${author}/`),
   };
 }
 

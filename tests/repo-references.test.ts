@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
 import { sourceFiles } from "./support/source";
 
 /**
@@ -76,5 +77,70 @@ describe("references to the application", () => {
       .map((doc) => doc.path)
       .filter((path) => !(path in NEEDS_A_CLONE));
     expect(cloning, "these ask for a clone without being named as needing one").toEqual([]);
+  });
+});
+
+/**
+ * Every pre-1.0 dependency is named in the rule that counts them.
+ *
+ * `operations.md` 6.2 records the `0.x` exposure and the fallback for each,
+ * because a `0.x` minor is a major in every sense but the number. It said
+ * "one dependency is pre-1.0" and asserted that every other was at a stable
+ * major; by the time anybody re-read it there were three, and the two that
+ * arrived — `sharp` and `@xmldom/xmldom` — had never been weighed.
+ *
+ * A count written in prose goes stale silently, which is the whole reason
+ * this file exists for the *other* claim it checks. So the count is derived
+ * from `package.json` rather than maintained by hand, and adding a `0.x`
+ * dependency now fails until somebody has written down what breaks if it
+ * breaks.
+ */
+describe("pre-1.0 dependencies", () => {
+  const manifest = JSON.parse(readFileSync("package.json", "utf8")) as {
+    dependencies?: Record<string, string>;
+    devDependencies?: Record<string, string>;
+  };
+  const preRelease = new Set(
+    Object.entries({ ...manifest.dependencies, ...manifest.devDependencies })
+      .filter(([, range]) => /^[\^~]?0\./.test(range))
+      .map(([name]) => name),
+  );
+
+  const rule = readFileSync("docs/standards/operations.md", "utf8");
+  /*
+   * Section 6.2, sliced once for both directions below.
+   *
+   * It was sliced twice, identically, which oxlint noticed in an oblique way:
+   * `prefer-set-has` fired on the second copy, because there it was a binding
+   * used only for `.includes()`. The rule was wrong — this is a string, and
+   * `String.prototype.includes` is a substring search rather than a
+   * membership test, so a `Set` would be nonsense. `code/testing.md` 2.5 says
+   * a check that fires on correct code gets narrowed rather than obeyed, and
+   * the narrowing here is to stop writing the line twice.
+   */
+  const section = rule.slice(rule.indexOf("### 6.2"), rule.indexOf("### 6.3"));
+
+  it("found some to check", () => {
+    // If this ever legitimately reaches zero, the rule should say so and this
+    // becomes the test that notices. An empty population passing silently is
+    // the failure it is here to prevent.
+    expect(preRelease.size).toBeGreaterThan(0);
+  });
+
+  it("names every one of them in operations.md 6.2", () => {
+    expect(section.length, "operations.md has no section 6.2").toBeGreaterThan(200);
+
+    const unnamed = [...preRelease].filter((name) => !section.includes(`\`${name}\``));
+    expect(unnamed, "pre-1.0 and not named in operations.md 6.2").toEqual([]);
+  });
+
+  it("names nothing there that has since reached 1.0", () => {
+    // The other direction: a dependency that grew up and left a paragraph
+    // behind describing a risk that no longer exists.
+    const declared = { ...manifest.dependencies, ...manifest.devDependencies };
+    const stale = Object.keys(declared).filter(
+      (name) => section.includes(`\`${name}\``) && !preRelease.has(name),
+    );
+    expect(stale, "named as pre-1.0 in operations.md 6.2 but no longer is").toEqual([]);
   });
 });

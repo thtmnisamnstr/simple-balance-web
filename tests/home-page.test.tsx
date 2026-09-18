@@ -1,9 +1,10 @@
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
 import HomePage from "@/app/page";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import { hero, site } from "@/content/home";
+import { hero, shotDisclosure, site } from "@/content/home";
 
 /**
  * The rendered page, against the rules in `docs/standards/web.md` that a
@@ -123,8 +124,12 @@ describe("the homepage", () => {
     const shots = container.querySelectorAll("picture.shot");
     expect(shots.length, "the page ships screenshots").toBeGreaterThanOrEqual(4);
 
-    const disclosure = screen.getByText(/demo ledger/i);
-    expect(disclosure).toBeInTheDocument();
+    // Matched against the string itself rather than against the words it
+    // happened to use. The first version looked for "demo ledger", which is
+    // the product's phrase for it and not a reader's — so rewriting the
+    // sentence into plain words failed a test about whether the sentence is
+    // there at all.
+    expect(screen.getByText(shotDisclosure)).toBeInTheDocument();
   });
 
   it("gives every screenshot alt text that describes what it shows", () => {
@@ -138,6 +143,32 @@ describe("the homepage", () => {
       expect(alt.length, `alt is too short to describe anything: "${alt}"`).toBeGreaterThan(40);
       expect(alt.toLowerCase()).not.toMatch(/^screenshot of/);
     }
+  });
+
+  it("offers a narrower file for a screen that cannot use 1600px", () => {
+    /*
+     * The `srcset` is only as good as the file it points at, and a missing
+     * candidate fails silently — the browser picks the next one up and the
+     * page is merely heavier, which no gate here would notice.
+     *
+     * A phone renders these at about 356 CSS pixels. Without the narrow copy
+     * a 3x screen is handed 1600px for a thumbnail, which measured at 300 KB
+     * across the homepage against 187 KB with it.
+     */
+    const originals = readdirSync("public/screenshots").filter((f) => f.endsWith(".webp"));
+    expect(originals.length, "no screenshots to check").toBeGreaterThan(4);
+
+    const missing = originals.filter((f) => !existsSync(`public/screenshots/1200/${f}`));
+    expect(missing, "run `npm run build:images`").toEqual([]);
+  });
+
+  it("lets the browser choose, on the built page", () => {
+    // `sizes` without `srcset` is inert and `srcset` without `sizes` makes the
+    // browser guess at the layout, so both have to reach the artefact.
+    const html = readFileSync("out/index.html", "utf8");
+    expect(html).toContain("/screenshots/1200/dashboard-light.webp 1200w");
+    expect(html).toContain("/screenshots/dashboard-light.webp 1600w");
+    expect(html).toMatch(/sizes="\(max-width: 62rem\)/);
   });
 
   it("gives every screenshot its real dimensions, so the page does not jump", () => {

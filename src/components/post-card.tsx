@@ -1,4 +1,5 @@
 import type { Entry } from "@/content/collections";
+import { Cover } from "@/components/cover";
 import { authors } from "@/content/authors";
 import { formatDate } from "@/lib/format";
 import { TagList } from "@/components/tag-list";
@@ -24,9 +25,7 @@ export function PostCard({
   return (
     <li>
       <article className={featured ? "entry entry-featured" : "entry"}>
-        {featured && meta.image ? (
-          <img className="entry-cover" src={meta.image} alt={meta.imageAlt ?? ""} loading="lazy" />
-        ) : null}
+        {featured && meta.image ? <Cover src={meta.image} alt={meta.imageAlt ?? ""} /> : null}
         <h3 className="entry-title">
           <a href={`/blog/${post.slug}/`}>{meta.title}</a>
         </h3>

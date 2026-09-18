@@ -76,11 +76,34 @@ Break one of these and the site is wrong rather than untidy.
   AdSense disclosures** — third-party cookies, the vendors that set them, and
   how to opt out. A generic policy is a false statement about somebody's data,
   and a missing disclosure is a breach whose penalty is suspension.
+- **A marketing claim is never stronger than the privacy policy it links to.**
+  The pricing page said ads were "requested without anything about you
+  attached" while the policy disclosed rough location and a cookie; the
+  homepage promised "nothing counts your clicks" beside a policy disclosing
+  server logs. Neither was written as a lie — both were a long document
+  summarised from memory. `content.md` 2.4, and `tests/legal.test.tsx` holds
+  the two surfaces together.
 - **No third-party branding.** No vendor logo, badge or "powered by" mark, and
   no script or image from a vendor's domain. The privacy policy naming the
   hosting provider and the payment processor is the one exception, and it is
   the opposite of branding. A host can inject its own badge into the response,
   which no test here can see — `operations.md` 8 carries those as launch steps.
+- **Nothing on the homepage or the pricing page may imply a bank connection.**
+  There is none: no bank login, no background refresh, nothing that can go
+  stale without saying so. The reader downloads a file from their bank and
+  drops it in, and that action is visible in the hero rather than softened —
+  the lede used to say statements "file themselves", which is the sentence a
+  refugee from a dead budgeting app reads as sync, and the product disproves
+  it on the first afternoon. `docs/standards/content.md` 1.5.
+- **Those two pages are written for somebody who has never used a personal
+  finance product.** No accounting vocabulary, no operations vocabulary, and
+  nothing that presumes a budgeting app they already abandoned. The copy this
+  replaced said "the numbers do not tie out", "every posting with the balance
+  before and after it" and "AGPL-3.0, one machine and a PostgreSQL", and the
+  search result read "Self-hosted double-entry bookkeeping" — both of the two
+  words a general reader cannot parse, in the one string Google shows them.
+  `docs/standards/content.md` 1.4. The rest of the site is not held to this:
+  a deployment guide is read by somebody deploying.
 - **The application decides what the product does; this site decides how to
   say it.** `src/content/app-features.json` is its list, pulled verbatim and
   never edited here; `src/content/home.ts` is the rewrite for a reader who has

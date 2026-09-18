@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
+import { feedAlternates } from "@/lib/feed";
 import { privacy } from "@/content/legal";
 import { LegalPage } from "@/components/legal-page";
 
 export const metadata: Metadata = {
   title: privacy.title,
   description: privacy.description,
-  alternates: { canonical: "/privacy/" },
+  alternates: feedAlternates("/privacy/"),
 };
 
 export default function PrivacyPage() {

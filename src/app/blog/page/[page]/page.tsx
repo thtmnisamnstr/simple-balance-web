@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { feedAlternates } from "@/lib/feed";
 import { notFound } from "next/navigation";
 import { allEntries, paginate, POSTS_PER_PAGE } from "@/content/collections";
 import { section } from "@/content/sections";
@@ -38,7 +39,7 @@ export async function generateMetadata({
     description: blog.description,
     robots: blog.announced ? undefined : { index: false, follow: false },
     // Page one is the same page as `/blog/`, and says so.
-    alternates: { canonical: Number(page) === 1 ? blog.href : `/blog/page/${page}/` },
+    alternates: feedAlternates(Number(page) === 1 ? blog.href : `/blog/page/${page}/`),
   };
 }
 

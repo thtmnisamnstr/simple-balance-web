@@ -2,7 +2,9 @@ import {
   hero,
   heroShot,
   problems,
+  problemsSection,
   features,
+  featuresSection,
   showcase,
   privacy,
   agents,
@@ -52,15 +54,16 @@ export default function HomePage() {
             width={SHOT_WIDTH}
             height={SHOT_HEIGHT}
             priority
+            span="half"
           />
         </div>
       </section>
 
       <section className="section" aria-labelledby="problems-title">
         <div className="page">
-          <p className="eyebrow">Why bother</p>
+          <p className="eyebrow">{problemsSection.eyebrow}</p>
           <h2 id="problems-title" className="section-title">
-            Four things that are true of almost every other way of doing this.
+            {problemsSection.title}
           </h2>
           <div className="problems">
             {problems.map((entry) => (
@@ -99,7 +102,13 @@ export default function HomePage() {
           <div className="showcase">
             {showcase.shots.map((shot) => (
               <figure className="shot-figure" key={shot.name}>
-                <Shot name={shot.name} alt={shot.alt} width={SHOT_WIDTH} height={SHOT_HEIGHT} />
+                <Shot
+                  name={shot.name}
+                  alt={shot.alt}
+                  width={SHOT_WIDTH}
+                  height={SHOT_HEIGHT}
+                  span="half"
+                />
                 <figcaption className="shot-caption">{shot.caption}</figcaption>
               </figure>
             ))}
@@ -110,9 +119,9 @@ export default function HomePage() {
 
       <section className="section" aria-labelledby="features-title">
         <div className="page">
-          <p className="eyebrow">What else is in it</p>
+          <p className="eyebrow">{featuresSection.eyebrow}</p>
           <h2 id="features-title" className="section-title">
-            The parts you only notice when they are missing.
+            {featuresSection.title}
           </h2>
           <div className="grid">
             {features.map((feature) => {
@@ -162,11 +171,18 @@ export default function HomePage() {
             </h2>
             <p className="prose">{agents.body}</p>
           </div>
-          <pre className="terminal" aria-label="An agent staging rows for review">
+          {/* An exchange, not a shell session. It used to render `$ ledger:stage`
+              and the name of a CSV file, which told a reader who is not a
+              developer that this page was not for them — and the thing being
+              shown is a conversation with an assistant, not a command. */}
+          <pre
+            className="terminal"
+            aria-label="An assistant offering to bring in a statement, waiting to be approved"
+          >
             <code>
               {agents.sample.map((line) => (
                 <span key={line.text} className={line.kind === "out" ? undefined : line.kind}>
-                  {line.kind === "prompt" ? `$ ${line.text}` : line.text}
+                  {line.kind === "prompt" ? `You: ${line.text}` : line.text}
                   {"\n"}
                 </span>
               ))}

@@ -76,21 +76,50 @@ declared by one file or the other.
 Inconsistent vertical rhythm is the single most-reported design defect in this
 project's history, and it is always a section inventing its own gap.
 
+**`em` is the exception, and it is not a gap.** A handful of paddings are
+`em`-relative — the inset on an inline code chip, a tag, a badge, and the
+optical nudge that lines a tick up with the text beside it. Each scales with
+the type it wraps, which is the thing the px scale cannot do, and each is a
+fraction of a character rather than a gap between two things. The scale owns
+the space _between_ elements; `em` owns the space _inside_ one.
+
 _Checked by:_ `human`, and it is the most mechanisable rule left here — a sweep
-for length literals outside the scale, with an allow-list for `1px` borders,
-`0`, and percentages. Worth building the first time a defect of this kind
-reaches the live site.
+of `margin`, `padding`, `gap` and `inset` for length literals, with an
+allow-list for `0`, percentages, and the `em` insets above. Run against this
+tree it reports eleven: seven `em`, the `-1px` of the `.visually-hidden`
+recipe, and **three ordinary `px` literals** — a `2px` grid gap, a `2px`
+nudge and a `0 1px` inset, each below the smallest step on the scale and none
+of them argued for anywhere. They are the reason to build the sweep rather
+than the evidence that it is unnecessary.
 
 ## 3. Type
 
-### 3.1 The scale is fluid, and there are six steps
+### 3.1 The scale is fluid, and every size is on it
 
-**House.** `--step--1` to `--step-4`, each a `clamp()`. No font size is set in
-`px` or `rem` directly.
+**House.** `--step--2` to `--step-4`, plus `--step-mono`, each a `clamp()`. No
+font size is set in `px` or `rem` directly.
 
 `clamp()` rather than breakpoints because a marketing page is read at every
 width between 320 and 2560, and a step function has visible jumps at the
 boundaries.
+
+**The scale used to stop at `--step--1` and the rule was false in thirteen
+places.** Everything smaller than that step invented its own size — 0.72,
+0.75, 0.78, 0.8 and 0.85rem, five values for three roles — because the scale
+had no step where the site actually needed one. A rule nothing can reach is
+not a rule. So `--step--2` is the micro-label (a table's column head, a code
+block's language, a tier's flag), and `--step-mono` is the code surface,
+because monospace reads larger than the UI face at the same nominal size and
+two places were shrinking it by hand.
+
+**Three deliberate exceptions, each commented where it sits.** Inline code is
+`0.9em`, because it has to track the size of the sentence around it and a step
+would make it identical inside a heading and a footnote. The two avatar glyph
+sizes scale with their circle rather than with the page. None of the three is
+body text.
+
+_Checked by:_ `human`, by sweeping `site.css` for `font-size:` followed by a
+digit. Three hits is correct; a fourth is a role that wants a step.
 
 ### 3.2 The font stack matches the application's exactly
 
@@ -106,6 +135,38 @@ If a webfont is ever added, it is added to both, self-hosted on each origin.
 `default-src 'self'` permits a same-origin font and forbids `fonts.gstatic.com`,
 so a cross-origin font is a CSP change as well as a design one.
 
+**How to check it, because "there is no webfont here" is not the check.** The
+rule is about a _match_, and the other half of the match is in another
+repository, so it is read over the network like everything else
+(`AGENTS.md`):
+
+```sh
+curl -fsSL "https://raw.githubusercontent.com/thtmnisamnstr/simple-balance/main/src/client/styles.css" \
+  | grep -A 6 "font-family"
+```
+
+Verified byte for byte on 18 September 2026:
+`Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`
+in both.
+
+**The monospace stack deliberately does not match, and this is the record of
+why.** The application has exactly one mono rule — an 11px internal label —
+and its stack ends `Menlo, monospace`. This site renders code blocks, inline
+code and the terminal sample, and `ui-monospace` has no implementation on
+Windows in several browsers, so without `Consolas` a code block there falls
+through to generic `monospace`, which is usually Courier New. The two surfaces
+are not showing comparable content in mono, so the divergence costs nothing a
+reader could see.
+
+**What would end it:** the application rendering code to a user. At that point
+the two stacks are showing the same kind of thing and should be reconciled —
+by moving the app to this one, since it is the superset.
+
+It is **one declaration**, `--mono` in `site.css`, not three. It was written
+out three times, and three copies of a value are three chances for it to
+disagree with itself — the same argument as the pending label in 6.2 and the
+header height in 4.3.
+
 ## 4. Layout
 
 ### 4.1 One breakpoint, decided by content
@@ -116,7 +177,7 @@ so a cross-origin font is a CSP change as well as a design one.
 Naming breakpoints after devices dates a stylesheet within a year. Naming them
 after the point the layout actually breaks does not.
 
-### 4.2 A class belongs to one thing
+### 4.2 A class belongs to one thing, and styles something
 
 **Binding.** A class used by two unrelated components is a class the two can no
 longer differ on.
@@ -127,14 +188,68 @@ caption. Both were fixed before the first commit, and the fix is always the
 same — give the second use its own class, even when the declarations are
 identical today.
 
-_Checked by:_ `human`.
+**And it has to style something.** A rule nothing can produce is dead CSS; a
+class the markup writes with no rule behind it is the mirror image, and worse
+in one way — it reads as styling, so it survives every refactor because
+removing it looks risky. Four had accumulated, each on an element that earns
+its place through `aria-label` or `aria-labelledby` rather than through
+anything visual, and each was removed rather than given a rule.
+
+_Checked by:_ `tests/dead-css.test.ts`, in both directions. The second is
+deliberately conservative — it reads only plain string literals, so a composed
+name is skipped rather than guessed at.
+
+### 4.3 No page ever scrolls sideways
+
+**Binding.** At 320 CSS pixels — the narrowest width 3.1 says this page is
+read at — `document.scrollWidth` equals the viewport. This is WCAG 2.1 AA
+reflow (1.4.10), and it is the accessibility failure a clean axe report is
+most likely to be hiding, because axe has no rule for it and because it is
+invisible on the machine the page was built on.
+
+Three separate causes were live when this was written, and **not one of them
+looked like an overflow in the source**:
+
+- **A flex row that cannot wrap does not clip — it pushes.** The header's
+  brand, two links and pending label came to 453px against a 390px viewport.
+  It wraps below `34rem` now. The alternatives all cost a control: hiding the
+  brand word leaves a link with no accessible name, and dropping "Source"
+  removes the only way a reader on a phone reaches the code.
+- **`.visually-hidden` is `position: absolute`, so it escapes an unpositioned
+  scroll container.** Every tick in the pricing table carries a hidden word
+  beside it; those words were laid out against the page rather than against
+  `.table-wrap`, and sat at x=452 inside a table that was itself correctly
+  clipped. **The table was never the thing overflowing.** `.table-wrap` is
+  `position: relative` for this reason and for no other.
+- **A grid track will not shrink below its content's intrinsic width.**
+  `.code-tabs` held a code sample whose longest line has no space to break at,
+  so the track grew to 482px instead of letting the block scroll inside
+  itself. `minmax(0, 1fr)`, not `1fr`.
+
+A fourth, in prose rather than layout: a URL the privacy policy has to print
+in full is forty-six characters with no space in them, which is wider than a
+320px screen. `.prose` and `.prose-body` carry `overflow-wrap: break-word`,
+which breaks only where a word would not otherwise fit.
+
+_Checked by:_ `tests/a11y.test.ts`, over every emitted page at 320px and
+390px — the floor and an ordinary phone, because a page can pass at the floor
+and fail just above it. The failure names the element or text run that
+actually extends the document, which is deliberately **not** the widest thing
+past the edge: the widest thing is usually something a scroller is holding
+correctly.
 
 ## 5. Images
 
 ### 5.1 Screenshots are of the running application
 
-**Binding.** Every screenshot on this site is captured from a real instance by
-`scripts/capture-screenshots.mjs`, against a seeded ledger.
+**Binding.** Every screenshot on this site is captured from a real instance
+against a seeded ledger, **by the application**, and pulled from the kit it
+publishes at `docs/product/`.
+
+This repository used to run the capture itself. The script that did it was
+deleted, and no path here replaces it: this is the only repository that cannot
+run the application, so a picture taken here of a version checked out here was
+a picture nobody could reproduce. `sync-from-app` §4 is the procedure.
 
 A mockup drifts from the thing it depicts and nobody notices until a reader
 does — which, on a page whose argument is "the figures tie out", is the worst
@@ -145,14 +260,44 @@ things a renderer can see: alt text, dimensions, and the disclosure.
 
 ### 5.2 Both themes, chosen by the browser
 
-**House.** Each screenshot ships as two WebP files and is selected with
-`<picture>` and a `prefers-color-scheme` media query.
+**House.** Every image the page shows — screenshot or generated cover — ships
+as two WebP files and is selected with `<picture>` and a
+`prefers-color-scheme` media query.
 
 No script decides it, so a reader in dark mode downloads the dark file and
 never fetches the light one. The alternative — one image, usually the light
 one — puts a white rectangle in the middle of a dark page.
 
-_Checked by:_ `tests/home-page.test.tsx`.
+**It said "screenshot" for a while, and the covers were not screenshots.** So
+a post opened, in dark mode, with exactly the white rectangle this rule exists
+to prevent — on the one picture the site draws for itself rather than
+photographs. `scripts/build-images.mjs` writes the pair now, reading both
+palettes out of `brand.css` rather than carrying its own copy of them, and
+`src/components/cover.tsx` picks between them. The dark file's name is derived
+from the light one, because a second frontmatter key naming its twin is a
+second thing to get wrong in every post.
+
+The social card is the deliberate exception: it is rendered by platforms that
+have no theme to respect, so it is the light palette and only that.
+
+**Two widths as well as two themes.** Each screenshot also ships at 1200px,
+and `<picture>` carries both candidates with a `sizes` that matches the CSS.
+1600px is right for the widest place these render — a full-span shot is 1024
+CSS pixels on a 1280px screen, which wants 2048 at 2x, so 1600 is already a
+compromise _downwards_ on a desktop. A phone renders the same picture at about
+356, and a 3x screen was being handed four and a half times what it could show
+on the connection least able to afford it. Measured: 300 KB of screenshots
+across the homepage before, 187 KB after.
+
+**A `sizes` that does not match the CSS is worse than none**, because the
+browser trusts it, picks from it, and gets the wrong file with nothing to
+notice. So there are two values, for the two layouts, and
+`src/components/shot.tsx` names them. Two candidates, not a ladder: a third
+rung is twelve more files for a saving nothing on this page is waiting for.
+
+_Checked by:_ `tests/home-page.test.tsx` for the screenshots — both themes,
+both widths, and that the narrow candidate reaches the built page;
+`tests/blog-features.test.ts` for the covers.
 
 ### 5.3 Every image carries its real dimensions
 
@@ -186,7 +331,7 @@ defect as a testimonial from nobody.
 
 _Checked by:_ `tests/home-page.test.tsx`.
 
-## 5.6 A code block follows the page theme
+### 5.6 A code block follows the page theme
 
 **Binding.** `.code-block` paints its surface from `--fill-subtle` and its
 border from `--line`, both of which change with the theme.
@@ -223,18 +368,22 @@ attached.
 
 ### 6.2 A control that is waiting says what it is waiting for
 
-**House.** The pending control reads **"Hosted version soon"**, not "Coming
+**House.** The pending control reads **"Sign-ups open soon"**, not "Coming
 soon".
 
 Two words that name nothing answer neither question a reader has — what is
-coming, and why would they wait for it. This names the thing, and the thing it
-names is the one capability the page has just finished saying the product does
-not have: a version somebody else runs.
+coming, and why would they wait for it. This names the thing.
 
-The label is one string in `src/content/home.ts` and one in
-`src/content/pricing.ts`, and they say the same words on purpose. A header
-that says one thing and a pricing button that says another describes two
-different states.
+It used to read "Hosted version soon", which named the thing accurately and
+named it in the product's vocabulary rather than the reader's: hosting is a
+word for somebody who knows the alternative, and what the reader is actually
+waiting for is the ability to sign up. `content.md` 1.4 is the rule that moved
+it.
+
+**It is one string, not two.** `src/content/pricing.ts` imports
+`hero.primaryLabel` rather than repeating it, because a header saying one
+thing and a pricing button saying another describes two different states — and
+two literals that happen to match today are two literals.
 
 _Checked by:_ `tests/home-page.test.tsx` and `tests/pricing.test.tsx` for the
 control being text rather than a control; the wording is `human`.
@@ -328,14 +477,21 @@ on.
 | 1.2 Two theme blocks                | `tests/brand-tokens.test.ts`                        |
 | 1.3 Named same-in-both tokens       | `tests/brand-tokens.test.ts`                        |
 | 1.4 Tokens all declared             | `tests/brand-tokens.test.ts`                        |
-| 5.2–5.5 Images                      | `tests/home-page.test.tsx`                          |
+| 4.3 No sideways scroll              | `tests/a11y.test.ts`, at 320px and 390px            |
+| 5.2 Both themes, both widths        | `tests/home-page.test.tsx`                          |
+| 5.2 Covers in both themes           | `tests/blog-features.test.ts`                       |
+| 5.3–5.5 Images                      | `tests/home-page.test.tsx`                          |
 | 6.1 The pending control             | `tests/home-page.test.tsx`                          |
-| 6.2 Link text                       | `tests/home-page.test.tsx`                          |
+| 6.4 Link text                       | `tests/home-page.test.tsx`                          |
+| 6.5 No third-party branding         | `tests/branding.test.ts`                            |
 | 7.1–7.3 Structure                   | `tests/home-page.test.tsx`                          |
 | 2.1 Spacing scale                   | `human` — mechanisable, and the best candidate left |
-| 3.1, 3.2 Type and font stack        | `human`                                             |
+| 3.1 Type scale                      | `human` — sweep `font-size:` for a digit            |
+| 3.2 Font stack                      | `human` — against the app's stylesheet, over HTTP   |
+| 4.2 Every class styles something    | `tests/dead-css.test.ts`, both directions           |
 | 4.1, 4.2 Layout and class ownership | `human`                                             |
 | 5.1 Screenshot provenance           | `human`                                             |
+| 6.2, 6.3 Control and crumb wording  | `human`                                             |
 | 7.4 Skip link                       | `human`                                             |
 | 8.1 Reduced motion                  | `human`                                             |
 
