@@ -318,8 +318,24 @@ The alt text on this site's screenshots names what is _in_ the figure — which
 currencies, which columns, what the numbers do — because that is the content
 the picture is carrying.
 
+**Write it with the picture open.** Three of the six screenshots shipped alt
+text describing a state the image does not contain: the import shot was
+described as a populated import when it is the empty drop target, the hero as
+showing dollars and euros when it shows euros only, and the budgets shot as a
+planned-against-spent comparison when it is the form for setting one. Each was
+written from what the section argued rather than from what the capture held,
+and each is what a reader who cannot see the image is given _instead of_ it.
+
+The one alt text that was right — the payee list, "three for most, fifteen for
+the local market" — was the one written while looking at the file.
+
+**A pulled screenshot can change under its own alt text.** `sync-from-app`
+brings new bytes; nothing re-reads the sentence describing them. That is the
+step most likely to be skipped, so it is named in that skill.
+
 _Checked by:_ `tests/home-page.test.tsx`, which refuses alt text under forty
-characters or starting with "screenshot of".
+characters or starting with "screenshot of". Whether it describes _this_
+picture is `human`, and no test here can be more than a length check.
 
 ### 5.5 Invented figures say they are invented
 

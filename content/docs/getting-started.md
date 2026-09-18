@@ -39,7 +39,7 @@ Open the address you set as `APP_BASE_URL`. On an empty deployment the first
 visitor gets the sign-up form rather than a sign-in form, because there is
 nobody to sign in as yet.
 
-That first-account claim is transactional and serialised, so two people racing
+That first-account claim is transactional and serialized, so two people racing
 it cannot both win. If you would rather it were not open at all, set
 `ALLOWED_EMAILS` to the addresses you want to admit and `SETUP_TOKEN` to a long
 random string; an address the allow list turns away can then still register

@@ -112,7 +112,7 @@ export default function HomePage() {
               shown is a conversation with an assistant, not a command. */}
           <pre
             className="terminal"
-            aria-label="An assistant offering to bring in a statement, waiting to be approved"
+            aria-label="Asking an assistant when a bill was paid, and the answer it gives"
           >
             <code>
               {agents.sample.map((line) => (

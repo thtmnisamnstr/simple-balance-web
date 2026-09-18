@@ -66,6 +66,35 @@ banned-words test could not see.
 
 ### Fixed
 
+**Three screenshots were described as showing things they do not show.** The
+import shot's alt text called it a populated import, listing the columns it
+had worked out and the rows it was ready to add; the capture is the empty drop
+target, before a file is chosen. The hero's said the overview reports dollars
+and euros separately; it shows one euro account. The budgets shot's said it
+compared what was planned against what was spent; it is the form for setting a
+budget. All three were written from what the section argued rather than from
+the picture, and alt text is what a reader who cannot see the image gets
+_instead of_ it. The one that was right — "three for most, fifteen for the
+local market" — was the one written with the file open.
+
+**The homepage and pricing page overstated what an AI assistant is held to.**
+Both said nothing happens until you approve it. That is true of a connection
+limited to proposing, and the application's own reference says a write-scoped
+one "covers every ledger operation, including direct and staged commits". The
+pages now say what is actually true: when you connect an assistant you choose
+what it is allowed to do.
+
+**The pricing page said refusing ad consent means you see no ads.** The
+application serves the slot regardless; consent decides whether the request is
+personalized, not whether an ad appears. It also said flatly that there is no
+tracking inside the product, two answers below its own description of the
+advertising cookies.
+
+**The social card advertised a tagline that appeared nowhere on the site.** It
+carried its headline and subtitle as literals, and the copy moved four times
+without it. It reads `src/content/home.ts` now, the way it already reads
+`brand.css` for the palette.
+
 **The privacy policy did not say what reaches Google, while the pricing page
 told readers it did.** Shortening the ads answer moved that disclosure off the
 pricing page and replaced it with "the privacy policy covers the rest,
@@ -78,6 +107,15 @@ limits — no account name, no balance, no figure, no email address as a
 targeting parameter, and a referrer held to this origin. Two assertions in
 `tests/legal.test.tsx` hold it, one of them checking the pricing page is not
 promising a disclosure the policy lacks.
+
+**Sterling in the blog and the docs, dollars everywhere else.** Every money
+figure under `content/` was written in pounds while the pricing page, the
+terms and the policy are in US dollars.
+
+**A blog post kept "current account" because the phrase was wrapped across two
+lines**, and the check added to catch exactly that reads Markdown line by
+line. It sweeps each file a second time with the whitespace collapsed now, at
+the cost of a line number on the wrapped case.
 
 **The privacy policy, the terms and two docs pages were still British after
 the marketing pages were fixed.** The first version of the rule scoped itself

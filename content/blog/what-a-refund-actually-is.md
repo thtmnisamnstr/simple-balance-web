@@ -18,11 +18,11 @@ once.
 
 ## The two numbers it breaks
 
-Say you spent £40 on boots in March and returned them in April.
+Say you spent $40 on boots in March and returned them in April.
 
-Recorded as income, March shows £40 of clothing spending that you did not
-ultimately do, and April shows £40 of income you did not earn. Your annual
-totals are now £40 too high on **both** sides. They still balance — income
+Recorded as income, March shows $40 of clothing spending that you did not
+ultimately do, and April shows $40 of income you did not earn. Your annual
+totals are now $40 too high on **both** sides. They still balance — income
 minus expense is unchanged — which is exactly why nobody notices.
 
 Ask either question separately and you get a wrong answer. "What do I spend on

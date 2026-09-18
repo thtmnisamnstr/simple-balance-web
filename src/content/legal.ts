@@ -223,7 +223,7 @@ export const privacy = {
       paragraphs: [
         "**smpl.money sets no cookies at all.** No analytics, no tracking pixel, no third-party " +
           "script. There is nothing to ask you about, so there is no banner — a consent notice " +
-          "on a site that stores nothing would be theatre.",
+          "on a site that stores nothing would be theater.",
         "**The application sets two of its own.** A session cookie, which is strictly necessary " +
           "to keep you signed in, and a preference cookie remembering whether you chose the " +
           "light or dark theme. Neither is used for anything else, neither is shared, and " +
@@ -290,7 +290,7 @@ export const terms = {
         "The free plan keeps up to three financial accounts and shows advertising. The Premium " +
           "plan is $20 per year or $2 per month, removes the account limit and removes the " +
           "advertising. Prices are in US dollars and exclude any tax that may apply where you are.",
-        "Subscriptions renew automatically at the end of each period until cancelled. We will " +
+        "Subscriptions renew automatically at the end of each period until canceled. We will " +
           "give at least 30 days' notice by email before any price increase, and you may cancel " +
           "before it takes effect.",
       ],

@@ -129,7 +129,7 @@ export const site = {
 
 export const heroShot = {
   name: "dashboard",
-  alt: "The Simple Balance overview: what came in, what went out and what's left for the month, then each account with its balance and a breakdown of where the spending went, with dollars and euros reported separately.",
+  alt: "The Simple Balance overview for one month: a euro total with balance, deposits, withdrawals and net cash flow across the top, then a checking account with its balance, spending by category as bars, and budget bars showing what has gone against each limit.",
 } as const;
 
 export const hero = {
@@ -234,8 +234,9 @@ export const problems: readonly Problem[] = [
   {
     shot: {
       name: "import",
-      alt: "A file from a bank part-way through being brought in: the columns it worked out on its own, the rows it's ready to add, and three marked as things that look like payments already recorded.",
-      caption: "It figures out the columns itself, then shows you what it's about to do.",
+      alt: "The import screen before a file is picked: a step headed Choose a CSV file, an empty drop target reading Drop in a file or browse, and a preview panel saying no file has been chosen yet.",
+      caption:
+        "Where the file goes. It figures out the columns itself, and shows you every row before any of them count.",
     },
     covers: ["import-statements", "duplicates"],
     problem: "Typing in a year of history would take all night.",
@@ -321,8 +322,9 @@ export const showcase = {
     },
     {
       name: "budgets",
-      alt: "The budgets page, showing what was set aside for each kind of spending against what was really spent, with what went unspent last month carried into this one.",
-      caption: "What you planned next to what actually happened, refunds included.",
+      alt: "The budgets screen: a form for setting one, with fields for category, amount, currency and start date and a tickbox for carrying the remainder into next month, above a table of standing budgets for dining out and groceries.",
+      caption:
+        "Set a limit once and it runs every month. The tickbox is what carries the remainder forward.",
     },
   ],
 } as const;
@@ -358,7 +360,7 @@ export const privacy = {
   points: [
     "Pull everything out as a spreadsheet any time you want. We never hold it back to keep you paying.",
     "No analytics in the product itself. On the free plan the ads bring Google's script with them. Premium and your own copy have neither.",
-    "Run it on your own computer and nobody has a copy, including us.",
+    "Nothing you put in is used to sell you anything, here or anywhere else.",
     "Anyone can read the code, and that isn't going to change.",
   ],
 } as const;
@@ -388,8 +390,8 @@ export const agents = {
   title: "Hook up an AI assistant and just ask.",
   body:
     "Your assistant sees the same things you see. Ask it when you last paid someone, or have it " +
-    "pull in a statement and file it. It can suggest, but nothing happens until you say yes, and " +
-    "it can't move money.",
+    "pull in a statement and file it. When you connect it you choose what it's allowed to do: " +
+    "keep it to suggesting, and nothing it lines up counts until you say yes.",
   sample: [
     { kind: "prompt", text: "What day did I pay the electric bill last month?" },
     { kind: "out", text: "  August 12, to Meridian Power, out of checking." },

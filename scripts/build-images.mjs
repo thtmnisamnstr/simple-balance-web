@@ -56,6 +56,31 @@ function palette(block) {
   };
 }
 
+/**
+ * The headline and tagline, read out of the content module.
+ *
+ * They were three separate literals here, and by the time anybody looked the
+ * card was advertising a tagline that appeared nowhere on the site — the copy
+ * had been rewritten four times and the card had not moved. Reading the
+ * module is the same trick as the palette below: a string that has to agree
+ * with something else is referenced, not copied.
+ */
+const home = readFileSync("src/content/home.ts", "utf8");
+const pick = (key) => {
+  const match = home.match(new RegExp(`\\n  ${key}: "([^"]+)"`));
+  if (!match) throw new Error(`src/content/home.ts has no ${key}`);
+  return match[1];
+};
+/** "See everything you have. Check every number." -> the two lines of the card. */
+const HEADLINE = pick("title")
+  .split(/(?<=\.)\s+/)
+  .map((part) => part.trim())
+  .filter(Boolean);
+if (HEADLINE.length !== 2) {
+  throw new Error(`the hero title does not split into two lines: ${pick("title")}`);
+}
+const TAGLINE = pick("titleTagline");
+
 const brand = readFileSync("src/styles/brand.css", "utf8");
 const darkAt = brand.indexOf("@media (prefers-color-scheme: dark)");
 if (darkAt < 0) throw new Error("brand.css has no dark block");
@@ -105,12 +130,12 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" 
   </g>
 
   <text x="84" y="316" font-family="Inter, ui-sans-serif, system-ui, sans-serif"
-        font-size="66" font-weight="600" fill="${INK}" letter-spacing="-1.5">See everything you have.</text>
+        font-size="66" font-weight="600" fill="${INK}" letter-spacing="-1.5">${HEADLINE[0]}</text>
   <text x="84" y="396" font-family="Inter, ui-sans-serif, system-ui, sans-serif"
-        font-size="66" font-weight="600" fill="${INK}" letter-spacing="-1.5">Check every number.</text>
+        font-size="66" font-weight="600" fill="${INK}" letter-spacing="-1.5">${HEADLINE[1]}</text>
 
   <text x="84" y="472" font-family="Inter, ui-sans-serif, system-ui, sans-serif"
-        font-size="30" fill="${MUTED}">All your accounts, and figures that open</text>
+        font-size="30" fill="${MUTED}">${TAGLINE}</text>
 
   <rect x="84" y="528" width="1032" height="1" fill="${LINE}"/>
   <text x="84" y="574" font-family="Inter, ui-sans-serif, system-ui, sans-serif"

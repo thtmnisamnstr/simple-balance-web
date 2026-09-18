@@ -45,8 +45,12 @@ export function rfc3339(day: string): string {
  *
  * So a route asks for its alternates rather than writing them, and forgetting
  * is no longer possible. `tests/feeds.test.ts` holds every emitted page to it.
+ *
+ * Deliberately not exported: `feedAlternates` below is the whole interface,
+ * and a route reaching for the raw map would be a route writing its own
+ * alternates again.
  */
-export const FEED_TYPES = {
+const FEED_TYPES = {
   "application/rss+xml": "/blog/feed.xml",
   "application/atom+xml": "/blog/atom.xml",
   "application/feed+json": "/blog/feed.json",

@@ -274,18 +274,45 @@ describe("the reader is American", () => {
   });
 
   it("uses American spelling in the published Markdown too", () => {
-    // `content/` is the blog and the docs. The docs said "a current account,
-    // a savings account", which is both British and a disagreement with the
-    // application's own interface, on the page that explains what an account
-    // is.
+    /*
+     * `content/` is the blog and the docs. The docs said "a current account,
+     * a savings account" — both British and a disagreement with the
+     * application's own interface — on the page that explains what an account
+     * is.
+     *
+     * **Two passes, because the first one has a blind spot.** Reading line by
+     * line gives a line number, which is what makes a failure actionable, and
+     * it cannot see a phrase Markdown has wrapped: a blog post carried "your
+     * own current\naccount", which a reader sees as "current account" and a
+     * per-line check never matches. So the whole file is swept again with its
+     * whitespace collapsed, at the cost of a line number on that one.
+     */
     const offenders: string[] = [];
     for (const file of sourceFiles("content", /\.md$/)) {
       for (const [index, line] of file.code.split("\n").entries()) {
         const hit = BRITISH.exec(line);
         if (hit) offenders.push(`${file.path}:${index + 1} ${hit[0]}`);
       }
+      const wrapped = BRITISH.exec(file.code.replaceAll(/\s+/g, " "));
+      if (wrapped && !offenders.some((o) => o.startsWith(file.path))) {
+        offenders.push(`${file.path} (wrapped across lines) ${wrapped[0]}`);
+      }
     }
     expect(offenders).toEqual([]);
+  });
+
+  it("draws the social card from the copy, not from a third tagline", () => {
+    /*
+     * The card carried its headline and tagline as literals. By the time
+     * anybody looked, the copy had been rewritten four times and the card was
+     * advertising a sentence that appeared nowhere on the site.
+     *
+     * It reads `src/content/home.ts` now, so this asserts the mechanism
+     * rather than the words: no literal, and the page's own strings present.
+     */
+    const script = readFileSync("scripts/build-images.mjs", "utf8");
+    expect(script, "the card should read the title, not carry one").toContain('pick("title")');
+    expect(script).toContain('pick("titleTagline")');
   });
 
   it("tells a crawler the locale the copy is actually written in", () => {

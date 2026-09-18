@@ -57,7 +57,7 @@ export const pricing = {
   reassurances: [
     "No card to start, and nothing to cancel on the free plan.",
     "Your records leave with you, as a spreadsheet, whenever you want them.",
-    "An AI assistant works on every plan, and it can't change anything without your okay.",
+    "An AI assistant works on every plan, and you choose what it is allowed to do.",
     "Stop paying and you keep every account you have. We delete nothing.",
   ],
   note:
@@ -232,7 +232,7 @@ export const comparison: readonly Row[] = [
   },
   {
     id: "splits",
-    feature: "One shop counted as two things",
+    feature: "One trip counted as two things",
     free: true,
     premium: true,
     self: true,
@@ -302,7 +302,7 @@ export const faq: readonly { readonly q: string; readonly a: string }[] = [
      * address can name a record — lives in the policy, which this now points
      * at rather than paraphrasing.
      */
-    a: "Ordinary Google ads, never on the billing page or the sign-in screen. They aren't picked from what you spend, and they are only personalized if you specifically agreed to that. In the UK, the EEA and Switzerland you get asked before any advertising cookie is set, and saying no means you see none. The privacy policy covers the rest, including what does reach Google.",
+    a: "Ordinary Google ads, never on the billing page or the sign-in screen. They aren't picked from what you spend, and they are only personalized if you specifically agreed to that. In the UK, the EEA and Switzerland you get asked before any advertising cookie is set, and saying no keeps the ads off your spending rather than off the page. The privacy policy covers the rest, including what does reach Google.",
   },
   {
     q: "How do I cancel, and will you keep charging me?",
@@ -332,7 +332,7 @@ export const faq: readonly { readonly q: string; readonly a: string }[] = [
      * is worse than no promise, so the split is stated rather than blurred.
      */
     q: "Do you keep a copy of what I spend?",
-    a: "If we run it for you, your records sit on our server. That is what running it for you means, and the privacy policy says exactly what's stored and who can get at it. Run it yourself and nobody has a copy, including us. Either way there's no tracking inside the product, and nothing about your spending is used to pick the ads.",
+    a: "If we run it for you, your records sit on our server. That is what running it for you means, and the privacy policy says exactly what's stored and who can get at it. Run it yourself and nobody has a copy, including us. Nothing about your spending is used to pick the ads. The product itself has no analytics either way, though on the free plan the ads bring Google's script with them.",
   },
   {
     q: "Can I move from the version you run to my own copy later?",
