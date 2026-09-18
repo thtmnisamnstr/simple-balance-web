@@ -6,6 +6,9 @@ import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypePrettyCode from "rehype-pretty-code";
 import { Shot } from "@/components/shot";
 import { Callout } from "@/components/callout";
+import { CodeBlock } from "@/components/code-block";
+import { CodeTab, CodeTabs } from "@/components/code-tabs";
+import { Figure } from "@/components/figure";
 
 /**
  * A rendered Markdown body.
@@ -41,6 +44,13 @@ const prettyCode = {
 const components = {
   Shot,
   Callout,
+  Figure,
+  CodeTabs,
+  CodeTab,
+  // Every fenced block becomes a CodeBlock, which is a <pre> plus a copy
+  // control. Overriding the element rather than asking writers to use a
+  // component means an ordinary ``` fence gets the control for free.
+  pre: CodeBlock,
 };
 
 export function Prose({ body }: { readonly body: string }) {

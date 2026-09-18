@@ -236,3 +236,83 @@ fetch the page never sees the `noindex`, so a URL somebody links to can still
 be indexed — as a bare link with no description, which is the worst of both.
 
 _Checked by:_ `tests/sections.test.tsx`.
+
+### 5.9 Three feeds, not one
+
+**House.** RSS 2.0, Atom 1.0 and JSON Feed 1.1, all generated from one module.
+
+They are read by different things and cost almost nothing together: RSS is
+what most readers still take, Atom is what the strict ones prefer, and JSON
+Feed is what anything written this decade would rather parse. A blog that
+publishes only RSS is choosing for its readers.
+
+Each carries the summary rather than the full body. A feed that ships the whole
+post is a second copy of the site to keep correct, and the point of the link is
+that the post is at the other end of it. Twenty items, because a feed carrying
+everything ever written grows without bound and is re-downloaded in full on
+every poll.
+
+_Checked by:_ `tests/feeds.test.ts`, which **parses** the XML rather than
+matching strings — an unescaped ampersand in a title is the classic break and a
+substring check sails straight past it.
+
+### 5.10 Search is in the browser, until it cannot be
+
+**Contested, decided.** The index is a JSON file built at compile time and
+fetched on first keystroke, not on page load. Matching substrings over a few
+kilobytes is exact, instant, private and works offline.
+
+Algolia and its equivalents are the right answer at a scale this is nowhere
+near, and they cost a vendor, an API key in the client, and a crawl that can
+be stale.
+
+**The trigger to revisit:** when the index passes a few hundred kilobytes, or
+when readers need ranking better than "title beats description beats body".
+Ranking here is deliberately crude and explainable — nobody should have to
+guess why a result is where it is.
+
+**Identifiers survive the flattening.** The first version stripped Markdown
+punctuation including `_` and `-`, which turned `AUTH_SECRET` into
+"authsecret" and made every environment variable unsearchable — the thing
+people search a docs site for most.
+
+_Checked by:_ `tests/docs-features.test.ts`.
+
+### 5.11 Tags, authors and series are derived, never listed
+
+**House.** Tag pages exist for the tags in use; author pages exist for authors
+who have published. Neither is a list somebody maintains.
+
+An author page with no posts is a dead end, and the registry is allowed to hold
+somebody before their first post lands — so the pages come from the posts, not
+from the registry.
+
+Tags are matched by slug, so "Bookkeeping" and "bookkeeping" are one tag. Two
+spellings splitting an archive in half is the ordinary failure and neither half
+has everything.
+
+_Checked by:_ `tests/blog-features.test.ts`.
+
+### 5.12 Related posts are explainable
+
+**House.** Ranked by shared tags, then series, then recency. Deliberately not a
+similarity model: on a blog with a dozen posts "shares two tags" is a better
+signal than anything derived from the prose, and it is one a writer controls by
+tagging.
+
+_Checked by:_ `tests/blog-features.test.ts`.
+
+### 5.13 Structured data describes what is visible
+
+**Binding.** `BlogPosting`, `TechArticle`, `BreadcrumbList`, `WebSite` and
+`SoftwareApplication`, and every field must be true of something a reader can
+see on the page.
+
+Google's structured-data policy treats markup describing invisible content as
+spam, and it is also simply lying. So there is no `aggregateRating`, no
+invented `wordCount`, and no author whose name is not in the byline.
+
+The JSON is emitted with `<` escaped, because a literal `</script>` inside a
+string ends the element early and turns the rest of the payload into markup.
+
+_Checked by:_ `tests/docs-features.test.ts`.

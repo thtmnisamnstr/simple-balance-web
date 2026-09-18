@@ -1,19 +1,42 @@
 # React
 
-## 1. Server components by default
+## 1. Server components by default, islands by exception
 
-### 1.1 Nothing here is a client component
+### 1.1 A client component is an island, and it earns its place
 
-**Binding, currently.** No file in `src/` carries `"use client"`.
+**Binding.** Almost everything here runs at build time and ships HTML. A
+`"use client"` component is allowed only where all four of these hold:
 
-The whole site is static, so every component runs at build time and ships HTML.
-The theme follows `prefers-color-scheme` in CSS, images are chosen by
-`<picture>`, and there is no state to hold. Adding the first client component
-is a real decision: it adds a hydration payload to a page whose entire
-performance story is that it has almost none.
+1. **The behaviour is impossible without the browser.** Clipboard access,
+   scroll position, a keyboard shortcut. Not "it would be nicer".
+2. **The page is correct before it hydrates.** The island adds; it never
+   supplies content. `ActiveContents` highlights a contents list the server
+   already rendered in full; remove the island and every link still works.
+3. **It holds no application state.** Nothing is persisted, and nothing else
+   on the page depends on it.
+4. **A control that does not work yet does not look like one.** An island's
+   button is inert until hydration, so it either says so or is disabled until
+   mounted.
 
-_Checked by:_ `human`. Worth a grep-based check the first time somebody adds
-one.
+There are three, and each is named here so a fourth is a decision rather than
+a habit:
+
+| Island                       | Why it cannot be done on the server                          |
+| ---------------------------- | ------------------------------------------------------------ |
+| `client/copy-button.tsx`     | The clipboard is a browser API.                              |
+| `client/docs-search.tsx`     | Matching as you type, against an index fetched on first use. |
+| `client/active-contents.tsx` | Which heading you are looking at is a scroll position.       |
+
+**This rule replaced an absolute one.** The guide said "nothing here is a
+client component", which was true when the site was one page and stopped being
+true the moment docs needed search. The absolute version would have been
+satisfied by shipping documentation with no search and code blocks nobody can
+copy, which is the wrong trade — so the rule became a test the exception has
+to pass rather than a prohibition that would have been quietly broken.
+
+_Checked by:_ `human` for the four conditions. The count is visible —
+`src/components/client/` is the whole list, and a client component outside
+that directory is the thing to look for in review.
 
 ### 1.2 Markdown is compiled on the server
 
@@ -48,7 +71,32 @@ declarations are identical today.
 without a wrapper. A card whose whole surface is a link swallows text selection
 and gives a screen reader one enormous link name; the title is the link.
 
-## 4. Icons
+## 4. Interactive patterns
+
+### 4.1 Do not declare an ARIA pattern you have not implemented
+
+**Binding.** The docs search was written as a `role="combobox"` with a
+`listbox` and `option` children, and that declaration obliges the whole
+contract: arrow keys moving a virtual cursor, `aria-activedescendant`, Home
+and End, Enter to select. Half of it — the roles without the keyboard — tells
+a screen reader to expect behaviour that is not there.
+
+It is now a search field and a list of links. They are reachable by Tab,
+announced correctly by every reader, and a live region gives the result count.
+Fewer claims, all of them true.
+
+_Checked by:_ `npm run lint`. `jsx-a11y`'s `prefer-tag-over-role` and
+`no-noninteractive-element-to-interactive-role` both fired on the first
+version, which is how this was found.
+
+### 4.2 Prefer the element with the behaviour built in
+
+**House.** `<details>` for the narrow-screen docs sidebar rather than a
+scripted drawer: it works before hydration, find-in-page can open it, and it
+needs no focus trap, no Escape handler and no state. `<output>` for a live
+region rather than `role="status"`.
+
+## 5. Icons
 
 **House.** Hand-written inline SVG in `src/components/icons.tsx`, on the same
 24-unit grid and 1.75 stroke as the application's set.

@@ -35,7 +35,15 @@ export const metadata: Metadata = {
     url: `https://${site.domain}`,
   },
   twitter: { card: "summary_large_image", title: site.name, description: hero.lede },
-  alternates: { canonical: "/" },
+  alternates: {
+    canonical: "/",
+    // Advertised site-wide so a feed reader pointed at any page finds them.
+    types: {
+      "application/rss+xml": "/blog/feed.xml",
+      "application/atom+xml": "/blog/atom.xml",
+      "application/feed+json": "/blog/feed.json",
+    },
+  },
   /**
    * The same two files the application serves, copied rather than linked so
    * this origin has no cross-origin dependency for its own tab icon. iOS will

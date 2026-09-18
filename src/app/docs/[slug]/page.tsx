@@ -7,9 +7,13 @@ import {
   entryBySlug,
   tableOfContents,
 } from "@/content/collections";
-import { section } from "@/content/sections";
+import { editUrl, section } from "@/content/sections";
 import { Prose } from "@/components/prose";
 import { Contents } from "@/components/contents";
+import { Breadcrumbs } from "@/components/breadcrumbs";
+import { BreadcrumbStructuredData, DocStructuredData } from "@/components/structured-data";
+import { DocsSidebar } from "@/components/docs-sidebar";
+import { ActiveContents } from "@/components/client/active-contents";
 import { formatDate } from "@/lib/format";
 
 const docs = section("docs");
@@ -31,6 +35,12 @@ export async function generateMetadata({
     description: entry.frontmatter.description,
     robots: docs.announced ? undefined : { index: false, follow: false },
     alternates: { canonical: entry.frontmatter.canonical ?? `/docs/${slug}/` },
+    openGraph: {
+      type: "article",
+      title: entry.frontmatter.title,
+      description: entry.frontmatter.description,
+      ...(entry.frontmatter.updated ? { modifiedTime: entry.frontmatter.updated } : {}),
+    },
   };
 }
 
@@ -41,53 +51,52 @@ export default async function DocPage({ params }: { params: Promise<{ slug: stri
 
   const { previous, next } = docsNeighbours(slug);
   const contents = tableOfContents(entry.body);
+  const group = docsBySection().find((g) => g.entries.some((e) => e.slug === slug));
+  const trail = [
+    { name: "Home", href: "/" },
+    { name: docs.label, href: docs.href },
+    ...(group ? [{ name: group.section, href: docs.href }] : []),
+    { name: entry.frontmatter.title, href: `/docs/${slug}/` },
+  ];
 
   return (
     <div className="section docs-layout page">
-      {/* Rendered from the same grouping the index uses, so a new page appears
-          in both without being listed twice. Order comes from
-          `content/docs/_sections.json` plus each page's `order`. */}
-      <nav className="docs-nav" aria-label="Documentation">
-        <a className="docs-nav-home" href={docs.href}>
-          {docs.title}
-        </a>
-        {docsBySection().map((group) => (
-          <div className="docs-nav-group" key={group.section}>
-            <p className="docs-nav-heading">{group.section}</p>
-            <ul>
-              {group.entries.map((item) => (
-                <li key={item.slug}>
-                  <a
-                    href={`/docs/${item.slug}/`}
-                    aria-current={item.slug === slug ? "page" : undefined}
-                  >
-                    {item.frontmatter.title}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </nav>
+      <DocsSidebar current={slug} />
 
       <article className="docs-article">
+        <DocStructuredData entry={entry} />
+        <BreadcrumbStructuredData trail={trail} />
+        <Breadcrumbs trail={trail} />
+
         <h1 className="entry-heading">{entry.frontmatter.title}</h1>
         <p className="lede">{entry.frontmatter.description}</p>
-        {entry.frontmatter.updated ? (
-          <p className="entry-meta">
-            Updated{" "}
-            <time dateTime={entry.frontmatter.updated}>
-              {formatDate(entry.frontmatter.updated)}
-            </time>
-          </p>
-        ) : null}
 
-        {contents.length >= 3 ? <Contents items={contents} /> : null}
+        <div className="docs-meta">
+          {entry.frontmatter.updated ? (
+            <p className="entry-meta">
+              Updated{" "}
+              <time dateTime={entry.frontmatter.updated}>
+                {formatDate(entry.frontmatter.updated)}
+              </time>
+            </p>
+          ) : (
+            <span />
+          )}
+          <a className="edit-link" href={editUrl("docs", entry.slug)}>
+            Edit this page
+          </a>
+        </div>
+
+        {contents.length >= 3 ? (
+          <>
+            <Contents items={contents} />
+            {/* Enhancement only: the list above works without this. */}
+            <ActiveContents ids={contents.map((item) => item.id)} />
+          </>
+        ) : null}
 
         <Prose body={entry.body} />
 
-        {/* Sequential navigation, because reference documentation is also read
-            front to back the first time. */}
         {previous || next ? (
           <nav className="doc-pager" aria-label="More documentation">
             {previous ? (

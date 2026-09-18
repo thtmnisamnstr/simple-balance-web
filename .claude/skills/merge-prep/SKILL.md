@@ -42,6 +42,16 @@ The four that matter on this site, because each is invisible when broken:
 - **The brand contract.** `web.md` 1.1. If `brand.css` changed, it changed
   because the application's palette changed. If it changed for any other
   reason, that is the defect.
+- **The feeds, if content changed.** `content.md` 5.9. They are consumed by
+  software and fail silently in somebody else's reader. `tests/feeds.test.ts`
+  parses them, but check a post's title and description read well as a feed
+  summary, because that is all a subscriber sees.
+- **A new client component.** `code/react.md` 1.1 lists three and the four
+  conditions a fourth has to meet. `ls src/components/client/` is the whole
+  audit.
+- **Structured data, if a template changed.** `content.md` 5.13 — every field
+  must be true of something visible. An invented field is a policy violation
+  as well as a lie.
 
 Argue every finding against itself before acting on it. **Record the rejected
 ones with their reasons in the commit body** — a rejected finding that is not

@@ -186,6 +186,25 @@ defect as a testimonial from nobody.
 
 _Checked by:_ `tests/home-page.test.tsx`.
 
+## 5.6 A code block follows the page theme
+
+**Binding.** `.code-block` paints its surface from `--fill-subtle` and its
+border from `--line`, both of which change with the theme.
+
+`rehype-pretty-code` emits _both_ Shiki themes as custom properties on one copy
+of the markup, and the rules at the end of `site.css` pick between them. So the
+surface underneath has to switch with them. The first version painted the block
+on `--art-base`, the always-dark illustration surface, which left github-light's
+dark text on a dark green card: legible in dark mode and nearly invisible in
+light.
+
+The homepage terminal sample is the deliberate exception — it is a picture of a
+dark thing rather than a panel that follows the page, and it is hand-coloured
+rather than highlighted.
+
+_Checked by:_ `tests/docs-features.test.ts` for both themes being emitted;
+whether the contrast is right is `human`, and it was found by looking.
+
 ## 6. Controls
 
 ### 6.1 A control that cannot act is not a control
@@ -201,7 +220,16 @@ _Checked by:_ `tests/home-page.test.tsx`, which asserts the label is neither a
 link nor a button — so making it one is a deliberate change with a failing test
 attached.
 
-### 6.2 Link text makes a promise it keeps
+### 6.2 A breadcrumb's current page is not a link
+
+**House.** The last crumb is a `<span>` with `aria-current="page"`. A link to
+the page you are on is a control that does nothing.
+
+The separator is a CSS pseudo-element rather than a character in the markup, so
+a screen reader reads "Docs, Reference, Configuration" and not "Docs slash
+Reference slash Configuration".
+
+### 6.3 Link text makes a promise it keeps
 
 **House.** No "click here", no "read more". The text says where it goes.
 

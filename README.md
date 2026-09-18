@@ -59,8 +59,16 @@ title. Authors are keys into `src/content/authors.ts`, so a typo is a build
 error rather than a byline with no name.
 
 Markdown supports GitHub tables, footnotes and task lists, real quotation
-marks, headings that link to themselves, syntax highlighting in both themes,
-and two components: `<Callout kind="warning">` and `<Shot>`.
+marks, headings that link to themselves, and syntax highlighting in both themes
+with a copy button on every block. Four components are available inside it:
+`<Callout>`, `<Shot>`, `<Figure>` and `<CodeTabs>`.
+
+The blog ships with tag archives, author pages, pagination, a by-year archive,
+related posts, multi-part series, share links and three feeds — RSS, Atom and
+JSON Feed. The docs ship with search, breadcrumbs, edit links, previous/next
+and a contents list that tracks your position.
+
+The `write-content` skill in `.claude/skills/` is the procedure.
 
 ## Blog and docs are not announced
 

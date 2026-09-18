@@ -42,6 +42,28 @@ it looks — see 2.
 
 _Checked by:_ `tests/export-shape.test.ts`.
 
+### 1.4 A dynamic route must generate at least one page
+
+**Binding, by the platform.** Under `output: "export"`, a route whose
+`generateStaticParams` returns an empty array fails the build.
+
+That is not a footnote; it decides a design. `/blog/page/[page]` originally
+generated pages two and up, leaving `/blog/` as the single canonical home for
+page one — which is the tidier arrangement and returns nothing at all while
+there are fewer posts than fit on one page.
+
+So page one is generated too, and its canonical points at `/blog/`. The
+alternative — lowering the posts-per-page until a second page exists — is
+choosing the reader's experience to satisfy the build.
+
+**The consequence to know about:** emptying `content/blog/` breaks the build,
+because the tag and author routes derive their params from posts. That failure
+names the route and is arguably correct — a site with a blog section and no
+posts is a state worth noticing — but it will surprise somebody, so it is
+written down here.
+
+_Checked by:_ the build, and `tests/blog-features.test.ts` for the canonical.
+
 ## 2. `ads.txt`, and the money
 
 ### 2.1 No catch-all rewrite. Ever.

@@ -56,6 +56,17 @@ export const sections: readonly Section[] = [
   },
 ];
 
+/**
+ * Where a documentation page can be edited.
+ *
+ * An "edit this page" link is the cheapest contribution path a docs site has,
+ * and it only works if it points at the file rather than at the repository —
+ * somebody who has noticed a typo will not go hunting for it.
+ */
+export function editUrl(collection: "docs" | "blog", slug: string): string {
+  return `https://github.com/thtmnisamnstr/simple-balance-web/edit/main/content/${collection}/${slug}.md`;
+}
+
 export function section(key: SectionKey): Section {
   const found = sections.find((s) => s.key === key);
   // A missing section is a programming error, not a content state: the array

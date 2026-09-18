@@ -48,6 +48,16 @@ Break one of these and the site is wrong rather than untidy.
   rule that most needs a person.
 - **Screenshots are captured from a real running instance**, never mocked up,
   and the page discloses that the ledger in them is seeded demo data.
+- **A client component is an island and earns its place.** Three exist, all
+  under `src/components/client/`, each because the behaviour is impossible on
+  the server. The page must be correct before any of them hydrates.
+- **Never declare an ARIA pattern you have not implemented.** A `combobox`
+  role without arrow-key navigation tells a screen reader to expect behaviour
+  that is not there, which is worse than claiming nothing.
+- **Structured data describes what a reader can see.** No invented ratings, no
+  author who is not in the byline. It is both a policy violation and a lie.
+- **A dynamic route must generate at least one page** under `output: "export"`,
+  which is why page one of the blog exists at two URLs with a canonical tag.
 - **`npm run verify` builds before it tests**, because the tests read the built
   output — `noindex`, the sitemap and `robots.txt` are what a crawler sees.
 

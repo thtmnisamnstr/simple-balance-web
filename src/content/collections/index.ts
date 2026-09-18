@@ -50,6 +50,10 @@ export type Frontmatter = {
   readonly authors?: readonly AuthorKey[];
   readonly tags?: readonly string[];
 
+  /** Blog. A multi-part post: the series name, and this part's position. */
+  readonly series?: string;
+  readonly seriesOrder?: number;
+
   /**
    * Blog. A featured post is pulled to the top of the index in its own block.
    * More than one may be featured; they keep their date order among
@@ -179,6 +183,8 @@ function parse(collection: Collection, file: string): Entry {
       ...(authorKeys.length ? { authors: authorKeys } : {}),
       ...(data.tags ? { tags: (data.tags as unknown[]).map(String) } : {}),
       ...(data.featured === true ? { featured: true } : {}),
+      ...(data.series ? { series: String(data.series) } : {}),
+      ...(data.seriesOrder !== undefined ? { seriesOrder: Number(data.seriesOrder) } : {}),
       ...(data.image ? { image: String(data.image), imageAlt: String(data.imageAlt) } : {}),
       ...(data.section ? { section: String(data.section) } : {}),
       ...(data.order !== undefined ? { order: Number(data.order) } : {}),
@@ -340,4 +346,126 @@ export function slugify(text: string): string {
     .trim()
     .replace(/[^\p{L}\p{N}\s-]/gu, "")
     .replace(/\s+/g, "-");
+}
+
+/* ------------------------------------------------------------------ *
+ * Blog queries: tags, authors, series, neighbours, related, paging.
+ * ------------------------------------------------------------------ */
+
+/** A tag as it appears in a URL. Two tags differing only by case are one tag. */
+export function tagSlug(tag: string): string {
+  return slugify(tag);
+}
+
+export function postsByTag(tagOrSlug: string): readonly Entry[] {
+  const wanted = tagSlug(tagOrSlug);
+  return allEntries("blog").filter((post) =>
+    (post.frontmatter.tags ?? []).some((tag) => tagSlug(tag) === wanted),
+  );
+}
+
+/** The display spelling of a tag, taken from the first post that uses it. */
+export function tagLabel(slug: string): string | undefined {
+  for (const post of allEntries("blog")) {
+    for (const tag of post.frontmatter.tags ?? []) if (tagSlug(tag) === slug) return tag;
+  }
+  return undefined;
+}
+
+export function postsByAuthor(key: string): readonly Entry[] {
+  return allEntries("blog").filter((post) =>
+    (post.frontmatter.authors ?? []).includes(key as never),
+  );
+}
+
+/** The post before and after this one, in publication order. */
+export function blogNeighbours(slug: string): {
+  previous: Entry | undefined;
+  next: Entry | undefined;
+} {
+  const all = allEntries("blog");
+  const index = all.findIndex((post) => post.slug === slug);
+  if (index === -1) return { previous: undefined, next: undefined };
+  // `allEntries` is newest first, so the *earlier* post is the later index.
+  return { previous: all[index + 1], next: all[index - 1] };
+}
+
+/**
+ * Posts in the same series, in reading order.
+ *
+ * A series is `series: "Name"` plus `seriesOrder: 2` in frontmatter. Reading
+ * order is the opposite of the index's: part one comes first.
+ */
+export function seriesOf(entry: Entry): readonly Entry[] {
+  const name = entry.frontmatter.series;
+  if (!name) return [];
+  return allEntries("blog")
+    .filter((post) => post.frontmatter.series === name)
+    .toSorted(
+      (a, b) =>
+        (a.frontmatter.seriesOrder ?? Number.MAX_SAFE_INTEGER) -
+          (b.frontmatter.seriesOrder ?? Number.MAX_SAFE_INTEGER) ||
+        (a.frontmatter.date ?? "").localeCompare(b.frontmatter.date ?? ""),
+    );
+}
+
+/**
+ * Posts a reader of this one might want next.
+ *
+ * Ranked by shared tags, then by series, then by recency. Deliberately not a
+ * content-similarity model: on a blog with a dozen posts, "shares two tags"
+ * is a better signal than anything derived from the prose, and it is one a
+ * writer can control by tagging.
+ */
+export function relatedPosts(entry: Entry, limit = 3): readonly Entry[] {
+  const tags = new Set((entry.frontmatter.tags ?? []).map(tagSlug));
+  return allEntries("blog")
+    .filter((post) => post.slug !== entry.slug)
+    .map((post) => {
+      const shared = (post.frontmatter.tags ?? []).filter((tag) => tags.has(tagSlug(tag))).length;
+      const sameSeries =
+        post.frontmatter.series && post.frontmatter.series === entry.frontmatter.series;
+      return { post, score: shared * 2 + (sameSeries ? 3 : 0) };
+    })
+    .filter((scored) => scored.score > 0)
+    .toSorted(
+      (a, b) =>
+        b.score - a.score ||
+        (b.post.frontmatter.date ?? "").localeCompare(a.post.frontmatter.date ?? ""),
+    )
+    .slice(0, limit)
+    .map((scored) => scored.post);
+}
+
+/** How many posts fit on one index page before it is paginated. */
+export const POSTS_PER_PAGE = 10;
+
+export type Page<T> = {
+  readonly items: readonly T[];
+  readonly page: number;
+  readonly pages: number;
+};
+
+export function paginate<T>(items: readonly T[], page: number, perPage = POSTS_PER_PAGE): Page<T> {
+  // At least one page, even with nothing in it: an index that renders "page 1
+  // of 0" is worse than an empty page 1.
+  const pages = Math.max(1, Math.ceil(items.length / perPage));
+  const clamped = Math.min(Math.max(1, page), pages);
+  return {
+    items: items.slice((clamped - 1) * perPage, clamped * perPage),
+    page: clamped,
+    pages,
+  };
+}
+
+/** Posts grouped by year, newest first, for an archive listing. */
+export function postsByYear(): readonly { year: string; posts: readonly Entry[] }[] {
+  const groups = new Map<string, Entry[]>();
+  for (const post of allEntries("blog")) {
+    const year = (post.frontmatter.date ?? "").slice(0, 4);
+    const bucket = groups.get(year);
+    if (bucket) bucket.push(post);
+    else groups.set(year, [post]);
+  }
+  return [...groups.entries()].map(([year, posts]) => ({ year, posts }));
 }

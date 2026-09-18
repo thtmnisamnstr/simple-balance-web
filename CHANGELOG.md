@@ -22,6 +22,28 @@ page per theme. Ten files, about 500 KB in total, chosen by the browser through
 `<picture>` so a reader in dark mode never downloads the light ones. The page
 says once, plainly, that the ledger in them is demo data.
 
+**Three feeds.** RSS 2.0, Atom 1.0 and JSON Feed 1.1, each carrying the twenty
+most recent posts as summaries rather than full bodies, and advertised in the
+head of every page so a reader pointed anywhere finds them.
+
+**Everything a post is normally expected to have.** Tag archives, author pages,
+pagination, a by-year archive, previous and next, related posts ranked by
+shared tags and series, multi-part series with their own navigation, share
+links that are plain anchors rather than third-party widgets, and
+`BlogPosting` structured data naming a real person.
+
+**Everything a documentation page is normally expected to have.** Search across
+every page — an index built at compile time, fetched on first keystroke, with
+`/` to focus and Escape to clear — plus breadcrumbs, an edit-this-page link,
+previous and next, a contents list that tracks the heading you are reading, and
+copy buttons on every code block.
+
+**Markdown that supports what people actually write.** Tables, footnotes, task
+lists, real quotation marks, headings that link to themselves, syntax
+highlighting rendered at build time in both themes from one copy of the markup,
+callouts, figures with captions, and side-by-side alternatives for
+instructions that differ by tool.
+
 **A blog, built and not announced.** Markdown in `content/blog/` with the
 conventional frontmatter — multiple authors with photos, tags, featured posts,
 cover images, drafts, canonical URLs. Featured posts get their own block at the

@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { docsBySection, isEmpty } from "@/content/collections";
 import { section } from "@/content/sections";
 import { EmptyState } from "@/components/empty-state";
+import { DocsSidebar } from "@/components/docs-sidebar";
+import { Breadcrumbs } from "@/components/breadcrumbs";
 
 const docs = section("docs");
 
@@ -16,12 +18,17 @@ export default function DocsIndex() {
   const groups = docsBySection();
 
   return (
-    <section className="section" aria-labelledby="docs-title">
-      <div className="page page-narrow">
-        <p className="eyebrow">{docs.label}</p>
-        <h1 id="docs-title" className="section-title">
-          {docs.title}
-        </h1>
+    <div className="section docs-layout page">
+      <DocsSidebar />
+
+      <div className="docs-article">
+        <Breadcrumbs
+          trail={[
+            { name: "Home", href: "/" },
+            { name: docs.label, href: docs.href },
+          ]}
+        />
+        <h1 className="section-title">{docs.title}</h1>
         <p className="lede">{docs.description}</p>
 
         {isEmpty("docs") ? (
@@ -52,6 +59,6 @@ export default function DocsIndex() {
           ))
         )}
       </div>
-    </section>
+    </div>
   );
 }

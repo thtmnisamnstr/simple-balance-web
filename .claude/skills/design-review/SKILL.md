@@ -34,10 +34,19 @@ npm run build && npx serve out
 Pages worth opening, and they are not only the homepage:
 
 - `/` — the whole argument
-- `/blog/` and `/docs/` — **their empty states**, which is what they currently
-  show and what a first visitor would see
-- `/docs/getting-started/` — the two-column layout, the sidebar, the pager
-- `/blog/double-entry-for-one-person/` — the byline, prose, code blocks
+- `/blog/` — the index, with the featured block above the rest
+- `/blog/what-a-refund-actually-is/` — byline, series box, callout, tags,
+  share links, pager, related
+- `/blog/tags/bookkeeping/` and `/blog/authors/gavin/` — the archives
+- `/blog/archive/` — the dense year listing
+- `/docs/configuration/` — the busiest page on the site: sidebar, search,
+  breadcrumbs, contents, tables, callouts, code tabs, copy buttons, pager
+- `/404` — reachable by typing any wrong path
+
+**Code blocks are where the last real defect was.** `rehype-pretty-code` emits
+both Shiki themes on one copy of the markup, so a block whose surface does not
+follow the theme is legible in one mode and invisible in the other. Look at a
+code block in **both** themes, every time.
 
 Dark mode is an operating-system setting, not a toggle on the page. On macOS:
 System Settings → Appearance. Check it; this site has no way to preview it

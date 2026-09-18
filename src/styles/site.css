@@ -789,9 +789,9 @@ svg {
 }
 
 .prose-body pre {
-  background: var(--art-base);
-  color: var(--art-ink);
-  border: 1px solid var(--art-hairline);
+  background: var(--fill-subtle);
+  color: var(--ink);
+  border: 1px solid var(--line);
   border-radius: var(--radius-lg);
   padding: var(--s-5);
   overflow-x: auto;
@@ -1240,5 +1240,404 @@ svg {
 
   .doc-pager-next {
     text-align: left;
+  }
+}
+
+/* ---------- breadcrumbs ---------- */
+
+.breadcrumbs {
+  font-size: var(--step--1);
+  color: var(--muted);
+  margin-bottom: var(--s-4);
+}
+
+.breadcrumbs ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+/* The separator is a pseudo-element so a screen reader reads the trail as
+   words rather than as "slash" between every one. */
+.breadcrumbs li + li::before {
+  content: "/";
+  margin-right: var(--s-2);
+  color: var(--line-strong);
+}
+
+.breadcrumbs a {
+  color: var(--ink-soft);
+  text-decoration: none;
+}
+
+.breadcrumbs a:hover {
+  color: var(--green);
+  text-decoration: underline;
+}
+
+/* ---------- pagination ---------- */
+
+.pagination {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--s-4);
+  margin-top: var(--s-7);
+  padding-top: var(--s-5);
+  border-top: 1px solid var(--line-soft);
+}
+
+.pagination-position {
+  color: var(--muted);
+  font-size: var(--step--1);
+  margin: 0;
+  text-align: center;
+}
+
+.pagination a:last-child {
+  justify-self: end;
+}
+
+/* ---------- author header ---------- */
+
+.author-header {
+  display: flex;
+  align-items: center;
+  gap: var(--s-5);
+  margin-bottom: var(--s-4);
+}
+
+.avatar-large {
+  width: 72px;
+  height: 72px;
+  font-size: 1.4rem;
+}
+
+/* ---------- series ---------- */
+
+.series {
+  margin-top: var(--s-6);
+  padding: var(--s-5);
+  border: 1px solid var(--green-line);
+  background: var(--green-wash);
+  border-radius: var(--radius-lg);
+  font-size: var(--step--1);
+}
+
+.series-title {
+  margin: 0 0 var(--s-3);
+  color: var(--ink);
+}
+
+.series-list {
+  margin: 0;
+  padding-left: var(--s-5);
+  display: grid;
+  gap: var(--s-2);
+  color: var(--ink-soft);
+}
+
+.series-list a {
+  color: var(--green);
+}
+
+/* ---------- share ---------- */
+
+.share {
+  margin-top: var(--s-6);
+  padding-top: var(--s-5);
+  border-top: 1px solid var(--line-soft);
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-4);
+  flex-wrap: wrap;
+}
+
+.share-label {
+  margin: 0;
+  color: var(--muted);
+  font-size: var(--step--1);
+  font-weight: var(--weight-semi);
+}
+
+.share-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-4);
+  font-size: var(--step--1);
+}
+
+.share-list a {
+  color: var(--ink-soft);
+  text-decoration: none;
+}
+
+.share-list a:hover {
+  color: var(--green);
+  text-decoration: underline;
+}
+
+.related {
+  margin-top: var(--s-8);
+}
+
+/* ---------- archive ---------- */
+
+.archive-list {
+  list-style: none;
+  margin: var(--s-4) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--s-3);
+}
+
+.archive-list li {
+  display: grid;
+  grid-template-columns: 11rem 1fr;
+  gap: var(--s-4);
+  align-items: baseline;
+  font-size: var(--step--1);
+}
+
+.archive-date {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.archive-list a {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.archive-list a:hover {
+  color: var(--green);
+  text-decoration: underline;
+}
+
+/* ---------- code blocks ---------- */
+
+/* Follows the page theme, unlike `.terminal` on the homepage.
+   `rehype-pretty-code` emits both Shiki themes as custom properties on the
+   same markup and the rules at the end of this file pick between them, so the
+   surface underneath has to switch with them. Painting this on the always-dark
+   `--art-base` put github-light's dark text on a dark green card, which was
+   legible in dark mode and nearly invisible in light. */
+.code-block {
+  margin: var(--s-5) 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--fill-subtle);
+}
+
+.code-block-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+  padding: var(--s-2) var(--s-3) var(--s-2) var(--s-5);
+  border-bottom: 1px solid var(--line);
+}
+
+.code-language {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+}
+
+.copy-button {
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: var(--weight-medium);
+  color: var(--ink-soft);
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  padding: 0.2em 0.7em;
+  cursor: pointer;
+}
+
+.copy-button:hover {
+  background: var(--fill-subtle);
+}
+
+/* The block's own border and background live on `.code-block`; the <pre>
+   inside must not paint a second card on top of it. */
+.code-block pre {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+}
+
+.code-tabs {
+  display: grid;
+  gap: var(--s-4);
+  margin: var(--s-5) 0;
+}
+
+.code-tab-label {
+  margin: 0 0 var(--s-2);
+  font-size: var(--step--1);
+  font-weight: var(--weight-semi);
+  color: var(--ink);
+}
+
+.md-figure {
+  margin: var(--s-6) 0;
+  display: grid;
+  gap: var(--s-3);
+}
+
+.md-figure img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line);
+}
+
+/* ---------- docs chrome ---------- */
+
+.docs-nav-wrap {
+  display: grid;
+  gap: var(--s-4);
+  position: sticky;
+  top: calc(64px + var(--s-5));
+}
+
+.docs-nav-details > summary {
+  display: none;
+}
+
+.docs-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--s-4);
+  flex-wrap: wrap;
+  margin-top: var(--s-4);
+}
+
+.edit-link {
+  font-size: var(--step--1);
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.edit-link:hover {
+  color: var(--green);
+  text-decoration: underline;
+}
+
+.contents a.contents-active {
+  color: var(--green);
+  font-weight: var(--weight-semi);
+}
+
+/* ---------- docs search ---------- */
+
+.docs-search {
+  position: relative;
+}
+
+.docs-search-input {
+  width: 100%;
+  font: inherit;
+  font-size: var(--step--1);
+  padding: var(--s-2) var(--s-3);
+  border-radius: var(--radius);
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.docs-search-results {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + var(--s-2));
+  left: 0;
+  right: 0;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-pop);
+  padding: var(--s-2);
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.docs-search-results ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--s-1);
+}
+
+.docs-search-results a {
+  display: grid;
+  gap: 2px;
+  padding: var(--s-2) var(--s-3);
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+}
+
+.docs-search-results a:hover {
+  background: var(--fill-subtle);
+}
+
+.docs-search-title {
+  color: var(--ink);
+  font-size: var(--step--1);
+  font-weight: var(--weight-medium);
+}
+
+.docs-search-section {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.docs-search-empty {
+  margin: 0;
+  padding: var(--s-3);
+  color: var(--muted);
+  font-size: var(--step--1);
+}
+
+@media (max-width: 62rem) {
+  .docs-nav-wrap {
+    position: static;
+  }
+
+  /* Below the two-column breakpoint the sidebar becomes a disclosure. The
+     browser's own <details> rather than a scripted drawer: it works before
+     hydration, find-in-page can open it, and it needs no focus trap. */
+  .docs-nav-details > summary {
+    display: list-item;
+    cursor: pointer;
+    font-weight: var(--weight-semi);
+    padding: var(--s-3) 0;
+  }
+
+  .archive-list li {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-1);
+  }
+
+  .pagination {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+  }
+
+  .pagination a:last-child {
+    justify-self: center;
   }
 }

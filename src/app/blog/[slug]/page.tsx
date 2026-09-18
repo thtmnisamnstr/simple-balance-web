@@ -1,12 +1,25 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { allEntries, entryBySlug, tableOfContents } from "@/content/collections";
+import {
+  allEntries,
+  blogNeighbours,
+  entryBySlug,
+  relatedPosts,
+  seriesOf,
+  tableOfContents,
+} from "@/content/collections";
 import { section } from "@/content/sections";
 import { authors } from "@/content/authors";
 import { Prose } from "@/components/prose";
 import { Byline } from "@/components/byline";
 import { TagList } from "@/components/tag-list";
 import { Contents } from "@/components/contents";
+import { Breadcrumbs } from "@/components/breadcrumbs";
+import { SeriesNav } from "@/components/series-nav";
+import { RelatedPosts } from "@/components/related-posts";
+import { PostPager } from "@/components/post-pager";
+import { ShareLinks } from "@/components/share-links";
+import { BreadcrumbStructuredData, PostStructuredData } from "@/components/structured-data";
 
 const blog = section("blog");
 
@@ -32,9 +45,16 @@ export async function generateMetadata({
     title: meta.title,
     description: meta.description,
     robots: blog.announced ? undefined : { index: false, follow: false },
-    // A post published elsewhere first says so, so neither copy competes with
-    // the other in a search index.
-    alternates: { canonical: meta.canonical ?? `/blog/${slug}/` },
+    // A post published elsewhere first says so, so the two copies do not
+    // compete with each other in a search index.
+    alternates: {
+      canonical: meta.canonical ?? `/blog/${slug}/`,
+      types: {
+        "application/rss+xml": "/blog/feed.xml",
+        "application/atom+xml": "/blog/atom.xml",
+        "application/feed+json": "/blog/feed.json",
+      },
+    },
     openGraph: {
       type: "article",
       title: meta.title,
@@ -42,8 +62,10 @@ export async function generateMetadata({
       ...(meta.date ? { publishedTime: meta.date } : {}),
       ...(meta.updated ? { modifiedTime: meta.updated } : {}),
       authors: (meta.authors ?? []).map((key) => authors[key].name),
+      ...(meta.tags ? { tags: [...meta.tags] } : {}),
       ...(meta.image ? { images: [{ url: meta.image, alt: meta.imageAlt ?? "" }] } : {}),
     },
+    twitter: { card: meta.image ? "summary_large_image" : "summary", title: meta.title },
     ...(meta.tags ? { keywords: [...meta.tags] } : {}),
   };
 }
@@ -55,13 +77,22 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
 
   const meta = post.frontmatter;
   const contents = tableOfContents(post.body);
+  const { previous, next } = blogNeighbours(slug);
+  const series = seriesOf(post);
+  const related = relatedPosts(post);
+  const trail = [
+    { name: "Home", href: "/" },
+    { name: blog.label, href: blog.href },
+    { name: meta.title, href: `/blog/${slug}/` },
+  ];
 
   return (
     <article className="section">
       <div className="page page-narrow">
-        <p className="eyebrow">
-          <a href={blog.href}>{blog.label}</a>
-        </p>
+        <PostStructuredData post={post} />
+        <BreadcrumbStructuredData trail={trail} />
+        <Breadcrumbs trail={trail} />
+
         <h1 className="entry-heading">{meta.title}</h1>
         <p className="lede">{meta.description}</p>
 
@@ -76,6 +107,8 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
           <img className="entry-cover" src={meta.image} alt={meta.imageAlt ?? ""} />
         ) : null}
 
+        {meta.series ? <SeriesNav series={meta.series} parts={series} current={slug} /> : null}
+
         {/* Only long posts get a contents list. On a short one it is a second
             copy of the page above the page. */}
         {contents.length >= 4 ? <Contents items={contents} /> : null}
@@ -83,6 +116,9 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
         <Prose body={post.body} />
 
         <TagList tags={meta.tags ?? []} />
+        <ShareLinks title={meta.title} path={`/blog/${slug}/`} />
+        <PostPager previous={previous} next={next} />
+        <RelatedPosts posts={related} />
       </div>
     </article>
   );

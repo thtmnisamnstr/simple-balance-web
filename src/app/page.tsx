@@ -13,6 +13,7 @@ import {
 } from "@/content/home";
 import { featureIcons, CheckIcon } from "@/components/icons";
 import { Shot } from "@/components/shot";
+import { SiteStructuredData } from "@/components/structured-data";
 
 /**
  * The homepage.
@@ -31,6 +32,7 @@ import { Shot } from "@/components/shot";
 export default function HomePage() {
   return (
     <>
+      <SiteStructuredData />
       <section className="hero" aria-labelledby="hero-title">
         <div className="page hero-inner">
           <div>

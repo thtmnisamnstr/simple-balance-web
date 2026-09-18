@@ -1,7 +1,12 @@
 ---
 title: Double-entry bookkeeping, for one person
 description: Why a personal finance app that nobody audits still benefits from books that have to balance.
-date: 2026-09-17
+date: 2026-09-10
+authors: [gavin]
+tags: [bookkeeping, design]
+featured: true
+series: Keeping your own books
+seriesOrder: 1
 ---
 
 Double-entry bookkeeping is six hundred years old and was invented for
