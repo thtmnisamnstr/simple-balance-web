@@ -75,6 +75,36 @@ describe("the privacy policy", () => {
     expect(text).toMatch(/frequency capping/);
   });
 
+  it("says what Google actually receives, because the pricing page promises it does", () => {
+    /*
+     * The pricing page's ad answer ends "the privacy policy covers the rest,
+     * including what does reach Google". It was shortened to that from a
+     * paragraph that said so itself, and the policy did not carry the detail
+     * — so the honest disclosure was deleted from the site by a cut made on
+     * a different page.
+     *
+     * The application documents it: the publisher id and the page address
+     * reach Google, and its paths carry record ids. A policy that omits that
+     * while the product's own docs state it is the policy that is wrong.
+     */
+    expect(text).toContain("what google receives");
+    expect(text).toContain("publisher id");
+    expect(text).toContain("address of the page");
+    // The limit matters as much as the disclosure: no balance, no name.
+    expect(text).toContain("targeting parameter");
+  });
+
+  it("is not promised something it does not contain", () => {
+    // Whatever the pricing page says the policy covers, it has to cover.
+    const pointer = faq.find((item) => /privacy policy/i.test(item.a));
+    expect(pointer, "no pricing answer points at the policy").toBeDefined();
+    if (/what does reach google/i.test(pointer!.a)) {
+      expect(text, "the pricing page points at a disclosure the policy lacks").toContain(
+        "what google receives",
+      );
+    }
+  });
+
   it("says consent is collected before an ad cookie is set, and can be withdrawn", () => {
     expect(text).toContain("before any ad cookie is set");
     expect(text).toContain("withdraw");

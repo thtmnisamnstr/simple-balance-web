@@ -66,6 +66,19 @@ banned-words test could not see.
 
 ### Fixed
 
+**The privacy policy did not say what reaches Google, while the pricing page
+told readers it did.** Shortening the ads answer moved that disclosure off the
+pricing page and replaced it with "the privacy policy covers the rest,
+including what does reach Google" — and the policy had never carried it. A cut
+on one page deleted a disclosure from the site.
+
+The policy now states it, matching what the application documents: the
+publisher id and the address of the page, where a path can name a row, and the
+limits — no account name, no balance, no figure, no email address as a
+targeting parameter, and a referrer held to this origin. Two assertions in
+`tests/legal.test.tsx` hold it, one of them checking the pricing page is not
+promising a disclosure the policy lacks.
+
 **The privacy policy, the terms and two docs pages were still British after
 the marketing pages were fixed.** The first version of the rule scoped itself
 to "the homepage and the pricing page", which left the rest of the site in the

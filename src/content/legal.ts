@@ -117,6 +117,12 @@ export const privacy = {
           "cookie is set, and you can change or withdraw it at any time from the same notice. " +
           "Declining means no ads are served to you.",
         "Ads are only ever personalized if you have consented to that specifically.",
+        "**What Google receives.** Our publisher id, and the address of the page the ad sits " +
+          "on. That address is not nothing: pages in the application carry record identifiers " +
+          "in their paths, so a URL identifies a row in your ledger, though not a person, a " +
+          "name or an amount. No account name, no balance, no figure, no email address and no " +
+          "identifier of yours is sent as a targeting parameter, and the browser's referrer is " +
+          "held to this origin so it does not travel either.",
         "Google's own description of how it uses data from sites that use its services is at " +
           "policies.google.com/technologies/partner-sites. You can control ad personalization " +
           "across Google's products at myadcenter.google.com, and opt out of third-party vendor " +
