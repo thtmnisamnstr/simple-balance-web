@@ -34,7 +34,10 @@ export const metadata: Metadata = {
     title: `${site.name} — ${site.tagline}`,
     description: hero.lede,
     url: `https://${site.domain}`,
-    locale: "en_GB",
+    // The site sells in US dollars to a US reader and its copy is written in
+    // American English. It said en_GB, which is the locale a link preview and
+    // a crawler are told to expect.
+    locale: "en_US",
     /*
      * The card a link to this site shows in Slack, Bluesky, LinkedIn or a
      * message. Without it they render a blank rectangle, which on a marketing

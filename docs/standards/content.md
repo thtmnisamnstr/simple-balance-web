@@ -111,6 +111,32 @@ _Checked by:_ `tests/copy.test.ts`, over the homepage **and** the pricing
 page, mutation-proved on four sentences a competitor's site would carry
 happily.
 
+### 1.6 American English, and contractions
+
+**Binding.** The homepage and the pricing page are written in American English,
+with contractions, for a reader in the United States.
+
+The site prices in US dollars and the application's own screens say
+**Checking**. The copy said "current account", "recognises", "totalled",
+"personalised" and "cancelling", and `layout.tsx` told every crawler and link
+preview `locale: "en_GB"`. None of that is a style preference: to an American
+reader "current account" is not the thing they have, and it disagrees with
+the product's own interface.
+
+**Contractions are the register, not a lapse.** "It is not", "do not",
+"cannot" and "that is" read as written-down English; "isn't", "don't",
+"can't" and "that's" read as somebody talking. Formal prose is the right
+register for these guides and the wrong one for a page trying to sound like a
+person.
+
+Not every instance — uniform contraction is as mechanical as none. And
+**"you have" is not always "you've"**: the hero reads "See everything you
+have", where _have_ is the verb rather than an auxiliary, and a blind pass
+turned it into "See everything you've."
+
+_Checked by:_ `human`. A word list would catch the spellings and miss the
+register, which is the same reason 1.4 is not mechanised.
+
 ## 2. Claims
 
 ### 2.1 Every claim is true of the shipped application

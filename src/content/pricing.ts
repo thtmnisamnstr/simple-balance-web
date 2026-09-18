@@ -43,8 +43,8 @@ export const pricing = {
   eyebrow: "Pricing",
   title: "What it costs, and what you get.",
   lede:
-    "Nothing in the product is held back on any plan. What you pay for is how many accounts you " +
-    "keep, and whether you see ads.",
+    "Every plan gets the whole product. What you pay for is how many accounts you can keep, and " +
+    "whether you see ads.",
   /**
    * The strip under the prices that answers "what am I risking".
    *
@@ -56,14 +56,14 @@ export const pricing = {
    */
   reassurances: [
     "No card to start, and nothing to cancel on the free plan.",
-    "Your record leaves with you, as a spreadsheet, whenever you want it.",
-    "An AI assistant can read your records on every plan, and can change nothing without your yes.",
-    "Stop paying and you keep every account you have. Nothing is deleted.",
+    "Your records leave with you, as a spreadsheet, whenever you want them.",
+    "An AI assistant works on every plan, and it can't change anything without your okay.",
+    "Stop paying and you keep every account you have. We delete nothing.",
   ],
   note:
-    "Prices are in US dollars. A year costs $20, or you can pay $2 a month and move between " +
-    "the two whenever you like. The version we run for you is not open yet; running it yourself " +
-    "is available today and always will be.",
+    "Prices are in US dollars. A year costs $20, or pay $2 a month and switch between the two " +
+    "whenever you like. The version we run for you isn't open yet. Running it yourself works " +
+    "today, and always will.",
   /** The flag over the recommended tier. */
   featuredFlag: "If you outgrow Free or hate ads",
   compareTitle: "What each one includes.",
@@ -74,8 +74,8 @@ export const pricing = {
    * actually has, and the answer is no.
    */
   compareLede:
-    "Only the first three lines differ: how many accounts you keep, whether you see ads, and " +
-    "where it runs. Everything below them is in every plan, including the free one.",
+    "Only the first three lines are different. How many accounts you keep, whether you see ads, " +
+    "and where it runs. Everything under them is in every plan, free one included.",
   compareCaption: "What is in each plan: Free, Premium, and running it yourself",
   columns: ["Free", "Premium", "Run it yourself"],
   faqTitle: "Questions people actually ask.",
@@ -88,7 +88,7 @@ export const tiers: readonly Tier[] = [
     price: "$0",
     priceNote: "",
     summary: `Up to ${MAX_FREE_ACCOUNTS} accounts, and you see ads.`,
-    who: "Most people, most of the time. A current account, a savings account and a card is three.",
+    who: "Most people, most of the time. Checking, savings, and one credit card is three.",
     // One string, shared with the header's control, because a header saying
     // one thing and a pricing button saying another describes two different
     // states. It used to be a second literal that happened to match.
@@ -100,7 +100,7 @@ export const tiers: readonly Tier[] = [
     price: "$2",
     priceNote: "a month, or $20 a year",
     summary: "As many accounts as you need, and no ads.",
-    who: "Anyone keeping more than three accounts, or who would rather not see ads beside their balances.",
+    who: "Anyone with more than three accounts, or anyone who would rather not see ads next to their balances.",
     cta: { label: hero.primaryLabel, pending: true },
     featured: true,
   },
@@ -108,9 +108,9 @@ export const tiers: readonly Tier[] = [
     key: "self",
     name: "Run it yourself",
     price: "$0",
-    priceNote: "it is your computer",
+    priceNote: "it's your computer",
     summary: "Everything, unlimited, no ads, no account with us.",
-    who: "People who already run things themselves and would rather their money never left their own machine. It is the same product, not a cut-down one.",
+    who: "People who already run their own software and would rather their money never left their own computer. Same product, nothing stripped out.",
     cta: {
       label: "See how to run it yourself",
       href: "https://github.com/thtmnisamnstr/simple-balance",
@@ -147,7 +147,7 @@ export const comparison: readonly Row[] = [
     // The reason matters and the first version had it backwards: closing an
     // account posts its balance out, so it stops counting toward your totals.
     // It still counts toward the plan limit, which is the point of the row.
-    note: "An account you have closed still counts toward this. Closing one settles it to zero and takes it out of your totals, but its history stays and you can reopen it.",
+    note: "An account you closed still counts toward this. Closing it zeroes it out and drops it from your totals, but the history stays and you can reopen it.",
   },
   {
     id: "ads",
@@ -155,7 +155,7 @@ export const comparison: readonly Row[] = [
     free: "Yes",
     premium: "None",
     self: "None",
-    note: "Never on the sign-in page or the billing page, and never chosen using your spending.",
+    note: "Never on the sign-in page or the billing page, and never picked using your spending.",
   },
   {
     id: "own-hardware",
@@ -185,11 +185,11 @@ export const comparison: readonly Row[] = [
     free: true,
     premium: true,
     self: true,
-    note: "What you own and what you owe, what came in and what went out, where the spending went, and month by month.",
+    note: "What you own and what you owe, what came in and what went out, and where it all went.",
   },
   {
     id: "budgets",
-    feature: "Budgets, with what you do not spend carried over",
+    feature: "Budgets, with what you don't spend carried over",
     free: true,
     premium: true,
     self: true,
@@ -200,7 +200,7 @@ export const comparison: readonly Row[] = [
     free: true,
     premium: true,
     self: true,
-    note: "Including showing you the rows that look like payments you already have, before any of them count.",
+    note: "Including the rows that look like payments you already have, shown before any of them count.",
   },
   {
     id: "export",
@@ -262,26 +262,26 @@ export const comparison: readonly Row[] = [
     free: true,
     premium: true,
     self: true,
-    note: "Run it yourself and this is the one part that needs a mail server. Nothing else does, and nothing else stops working without one.",
+    note: "Run it yourself and this is the one piece that needs a mail server. Nothing else does, and nothing else breaks without one.",
   },
 ];
 
 export const faq: readonly { readonly q: string; readonly a: string }[] = [
   {
     q: "How does my spending get in?",
-    a: "You bring it in yourself, from the file your bank lets you download — the kind that opens in a spreadsheet. Drag it in and Simple Balance works out which column is which, files the names it recognises, and shows you anything that looks like something you already have before it counts. You can also type an entry straight in, or let a connected AI assistant stage one for you to approve.",
+    a: "You bring it in yourself. Your bank lets you download a file of what you spent, the kind that opens in a spreadsheet. Drag it in and Simple Balance figures out which column is which, files the names it knows, and flags anything that looks like a payment you already have before it counts. You can also type entries in by hand, or have an AI assistant line them up for you to approve.",
   },
   {
     q: "What do I actually get for free?",
-    a: "Everything the product does, for up to three accounts, with ads on the page. Not a trial, not a cut-down version, and there is no card to hand over. What Premium adds is the fourth account onwards, and no ads.",
+    a: "Everything the product does, for up to three accounts, with ads on the page. It isn't a trial and nothing is stripped out, and we don't ask for a card. Premium gets you a fourth account and beyond, and no ads.",
   },
   {
     q: "What if I already have more than three accounts?",
-    a: "You keep all of them. The limit refuses a new one; it never hides an account, stops you bringing a file in, or takes anything away. If you are over the limit you stay over it until you close one or upgrade.",
+    a: "You keep all of them. The limit only stops you adding a new one. It never hides an account, blocks a file, or takes anything away. If you're over, you stay over until you close one or upgrade.",
   },
   {
     q: "If I close an account, does it still count?",
-    a: "Yes, toward the number of accounts you are allowed. Closing an account settles it to zero and takes it out of your running totals, but it is kept rather than deleted — the history is still there and you can reopen it. That is why it still counts: a limit that ignored closed accounts would be one you could reset by closing an account and reopening it.",
+    a: "Yes, toward the number of accounts you're allowed. Closing an account zeroes it out and drops it from your running totals, but we keep it rather than delete it, so the history is still there and you can reopen it. That is why it still counts. Otherwise you could get around the limit by closing accounts and reopening them.",
   },
   {
     q: "What are the ads like?",
@@ -296,33 +296,33 @@ export const faq: readonly { readonly q: string; readonly a: string }[] = [
      */
     /*
      * Shorter than it was, and still holding the two things
-     * `content.md` 2.4 requires of it: it must name personalisation and
+     * `content.md` 2.4 requires of it: it must name personalization and
      * consent, and it must not round the policy down to "nothing about you".
      * The detail it used to carry — what does reach Google, and that a page
      * address can name a record — lives in the policy, which this now points
      * at rather than paraphrasing.
      */
-    a: "Ordinary Google ads, never on the billing page or the sign-in screen. They are not picked from what you spend, and they are only personalised if you have specifically agreed to that. In the UK, the EEA and Switzerland you are asked before any advertising cookie is set, and saying no means you see none. The privacy policy sets out the rest, including what does reach Google.",
+    a: "Ordinary Google ads, never on the billing page or the sign-in screen. They aren't picked from what you spend, and they are only personalized if you specifically agreed to that. In the UK, the EEA and Switzerland you get asked before any advertising cookie is set, and saying no means you see none. The privacy policy covers the rest, including what does reach Google.",
   },
   {
     q: "How do I cancel, and will you keep charging me?",
-    a: "You cancel from the plan tab, and it stops at the end of the period you have already paid for. There is no notice period, no phone call and no offer to sit through. Nothing is deleted when it ends: you go back to the free plan, keep every account you have, and the limit refuses a new one until you are back under it.",
+    a: "You cancel from the plan tab, and it stops at the end of the period you already paid for. No notice period, no phone call, no offer to sit through. Nothing is deleted when it ends. You go back to the free plan, keep every account you have, and can't add a new one until you're back under the limit.",
   },
   {
     q: "What happens to everything I have put in if I stop paying?",
-    a: "You keep it. Every account, every payment and every report stays exactly as it was, and you can take the whole lot out as a spreadsheet at any time, on any plan. Your own record is never held back to keep you paying for it.",
+    a: "You keep it. Every account, every payment, every report stays exactly as it was, and you can pull all of it out as a spreadsheet any time, on any plan. We never hold your own records back to keep you paying.",
   },
   {
     q: "Why is it $20 when everything else costs more? Will you still be here next year?",
-    a: "Because there is not much to pay for: one small program, and nobody's data to look after beyond your own. And the answer to the second question is a fact rather than a promise — the whole product is free to run yourself, and what you take out is built to load straight into your own copy. If this stops, your record does not.",
+    a: "Because there isn't much to pay for. It is one small program, and there's nobody else's data to look after. As for the second question, here's a fact rather than a promise: the whole product is free to run yourself, and what you export is built to load straight into your own copy. If we stop, your records don't.",
   },
   {
     q: "What is the difference between paying and running it yourself?",
-    a: "Where it runs and who keeps it. The product is the same either way. Running it yourself has no plan, no limit and no ads, because there is nobody to bill you — and it is genuinely for people who already run things themselves. If that is not you, the version we run is the one to wait for.",
+    a: "Where it runs, and who keeps it. The product is the same either way. Running it yourself has no plan, no limit and no ads, because there's nobody to bill you. It really is for people who already run their own software. If that isn't you, wait for the version we run.",
   },
   {
     q: "Do I need to know accounting?",
-    a: "No. Underneath, every amount is recorded as coming from one place and going to another, which is what makes the totals match and lets you open any number and see what it is made of. You never have to think about it, name it, or learn it.",
+    a: "No. Underneath, every amount is recorded as coming from one place and going to another, which is what makes the totals add up and lets you open any number to see what it's made of. You never have to think about it or learn what it's called.",
   },
   {
     /*
@@ -332,10 +332,10 @@ export const faq: readonly { readonly q: string; readonly a: string }[] = [
      * is worse than no promise, so the split is stated rather than blurred.
      */
     q: "Do you keep a copy of what I spend?",
-    a: "If we run it for you, your record sits on our server — that is what running it for you means — and the privacy policy says exactly what is stored and who can touch it. Run it yourself and the answer is that nobody has a copy, including us. Either way there is no tracking inside the product, and nothing about your spending is used to choose the ads.",
+    a: "If we run it for you, your records sit on our server. That is what running it for you means, and the privacy policy says exactly what's stored and who can get at it. Run it yourself and nobody has a copy, including us. Either way there's no tracking inside the product, and nothing about your spending is used to pick the ads.",
   },
   {
     q: "Can I move from the version you run to my own copy later?",
-    a: "Yes. Take everything out as a spreadsheet and bring it into your own copy. What comes out is built to go back in unchanged, including accounts held in more than one currency.",
+    a: "Yes. Export everything as a spreadsheet and bring it into your own copy. What comes out is built to go back in unchanged, even if you hold more than one currency.",
   },
 ];

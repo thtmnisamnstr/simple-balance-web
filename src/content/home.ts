@@ -82,7 +82,7 @@ export const SHOT_HEIGHT = 1000;
  * fixture, so the sentence says what it means instead.
  */
 export const shotDisclosure =
-  "The money in these pictures is made up. They are photographs of the real product, filled with example spending so there is something to look at.";
+  "The money in these pictures is made up. They are photographs of the real product, filled with example spending so there's something to look at.";
 
 export type Feature = {
   /** As `Problem["covers"]`. */
@@ -116,7 +116,7 @@ export const site = {
    * term with no consumer meaning, and a machine they do not have. What this
    * says instead is the one thing no competitor can say at all.
    */
-  tagline: "Everything you have on one page, and any number you doubt opens into what made it.",
+  tagline: "All your accounts on one page, and you can see what's behind every number.",
   /**
    * The tab and search-result form of the tagline, kept separate because the
    * two have different jobs. `tagline` is a sentence and ends like one;
@@ -129,7 +129,7 @@ export const site = {
 
 export const heroShot = {
   name: "dashboard",
-  alt: "The Simple Balance overview: what came in, what went out and what is left for the month, then each account with its balance and a breakdown of where the spending went, with dollars and euros reported separately.",
+  alt: "The Simple Balance overview: what came in, what went out and what's left for the month, then each account with its balance and a breakdown of where the spending went, with dollars and euros reported separately.",
 } as const;
 
 export const hero = {
@@ -152,9 +152,9 @@ export const hero = {
    */
   title: "See everything you have. Check every number.",
   lede:
-    "Every account you hold on one page, each in its own currency, and any figure you doubt " +
-    "opens into the entries that made it. An AI assistant can read the same record, so when it " +
-    "is easier to ask than to look, you can just ask.",
+    "Checking, savings, credit cards, cash. They all sit on one page. Wonder where a number came " +
+    "from? Open it up and see every payment behind it. And if you use an AI assistant, it can " +
+    "read all of this too, so sometimes you can just ask.",
   /**
    * The app is not deployed yet, so this states the situation rather than
    * linking somewhere that 404s (`docs/standards/web.md` 6.1).
@@ -172,9 +172,9 @@ export const hero = {
    */
   secondaryLabel: "See how to run it yourself",
   note:
-    "The version we run for you is not open yet. Until it is, you can run the whole thing " +
-    "yourself for nothing — that is for people who already run things themselves, and nothing " +
-    "about it is held back.",
+    "The version we run for you isn't open yet. In the meantime you can run it yourself for " +
+    "free. That one is really for people who already run their own software, and you don't " +
+    "give anything up by doing it.",
 } as const;
 
 /**
@@ -186,8 +186,8 @@ export const hero = {
  * not see.
  */
 export const problemsSection = {
-  eyebrow: "What it is for",
-  title: "Four things that go wrong with money, and what this does about each one.",
+  eyebrow: "What it's for",
+  title: "Four money problems, and what this does about them.",
 } as const;
 
 export const problems: readonly Problem[] = [
@@ -195,52 +195,55 @@ export const problems: readonly Problem[] = [
     covers: ["all-accounts-one-page", "multi-currency"],
     problem: "Your money is in five places and you never see it all at once.",
     answer: [
-      "Current account, savings, cards, cash, a loan — on one page, as of any date you ask for.",
-      "Currencies are never added together. A rate from this morning is a guess by tomorrow.",
+      "Checking, savings, credit cards, cash, a car loan. All on one page, for any day you pick.",
+      "If you hold more than one currency, they stay separate. We don't convert them, because " +
+        "today's exchange rate is wrong by tomorrow.",
     ],
   },
   {
     shot: {
       name: "reports",
-      alt: "A report of what is owned and what is owed, with a separate table for each currency: euro accounts totalled in euro, dollar accounts in dollars, and no combined figure anywhere.",
+      alt: "A report of what's owned and what's owed, with a separate table for each currency. Euro accounts are totaled in euros, dollar accounts in dollars, and no combined number appears anywhere.",
       caption: "What you own and what you owe, each currency counted on its own.",
     },
     covers: ["numbers-that-tie-out", "register"],
-    problem: "The totals are wrong and there is no way to find out why.",
+    problem: "The totals are wrong and there's no way to find out why.",
     answer: [
-      "Open the account behind any number: every entry in date order, with the balance before and " +
-        "after. The line that went wrong is right there.",
-      "Underneath, every amount has a place it came from and a place it went, and both must " +
-        "agree. That is why the totals match.",
+      "Click into the account behind any number. You get every payment in date order, with the " +
+        "running balance next to it. That's how you find the one that's wrong.",
+      "Underneath, every dollar that goes out has to come from somewhere, and the two have to " +
+        "match before anything is saved. That's why the totals add up.",
     ],
   },
   {
     shot: {
       name: "payees",
-      alt: "An alphabetical list of everyone paid, each with the number of payments recorded against them — three for most, fifteen for the local market — with a box for searching them by name.",
+      alt: "An alphabetical list of everyone paid, each with the number of payments recorded against them. Three for most, fifteen for the local market. A search box sits above the list.",
       caption:
-        "Everyone you have ever paid, and how many times. A subscription you forgot about is somewhere in this list.",
+        "Everyone you've ever paid, and how many times. A subscription you forgot about is somewhere in this list.",
     },
     covers: ["recurring", "payees"],
-    problem: "The yearly renewal you forgot about has already left your account.",
+    problem: "You forgot about that yearly renewal, and it already came out.",
     answer: [
-      "Rent, payday, a subscription: set it up once and it arrives on the day for your yes.",
-      "The list of everyone you have ever paid is where a forgotten one turns up. Simple Balance " +
-        "shows the charge; cancelling is yours.",
+      "Rent, payday, a subscription. Set it up once and it shows up on the day, waiting for you " +
+        "to okay it.",
+      "There's also a list of everyone you've ever paid. That's usually where you spot the " +
+        "one you forgot. Simple Balance can show you the charge, but you still cancel it yourself.",
     ],
   },
   {
     shot: {
       name: "import",
-      alt: "A file from a bank part-way through being brought in: the columns it worked out on its own, the rows it is ready to add, and three marked as things that look like payments already recorded.",
-      caption: "It works out the columns itself, then shows you what it is about to do.",
+      alt: "A file from a bank part-way through being brought in: the columns it worked out on its own, the rows it's ready to add, and three marked as things that look like payments already recorded.",
+      caption: "It figures out the columns itself, then shows you what it's about to do.",
     },
     covers: ["import-statements", "duplicates"],
-    problem: "Getting a year of history in should not cost you an evening.",
+    problem: "Typing in a year of history would take all night.",
     answer: [
-      "Download the file your bank gives you, drag it in, and it works out which column is which.",
-      "Anything that looks like a payment you already have is shown beside it. Nothing counts " +
-        "until you say so.",
+      "Download the file your bank gives you and drag it in. It figures out which column is the " +
+        "date, which is the amount, and who you paid.",
+      "If something looks like a payment you already have, it shows you both side by side. " +
+        "Nothing gets added until you say so.",
     ],
   },
 ] as const;
@@ -258,71 +261,68 @@ export const features: readonly Feature[] = [
   {
     icon: "target",
     covers: ["budgets"],
-    title: "What you do not spend stays there",
+    title: "What you don't spend stays there",
     body:
-      "Give each kind of spending a limit for the month. What you do not use can stay there for " +
-      "next month, and money you get refunded goes back where it came out of rather than " +
-      "counting as income.",
+      "Set a limit for groceries, gas, whatever you like. Anything you don't spend can roll " +
+      "into next month, and a refund goes back where it came from instead of looking like income.",
   },
   {
     icon: "wallet",
     covers: ["categories"],
     title: "Where the money actually went",
     body:
-      "Group your spending the way you already think about it — food, the car, the kids — and " +
-      "see what each one really cost, next to what you meant it to cost.",
+      "Sort your spending the way you already think about it. Food, the car, the kids. Then see " +
+      "what each one really cost next to what you meant to spend.",
   },
   {
     icon: "list",
     covers: ["templates"],
     title: "The things you type over and over",
     body:
-      "Save an entry you record often — the weekly shop, the cash you take out — and pick it from " +
-      "a list next time instead of typing it again.",
+      "Save the ones you enter every week, like the grocery run or the cash you pull out, and " +
+      "pick them off a list next time.",
   },
   {
     icon: "split",
     covers: ["splits"],
-    title: "One shop, counted as two things",
+    title: "One trip, counted as two things",
     body:
-      "A supermarket run that was partly food and partly something for the house is counted as " +
-      "both, in the right amounts, from one line. Changing your mind later moves the amount " +
-      "rather than adding another one.",
+      "A grocery run that was half food and half stuff for the house counts as both, in the right " +
+      "amounts, from one line. Change your mind later and the amount moves instead of doubling.",
   },
   {
     icon: "layers",
     covers: ["bulk-edits"],
-    title: "Fix a whole year of it in one go",
+    title: "Fix a whole year of it at once",
     body:
-      "If a file came in with twelve months of shopping under the wrong heading, change all of " +
-      "it at once — up to ten thousand lines — after seeing exactly what it will touch. It all " +
+      "Say a file came in with twelve months of groceries filed under the wrong thing. Fix all of " +
+      "it in one go, up to ten thousand lines, after seeing exactly what will change. It all " +
       "changes or none of it does.",
   },
   {
     icon: "copy",
     covers: ["history"],
-    title: "A correction never hides what it corrected",
+    title: "A fix never erases what it fixed",
     body:
-      "A fix is added on top rather than rubbing out what was there, so you can always see what " +
-      "a number used to say and when it changed. That is the difference between a record and a " +
-      "guess.",
+      "Corrections go on top of what was there, so you can always see what a number used to say " +
+      "and when it changed.",
   },
 ] as const;
 
 export const showcase = {
   eyebrow: "A look at it",
-  title: "The two pages you would spend the most time on.",
+  title: "The two pages you will use most.",
   shots: [
     {
       name: "transactions",
       alt: "A list of payments by date, each with who was paid, which account it came from, what kind of spending it was and how much, with dollar and euro amounts side by side.",
       caption:
-        "Everything you have recorded, in one list you can narrow down. Money moved between two of your own accounts shows as one line, not two.",
+        "Everything you've entered, in one list you can filter. Money you moved between two of your own accounts shows up once, not twice.",
     },
     {
       name: "budgets",
       alt: "The budgets page, showing what was set aside for each kind of spending against what was really spent, with what went unspent last month carried into this one.",
-      caption: "What you planned against what really happened, including what a refund gave back.",
+      caption: "What you planned next to what actually happened, refunds included.",
     },
   ],
 } as const;
@@ -351,15 +351,15 @@ export const privacy = {
   /** As `Problem["covers"]`. */
   covers: ["own-your-data"],
   eyebrow: "Your records",
-  title: "Where your money sits, and who can reach it.",
+  title: "Where your money lives, and who can see it.",
   body:
-    "Run it yourself and there is no copy but yours. If we run it for you, the privacy policy " +
-    "says exactly what is kept.",
+    "Run it on your own computer and nobody else has a copy. If we run it for you, our privacy " +
+    "policy spells out exactly what we keep.",
   points: [
-    "Take everything out as a spreadsheet, any time — never held back to keep you paying.",
-    "No analytics in the product. On the free plan the ads bring Google's script; Premium and your own copy have neither.",
-    "Run it on a computer you own and nobody else has a copy, including us.",
-    "The source is readable and stays that way.",
+    "Pull everything out as a spreadsheet any time you want. We never hold it back to keep you paying.",
+    "No analytics in the product itself. On the free plan the ads bring Google's script with them. Premium and your own copy have neither.",
+    "Run it on your own computer and nobody has a copy, including us.",
+    "Anyone can read the code, and that isn't going to change.",
   ],
 } as const;
 
@@ -385,16 +385,16 @@ export const agents = {
   /** As `Problem["covers"]`. */
   covers: ["agents", "find-anything"],
   eyebrow: "If you use an AI assistant",
-  title: "Point an assistant at your records and just ask.",
+  title: "Hook up an AI assistant and just ask.",
   body:
-    "Connect an AI assistant and it reads your records the way you do: ask when you last paid " +
-    "something, or have it bring a statement in. It can propose. Only you approve, and it never " +
-    "moves money.",
+    "Your assistant sees the same things you see. Ask it when you last paid someone, or have it " +
+    "pull in a statement and file it. It can suggest, but nothing happens until you say yes, and " +
+    "it can't move money.",
   sample: [
     { kind: "prompt", text: "What day did I pay the electric bill last month?" },
-    { kind: "out", text: "  12 August, to Meridian Power, from the current account." },
-    { kind: "out", text: "  The one before it was 14 July." },
-    { kind: "comment", text: "Every answer names the entry it came from." },
+    { kind: "out", text: "  August 12, to Meridian Power, out of checking." },
+    { kind: "out", text: "  The one before that was July 14." },
+    { kind: "comment", text: "Every answer points at the line it came from." },
   ],
 } as const;
 
@@ -414,9 +414,7 @@ export const contact = {
 } as const;
 
 export const footer = {
-  blurb:
-    "Simple Balance keeps a record of your money where every figure opens into the entries " +
-    "that made it.",
+  blurb: "Simple Balance keeps track of your money, and every number shows you what's behind it.",
   links: [
     { label: "Pricing", href: "/pricing/" },
     { label: "Privacy", href: "/privacy/" },

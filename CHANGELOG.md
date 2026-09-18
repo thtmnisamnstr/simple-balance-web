@@ -66,6 +66,21 @@ banned-words test could not see.
 
 ### Fixed
 
+**The copy was written in British English for an American reader.** The site
+prices in US dollars and the application's own screens say _Checking_, while
+the page said "current account", along with "recognises", "totalled",
+"personalised" and "cancelling" — and `layout.tsx` told every crawler and link
+preview the page was `en_GB`. To an American reader a current account is not
+the thing they have, and it disagreed with the product's own interface.
+
+**It also read as machine-written.** Seventeen em dashes in 2,349 words, four
+semicolons, eleven mid-sentence colons, and not one contraction anywhere. Em
+dashes and semicolons are now zero, and the copy uses "isn't", "don't" and
+"that's" where a person would. Not everywhere: uniform contraction is as
+mechanical as none, and "you have" is not always "you've" — a blind pass
+turned the headline "See everything you have" into "See everything you've",
+which is the kind of thing that ships.
+
 **Four claims in the new copy were wrong, and an audit against the
 application caught them before they shipped.** Each was checked against the
 application's own published documents rather than against memory:
