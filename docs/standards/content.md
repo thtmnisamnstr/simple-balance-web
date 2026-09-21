@@ -465,8 +465,8 @@ _Checked by:_ `tests/docs-features.test.ts`.
 ### 6.1 A price claim is checked against the application
 
 **Binding.** Every number on the pricing page is true of what the application
-enforces: three accounts on the free plan, unlimited on Premium, $20 a year or
-$2 a month, and no feature held back from either.
+enforces: three accounts on the free plan, unlimited on Premium, $30 a year or
+$3 a month, and no feature held back from either.
 
 Nothing here can read the application — it is a different repository — so
 `tests/pricing.test.tsx` holds what it can: that the limit agrees with itself

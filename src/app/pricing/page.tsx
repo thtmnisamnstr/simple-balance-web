@@ -9,14 +9,14 @@ import { BreadcrumbStructuredData, FaqStructuredData } from "@/components/struct
 export const metadata: Metadata = {
   title: "Pricing",
   description:
-    "Free for up to three accounts, with ads. Premium is $20 a year for as many accounts as you " +
+    "Free for up to three accounts, with ads. Premium is $30 a year for as many accounts as you " +
     "like and no ads. Run it yourself and there is no plan at all.",
   alternates: feedAlternates("/pricing/"),
   openGraph: {
     type: "website",
     title: `Pricing — ${site.name}`,
     description:
-      "Free for three accounts, $20 a year for as many as you like, or run it yourself for nothing.",
+      "Free for three accounts, $30 a year for as many as you like, or run it yourself for nothing.",
   },
 };
 
@@ -69,7 +69,25 @@ export default function PricingPage() {
                 key={tier.key}
                 aria-labelledby={`tier-${tier.key}`}
               >
-                {tier.featured ? <p className="tier-flag">{pricing.featuredFlag}</p> : null}
+                {/*
+                 * The flag is rendered on every card and painted on one.
+                 *
+                 * It used to exist only on the featured card, positioned out
+                 * of the flow over top padding reserved on all three so the
+                 * headings stayed level. That reserve was one line tall, and
+                 * this label is not one line at every width: at three columns
+                 * of roughly 240px the label wraps to two, and the second line
+                 * crossed the tier name. An unpainted copy on the other cards
+                 * reserves whatever the label actually needs, at every width,
+                 * because it is the same string wrapping in a box of the same
+                 * width.
+                 */}
+                <p
+                  className={tier.featured ? "tier-flag" : "tier-flag tier-flag-ghost"}
+                  aria-hidden={tier.featured ? undefined : true}
+                >
+                  {pricing.featuredFlag}
+                </p>
                 <h2 className="tier-name" id={`tier-${tier.key}`}>
                   {tier.name}
                 </h2>

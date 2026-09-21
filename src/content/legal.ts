@@ -288,7 +288,7 @@ export const terms = {
       heading: "Plans and payment",
       paragraphs: [
         "The free plan keeps up to three financial accounts and shows advertising. The Premium " +
-          "plan is $20 per year or $2 per month, removes the account limit and removes the " +
+          "plan is $30 per year or $3 per month, removes the account limit and removes the " +
           "advertising. Prices are in US dollars and exclude any tax that may apply where you are.",
         "Subscriptions renew automatically at the end of each period until canceled. We will " +
           "give at least 30 days' notice by email before any price increase, and you may cancel " +

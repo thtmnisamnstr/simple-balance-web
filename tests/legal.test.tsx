@@ -127,7 +127,7 @@ describe("the terms", () => {
     .toLowerCase();
 
   it("states the prices the pricing page states", () => {
-    expect(text).toContain("$20 per year or $2 per month");
+    expect(text).toContain("$30 per year or $3 per month");
   });
 
   it("covers cancellation, refunds and the statutory right", () => {
