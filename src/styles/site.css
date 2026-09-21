@@ -1656,18 +1656,6 @@ svg {
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
   padding: var(--s-6);
-  /*
-   * Room in the top padding for the featured card's flag, on every card.
-   *
-   * The flag used to be the first child of a flex column, so on the featured
-   * card it pushed the heading down by its own height plus a gap and the
-   * three headings no longer lined up — a label about one card changing the
-   * layout of that card alone reads as an accident rather than emphasis.
-   * Reserving the space everywhere and taking the flag out of the flow is
-   * what keeps the row aligned; `.tier-flag` sits in this padding.
-   */
-  padding-top: calc(var(--s-6) + var(--s-5));
-  position: relative;
   display: flex;
   flex-direction: column;
   gap: var(--s-3);
@@ -1682,18 +1670,28 @@ svg {
 }
 
 .tier-flag {
-  /* In the padding, out of the flow — see `.tier`. Bounded left and right so
-     a longer label wraps inside the card rather than widening it. */
-  position: absolute;
-  top: var(--s-6);
-  left: var(--s-6);
-  right: var(--s-6);
-  margin: 0;
+  /*
+   * In the flow, on every card — the markup says why, and why the obvious
+   * version of this is wrong.
+   *
+   * A kicker belongs to the heading it labels, so the card's uniform gap is
+   * too much under it. Pulling it back leaves the 4px the reserved-padding
+   * version happened to leave, which is what the page was reviewed at.
+   */
+  margin: 0 0 calc(var(--s-1) - var(--s-3));
   font-size: var(--step--2);
   font-weight: var(--weight-semi);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--green);
+}
+
+/* The copies on the other two cards: laid out, never painted, and out of the
+   accessibility tree with them. They exist only to take the same height the
+   real one takes, which is what keeps the three headings level however the
+   label wraps. */
+.tier-flag-ghost {
+  visibility: hidden;
 }
 
 .tier-name {

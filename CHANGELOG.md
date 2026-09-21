@@ -16,12 +16,15 @@ description a search result shows, and the picture that appears when somebody
 shares the link — and a price that moves in five of them is worse than a price
 that moves in none.
 
-The application has not published the new price yet. Until it does, the check
-that holds every number here to what the product actually charges fails, and
-that is the correct state rather than a thing to work around: this site may say
-less than the product does and never more, and a page advertising a price
-before billing collects it is the same error pointed the other way. Nothing
-deploys while it is red.
+The application has not published the new price yet. This repository's copy of
+the product's contract — the thing every price here is checked against — was
+moved to $3 and $30 by hand, on the maintainer's instruction, so the checks
+pass and the site can go out ahead of the product. That is normally forbidden
+and is the part worth knowing: until the application publishes the new price
+and that copy is refreshed from it, the check cannot tell the truth, the site
+advertises a price that billing does not yet collect, and the weekly drift
+report will show a difference that is this change rather than the product
+moving.
 
 **The homepage and the pricing page are written for somebody who has never
 used a personal finance product.** They were not. The old copy opened on "Know
@@ -79,6 +82,15 @@ carried the old headline.
 banned-words test could not see.
 
 ### Fixed
+
+**The label over the Premium plan no longer sits on top of the plan's name.**
+At the widths where the three cards are narrowest — a small laptop, roughly —
+"If you outgrow Free or hate ads" wrapped onto a second line, and that line
+landed across "Premium". The space above the name was reserved for one line,
+which is what kept the three plan names level with one another, and a label
+that needed two had nowhere to go. It now reserves whatever the label actually
+takes, at every width, so the names stay level and nothing collides. The
+pricing page only, in both themes.
 
 **Three screenshots were described as showing things they do not show.** The
 import shot's alt text called it a populated import, listing the columns it
