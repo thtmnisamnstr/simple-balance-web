@@ -61,7 +61,7 @@ export const pricing = {
     "Stop paying and you keep every account you have. We delete nothing.",
   ],
   note:
-    "Prices are in US dollars. A year costs $20, or pay $2 a month and switch between the two " +
+    "Prices are in US dollars. A year costs $30, or pay $3 a month and switch between the two " +
     "whenever you like. The version we run for you isn't open yet. Running it yourself works " +
     "today, and always will.",
   /** The flag over the recommended tier. */
@@ -97,8 +97,8 @@ export const tiers: readonly Tier[] = [
   {
     key: "premium",
     name: "Premium",
-    price: "$2",
-    priceNote: "a month, or $20 a year",
+    price: "$3",
+    priceNote: "a month, or $30 a year",
     summary: "As many accounts as you need, and no ads.",
     who: "Anyone with more than three accounts, or anyone who would rather not see ads next to their balances.",
     cta: { label: hero.primaryLabel, pending: true },
@@ -313,7 +313,7 @@ export const faq: readonly { readonly q: string; readonly a: string }[] = [
     a: "You keep it. Every account, every payment, every report stays exactly as it was, and you can pull all of it out as a spreadsheet any time, on any plan. We never hold your own records back to keep you paying.",
   },
   {
-    q: "Why is it $20 when everything else costs more? Will you still be here next year?",
+    q: "Why is it $30 when everything else costs more? Will you still be here next year?",
     a: "Because there isn't much to pay for. It is one small program, and there's nobody else's data to look after. As for the second question, here's a fact rather than a promise: the whole product is free to run yourself, and what you export is built to load straight into your own copy. If we stop, your records don't.",
   },
   {

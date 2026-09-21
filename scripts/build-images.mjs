@@ -141,7 +141,7 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" 
   <text x="84" y="574" font-family="Inter, ui-sans-serif, system-ui, sans-serif"
         font-size="26" fill="${MUTED}">smpl.money</text>
   <text x="1116" y="574" text-anchor="end" font-family="Inter, ui-sans-serif, system-ui, sans-serif"
-        font-size="26" fill="${MUTED}">Free, or $20 a year</text>
+        font-size="26" fill="${MUTED}">Free, or $30 a year</text>
 </svg>`;
 
 /*

@@ -9,6 +9,20 @@ than a contract with readers.
 
 ### Changed
 
+**The paid plan is $3 a month, or $30 a year.** It was $2 and $20. Six places a
+reader can reach carried the old number — the price on the card, the line under
+the three plans, the question about why it costs so little, the terms, the
+description a search result shows, and the picture that appears when somebody
+shares the link — and a price that moves in five of them is worse than a price
+that moves in none.
+
+The application has not published the new price yet. Until it does, the check
+that holds every number here to what the product actually charges fails, and
+that is the correct state rather than a thing to work around: this site may say
+less than the product does and never more, and a page advertising a price
+before billing collects it is the same error pointed the other way. Nothing
+deploys while it is red.
+
 **The homepage and the pricing page are written for somebody who has never
 used a personal finance product.** They were not. The old copy opened on "Know
 where your money is, and where it went" — which is, near enough, the headline

@@ -9,14 +9,14 @@ import { BreadcrumbStructuredData, FaqStructuredData } from "@/components/struct
 export const metadata: Metadata = {
   title: "Pricing",
   description:
-    "Free for up to three accounts, with ads. Premium is $20 a year for as many accounts as you " +
+    "Free for up to three accounts, with ads. Premium is $30 a year for as many accounts as you " +
     "like and no ads. Run it yourself and there is no plan at all.",
   alternates: feedAlternates("/pricing/"),
   openGraph: {
     type: "website",
     title: `Pricing — ${site.name}`,
     description:
-      "Free for three accounts, $20 a year for as many as you like, or run it yourself for nothing.",
+      "Free for three accounts, $30 a year for as many as you like, or run it yourself for nothing.",
   },
 };
 
