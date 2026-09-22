@@ -58,7 +58,7 @@ export const pricing = {
     "No card to start, and nothing to cancel on the free plan.",
     "Your records leave with you, as a spreadsheet, whenever you want them.",
     "An AI assistant works on every plan, and you choose what it is allowed to do.",
-    "Stop paying and nothing is deleted. You pick three accounts to keep using; the rest stay readable.",
+    "Stop paying and nothing is deleted. You pick three accounts to keep using, and the rest stay readable.",
   ],
   note:
     "Prices are in US dollars. A year costs $30, or pay $3 a month and switch between the two " +
@@ -148,7 +148,7 @@ export const comparison: readonly Row[] = [
     // limit: you keep all of them on every plan. What the free plan caps is how
     // many you can carry on adding to, which is a different sentence and a much
     // easier one to be honest about.
-    note: "You keep every account you ever open, on every plan. On the free plan you choose which three you carry on using; the rest stay readable and still count in your totals.",
+    note: "You keep every account you ever open, on every plan. On the free plan you choose which three you carry on using, once. The rest stay readable and still count in your totals, and one can take a place when you close or delete an account you were using.",
   },
   {
     id: "ads",
@@ -278,11 +278,11 @@ export const faq: readonly { readonly q: string; readonly a: string }[] = [
   },
   {
     q: "What if I already have more than three accounts?",
-    a: "You keep every one of them, and you choose three to keep using. The others are frozen: still there, still complete, still counted in every balance and report you look at. You just can't add to them or change them until you pick them instead, or upgrade. Nothing is hidden and nothing is deleted.",
+    a: "You keep every one of them, and you choose three to keep using. The others are frozen: still there, still complete, still counted in every balance and report you look at. You just can't add to them or change them. The choice is made once, so an account you are using stays that way until you close it or delete it, and only then can a frozen one take its place. That is the part worth knowing before you pick: it isn't a switch you can flip back and forth. Nothing is hidden and nothing is deleted, and upgrading brings all of them back at once. If you subscribe again and open more accounts, you get to choose again the next time you stop. We will not freeze an account you were never asked about.",
   },
   {
     q: "If I close an account, does it still count?",
-    a: "Yes, toward the number of accounts you're allowed. Closing an account zeroes it out and drops it from your running totals, but we keep it rather than delete it, so the history is still there and you can reopen it. That is why it still counts. Otherwise you could get around the limit by closing accounts and reopening them.",
+    a: "No. Closing an account zeroes it out, drops it from your running totals and frees the place it held, so a frozen account can take that place. We keep it rather than delete it, so the history is still there. Reopening it needs a free place of its own, which is what stops the three from being cycled: you can close as many as you like, and you still can't use more than three at a time.",
   },
   {
     q: "What are the ads like?",
@@ -307,7 +307,7 @@ export const faq: readonly { readonly q: string; readonly a: string }[] = [
   },
   {
     q: "How do I cancel, and will you keep charging me?",
-    a: "You cancel from the plan tab, and it stops at the end of the period you already paid for. No notice period, no phone call, no offer to sit through. Nothing is deleted when it ends. You go back to the free plan, keep every account you have, and pick three to carry on using. The rest stay readable until you pick them instead.",
+    a: "You cancel from the plan tab, and it stops at the end of the period you already paid for. No notice period, no phone call, no offer to sit through. Nothing is deleted when it ends. You go back to the free plan, keep every account you have, and pick three to carry on using. You make that choice once: the rest stay readable, and one can take a place when you close or delete an account you were using.",
   },
   {
     q: "What happens to everything I have put in if I stop paying?",

@@ -305,7 +305,12 @@ export const terms = {
           "the period you have already paid for; you keep Premium until then.",
         "**Nothing is deleted when a subscription ends.** You return to the free plan, keep " +
           "every account you have, and choose three to carry on using. The rest are frozen: " +
-          "readable in full and closed to changes until you choose them instead.",
+          "readable in full, still counted in your totals, and closed to changes. That choice " +
+          "is made once. An account you are using stays active until you archive or delete it, " +
+          "and only then can a frozen account take its place; subscribing again makes all of " +
+          "them usable at once. If you subscribe again and open further accounts, the choice " +
+          "is put to you again at the next cancellation, so an account opened while you were " +
+          "subscribed is never frozen on the strength of a choice made before it existed.",
         "If you are in the UK or the EEA you have a statutory right to cancel within 14 days of " +
           "first subscribing and receive a refund. Beyond that, payments are generally " +
           "non-refundable, but if something has gone wrong, write to us — we would rather sort " +
