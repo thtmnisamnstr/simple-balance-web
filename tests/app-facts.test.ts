@@ -92,6 +92,16 @@ describe("what this site claims about plans", () => {
   });
 });
 
+/**
+ * A price as a whole amount with its sign, not as a bare substring.
+ *
+ * `toContain("3")` passes on a card that says only "$30", because the monthly
+ * figure is a prefix of the yearly one — so the check meant to catch a missing
+ * monthly price could not fail for that reason. A trailing non-digit is what
+ * separates the two.
+ */
+const amount = (value: number) => new RegExp(`\\$${String(value).replace(".", "\\.")}(?!\\d)`);
+
 describe("what this site claims about price", () => {
   it("prints the yearly and monthly prices the application declares", () => {
     const yearly = Number(facts.declared.prices.yearly);
@@ -106,8 +116,8 @@ describe("what this site claims about price", () => {
      * `code/testing.md` 2.6.
      */
     const card = `${paidTier.price} ${paidTier.priceNote}`;
-    expect(card, "the yearly price is not on the card").toContain(String(yearly));
-    expect(card, "the monthly price is not on the card").toContain(String(monthly));
+    expect(card, "the yearly price is not on the card").toMatch(amount(yearly));
+    expect(card, "the monthly price is not on the card").toMatch(amount(monthly));
   });
 
   it("agrees with the terms page, which quotes the same two figures", () => {

@@ -287,9 +287,12 @@ export const terms = {
     {
       heading: "Plans and payment",
       paragraphs: [
-        "The free plan keeps up to three financial accounts and shows advertising. The Premium " +
-          "plan is $30 per year or $3 per month, removes the account limit and removes the " +
-          "advertising. Prices are in US dollars and exclude any tax that may apply where you are.",
+        "The free plan lets you use up to three financial accounts at a time and shows " +
+          "advertising. Accounts beyond that are frozen: they stay readable and keep counting " +
+          "toward your totals, and they accept no changes until you choose them instead. The " +
+          "Premium plan is $30 per year or $3 per month, lets you use every account you have " +
+          "and removes the advertising. Prices are in US dollars and exclude any tax that may " +
+          "apply where you are.",
         "Subscriptions renew automatically at the end of each period until canceled. We will " +
           "give at least 30 days' notice by email before any price increase, and you may cancel " +
           "before it takes effect.",
@@ -300,8 +303,9 @@ export const terms = {
       paragraphs: [
         "You can cancel at any time from the plan page. Cancellation takes effect at the end of " +
           "the period you have already paid for; you keep Premium until then.",
-        "**Nothing is deleted when a subscription ends.** You return to the free plan and keep " +
-          "every account you have. The limit refuses a new one until you are back under it.",
+        "**Nothing is deleted when a subscription ends.** You return to the free plan, keep " +
+          "every account you have, and choose three to carry on using. The rest are frozen: " +
+          "readable in full and closed to changes until you choose them instead.",
         "If you are in the UK or the EEA you have a statutory right to cancel within 14 days of " +
           "first subscribing and receive a refund. Beyond that, payments are generally " +
           "non-refundable, but if something has gone wrong, write to us — we would rather sort " +

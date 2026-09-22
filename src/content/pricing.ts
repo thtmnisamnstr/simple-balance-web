@@ -58,7 +58,7 @@ export const pricing = {
     "No card to start, and nothing to cancel on the free plan.",
     "Your records leave with you, as a spreadsheet, whenever you want them.",
     "An AI assistant works on every plan, and you choose what it is allowed to do.",
-    "Stop paying and you keep every account you have. We delete nothing.",
+    "Stop paying and nothing is deleted. You pick three accounts to keep using; the rest stay readable.",
   ],
   note:
     "Prices are in US dollars. A year costs $30, or pay $3 a month and switch between the two " +
@@ -140,14 +140,15 @@ export type Row = {
 export const comparison: readonly Row[] = [
   {
     id: "accounts",
-    feature: "Accounts you can keep",
+    feature: "Accounts you can use at once",
     free: `${MAX_FREE_ACCOUNTS}`,
     premium: "Unlimited",
     self: "Unlimited",
-    // The reason matters and the first version had it backwards: closing an
-    // account posts its balance out, so it stops counting toward your totals.
-    // It still counts toward the plan limit, which is the point of the row.
-    note: "An account you closed still counts toward this. Closing it zeroes it out and drops it from your totals, but the history stays and you can reopen it.",
+    // The row used to say "accounts you can keep", and that stopped being the
+    // limit: you keep all of them on every plan. What the free plan caps is how
+    // many you can carry on adding to, which is a different sentence and a much
+    // easier one to be honest about.
+    note: "You keep every account you ever open, on every plan. On the free plan you choose which three you carry on using; the rest stay readable and still count in your totals.",
   },
   {
     id: "ads",
@@ -273,11 +274,11 @@ export const faq: readonly { readonly q: string; readonly a: string }[] = [
   },
   {
     q: "What do I actually get for free?",
-    a: "Everything the product does, for up to three accounts, with ads on the page. It isn't a trial and nothing is stripped out, and we don't ask for a card. Premium gets you a fourth account and beyond, and no ads.",
+    a: "Everything the product does, for up to three accounts you can use at once, with ads on the page. It isn't a trial and nothing is stripped out, and we don't ask for a card. Premium lets you use as many accounts as you like, and takes the ads away.",
   },
   {
     q: "What if I already have more than three accounts?",
-    a: "You keep all of them. The limit only stops you adding a new one. It never hides an account, blocks a file, or takes anything away. If you're over, you stay over until you close one or upgrade.",
+    a: "You keep every one of them, and you choose three to keep using. The others are frozen: still there, still complete, still counted in every balance and report you look at. You just can't add to them or change them until you pick them instead, or upgrade. Nothing is hidden and nothing is deleted.",
   },
   {
     q: "If I close an account, does it still count?",
@@ -306,11 +307,11 @@ export const faq: readonly { readonly q: string; readonly a: string }[] = [
   },
   {
     q: "How do I cancel, and will you keep charging me?",
-    a: "You cancel from the plan tab, and it stops at the end of the period you already paid for. No notice period, no phone call, no offer to sit through. Nothing is deleted when it ends. You go back to the free plan, keep every account you have, and can't add a new one until you're back under the limit.",
+    a: "You cancel from the plan tab, and it stops at the end of the period you already paid for. No notice period, no phone call, no offer to sit through. Nothing is deleted when it ends. You go back to the free plan, keep every account you have, and pick three to carry on using. The rest stay readable until you pick them instead.",
   },
   {
     q: "What happens to everything I have put in if I stop paying?",
-    a: "You keep it. Every account, every payment, every report stays exactly as it was, and you can pull all of it out as a spreadsheet any time, on any plan. We never hold your own records back to keep you paying.",
+    a: "You keep it. Every account, every payment and every report is still there and still adds up, and you can pull all of it out as a spreadsheet any time, on any plan. What the free plan limits is how many accounts you can carry on adding to: three, and you choose which. We never hold your own records back to keep you paying.",
   },
   {
     q: "Why is it $30 when everything else costs more? Will you still be here next year?",
