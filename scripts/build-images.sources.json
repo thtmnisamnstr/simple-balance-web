@@ -1,0 +1,54 @@
+{
+  "writtenBy": "scripts/build-images.mjs",
+  "width": 1200,
+  "copies": {
+    "budgets-dark.webp": {
+      "original": "44eaeaa17cb5caadcb23b5bd4640810f797e0eb76a944866d16928dcee5b8b42",
+      "copy": "837d941de98947bdd51e27562821999dfff3c382694b49bdabd88434ef53ceae"
+    },
+    "budgets-light.webp": {
+      "original": "e49e25413037af4e616bd3427660cc6e0a85299db00908244e55ecd74f605f1c",
+      "copy": "5bb0a2fed109890a277424137786f32ccb3ac3b5557a19b0b80363439de571fd"
+    },
+    "dashboard-dark.webp": {
+      "original": "1a5b63c0cc5760745d8430a72b37fcceb22fb538aaba04fc4a69801121906330",
+      "copy": "d5d3a7ed5512895adf00ee70caeeea8cfbf62c5cd534aeab0772ce254d114e88"
+    },
+    "dashboard-light.webp": {
+      "original": "1798ba32a1bdf54bb52432b4a4d20d96ccd5b79f0757cbf27cc641fac0e88d96",
+      "copy": "fbea3f3a816388cffe73a7c0aa8e97b26d67dc248663a033d4502c22d266fc56"
+    },
+    "import-dark.webp": {
+      "original": "7fd55fa4d6d9db546530f9934d819d65491aff71f9b550298583ac26b127b4f5",
+      "copy": "255adca4c7a5f40cd9ade2d7b858e6264c465b104e6ad6c32bcaa2190e33f636"
+    },
+    "import-light.webp": {
+      "original": "58d2a6185ac88076b058cef31871883996f05924b5dfe06ad128786b010cbb69",
+      "copy": "c127df3c4899218ac6bba398ae2aca3eb4e62ca9c85190efe9ed04f2b6a837c0"
+    },
+    "payees-dark.webp": {
+      "original": "d02e166258a6193854a2dd9f074fb7071961b3a8738a20946961b5c8a2419422",
+      "copy": "caf333abf9fc9b0daf53d790e2f963d0b929c2e9022bc7642c78ae1c4b607fed"
+    },
+    "payees-light.webp": {
+      "original": "f6ee7d6bd4babea0b87443119c446e97c1400b1395aeaecca6f435e77425b589",
+      "copy": "ae1a78bd985bb1f61bfa2cbc62fc2773d0582e0f40c6d077635bac4fcb54f8d7"
+    },
+    "reports-dark.webp": {
+      "original": "dccc14159a3649184d0216c15d0c88b32388b67de35ebe68b5047aeb2477f2ed",
+      "copy": "960624309c26a6d0877888b50b0b0a688f60883dbe684b79a054673a43f3c504"
+    },
+    "reports-light.webp": {
+      "original": "648b6432084b5773da9478eb70d04a9709ae5fea55c7326bebdbeabd9502d213",
+      "copy": "2d7fdb8da49d2ca49885abcae66a99059b42d3f27da7e617f74752dccaeb65a5"
+    },
+    "transactions-dark.webp": {
+      "original": "e619a70da2cd7770cece341c8b45f54a9ffaf522e867b02c78ae51d1be0fbc53",
+      "copy": "488c7a247fbcebd04fafcb93088311815bd6e9aee35c3b6bca21ef6e582df754"
+    },
+    "transactions-light.webp": {
+      "original": "50a757514e10d10ee4502879b222baed50839580e135c5bb9423c7d29ebbad31",
+      "copy": "cab9c99d532a5c06a263a38f9074826aca05150727ddd92ae072c7129dbc06c5"
+    }
+  }
+}

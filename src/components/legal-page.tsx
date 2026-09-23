@@ -14,12 +14,12 @@ import { slugify } from "@/content/collections";
  * nobody reads these top to bottom, they arrive looking for "deleting your
  * account".
  *
- * `**bold**` is honoured inside a paragraph, because these documents need
+ * `**bold**` is honored inside a paragraph, because these documents need
  * emphasis on the sentences that matter — "we never see or store your card
  * details" — and running them through the whole MDX pipeline for one
  * inline mark would be heavier than the mark is worth.
  */
-function Emphasised({ text }: { readonly text: string }) {
+function Emphasized({ text }: { readonly text: string }) {
   // Odd indices are what sat between the asterisks.
   const nodes = text
     .split(/\*\*(.+?)\*\*/g)
@@ -72,7 +72,7 @@ export function LegalPage({
         <div className="prose-body">
           {intro.map((paragraph) => (
             <p key={paragraph}>
-              <Emphasised text={paragraph} />
+              <Emphasized text={paragraph} />
             </p>
           ))}
         </div>
@@ -85,7 +85,7 @@ export function LegalPage({
               <h2 id={slugify(section.heading)}>{section.heading}</h2>
               {section.paragraphs.map((paragraph) => (
                 <p key={paragraph}>
-                  <Emphasised text={paragraph} />
+                  <Emphasized text={paragraph} />
                 </p>
               ))}
             </section>

@@ -6,7 +6,7 @@ import type { ReactNode } from "react";
  * Deliberately **not** tabs. A tab strip needs JavaScript, hides content from
  * find-in-page and from anybody who arrives with a link to the hidden half,
  * and needs the selection remembering or it resets on every page. Rendering
- * both, labelled, costs a few lines of vertical space and has none of those
+ * both, labeled, costs a few lines of vertical space and has none of those
  * problems.
  *
  * Used from Markdown as:

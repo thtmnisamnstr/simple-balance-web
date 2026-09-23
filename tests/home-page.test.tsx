@@ -1,10 +1,12 @@
+import { createHash } from "node:crypto";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
 import HomePage from "@/app/page";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import { hero, shotDisclosure, site } from "@/content/home";
+import * as homeContent from "@/content/home";
+import { hero, heroShot, shotDisclosure, site } from "@/content/home";
 
 /**
  * The rendered page, against the rules in `docs/standards/web.md` that a
@@ -164,7 +166,7 @@ describe("the homepage", () => {
 
   it("lets the browser choose, on the built page", () => {
     // `sizes` without `srcset` is inert and `srcset` without `sizes` makes the
-    // browser guess at the layout, so both have to reach the artefact.
+    // browser guess at the layout, so both have to reach the artifact.
     const html = readFileSync("out/index.html", "utf8");
     expect(html).toContain("/screenshots/1200/dashboard-light.webp 1200w");
     expect(html).toContain("/screenshots/dashboard-light.webp 1600w");
@@ -177,5 +179,94 @@ describe("the homepage", () => {
       expect(Number(image.getAttribute("width"))).toBeGreaterThan(0);
       expect(Number(image.getAttribute("height"))).toBeGreaterThan(0);
     }
+  });
+});
+
+/**
+ * Every screenshot the content module names, found by shape rather than by
+ * where it sits: anything with a `name` beside an `alt` is a picture. The hero,
+ * the problems and the showcase each hold theirs differently, and a list of
+ * those three places would miss the fourth somebody adds.
+ */
+function shotNames(value: unknown): readonly string[] {
+  if (Array.isArray(value)) return value.flatMap(shotNames);
+  if (!value || typeof value !== "object") return [];
+  const own =
+    "name" in value && typeof value.name === "string" && "alt" in value ? [value.name] : [];
+  return [...own, ...Object.values(value).flatMap(shotNames)];
+}
+
+const sha256 = (path: string) => createHash("sha256").update(readFileSync(path)).digest("hex");
+
+describe("the screenshots", () => {
+  const names = [...new Set(shotNames(homeContent))];
+
+  it("found the screenshots the page names", () => {
+    expect(names.length).toBeGreaterThanOrEqual(4);
+    expect(names, "the walk did not reach the hero").toContain(heroShot.name);
+  });
+
+  it("ships every one of them in both themes", () => {
+    /*
+     * `src/components/shot.tsx` asks for both files whatever is on disk, so
+     * a missing dark file is a broken image for every reader in dark mode
+     * and nothing at all for everybody else, including whoever pulled the
+     * pictures. `sync-from-app` §4 derives its pull from these same names.
+     */
+    const missing = names
+      .flatMap((name) => [`${name}-light.webp`, `${name}-dark.webp`])
+      .filter((file) => !existsSync(`public/screenshots/${file}`));
+    expect(missing, "pull these from the application's kit").toEqual([]);
+  });
+
+  it("made every 1200px copy from the original beside it", () => {
+    /*
+     * "Offers a narrower file" above proves a copy exists and nothing more.
+     * A pull that replaces an original and skips `npm run build:images`
+     * leaves the old copy in place, and a phone goes on showing the previous
+     * screen while a desktop shows the new one, with nothing on either to
+     * say so.
+     *
+     * `scripts/build-images.mjs` records the hash of every original it
+     * resized and of the copy it wrote. The original moving is a stale copy,
+     * and the copy moving is one somebody replaced by hand.
+     */
+    const record = "scripts/build-images.sources.json";
+    expect(existsSync(record), `no ${record}: run \`npm run build:images\``).toBe(true);
+    const { copies } = JSON.parse(readFileSync(record, "utf8")) as {
+      copies: Record<string, { original: string; copy: string }>;
+    };
+
+    const originals = readdirSync("public/screenshots").filter((f) => f.endsWith(".webp"));
+    expect(originals.length, "no screenshots to check").toBeGreaterThan(4);
+    const stale: string[] = [];
+    for (const file of originals) {
+      const made = copies[file];
+      if (!made) stale.push(`${file}: no record of a copy`);
+      else if (made.original !== sha256(`public/screenshots/${file}`)) {
+        stale.push(`${file}: the original changed after its copy was made`);
+      } else if (
+        !existsSync(`public/screenshots/1200/${file}`) ||
+        made.copy !== sha256(`public/screenshots/1200/${file}`)
+      ) {
+        stale.push(`${file}: the copy is not the one build:images wrote`);
+      }
+    }
+    expect(stale, "run `npm run build:images`").toEqual([]);
+  });
+
+  it("leaves no 1200px copy behind a deleted screen", () => {
+    /*
+     * A copy whose original is no longer in `public/screenshots/` is left
+     * over from a deleted screen. It has its own message because the one
+     * above is the wrong remedy for it: `build:images` only ever writes a
+     * copy and never removes one, so running it again leaves this failing.
+     */
+    const originals = readdirSync("public/screenshots").filter((f) => f.endsWith(".webp"));
+    expect(originals.length, "no screenshots to check").toBeGreaterThan(4);
+    const orphans = readdirSync("public/screenshots/1200")
+      .filter((f) => f.endsWith(".webp") && !originals.includes(f))
+      .map((f) => `public/screenshots/1200/${f}`);
+    expect(orphans, "delete these; build:images never removes a copy").toEqual([]);
   });
 });

@@ -8,7 +8,7 @@ import { repoFile, sourceFiles } from "./support/source";
  * with nothing watching it is a copy that drifts. These checks cannot see the
  * application — it is a different repository — so they hold what can be held
  * from here: that the two theme blocks describe the same set of tokens, that
- * every token the site uses is one the contract declares, and that colour
+ * every token the site uses is one the contract declares, and that color
  * appears nowhere else.
  */
 
@@ -59,7 +59,7 @@ describe("the brand token contract", () => {
     const SAME_IN_BOTH = new Set([
       // White on the accent fill in both themes: the fill is dark enough in
       // each that the same white clears contrast, and picking a dark-theme
-      // variant would make one of them grey text on green.
+      // variant would make one of them gray text on green.
       "--on-accent",
       // The always-dark illustration surface. It depicts a dark thing rather
       // than following the page, so both themes paint it the same. The
@@ -93,7 +93,7 @@ describe("the brand token contract", () => {
     const declared = new Set(tokensIn(brand).keys());
     const site = repoFile("src/styles/site.css");
 
-    // Tokens the site declares for itself: the scales. Colour comes from the
+    // Tokens the site declares for itself: the scales. Color comes from the
     // contract; rhythm is this site's own. `src/styles/site.css` says why.
     for (const match of site.matchAll(/^\s{2}(--[a-z0-9-]+)\s*:/gm)) declared.add(match[1]!);
 
@@ -110,8 +110,8 @@ describe("the brand token contract", () => {
     expect(missing, "site.css reads a token nothing declares").toEqual([]);
   });
 
-  it("keeps raw colour out of every stylesheet but the contract", () => {
-    // A hex outside brand.css is a colour that cannot re-theme, which is the
+  it("keeps raw color out of every stylesheet but the contract", () => {
+    // A hex outside brand.css is a color that cannot re-theme, which is the
     // single failure that makes a dark mode look broken rather than absent.
     const offenders: string[] = [];
     for (const file of sourceFiles("src", /\.css$/)) {
@@ -122,10 +122,10 @@ describe("the brand token contract", () => {
         }
       }
     }
-    expect(offenders, "colour outside brand.css cannot re-theme").toEqual([]);
+    expect(offenders, "color outside brand.css cannot re-theme").toEqual([]);
   });
 
-  it("keeps the theme-colour meta tags equal to the --ground tokens", () => {
+  it("keeps the theme-color meta tags equal to the --ground tokens", () => {
     // A <meta name="theme-color"> cannot read a custom property, so the two
     // values are duplicated into `layout.tsx`. This is what stops the copy
     // drifting from the token it copies.

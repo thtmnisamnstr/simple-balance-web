@@ -7,7 +7,7 @@ import { useRef, useState } from "react";
  *
  * One of three client components on this site, and the rule they follow is in
  * `docs/standards/code/react.md` 1.1: an island exists only where the
- * behaviour is impossible without the browser, it holds no application state,
+ * behavior is impossible without the browser, it holds no application state,
  * and the page is correct before it hydrates.
  *
  * That last clause is what makes this safe to ship. Until hydration the button

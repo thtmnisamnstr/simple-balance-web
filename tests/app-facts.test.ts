@@ -1,12 +1,15 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import snapshot from "@/content/app-facts.json";
-import { comparison, faq, MAX_FREE_ACCOUNTS, pricing, tiers } from "@/content/pricing";
+import { comparison, faq, MAX_FREE_ACCOUNTS, pricing, pricingMeta, tiers } from "@/content/pricing";
 import { site } from "@/content/home";
+import { terms } from "@/content/legal";
 
 /**
  * This site's claims against the application's published contract.
  *
- * The application publishes `docs/product-facts.json` — generated from its
+ * The application publishes `docs/product/facts.json` — generated from its
  * own constants and held to them by its own test — and
  * `src/content/app-facts.json` is a snapshot of it, refreshed by the
  * `sync-from-app` skill and never edited by hand.
@@ -102,10 +105,36 @@ describe("what this site claims about plans", () => {
  */
 const amount = (value: number) => new RegExp(`\\$${String(value).replace(".", "\\.")}(?!\\d)`);
 
+/** Every string anywhere in a value, so a restructured document is still read whole. */
+const textOf = (value: unknown): string[] => {
+  if (typeof value === "string") return [value];
+  if (Array.isArray(value)) return value.flatMap(textOf);
+  if (value && typeof value === "object") return Object.values(value).flatMap(textOf);
+  return [];
+};
+
+/**
+ * Every dollar figure in a string, as the number it states.
+ *
+ * Read with its decimals, so "$3.50" is 3.5 and fails rather than passing as a
+ * "$3" with something after it, which is what `amount` alone would allow.
+ */
+const figures = (text: string) =>
+  [...text.matchAll(/\$(\d+(?:\.\d+)?)/g)].map((match) => Number(match[1]));
+
 describe("what this site claims about price", () => {
+  const yearly = Number(facts.declared.prices.yearly);
+  const monthly = Number(facts.declared.prices.monthly);
+  const termsText = textOf(terms).join(" ");
+  /*
+   * The whole script rather than the one `<text>` element carrying the price,
+   * so the literal is still read if it moves into a constant. The cost is that
+   * a `$1` in a regular-expression replacement would be reported as a price;
+   * narrow this to the SVG markup when that happens, not before.
+   */
+  const socialCard = readFileSync(join(process.cwd(), "scripts/build-images.mjs"), "utf8");
+
   it("prints the yearly and monthly prices the application declares", () => {
-    const yearly = Number(facts.declared.prices.yearly);
-    const monthly = Number(facts.declared.prices.monthly);
     const paidTier = tiers.find((t) => t.key === "premium")!;
 
     /*
@@ -120,10 +149,69 @@ describe("what this site claims about price", () => {
     expect(card, "the monthly price is not on the card").toMatch(amount(monthly));
   });
 
-  it("agrees with the terms page, which quotes the same two figures", () => {
-    // A price is in four places on this site. Three of them are prose.
-    expect(pricing.note.toLowerCase()).toContain("us dollars");
+  /*
+   * The card above is one place a price is written. The rest are prose: the
+   * note under the cards, a FAQ question, the search snippet and link
+   * preview, the terms, and the picture a shared link shows, whose price is a
+   * literal in the script that draws it. This test used to be called "agrees
+   * with the terms page", never imported the terms, and checked no figure at
+   * all, so when the price moved from $2 and $20 the card was the only place
+   * checked against the application, and a literal in `tests/legal.test.tsx`
+   * held the terms to whatever it had been told rather than to the contract.
+   *
+   * So every dollar figure in all of them has to be a price the application
+   * declares, or $0 for the plan that costs nothing. A stale number anywhere
+   * fails, whichever sentence it is in, and a new sentence carrying a price
+   * is checked without anybody adding it here, as long as it is in one of
+   * these strings.
+   */
+  const prose: readonly (readonly [string, string])[] = [
+    ["pricing.note", pricing.note],
+    ...faq.flatMap((item, index) => [
+      [`faq[${index}].q`, item.q] as const,
+      [`faq[${index}].a`, item.a] as const,
+    ]),
+    ["pricingMeta.description", pricingMeta.description],
+    ["pricingMeta.socialDescription", pricingMeta.socialDescription],
+    ["terms", termsText],
+    ["social card (scripts/build-images.mjs)", socialCard],
+  ];
+
+  it("quotes no price in its prose that the application does not charge", () => {
+    const allowed = new Set([0, monthly, yearly]);
+    const found = prose.flatMap(([where, text]) => figures(text).map((n) => [where, n] as const));
+    // A population check, so a figure pattern that stopped matching cannot
+    // turn this into a test of nothing: the note and the terms name both.
+    expect(found.length, "found no dollar figures to check").toBeGreaterThanOrEqual(4);
+    const stale = found.filter(([, n]) => !allowed.has(n)).map(([where, n]) => `${where}: $${n}`);
+    expect(stale, `the application charges $${monthly} a month or $${yearly} a year`).toEqual([]);
+  });
+
+  it("still finds a price on the social card, so moving it elsewhere cannot silence the check", () => {
+    // The population check above is satisfied by the note and the terms alone,
+    // so without this the card's price could move to a file nobody reads here
+    // and every test would stay green. If the card stops showing a price at
+    // all, drop it from `prose` rather than keeping this.
+    expect(
+      figures(socialCard).length,
+      "scripts/build-images.mjs names no dollar figure",
+    ).toBeGreaterThan(0);
+  });
+
+  it("names both prices in the note under the cards and in the terms", () => {
+    for (const [where, text] of [
+      ["pricing.note", pricing.note],
+      ["terms", termsText],
+    ] as const) {
+      expect(text, `${where} does not state the yearly price`).toMatch(amount(yearly));
+      expect(text, `${where} does not state the monthly price`).toMatch(amount(monthly));
+    }
+  });
+
+  it("prices in the currency the application charges, in both places that say so", () => {
     expect(facts.declared.prices.currency).toBe("USD");
+    expect(pricing.note.toLowerCase()).toContain("us dollars");
+    expect(termsText.toLowerCase()).toContain("us dollars");
   });
 });
 
@@ -160,5 +248,83 @@ describe("the FAQ", () => {
 
   it("points at the application this site is about", () => {
     expect(site.sourceUrl).toBe(snapshot.source.repository);
+  });
+
+  /*
+   * Two rounds got this wrong. "The oldest of the accounts you were using"
+   * named accounts `frozenAccountIds` never picks, and "after that ... you
+   * can pick any three" offered a choice to somebody whose earlier one still
+   * stands, which `activeAccountChange` refuses as a swap. So the condition
+   * is held, not just the two cases: the three oldest are for somebody who
+   * never chose, and `activeChoicePending` asks again only if accounts were
+   * opened or reopened while subscribed. The snapshot carries none of this,
+   * so the referent is the application's source as read then.
+   */
+  it("says which three stay usable before a choice, and when a choice comes back", () => {
+    const over = faq.find((f) => f.q.toLowerCase().includes("more than three"));
+    expect(over, "the FAQ answers the over-limit question").toBeDefined();
+    const answer = over!.a.toLowerCase();
+    expect(answer, "until a choice, up to three stay usable").toMatch(
+      /until you choose, up to three/,
+    );
+    expect(answer, "somebody who never chose keeps the three oldest").toMatch(
+      /never chosen[^.]*three oldest/,
+    );
+    expect(answer, "the reader may pick any three").toContain("pick any three");
+    expect(answer, "an earlier choice stands unless accounts were opened or reopened").toMatch(
+      /choice[^.]*stands[^.]*unless[^.]*opened or reopened/,
+    );
+    expect(answer, "a choice put again picks from the ones chosen and the new ones").toMatch(
+      /you chose and the new ones/,
+    );
+    expect(answer, "the second case is not tied to any later downgrade").not.toContain(
+      "after that, they're",
+    );
+    const cancel = faq.find((f) => f.q.toLowerCase().includes("cancel"));
+    expect(cancel, "the FAQ answers the question about canceling").toBeDefined();
+    expect(cancel!.a.toLowerCase(), "canceling asks for a choice only over three").toMatch(
+      /more than three[^.]*pick three/,
+    );
+  });
+
+  /*
+   * The move answer is a procedure, and four of its steps exist because the
+   * application does something nobody would guess. Leaving out any one of
+   * them makes "Yes" stronger than the product:
+   *
+   * - an opening balance is posted with no transaction (`postOpeningBalance`),
+   *   so no export carries it, and a move that skips it leaves every account
+   *   off by where it started. Saying it is missing is not enough: the step
+   *   is making each account with the same one;
+   * - an account page exports what its date bar shows, and the bar starts on
+   *   This month, so a reader who never sets it to All time moves a month;
+   * - a transfer is in both accounts' files, and once its accounts are picked
+   *   in the second file it matches the first, so a reader told only to pick
+   *   both would hit a refused commit or record it twice;
+   * - the importer takes 10,000 rows and its own refusal says to go a date
+   *   range at a time.
+   *
+   * Held to the substance rather than the sentences, so a rewording passes
+   * as long as it still says all four.
+   */
+  it("tells somebody moving to their own copy what the files will not do for them", () => {
+    const move = faq.find((f) => f.q.toLowerCase().includes("own copy"));
+    expect(move, "the FAQ answers the question about moving").toBeDefined();
+    const answer = move!.a.toLowerCase();
+    expect(answer, "each account is made with the same starting balance").toMatch(
+      /same[^.]*(?:starting|opening) balance/,
+    );
+    expect(answer, "the starting balance is not in the file").toMatch(
+      /(?:starting|opening) balance[^.]*(?:isn't|is not|aren't|are not) in the file/,
+    );
+    expect(answer, "the export is set to all time first").toMatch(
+      /all time[^.]*export|export[^.]*all time/,
+    );
+    expect(answer, "a transfer is in both files and the second is left out").toMatch(
+      /transfer[^.]*both files[\s\S]*(?:leave it out|skip it)[\s\S]*already have/,
+    );
+    expect(answer, "a large account moves a range of dates at a time").toMatch(
+      /10,000 transactions[^.]*(?:range of dates|date range)/,
+    );
   });
 });

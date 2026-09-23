@@ -4,7 +4,7 @@ How the guides themselves are kept true.
 
 ## Keeping a document true
 
-**Binding.** A change that alters behaviour a document describes changes that
+**Binding.** A change that alters behavior a document describes changes that
 document in the same commit.
 
 Not "soon", and not in a follow-up. A guide that lies is worse than a guide
@@ -56,7 +56,7 @@ _Checked by:_ `tests/standards-citations.test.ts` for the file:line forms.
 **House.** Record it. Do not quietly pick one.
 
 A disagreement written down is a decision somebody can revisit. A disagreement
-resolved silently in favour of the code is a rule that was deleted without
+resolved silently in favor of the code is a rule that was deleted without
 anybody agreeing to delete it.
 
 ## The changelog
@@ -76,7 +76,7 @@ for maintainers rather than a contract with users, and it is kept because
 ## Commit messages
 
 An imperative subject naming what is now true from the reader's side. No
-prefix, no scope, no full stop, 70 characters as a ceiling. The test is whether
+prefix, no scope, no period, 70 characters as a ceiling. The test is whether
 somebody who has not seen the diff could tell whether it affects them.
 
 A body of hard-wrapped prose owing four things: why the defect survived review,

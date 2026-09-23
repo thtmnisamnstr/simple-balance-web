@@ -25,7 +25,7 @@ ${(post.frontmatter.tags ?? []).map((tag) => `    <category term="${xmlEscape(ta
     .join("\n");
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en-US">
   <title>${xmlEscape(`${site.name} — ${blog.title}`)}</title>
   <subtitle>${xmlEscape(blog.description)}</subtitle>
   <link href="${base}/blog/atom.xml" rel="self" />

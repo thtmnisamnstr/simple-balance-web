@@ -9,13 +9,13 @@ Building this site, and putting it where people can read it.
 **Binding.** `next.config.mjs` emits plain HTML, CSS and JS into `out/`. No
 server, no platform adapter.
 
-That is what keeps this repository portable: the same artefact is what Netlify
+That is what keeps this repository portable: the same artifact is what Netlify
 publishes today and what an S3 bucket or a Vercel project would publish
 instead, so choosing a host again later costs a `netlify.toml` rather than a
 rewrite.
 
 The cost is every server-only Next.js feature — route handlers, middleware,
-ISR, and the built-in image optimiser. A marketing page needs none of them.
+ISR, and the built-in image optimizer. A marketing page needs none of them.
 
 **And about 170 KB gzipped of JavaScript**, which is Next and React
 themselves. The homepage pays nearly all of it while containing no client
@@ -78,13 +78,13 @@ _Checked by:_ the build, and `tests/blog-features.test.ts` for the canonical.
 
 **Binding.** `netlify.toml` must not contain a `/*` rewrite.
 
-`smpl.money/ads.txt` is what authorises the advertising inventory running on
+`smpl.money/ads.txt` is what authorizes the advertising inventory running on
 `app.smpl.money`. Google's own guidance is that a domain hosting an `ads.txt`
-which does not list the seller's publisher id **stops being monetised**.
+which does not list the seller's publisher id **stops being monetized**.
 
 The reflex on a static host is `/* -> /index.html 200`. That turns every
 unknown path — `/ads.txt` before it is written, `/ads.tx` after a typo — into a
-200 of HTML, which is precisely the demonetising state, and every symptom of it
+200 of HTML, which is precisely the demonetizing state, and every symptom of it
 is invisible: the file is served, the build is green, the ads render, the
 revenue is zero.
 
@@ -92,16 +92,30 @@ revenue is zero.
 fallback buys nothing here.
 
 _Checked by:_ `tests/export-shape.test.ts`, which parses the redirect blocks
-and allows only a host-level 301.
+and allows only a host-level 301. It reads `netlify.toml` a line at a time
+with comments dropped, so a commented-out rule is not a rule. It accepts both
+`[[redirects]]` spellings, reads `from` and `status` only where they open a
+line, and counts a missing `status` as 301, which is Netlify's own default. A
+`from` that is empty, missing or backslash-escaped fails as unreadable rather
+than passing as harmless, and so does any other line naming `redirects`, the
+inline `redirects = [...]` form included. A `from` ending in a slash is read
+without it, so `/ads.txt/` is `/ads.txt`. The same predicate reads a
+`_redirects` file, in `public/` and in `out/`, because Netlify reads rules
+from there too.
 
 ### 2.2 The file is absent until there is a publisher id
 
 **Binding.** `public/ads.txt` does not exist yet, and its absence is checked.
 
 A missing `ads.txt` is ignored by Google and costs nothing. A well-formed one
-that does not name the publisher id is the documented state that demonetises
+that does not name the publisher id is the documented state that demonetizes
 the domain. So the file arrives with the id, in one commit, and this
 expectation is inverted in the same commit.
+
+**The id comes early.** AdSense shows it as soon as the account exists, before
+review, and this file is how the site is verified for that review, so it lands
+before the review request rather than after approval. `docs/adsense.md` §3 has
+the order.
 
 **The content, when it exists**, is the DIRECT record and not a `subdomain=`
 referral:
@@ -115,7 +129,7 @@ Google's page is explicit: a `subdomain=` line is needed _"only … if the
 authorized seller or your publisher ID are different for the subdomain when
 compared to the root domain."_ The app derives its `ads.txt` from the same
 `ADSENSE_CLIENT_ID`, so the ids are identical and the root record already
-covers the subdomain. Adding a referral would hand the whole authorisation
+covers the subdomain. Adding a referral would hand the whole authorization
 chain to a file the app only serves while ads are configured.
 
 _Checked by:_ `tests/export-shape.test.ts`.
@@ -162,25 +176,41 @@ to be checked out, was a picture nobody could reproduce — and the repository
 that can actually run the application is the application's.
 
 What this side owns is which shots ship and what they claim. The application
-photographs all thirteen screens; this site uses five, because an unused
-screenshot is a file that goes stale with nothing to notice. `web.md` 5
-governs them once they are here, and **the alt text describes what the
-picture shows**, so a refreshed screenshot means re-reading the alt text —
-the thing most likely to be left behind.
+photographs all thirteen screens; this site uses six — dashboard, reports,
+payees, import, transactions and budgets — because an unused screenshot is a
+file that goes stale with nothing to notice. `web.md` 5 governs them once
+they are here, and **the alt text describes what the picture shows**, so a
+refreshed screenshot means re-reading the alt text — the thing most likely
+to be left behind.
+
+One file, read from the ref the sync check resolves:
 
 ```sh
 APP=thtmnisamnstr/simple-balance
-curl -fsSL "https://raw.githubusercontent.com/$APP/main/docs/product/screenshots/dashboard-light.webp" \
+REF=$(node scripts/check-app-sync.mjs --json | node -p 'JSON.parse(require("fs").readFileSync(0, "utf8")).ref')
+curl -fsSL "https://raw.githubusercontent.com/$APP/$REF/docs/product/screenshots/dashboard-light.webp" \
   -o public/screenshots/dashboard-light.webp
 ```
 
-**They are only on `main` once the release lands.** Until 0.2.0 merges,
-`docs/product/` exists on a branch, and a fetch against `main` returns 404
-rather than something stale — which is the right failure and an easy one to
-misread as "no screenshots".
+`sync-from-app` §4 is the whole pull: every name `src/content/home.ts` uses,
+both themes, then the narrow copies and `public/screenshots/CAPTURE.json`.
+
+**The ref is resolved, not assumed, and not by whoever runs the command.**
+Until 0.2.0 merges, `docs/product/` exists only on the release branch, and a
+fetch against `main` returns 404 rather than something stale — which is the
+right failure and an easy one to misread as "no screenshots".
+`scripts/check-app-sync.mjs` resolves the ref itself: `main` once `main`
+carries the kit, and the head of the open pull request into `main` that
+carries it until then. The weekly workflow sets no ref, and the `curl` above
+takes the one the script printed rather than naming its own. A `null` there
+is either a kit published nowhere yet or a check that could not reach
+GitHub, and `sync-from-app` §0 says how to tell them apart.
 
 _Checked by:_ `tests/home-page.test.tsx` for alt text and dimensions;
-`tests/budget.test.ts` for weight. Whether a picture is any good is `human`.
+`tests/budget.test.ts` for weight; `scripts/check-app-sync.mjs`, weekly, that
+every original shipped here is byte for byte the one the kit publishes.
+Whether a picture is any good, and whether its alt text still describes it,
+is `human`.
 
 ## 5. Continuous integration
 
@@ -205,6 +235,15 @@ The skip is an explicit named variable rather than "skip if Chromium is
 missing", because the second form is indistinguishable from a machine where
 Chromium silently stopped installing, and a suite that quietly stops checking
 contrast is worse than one that fails.
+
+**The weekly sync reports into one issue.** `.github/workflows/app-sync.yml`
+runs `scripts/check-app-sync.mjs` and keeps a single open issue titled "The
+site is out of step with the application": it edits the open one, takes over
+one still open under the old title, "The application has changed", and
+reopens the latest closed one rather than opening a second. Both titles live
+once each, in the check job's own `env:` block, because a title spelled
+twice is two titles the moment one is edited. `tests/app-sync.test.ts` holds
+that, and runs the issue step against a stand-in `gh` for each case.
 
 **Turn on branch protection** requiring the `verify` check, or Actions reports
 a failure that nothing acts on.
@@ -233,14 +272,14 @@ it is kept that way.
 
 **`rehype-pretty-code` — runtime.** The standard Shiki integration for MDX,
 widely used, and a `0.x` version makes no compatibility promise. Its output is
-in every docs page, so a change in behaviour is a change a reader sees. The
+in every docs page, so a change in behavior is a change a reader sees. The
 fallback is Shiki directly, which is already a dependency here, so the
 exposure is a few hours of work rather than a rewrite.
 
 **`sharp` — dev-only.** Draws `public/og.png` and the post covers in
 `scripts/build-images.mjs`. Its output is committed, so it runs on a
 developer's machine and never on Netlify: a break stops new images being
-drawn, it does not stop a deploy. The fallback is any rasteriser that reads
+drawn, it does not stop a deploy. The fallback is any rasterizer that reads
 SVG, and the drawings are SVG source in that one file.
 
 **`@xmldom/xmldom` — dev-only.** `tests/feeds.test.ts` parses the feeds with
@@ -345,7 +384,7 @@ set from this tree, and each is a launch step.
 | Netlify → Project configuration → Build   | Build command is `npm run verify` | Set from `netlify.toml`, but confirm it took. A deploy that only ran `next build` is a deploy with no gate.                                                                                  |
 | Netlify → Deploy previews                 | On                                | The preview is the only place anybody looks at a change before it ships.                                                                                                                     |
 | GitHub → Branch protection                | Require the `verify` check        | Otherwise Actions reports a failure nothing acts on.                                                                                                                                         |
-| AdSense → Privacy and messaging           | A European regulations message    | Required before ads may serve to the EEA, the UK or Switzerland. `docs/adsense.md` §5.                                                                                                       |
+| AdSense → Privacy and messaging           | A European regulations message    | Required before ads may serve to the EEA, the UK or Switzerland, and published before any ad setting goes on the application. `docs/adsense.md` §3 step 7 and §5.                            |
 | AdSense → account                         | Auto ads **off**                  | An account setting no code can override, injecting formats the application promises not to show.                                                                                             |
 
 ## 9. DNS
@@ -371,17 +410,17 @@ Two that cost a day if they are wrong:
 
 ## 10. What is checked, and what is not
 
-| Rule                        | Held by                                         |
-| --------------------------- | ----------------------------------------------- |
-| 1.1, 1.3 Export shape       | `tests/export-shape.test.ts`                    |
-| 2.1 No catch-all rewrite    | `tests/export-shape.test.ts`                    |
-| 2.2 No premature `ads.txt`  | `tests/export-shape.test.ts`                    |
-| 2.3 Content type            | `tests/export-shape.test.ts`                    |
-| 3.1, 3.2 Headers            | `tests/export-shape.test.ts`                    |
-| 6.2 Every pre-1.0 dep named | `tests/repo-references.test.ts`                 |
-| 7.4 Weight budget           | `tests/budget.test.ts`                          |
-| 1.2 `force-static`          | the build, which fails without it               |
-| 4 Screenshot provenance     | `human`                                         |
-| 5 Continuous integration    | `human` — the workflows are the record          |
-| 6.1, 6.3 Latest, and Node   | `human`, and the `update-dependencies` skill    |
-| 9 DNS                       | `human`. Nothing in this repository can see DNS |
+| Rule                        | Held by                                                                                                     |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| 1.1, 1.3 Export shape       | `tests/export-shape.test.ts`                                                                                |
+| 2.1 No catch-all rewrite    | `tests/export-shape.test.ts`                                                                                |
+| 2.2 No premature `ads.txt`  | `tests/export-shape.test.ts`                                                                                |
+| 2.3 Content type            | `tests/export-shape.test.ts`                                                                                |
+| 3.1, 3.2 Headers            | `tests/export-shape.test.ts`                                                                                |
+| 6.2 Every pre-1.0 dep named | `tests/repo-references.test.ts`                                                                             |
+| 7.4 Weight budget           | `tests/budget.test.ts`                                                                                      |
+| 1.2 `force-static`          | the build, which fails without it                                                                           |
+| 4 Screenshot provenance     | `scripts/check-app-sync.mjs`, weekly, byte for byte against the kit; whether a picture is any good, `human` |
+| 5 Continuous integration    | `human` — the workflows are the record                                                                      |
+| 6.1, 6.3 Latest, and Node   | `human`, and the `update-dependencies` skill                                                                |
+| 9 DNS                       | `human`. Nothing in this repository can see DNS                                                             |

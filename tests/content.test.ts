@@ -5,7 +5,7 @@ import {
   blogIndex,
   blogTags,
   docsBySection,
-  docsNeighbours,
+  docsNeighbors,
   slugify,
   tableOfContents,
 } from "@/content/collections";
@@ -36,7 +36,7 @@ describe("the content collections", () => {
     }
   });
 
-  it("normalises every date to a calendar day, whatever YAML made of it", () => {
+  it("normalizes every date to a calendar day, whatever YAML made of it", () => {
     // `gray-matter` hands back a Date for an unquoted `2026-09-17`. Left
     // alone it interpolates as "Wed Sep 17 2026 …" and every consumer that
     // builds a string from it produces an Invalid Date.
@@ -101,10 +101,10 @@ describe("the docs ordering", () => {
     expect(present).toEqual(expected);
   });
 
-  it("gives neighbours that agree with the sidebar order", () => {
+  it("gives neighbors that agree with the sidebar order", () => {
     const all = allEntries("docs");
     for (const [index, entry] of all.entries()) {
-      const { previous, next } = docsNeighbours(entry.slug);
+      const { previous, next } = docsNeighbors(entry.slug);
       expect(previous?.slug).toBe(all[index - 1]?.slug);
       expect(next?.slug).toBe(all[index + 1]?.slug);
     }

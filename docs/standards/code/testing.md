@@ -74,11 +74,11 @@ Each now strips what it should never have been reading.
 ### 2.6 A check finds its subject by identity, not by what it is called
 
 **House.** When a check is about a fact, it locates that fact by a stable
-identifier. Matching the visible label couples a check about behaviour to a
+identifier. Matching the visible label couples a check about behavior to a
 decision about wording, and the two change for different reasons, at different
 times, at the hands of different people.
 
-Four checks broke in one afternoon on a copy rewrite that changed no behaviour
+Four checks broke in one afternoon on a copy rewrite that changed no behavior
 any of them was testing:
 
 - `tests/app-facts.test.ts` found the account-limit row by its label,
@@ -117,7 +117,7 @@ output — the great majority of this suite, and fast.
 
 **A browser**, for the one thing jsdom cannot do at all. `tests/a11y.test.ts`
 serves `out/` itself, drives Chromium through Playwright, and runs axe over
-every emitted page in both themes. Colour contrast is the reason it exists:
+every emitted page in both themes. Color contrast is the reason it exists:
 jsdom has no layout engine and no computed styles, so a token change that
 makes text unreadable is invisible to every other test here and to every
 reviewer who did not happen to open that page in that theme.

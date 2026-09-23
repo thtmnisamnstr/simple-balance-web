@@ -52,7 +52,7 @@ are still _accurate_, which is this skill's job.
 
 ## 3. The trap that has already been walked into
 
-**Non-personalised is not cookie-free.** Those ads still set cookies for
+**Non-personalized is not cookie-free.** Those ads still set cookies for
 frequency capping and fraud prevention, so ePrivacy consent is required in
 the EEA, the UK and Switzerland whether or not anybody is profiled.
 
@@ -61,7 +61,7 @@ them once:
 
 | Rule                       | Applies to               | Satisfied by             |
 | -------------------------- | ------------------------ | ------------------------ |
-| Google's **certified CMP** | Personalised ads only    | A certified platform     |
+| Google's **certified CMP** | Personalized ads only    | A certified platform     |
 | **ePrivacy consent**       | Any non-essential cookie | Any valid consent notice |
 
 Avoiding the first is not avoiding the second. `docs/adsense.md` §5 and the
@@ -89,8 +89,44 @@ the terms, and it may need opt-in at sign-up rather than opt-out.
 - **Retention.** Still what the software does?
 - **Rights.** CSV export is the portability claim, account deletion is the
   erasure claim. Both must still work — test them, do not assume.
-- **Cookies.** The list must match what is actually set. Open the site with
-  devtools and look.
+- **Cookies.** The list must match what is actually set. Look with devtools,
+  and know what to expect before you do.
+
+  **Start from a fresh private window, and visit the pages in order.** A
+  cookie outlives the page that set it: Stripe's `__stripe_mid` is set on
+  `app.smpl.money` itself and lasts a year, so once the plan page has been
+  opened in a browser, devtools lists it on every page after, including the
+  sign-in screen. A window that has been to the plan page cannot tell you
+  which page loaded Stripe.
+  1. **`smpl.money`**: nothing, in the cookie list or in local storage.
+  2. **The application's sign-in screen, then the dashboard**, before
+     `/settings/plan`. Expect the sign-in cookies once you are signed in, and
+     **no theme cookie**: the theme is saved on the account, with a copy in
+     local storage so the first paint is the right color, which is where
+     devtools shows it. On the free plan, with ads configured, also expect
+     Google's advertising cookies, which the policy covers. In the EEA, the
+     UK and Switzerland the consent message asks first, and none of them
+     may appear until consent is given. Once the message is answered,
+     whichever way, expect Google's record of the answer, `FCCDCF`: it
+     stores the choice and is not an advertising cookie. After a decline,
+     no advertising cookie (`__gads`, `__gpi`, `__eoi`) may appear. In the
+     Network panel, **no request to `js.stripe.com`**, and no Stripe cookie.
+  3. **`/settings/plan`, as far as the payment form.** The page asks for
+     Stripe's script when that form opens, and choosing a price is what
+     opens it, which starts a subscription at Stripe that waits for a card,
+     so use an account that can take that. Now expect the request to
+     `js.stripe.com` and Stripe's own cookies, `__stripe_mid` and
+     `__stripe_sid`, set by Stripe's script for fraud prevention. The policy
+     covers them without naming them, as the cookies Stripe sets there to
+     prevent fraud, and says this is the one page that loads the script.
+
+  A Stripe request or cookie at step 2 makes that sentence false, and the
+  fix is in the application. The `@stripe/stripe-js` package's default entry
+  injects the script as soon as it is imported, and the app shell imports
+  the plan page, so that entry loads Stripe on every page;
+  `@stripe/stripe-js/pure` waits until `loadStripe` is called. Which one the
+  application imports is what decides it.
+
 - **Both documents' dates.** `legalUpdated` in `src/content/legal.ts` is one
   value for both; bump it when either changes materially.
 - **Jurisdiction and contact.** Still right?
@@ -99,7 +135,8 @@ the terms, and it may need opt-in at sign-up rather than opt-out.
 
 It covers `smpl.money` **and** `app.smpl.money`, and explicitly not a
 deployment somebody else runs. If the application changed, most of what you
-are checking is over there — run **`app-alignment`** first or alongside.
+are checking is over there — run **`sync-from-app`** first or alongside; the
+checks in its §1 say whether anything moved.
 
 ## 7. Finish
 

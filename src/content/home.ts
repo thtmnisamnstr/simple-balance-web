@@ -129,7 +129,7 @@ export const site = {
 
 export const heroShot = {
   name: "dashboard",
-  alt: "The Simple Balance overview for one month: a euro total with balance, deposits, withdrawals and net cash flow across the top, then a checking account with its balance, spending by category as bars, and budget bars showing what has gone against each limit.",
+  alt: "The Simple Balance overview for one month: a dollar total with balance, deposits, withdrawals and net cash flow across the top, then a checking account, a savings account and a credit card with their balances, beside spending by category as bars from rent down to subscriptions.",
 } as const;
 
 export const hero = {
@@ -203,7 +203,7 @@ export const problems: readonly Problem[] = [
   {
     shot: {
       name: "reports",
-      alt: "A report of what's owned and what's owed, with a separate table for each currency. Euro accounts are totaled in euros, dollar accounts in dollars, and no combined number appears anywhere.",
+      alt: "A net worth report with a separate table for each currency: checking, savings and a credit card totaled in dollars, and below it a euro account totaled in euros. No combined number appears anywhere.",
       caption: "What you own and what you owe, each currency counted on its own.",
     },
     covers: ["numbers-that-tie-out", "register"],
@@ -225,8 +225,8 @@ export const problems: readonly Problem[] = [
     covers: ["recurring", "payees"],
     problem: "You forgot about that yearly renewal, and it already came out.",
     answer: [
-      "Rent, payday, a subscription. Set it up once and it shows up on the day, waiting for you " +
-        "to okay it.",
+      "Rent, payday, a subscription. Set it up once and it shows up when it's due, waiting for " +
+        "you to okay it.",
       "There's also a list of everyone you've ever paid. That's usually where you spot the " +
         "one you forgot. Simple Balance can show you the charge, but you still cancel it yourself.",
     ],
@@ -297,7 +297,7 @@ export const features: readonly Feature[] = [
     title: "Fix a whole year of it at once",
     body:
       "Say a file came in with twelve months of groceries filed under the wrong thing. Fix all of " +
-      "it in one go, up to ten thousand lines, after seeing exactly what will change. It all " +
+      "it in a single step, up to ten thousand lines, after seeing exactly what will change. It all " +
       "changes or none of it does.",
   },
   {
@@ -316,15 +316,15 @@ export const showcase = {
   shots: [
     {
       name: "transactions",
-      alt: "A list of payments by date, each with who was paid, which account it came from, what kind of spending it was and how much, with dollar and euro amounts side by side.",
+      alt: "A list of transactions by date, each with who was paid, which account it came from, what kind of spending it was and how much. Most are in dollars, a train fare from a euro account is in euros, and a move from checking to savings appears as one line.",
       caption:
         "Everything you've entered, in one list you can filter. Money you moved between two of your own accounts shows up once, not twice.",
     },
     {
       name: "budgets",
-      alt: "The budgets screen: a form for setting one, with fields for category, amount, currency and start date and a tickbox for carrying the remainder into next month, above a table of standing budgets for dining out and groceries.",
+      alt: "The budgets screen: a form for setting one, with fields for the category, the amount and how it's decided, the currency, a start date and an optional savings goal, and a checkbox for carrying what's left into next month, above a table of standing budgets for dining out and groceries.",
       caption:
-        "Set a limit once and it runs every month. The tickbox is what carries the remainder forward.",
+        "Set a limit once and it runs every month. The checkbox is what carries the remainder forward.",
     },
   ],
 } as const;
@@ -342,8 +342,10 @@ export const showcase = {
  * **It used to open on "we never ask for your bank password".** That is a
  * promise about the future, and this product may yet pull transactions on a
  * schedule. What replaces it is the part that does not depend on how the data
- * arrives: where the record lives, who can reach it, and that you can leave
- * with all of it.
+ * arrives: where the record lives, who can reach it, and that every
+ * transaction can leave with you. Every transaction, not "everything": the
+ * export is transactions only, so budgets, templates and recurrences stay
+ * behind, and a privacy promise is the worst place to round that up.
  *
  * Every sentence is scoped, because the honest answer differs between the
  * version we run and the version you run. A privacy promise that one of the
@@ -358,7 +360,7 @@ export const privacy = {
     "Run it on your own computer and nobody else has a copy. If we run it for you, our privacy " +
     "policy spells out exactly what we keep.",
   points: [
-    "Pull everything out as a spreadsheet any time you want. We never hold it back to keep you paying.",
+    "Pull every transaction out as a spreadsheet any time you want. We never hold your records back to keep you paying.",
     "No analytics in the product itself. On the free plan the ads bring Google's script with them. Premium and your own copy have neither.",
     "Nothing you put in is used to sell you anything, here or anywhere else.",
     "Anyone can read the code, and that isn't going to change.",
@@ -390,8 +392,9 @@ export const agents = {
   title: "Hook up an AI assistant and just ask.",
   body:
     "Your assistant sees the same things you see. Ask it when you last paid someone, or have it " +
-    "pull in a statement and file it. When you connect it you choose what it's allowed to do: " +
-    "keep it to suggesting, and nothing it lines up counts until you say yes.",
+    "pull in a statement and file it. When you connect it, you see exactly what it's asking to " +
+    "do, and you can say no. One that's only allowed to suggest lines entries up for you to " +
+    "approve, and Settings shows what each assistant can do and lets you cut it off.",
   sample: [
     { kind: "prompt", text: "What day did I pay the electric bill last month?" },
     { kind: "out", text: "  August 12, to Meridian Power, out of checking." },
@@ -422,8 +425,11 @@ export const footer = {
     { label: "Privacy", href: "/privacy/" },
     { label: "Terms", href: "/terms/" },
     { label: "Source code", href: site.sourceUrl },
-    { label: "License", href: `${site.sourceUrl}/blob/main/LICENSE` },
-    { label: "Changelog", href: `${site.sourceUrl}/blob/main/CHANGELOG.md` },
-    { label: "How to run it yourself", href: `${site.sourceUrl}/blob/main/docs/deployment.md` },
+    { label: "License", href: `${site.sourceUrl}/blob/deployment-and-monetization/LICENSE` },
+    { label: "Changelog", href: `${site.sourceUrl}/blob/deployment-and-monetization/CHANGELOG.md` },
+    {
+      label: "How to run it yourself",
+      href: `${site.sourceUrl}/blob/deployment-and-monetization/docs/deployment.md`,
+    },
   ],
 } as const;

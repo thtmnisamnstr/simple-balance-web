@@ -1,9 +1,9 @@
 /*
- * Site styles. `brand.css` owns colour and is shared with the application;
+ * Site styles. `brand.css` owns color and is shared with the application;
  * everything here is this site's own — the scales, the layout and the handful
  * of components a marketing page needs.
  *
- * The scales live here rather than in `brand.css` on purpose. Colour is a
+ * The scales live here rather than in `brand.css` on purpose. Color is a
  * brand fact and has to match the app exactly. Rhythm is a layout decision,
  * and a marketing page's rhythm is not an app's: this page is read once, in
  * one pass, on a phone as often as not, so it is built on larger type and more
@@ -783,6 +783,15 @@ svg {
   padding: 0;
   font-size: inherit;
   color: inherit;
+}
+
+/* Wraps every table in prose (`prose.tsx`), so a table wider than a phone
+   scrolls inside itself rather than widening the page. `position: relative`
+   for the reason `.table-wrap` gives: an absolutely positioned descendant is
+   clipped only by a scroller in its containing-block chain. */
+.prose-table {
+  overflow-x: auto;
+  position: relative;
 }
 
 .prose-body table {
@@ -1662,7 +1671,7 @@ svg {
   box-shadow: var(--shadow);
 }
 
-/* The recommended tier is marked with a border and a label, not with colour
+/* The recommended tier is marked with a border and a label, not with color
    alone — the same rule the application follows for its charts. */
 .tier-featured {
   border-color: var(--green-line-strong);

@@ -41,7 +41,7 @@ prose for somebody reading closely; this is copy for somebody skimming.
 ## 2. Frontmatter
 
 Required everywhere: `title`, `description`. Required for a post: `date`.
-A missing one **fails the build**, which is the intended behaviour — the
+A missing one **fails the build**, which is the intended behavior — the
 alternative is a published page with an empty `<title>`.
 
 ```yaml
@@ -63,14 +63,14 @@ draft: false # true builds in dev and is absent from production
 Docs take `section` and `order` instead of `date` and `authors`. Group order
 lives in `content/docs/_sections.json`; a section missing from it sorts last.
 A page with no `order` sorts after every page that has one, so adding
-`order: 2` to one page does not mean renumbering its neighbours.
+`order: 2` to one page does not mean renumbering its neighbors.
 
 **Two that bite:**
 
 - **An author key that does not exist fails the build.** That is deliberate —
   a typo would otherwise render a byline with no name and no photo.
 - **A date must be `YYYY-MM-DD`.** Unquoted, YAML turns it into a `Date`; the
-  parser normalises it, and anything that is not a calendar day is refused.
+  parser normalizes it, and anything that is not a calendar day is refused.
 
 ## 3. Writing
 
@@ -82,7 +82,7 @@ Available inside Markdown, beyond GitHub's own syntax:
 
 |                                                                |                                                              |
 | -------------------------------------------------------------- | ------------------------------------------------------------ |
-| `<Callout kind="note\|tip\|warning\|danger" title="…">`        | An aside. The kind shows a word as well as a colour.         |
+| `<Callout kind="note\|tip\|warning\|danger" title="…">`        | An aside. The kind shows a word as well as a color.          |
 | `<Shot name="dashboard" alt="…" width={1600} height={1000} />` | A screenshot, theme-aware, from `public/screenshots/`.       |
 | `<Figure src="…" alt="…" caption="…" />`                       | An image whose caption is connected to it.                   |
 | `<CodeTabs><CodeTab label="npm">…</CodeTab></CodeTabs>`        | Alternatives, both rendered. Not tabs — see `code-tabs.tsx`. |
@@ -102,7 +102,7 @@ Read the rendered page, not the Markdown. Then:
   doc. Check the anchors land.
 - **The description.** It is the feed summary, the search result and the link
   preview. Read it on its own.
-- **A doc's neighbours.** `order` decides the previous/next links; check they
+- **A doc's neighbors.** `order` decides the previous/next links; check they
   read as a sequence.
 - **Search**, for a doc: type a phrase from the middle of it.
 

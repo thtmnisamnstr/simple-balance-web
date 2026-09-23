@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { feedAlternates } from "@/lib/feed";
+import { openGraph } from "@/app/open-graph";
+import { site } from "@/content/home";
 import { postsByYear } from "@/content/collections";
 import { section } from "@/content/sections";
 import { formatDate } from "@/lib/format";
@@ -13,6 +15,11 @@ export const metadata: Metadata = {
   description: "Every post, by year.",
   robots: blog.announced ? undefined : { index: false, follow: false },
   alternates: feedAlternates("/blog/archive/"),
+  openGraph: openGraph({
+    title: `Archive — ${site.name}`,
+    description: "Every post, by year.",
+    url: "/blog/archive/",
+  }),
 };
 
 /**

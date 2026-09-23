@@ -73,7 +73,7 @@ describe("third-party branding", () => {
   });
 
   it("keeps the disclosures to the documents that owe them", () => {
-    // The exceptions are exceptions, not a licence. Each must actually be
+    // The exceptions are exceptions, not a license. Each must actually be
     // the page it claims to be.
     for (const route of Object.keys(DISCLOSURES)) {
       expect(all.map((page) => page.route)).toContain(route);

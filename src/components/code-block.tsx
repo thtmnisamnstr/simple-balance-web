@@ -7,9 +7,9 @@ import { CopyButton } from "@/components/client/copy-button";
  *
  * This replaces `<pre>` in the MDX component map, which is why it takes React
  * children rather than a string: by the time MDX reaches here the code has
- * already been through Shiki and is a tree of coloured spans. `textOf` walks
+ * already been through Shiki and is a tree of colored spans. `textOf` walks
  * that tree to recover what the author actually typed, because copying the
- * highlighted markup would paste colour classes into somebody's terminal.
+ * highlighted markup would paste color classes into somebody's terminal.
  *
  * The alternative — asking `rehype-pretty-code` for the raw source through a
  * transformer — works too and couples this component to that plugin's option

@@ -20,7 +20,7 @@ npx serve out        # serve the export exactly as Netlify will
 ## What this is
 
 A Next.js App Router project with `output: "export"`, so the build is plain
-HTML, CSS and JS with no server. That is deliberate: the artefact runs on
+HTML, CSS and JS with no server. That is deliberate: the artifact runs on
 Netlify today and would run unchanged on any other static host.
 
 ```
@@ -32,7 +32,7 @@ content/blog/       posts, as Markdown with frontmatter
 content/docs/       documentation pages
 docs/standards/     the design, content and code standards
 .claude/skills/     eight procedures that repeat
-scripts/            the screenshot capture
+scripts/            images, copy acceptance, the app-sync check, the link check
 ```
 
 ## Writing
@@ -125,6 +125,6 @@ what keeps the voice steady between releases.
 operations; [`docs/standards/code/`](docs/standards/code/index.md) for the
 source. [`AGENTS.md`](AGENTS.md) holds the invariants and wins over both.
 
-## Licence
+## License
 
 MIT. The application it advertises is AGPL-3.0.

@@ -1,5 +1,5 @@
 /**
- * Page N of M, with the neighbours.
+ * Page N of M, with the neighbors.
  *
  * `rel="prev"` and `rel="next"` are on the links because that is what a
  * crawler reads to understand a paginated series, and it costs two attributes.

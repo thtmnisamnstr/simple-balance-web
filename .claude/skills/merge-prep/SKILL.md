@@ -30,7 +30,7 @@ be wrong, then go and check that rather than reading for reassurance.
 The four that matter on this site, because each is invisible when broken:
 
 - **`ads.txt` and the redirects.** `docs/standards/operations.md` 2. A
-  catch-all rewrite in `netlify.toml` demonetises the apex silently. If the
+  catch-all rewrite in `netlify.toml` demonetizes the apex silently. If the
   diff touches `netlify.toml`, read that section again before approving it.
 - **Announced versus built.** `content.md` 6. Did anything link to `/blog` or
   `/docs`, or add them to the sitemap, while `announced` is still false? One
@@ -59,7 +59,7 @@ written down gets re-found.
 
 ## 3. Fix, with a check each
 
-Every fix that changes behaviour gets a test, and every new check is
+Every fix that changes behavior gets a test, and every new check is
 **mutation-proved**: break the guarded thing, watch it fail by name, restore,
 watch it pass. `code/testing.md` 2.3.
 
@@ -129,7 +129,7 @@ If anything changed after this phase, repeat it.
 
 `docs/standards/writing.md` §Commit messages owns the shape — read it rather
 than guessing. An imperative subject naming what is now true from the reader's
-side, no prefix, no full stop, 70 characters as a ceiling. A body of
+side, no prefix, no period, 70 characters as a ceiling. A body of
 hard-wrapped prose owing four things: why the defect survived review, what was
 checked and how, findings rejected and why, and corrections to the previous
 message.
@@ -165,7 +165,7 @@ split this way.
 
 **Report, plainly:**
 
-- What changed, in behaviour rather than in files.
+- What changed, in behavior rather than in files.
 - What phase 2 found, what was fixed, and what was rejected with the reason.
 - Whether anything was dead, including "nothing was".
 - That `npm run verify` is green, and that the page was looked at.

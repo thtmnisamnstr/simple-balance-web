@@ -7,7 +7,7 @@
 **Binding.** Almost everything here runs at build time and ships HTML. A
 `"use client"` component is allowed only where all four of these hold:
 
-1. **The behaviour is impossible without the browser.** Clipboard access,
+1. **The behavior is impossible without the browser.** Clipboard access,
    scroll position, a keyboard shortcut. Not "it would be nicer".
 2. **The page is correct before it hydrates.** The island adds; it never
    supplies content. `ActiveContents` highlights a contents list the server
@@ -41,7 +41,7 @@ that directory is the thing to look for in review.
 ### 1.2 Markdown is compiled on the server
 
 **Binding.** `next-mdx-remote/rsc` inside a server component, so Shiki and the
-remark/rehype pipeline run during the build and the reader downloads coloured
+remark/rehype pipeline run during the build and the reader downloads colored
 HTML rather than a highlighter.
 
 ## 2. Props
@@ -79,7 +79,7 @@ and gives a screen reader one enormous link name; the title is the link.
 `listbox` and `option` children, and that declaration obliges the whole
 contract: arrow keys moving a virtual cursor, `aria-activedescendant`, Home
 and End, Enter to select. Half of it — the roles without the keyboard — tells
-a screen reader to expect behaviour that is not there.
+a screen reader to expect behavior that is not there.
 
 It is now a search field and a list of links. They are reachable by Tab,
 announced correctly by every reader, and a live region gives the result count.
@@ -89,7 +89,7 @@ _Checked by:_ `npm run lint`. `jsx-a11y`'s `prefer-tag-over-role` and
 `no-noninteractive-element-to-interactive-role` both fired on the first
 version, which is how this was found.
 
-### 4.2 Prefer the element with the behaviour built in
+### 4.2 Prefer the element with the behavior built in
 
 **House.** `<details>` for the narrow-screen docs sidebar rather than a
 scripted drawer: it works before hydration, find-in-page can open it, and it

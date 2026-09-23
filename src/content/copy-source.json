@@ -1,7 +1,7 @@
 {
   "$comment": "The application descriptions this site's copy was written from. Updated only by `npm run copy:accept`, which is the explicit act of saying the words here have been re-read against the words there. Never edited by hand and never refreshed to make a test pass.",
-  "acceptedFor": "25b0dd3b77cb9b495d78fa648de9e2ca8776dec6",
-  "acceptedAt": "2026-09-18",
+  "acceptedFor": "a0c350b2369d360bc0f2c89a390ebdc8d412b243",
+  "acceptedAt": "2026-09-23",
   "entries": {
     "all-accounts-one-page": {
       "name": "Every account in one place",
@@ -26,7 +26,7 @@
     },
     "own-your-data": {
       "name": "Your data stays yours",
-      "plain": "Run it on your own machine and nobody else has a copy. Export everything to a spreadsheet whenever you want.",
+      "plain": "Run it on your own machine and nobody else has a copy. Export every transaction to a spreadsheet whenever you want.",
       "why": "It is a record of everything somebody spends money on.",
       "tier": "A",
       "rank": 4
@@ -40,7 +40,7 @@
     },
     "recurring": {
       "name": "Nothing to remember",
-      "plain": "Rent, pay day, a subscription: set it up once and it turns up on the day, waiting for you to approve it.",
+      "plain": "Rent, payday, a subscription: set it up once and it shows up when it is due, waiting for you to approve it.",
       "why": "The annual renewal nobody remembers is the classic way a budget gets blown.",
       "tier": "B",
       "rank": 2
@@ -62,7 +62,7 @@
     "multi-currency": {
       "name": "More than one currency",
       "plain": "Hold accounts in different currencies. Totals are kept separate rather than converted at a rate that would be out of date tomorrow.",
-      "why": "Anybody who has moved country, works abroad, or travels has this problem and most tools guess at it.",
+      "why": "Anybody who has moved to another country, works abroad, or travels has this problem and most tools guess at it.",
       "tier": "B",
       "rank": 5
     },
@@ -75,14 +75,14 @@
     },
     "splits": {
       "name": "One receipt, several categories",
-      "plain": "Split a shop between groceries and household, each counted on its own.",
+      "plain": "Split a grocery run between groceries and household, each counted on its own.",
       "why": "A supermarket trip is rarely one category.",
       "tier": "C",
       "rank": 1
     },
     "bulk-edits": {
       "name": "Fix thousands of rows at once",
-      "plain": "Change or delete up to ten thousand transactions in one go, after seeing exactly what it will touch.",
+      "plain": "Change or delete up to ten thousand transactions at once, after seeing exactly what it will touch.",
       "why": "One mis-mapped import can put a year of entries in the wrong category.",
       "tier": "C",
       "rank": 2
@@ -110,7 +110,7 @@
     },
     "agents": {
       "name": "Let an AI assistant do the filing",
-      "plain": "Connect an assistant and let it import statements and tidy categories. It can suggest, but it cannot commit anything without you.",
+      "plain": "Connect an assistant and let it import statements and clean up categories. When you connect it you see exactly what it is asking to do and can refuse; an assistant limited to suggesting queues entries for you to approve, and Settings shows what each connected assistant can do and lets you cut it off.",
       "why": "It is genuinely useful and genuinely alarming, so the limits matter more than the capability.",
       "tier": "C",
       "rank": 6

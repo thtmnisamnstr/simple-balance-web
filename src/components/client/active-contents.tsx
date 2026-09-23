@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
  * without this — every link works, and the only thing hydration adds is the
  * highlight. That is the island rule: enhancement, never the content.
  *
- * `IntersectionObserver` with a top-weighted margin rather than scroll maths,
+ * `IntersectionObserver` with a top-weighted margin rather than scroll math,
  * because scroll handlers fire constantly and get the answer wrong at the
  * bottom of a page where the last heading can never reach the top of the
  * viewport.

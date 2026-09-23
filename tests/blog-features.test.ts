@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { darkVariant } from "@/components/cover";
 import {
   allEntries,
-  blogNeighbours,
+  blogNeighbors,
   paginate,
   postsByAuthor,
   postsByTag,
@@ -14,7 +14,7 @@ import {
   tagSlug,
 } from "@/content/collections";
 
-/** The relational parts of the blog: tags, series, neighbours, related, paging. */
+/** The relational parts of the blog: tags, series, neighbors, related, paging. */
 
 const posts = allEntries("blog");
 
@@ -23,7 +23,7 @@ describe("tags", () => {
     expect(posts.some((p) => (p.frontmatter.tags ?? []).length > 0)).toBe(true);
   });
 
-  it("matches a tag however it was capitalised", () => {
+  it("matches a tag however it was capitalized", () => {
     // Two posts writing "Bookkeeping" and "bookkeeping" must be one tag, or
     // the archive splits in half and neither page has everything.
     expect(tagSlug("Bookkeeping")).toBe(tagSlug("bookkeeping"));
@@ -71,11 +71,11 @@ describe("series", () => {
   });
 });
 
-describe("neighbours", () => {
+describe("neighbors", () => {
   it("points previous at the earlier post", () => {
     // `allEntries` is newest first, so this is the index that trips people up.
     for (const [index, post] of posts.entries()) {
-      const { previous, next } = blogNeighbours(post.slug);
+      const { previous, next } = blogNeighbors(post.slug);
       expect(previous?.slug).toBe(posts[index + 1]?.slug);
       expect(next?.slug).toBe(posts[index - 1]?.slug);
     }

@@ -8,6 +8,7 @@ import { SiteHeader } from "@/components/site-header";
 import { feedAlternates } from "@/lib/feed";
 import { SiteFooter } from "@/components/site-footer";
 import { site, hero } from "@/content/home";
+import { openGraph } from "@/app/open-graph";
 
 export const metadata: Metadata = {
   metadataBase: new URL(`https://${site.domain}`),
@@ -19,8 +20,9 @@ export const metadata: Metadata = {
    * The domain is deliberately not in the title: it is already in the address
    * bar, and a tab reading "Simple Balance — smpl.money" spends its first
    * twenty characters telling the reader something their browser is showing
-   * them. It appears where it is useful instead — the footer, and `siteName`
-   * below, which is what a link preview renders.
+   * them. It appears where it is useful instead — the footer, and the
+   * `siteName` every page's Open Graph block carries (`src/app/open-graph.ts`),
+   * which is what a link preview renders.
    */
   title: {
     default: `${site.name} — ${site.titleTagline}`,
@@ -28,38 +30,18 @@ export const metadata: Metadata = {
   },
   description: hero.lede,
   applicationName: site.name,
-  openGraph: {
-    type: "website",
-    siteName: site.name,
+  openGraph: openGraph({
     title: `${site.name} — ${site.tagline}`,
     description: hero.lede,
-    url: `https://${site.domain}`,
-    // The site sells in US dollars to a US reader and its copy is written in
-    // American English. It said en_GB, which is the locale a link preview and
-    // a crawler are told to expect.
-    locale: "en_US",
-    /*
-     * The card a link to this site shows in Slack, Bluesky, LinkedIn or a
-     * message. Without it they render a blank rectangle, which on a marketing
-     * page is the one picture guaranteed to be seen. Built by
-     * `scripts/build-images.mjs` rather than per request, because a
-     * per-request renderer is a server and this site does not have one.
-     */
-    images: [
-      {
-        url: "/og.png",
-        width: 1200,
-        height: 630,
-        alt: `${site.name} — ${site.titleTagline}`,
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: site.name,
-    description: hero.lede,
-    images: ["/og.png"],
-  },
+    url: "/",
+  }),
+  /*
+   * Only the card size. Next fills a page's Twitter title, description and
+   * image from that page's own `openGraph` block, but only where this one is
+   * silent, so declaring them here gave every page on the site the homepage's
+   * card on X while its Open Graph block said something else.
+   */
+  twitter: { card: "summary_large_image" },
   /*
    * Advertised on every page, which this could not do on its own: Next
    * replaces `alternates` rather than merging it, so every route declaring a
@@ -100,7 +82,10 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { readonly children: ReactNode }) {
   return (
-    <html lang="en">
+    // `en-US`, not `en`: a browser choosing a spell-checker, a screen reader
+    // choosing a voice and a translator choosing a source are all told only
+    // "English" by the bare tag, and the copy is American.
+    <html lang="en-US">
       <body>
         <a className="skip-link" href="#main">
           Skip to content

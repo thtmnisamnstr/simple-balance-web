@@ -10,7 +10,7 @@ build. This is the pass that goes further than a gate can: a gate says "not
 worse", and this asks "could it be better".
 
 Run it after adding images or a dependency, and periodically. Not on every
-commit — most of what it finds is a judgement, and a judgement in a gate is a
+commit — most of what it finds is a judgment, and a judgment in a gate is a
 gate people route around.
 
 ## 1. Measure before changing anything
@@ -68,12 +68,19 @@ There is no webfont, and the stack matches the application's exactly
 **Check the match, not the absence.** Grepping this tree for `@font-face` and
 finding nothing proves only that no webfont was added _here_; the rule is
 about two surfaces agreeing, and the other one is in another repository. Read
-it over the network:
+it over the network, at the ref the sync check resolves:
 
 ```sh
-curl -fsSL "https://raw.githubusercontent.com/thtmnisamnstr/simple-balance/main/src/client/styles.css" \
+REF=$(node scripts/check-app-sync.mjs --json | node -p 'JSON.parse(require("fs").readFileSync(0, "utf8")).ref')
+curl -fsSL "https://raw.githubusercontent.com/thtmnisamnstr/simple-balance/$REF/src/client/styles.css" \
   | grep -A 6 "font-family"
 ```
+
+**Not `main`.** The site is kept in step with whichever ref that script
+chooses, which until a release merges is the release branch, and a stack
+checked against `main` is checked against a stylesheet the site is not
+following. A `null` ref or a 404 is a failed check, not a match, and
+`sync-from-app` §0 says how to tell why.
 
 The sans stacks are byte-identical. The **monospace** stacks are not, on
 purpose, and `web.md` 3.2 carries the argument and the condition that would

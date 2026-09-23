@@ -64,7 +64,7 @@ inventing its own gap.
 **§4.2 A class belongs to one thing.** Two components sharing a class can no
 longer differ. Already paid for twice in this repository.
 
-**§1.1 Colour from the contract.** In dark mode, anything that did not
+**§1.1 Color from the contract.** In dark mode, anything that did not
 re-theme is a literal that escaped the sweep — or a token used for the wrong
 role.
 

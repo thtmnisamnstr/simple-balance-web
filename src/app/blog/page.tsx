@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { feedAlternates } from "@/lib/feed";
+import { openGraph } from "@/app/open-graph";
+import { site } from "@/content/home";
 import { blogIndex, blogTags } from "@/content/collections";
 import { section } from "@/content/sections";
 import { EmptyState } from "@/components/empty-state";
@@ -14,6 +16,11 @@ export const metadata: Metadata = {
   // sitemap reads the same one — `src/content/sections.ts`.
   robots: blog.announced ? undefined : { index: false, follow: false },
   alternates: feedAlternates(blog.href),
+  openGraph: openGraph({
+    title: `${blog.title} — ${site.name}`,
+    description: blog.description,
+    url: blog.href,
+  }),
 };
 
 export default function BlogIndex() {

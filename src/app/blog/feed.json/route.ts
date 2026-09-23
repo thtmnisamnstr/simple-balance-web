@@ -14,7 +14,7 @@ export function GET(): Response {
     description: blog.description,
     home_page_url: `${base}${blog.href}`,
     feed_url: `${base}/blog/feed.json`,
-    language: "en",
+    language: "en-US",
     items: feedPosts().map((post) => ({
       id: postUrl(post),
       url: postUrl(post),

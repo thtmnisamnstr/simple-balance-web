@@ -87,7 +87,7 @@ describe("a blog post", () => {
     expect(block![1]).not.toContain("<");
   });
 
-  it("links its series, its tags and its neighbours", () => {
+  it("links its series, its tags and its neighbors", () => {
     expect(html).toContain("/blog/tags/bookkeeping/");
     expect(html).toContain("/blog/double-entry-for-one-person/");
     expect(html).toContain('aria-labelledby="series-title"');

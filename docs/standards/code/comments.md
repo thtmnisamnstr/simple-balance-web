@@ -14,7 +14,7 @@ person in a hurry.
 Examples of the kind that earn their place, all from this repository:
 
 - Why `robots.txt` allows crawling of pages that carry `noindex`.
-- Why the date is normalised in the parser rather than at the call site.
+- Why the date is normalized in the parser rather than at the call site.
 - Why the authors registry is re-exported with a wider value type.
 - Why there is no catch-all rewrite in `netlify.toml`.
 

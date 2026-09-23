@@ -33,10 +33,10 @@
 # NO CATCH-ALL REDIRECT.
 #
 # The reflex on a static host is `/* -> /index.html 200`. Do not add one.
-# `smpl.money/ads.txt` is what authorises the advertising inventory on
+# `smpl.money/ads.txt` is what authorizes the advertising inventory on
 # app.smpl.money, and a catch-all rewrite turns a missing or misspelled path
 # into a 200 of HTML — which Google reads as an ads.txt that does not list the
-# publisher id, the one documented state that demonetises the domain outright.
+# publisher id, the one documented state that demonetizes the domain outright.
 # `trailingSlash: true` already gives every route its own index.html, so a
 # fallback buys nothing. `docs/standards/operations.md` has the argument and
 # `tests/export-shape.test.ts` fails if a catch-all appears here.
