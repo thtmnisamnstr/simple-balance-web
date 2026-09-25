@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { feedAlternates } from "@/lib/feed";
+import { openGraph } from "@/app/open-graph";
+import { site } from "@/content/home";
 import { notFound } from "next/navigation";
 import { allEntries, paginate, POSTS_PER_PAGE } from "@/content/collections";
 import { section } from "@/content/sections";
@@ -34,12 +36,19 @@ export async function generateMetadata({
   params: Promise<{ page: string }>;
 }): Promise<Metadata> {
   const { page } = await params;
+  // Page one is the same page as `/blog/`, and says so.
+  const canonical = Number(page) === 1 ? blog.href : `/blog/page/${page}/`;
+  const title = `${blog.title}, page ${page}`;
   return {
-    title: `${blog.title}, page ${page}`,
+    title,
     description: blog.description,
     robots: blog.announced ? undefined : { index: false, follow: false },
-    // Page one is the same page as `/blog/`, and says so.
-    alternates: feedAlternates(Number(page) === 1 ? blog.href : `/blog/page/${page}/`),
+    alternates: feedAlternates(canonical),
+    openGraph: openGraph({
+      title: `${title} — ${site.name}`,
+      description: blog.description,
+      url: canonical,
+    }),
   };
 }
 

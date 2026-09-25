@@ -5,7 +5,7 @@
  * whatever `og:image` points at. With none, it shows a blank card — which for
  * a marketing page is the one place a picture is guaranteed to be seen.
  *
- * Drawn as SVG and rasterised with sharp, at build time, committed as a file.
+ * Drawn as SVG and rasterized with sharp, at build time, committed as a file.
  * The alternative is Next's `ImageResponse`, which renders per request and so
  * is a server — the thing `output: "export"` exists to avoid. A static card is
  * also the right shape here: it says what the product is, and it does not
@@ -16,6 +16,7 @@
  * 1200x630 is the size every platform crops from.
  */
 import sharp from "sharp";
+import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import matter from "gray-matter";
 
@@ -40,7 +41,7 @@ function palette(block) {
     const match = block.match(new RegExp(`--${token}:\\s*([^;]+);`));
     if (!match) throw new Error(`brand.css has no --${token} in this block`);
     const value = match[1].trim();
-    // `rgb(207 233 217 / 45%)` is a colour with an alpha the SVG sets itself.
+    // `rgb(207 233 217 / 45%)` is a color with an alpha the SVG sets itself.
     const rgb = value.match(/^rgb\(\s*(\d+)\s+(\d+)\s+(\d+)/);
     return rgb ? `rgb(${rgb[1]}, ${rgb[2]}, ${rgb[3]})` : value;
   };
@@ -145,9 +146,9 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" 
 </svg>`;
 
 /*
- * A palette PNG, not a truecolour one: 126 KB to 57 KB for a card that is
- * flat colour, one gradient wash and text. The wash is the only thing 256
- * colours could band and it does not — it was looked at rather than assumed.
+ * A palette PNG, not a truecolor one: 126 KB to 57 KB for a card that is
+ * flat color, one gradient wash and text. The wash is the only thing 256
+ * colors could band and it does not — it was looked at rather than assumed.
  *
  * It stays a PNG rather than becoming WebP because the only things that fetch
  * it are link-preview scrapers, and their format support is not something
@@ -167,7 +168,7 @@ console.log(
  *
  * Generated rather than sourced. The alternative for a technical blog is
  * stock photography of somebody pointing at a laptop, which says nothing,
- * costs a licence and dates. A typographic cover in the product's own palette
+ * costs a license and dates. A typographic cover in the product's own palette
  * says what the post is called and gets out of the way.
  * ------------------------------------------------------------------ */
 
@@ -250,23 +251,37 @@ function coverSvg(title, kicker, theme) {
  *
  * The originals are never touched: these are written beside them, and
  * `sync-from-app` §4 regenerates them after a pull.
+ *
+ * **Each copy is recorded with the original it was made from.** A stale copy
+ * looks like nothing at all: a pull replaces the original, the build is
+ * green, and a phone goes on showing the old screen at 1200px while a desktop
+ * shows the new one at 1600. `SOURCES` holds the hash of every original and
+ * of the copy made from it, and `tests/home-page.test.tsx` fails when either
+ * stops matching the files. It is written whole on every run, so it only
+ * ever describes this run, and it sits outside `public/` because it is a
+ * record for this repository rather than something to publish.
  * ------------------------------------------------------------------ */
 const NARROW = 1200;
+const SOURCES = "scripts/build-images.sources.json";
+const sha256 = (bytes) => createHash("sha256").update(bytes).digest("hex");
 mkdirSync(`public/screenshots/${NARROW}`, { recursive: true });
-let narrowed = 0;
+const copies = {};
 let narrowBytes = 0;
-for (const file of readdirSync("public/screenshots")) {
+for (const file of readdirSync("public/screenshots").toSorted()) {
   if (!file.endsWith(".webp")) continue;
-  const derived = await sharp(`public/screenshots/${file}`)
-    .resize(NARROW)
-    .webp({ quality: 82, effort: 6 })
-    .toBuffer();
+  const original = readFileSync(`public/screenshots/${file}`);
+  const derived = await sharp(original).resize(NARROW).webp({ quality: 82, effort: 6 }).toBuffer();
   writeFileSync(`public/screenshots/${NARROW}/${file}`, derived);
-  narrowed += 1;
+  copies[file] = { original: sha256(original), copy: sha256(derived) };
   narrowBytes += derived.length;
 }
+writeFileSync(
+  SOURCES,
+  `${JSON.stringify({ writtenBy: "scripts/build-images.mjs", width: NARROW, copies }, null, 2)}\n`,
+);
 console.log(
-  `wrote ${narrowed} screenshots at ${NARROW}px (${Math.round(narrowBytes / 1024)} KB total).`,
+  `wrote ${Object.keys(copies).length} screenshots at ${NARROW}px ` +
+    `(${Math.round(narrowBytes / 1024)} KB total), and ${SOURCES}.`,
 );
 
 mkdirSync("public/covers", { recursive: true });

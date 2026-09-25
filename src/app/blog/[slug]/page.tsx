@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { feedAlternates } from "@/lib/feed";
+import { openGraph } from "@/app/open-graph";
 import { notFound } from "next/navigation";
 import {
   allEntries,
-  blogNeighbours,
+  blogNeighbors,
   entryBySlug,
   relatedPosts,
   seriesOf,
@@ -43,23 +44,26 @@ export async function generateMetadata({
   const post = entryBySlug("blog", slug);
   if (!post) return {};
   const meta = post.frontmatter;
+  // A post published elsewhere first says so, so the two copies do not
+  // compete with each other in a search index. Its preview names the same
+  // address, because `og:url` is the canonical by definition.
+  const canonical = meta.canonical ?? `/blog/${slug}/`;
   return {
     title: meta.title,
     description: meta.description,
     robots: blog.announced ? undefined : { index: false, follow: false },
-    // A post published elsewhere first says so, so the two copies do not
-    // compete with each other in a search index.
-    alternates: feedAlternates(meta.canonical ?? `/blog/${slug}/`),
-    openGraph: {
+    alternates: feedAlternates(canonical),
+    openGraph: openGraph({
       type: "article",
       title: meta.title,
       description: meta.description,
+      url: canonical,
       ...(meta.date ? { publishedTime: meta.date } : {}),
       ...(meta.updated ? { modifiedTime: meta.updated } : {}),
       authors: (meta.authors ?? []).map((key) => authors[key].name),
       ...(meta.tags ? { tags: [...meta.tags] } : {}),
       ...(meta.image ? { images: [{ url: meta.image, alt: meta.imageAlt ?? "" }] } : {}),
-    },
+    }),
     twitter: { card: meta.image ? "summary_large_image" : "summary", title: meta.title },
     ...(meta.tags ? { keywords: [...meta.tags] } : {}),
   };
@@ -72,7 +76,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
 
   const meta = post.frontmatter;
   const contents = tableOfContents(post.body);
-  const { previous, next } = blogNeighbours(slug);
+  const { previous, next } = blogNeighbors(slug);
   const series = seriesOf(post);
   const related = relatedPosts(post);
   const trail = [

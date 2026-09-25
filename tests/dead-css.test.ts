@@ -78,7 +78,7 @@ describe("the stylesheets", () => {
   });
 
   it("keeps the composed list to names that are actually composed", () => {
-    // An entry here is an exception, not a licence. If the expression that
+    // An entry here is an exception, not a license. If the expression that
     // builds it has gone, the entry is stale and the CSS may be dead.
     for (const [name, where] of Object.entries(COMPOSED)) {
       const prefix = name.slice(0, name.lastIndexOf("-") + 1);

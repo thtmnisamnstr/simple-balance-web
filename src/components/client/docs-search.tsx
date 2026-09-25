@@ -62,17 +62,17 @@ export function DocsSearch() {
   // Fetch the index the first time somebody types, and only once.
   useEffect(() => {
     if (query === "" || docs || failed) return;
-    let cancelled = false;
+    let canceled = false;
     fetch("/docs/search-index.json")
       .then((response) => (response.ok ? response.json() : Promise.reject(new Error("no index"))))
       .then((data: SearchDoc[]) => {
-        if (!cancelled) setDocs(data);
+        if (!canceled) setDocs(data);
       })
       .catch(() => {
-        if (!cancelled) setFailed(true);
+        if (!canceled) setFailed(true);
       });
     return () => {
-      cancelled = true;
+      canceled = true;
     };
   }, [query, docs, failed]);
 
@@ -140,7 +140,7 @@ export function DocsSearch() {
         started as, and declaring it obliges the whole contract: arrow keys
         moving a virtual cursor, `aria-activedescendant`, Home and End, Enter
         selecting the focused option. Half of it — the roles without the
-        keyboard — tells a screen reader to expect behaviour that is not
+        keyboard — tells a screen reader to expect behavior that is not
         there, which is worse than not claiming the pattern. As plain links
         they are reachable by Tab and announced correctly by every reader.
         The live region below is what makes the count audible.

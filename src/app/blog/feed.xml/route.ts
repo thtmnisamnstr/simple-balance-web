@@ -10,6 +10,12 @@ export const dynamic = "force-static";
  * `<description>` carries the summary rather than the full body: a feed that
  * ships the whole post is a second copy of the site to keep correct, and the
  * point of the link is that the post is at the other end of it.
+ *
+ * `<language>` is `en-us` rather than `en`, because the copy is American and
+ * a reader choosing a dictionary or a voice is otherwise told only "English".
+ * Lowercase is how the RSS 2.0 specification's list of codes writes it; the
+ * JSON and Atom feeds carry `en-US`, the casing theirs use. A language tag is
+ * case-insensitive, so the three agree.
  */
 export function GET(): Response {
   const blog = section("blog");
@@ -35,7 +41,7 @@ ${(post.frontmatter.tags ?? []).map((tag) => `      <category>${xmlEscape(tag)}<
     <title>${xmlEscape(`${site.name} — ${blog.title}`)}</title>
     <link>${base}${blog.href}</link>
     <description>${xmlEscape(blog.description)}</description>
-    <language>en</language>
+    <language>en-us</language>
     <atom:link href="${base}/blog/feed.xml" rel="self" type="application/rss+xml" />
 ${items}
   </channel>

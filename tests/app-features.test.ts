@@ -46,7 +46,7 @@ describe("what this site chose to say", () => {
   ]);
 
   it("covers every tier A feature", () => {
-    // Tier A is the application's judgement of what a stranger reads first.
+    // Tier A is the application's judgment of what a stranger reads first.
     // The site may word it however it likes; dropping one drops the reason
     // somebody would use the product.
     const uncovered = byTier("A")

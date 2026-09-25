@@ -6,7 +6,7 @@ description: Bring docs/standards, AGENTS.md and CHANGELOG.md back to true after
 # Bring the documents back to true
 
 `docs/standards/writing.md` §Keeping a document true states the rule: **a
-change that alters behaviour a document describes changes that document in the
+change that alters behavior a document describes changes that document in the
 same commit.** This is that step done systematically instead of from memory.
 
 **Point at the guides, never copy them.** If you find yourself restating a rule
@@ -20,7 +20,7 @@ git diff main...HEAD --stat
 git log --oneline main..HEAD | cat
 ```
 
-For each change write one sentence about the **behaviour**, not the edit. "The
+For each change write one sentence about the **behavior**, not the edit. "The
 sign-in control now says why it does nothing" rather than "changed a span".
 
 Then sort each into exactly one of:
@@ -70,7 +70,7 @@ in sentence case, a **Binding** / **House** / **Contested** label, the argument
 with citations, **what the obvious alternative was and why it is wrong**, and a
 closing `*Checked by:*`.
 
-If it can be mechanised, write the test in the same change and mutation-prove
+If it can be mechanized, write the test in the same change and mutation-prove
 it.
 
 ## 5. The changelog
@@ -98,6 +98,6 @@ Then `npm run format && npm run verify`.
 
 ## 8. Report
 
-Documents changed and why; any rule newly mechanised; any disagreement recorded
+Documents changed and why; any rule newly mechanized; any disagreement recorded
 rather than resolved; and anything found false that you did not fix, with the
 reason.

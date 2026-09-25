@@ -11,7 +11,7 @@
  * WHAT IS DELIBERATELY NOT HERE. The app declares about sixty tokens per
  * block. This file carries the thirty-five a marketing page can use, and
  * leaves out four groups that would be dead weight: the ten `--series-*` chart
- * colours, the five `--field*` form tokens, the seven `--art-*` illustration
+ * colors, the five `--field*` form tokens, the seven `--art-*` illustration
  * tokens, and `--fill-deep`, `--scrim` and `--shadow-overlay`, which exist for
  * modals and overlays this site does not have. Adding one back is fine; adding
  * one that nothing uses is what `npm run lint` and the dead-CSS sweep in
@@ -23,7 +23,7 @@
  * third block would be unreachable CSS. `localStorage` is per-origin, so a
  * toggle here could not have carried a choice made at app.smpl.money anyway —
  * it would be a second, contradictory preference rather than a shared one.
- * Respecting `prefers-color-scheme` and nothing else is the honest behaviour
+ * Respecting `prefers-color-scheme` and nothing else is the honest behavior
  * for a page somebody reads once. If a toggle is ever added, the third block
  * arrives with it and `tests/brand-tokens.test.ts` is updated to expect three.
  */
@@ -82,9 +82,12 @@
      `--art-ink` is THIS SITE'S OWN and has no counterpart in the
      application, which is why it is called out rather than left to look
      copied: the app's art surface carries no solid text, so it never needed
-     one. The value is the app's dark-theme `--ink`, so the colour is still
-     the app's even though the token is not. `app-alignment` §4 names it as
-     the one line that comparison is expected to report. */
+     one. The value is the app's dark-theme `--ink`, so the color is still
+     the app's even though the token is not. `sync-from-app` §1 checks that
+     every declaration in this file, name and value together, is also
+     declared somewhere in the app's `src/client/styles.css`. It is one-way,
+     it does not ask which theme block a declaration sits in, and this is the
+     one line it is expected to report. */
   --art-base: #123e2d;
   --art-ink: #e7ede9;
   --art-bar: #86ceb0;

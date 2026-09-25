@@ -56,9 +56,18 @@ const FEED_TYPES = {
   "application/feed+json": "/blog/feed.json",
 } as const;
 
-/** A page's `alternates`: its own canonical, and the feeds every page advertises. */
-export function feedAlternates(canonical: string) {
-  return { canonical, types: FEED_TYPES } as const;
+/**
+ * A page's `alternates`: its own canonical, and the feeds every page advertises.
+ *
+ * `null` is the 404's, which is served at every address that does not exist
+ * and so has no canonical to give. Declaring the feeds alone is what keeps it
+ * from inheriting the root's, which pointed every mistyped link at the
+ * homepage.
+ */
+export function feedAlternates(canonical: string | null) {
+  return canonical === null
+    ? ({ types: FEED_TYPES } as const)
+    : ({ canonical, types: FEED_TYPES } as const);
 }
 
 /**

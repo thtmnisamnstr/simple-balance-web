@@ -6,7 +6,7 @@ description: Update Next.js, React, Node and every other dependency to their new
 # Update everything, then prove it still works
 
 An update that leaves the build green is half the job. The half that matters is
-the part where something changed behaviour and nothing failed — a renamed
+the part where something changed behavior and nothing failed — a renamed
 config key that is now ignored, a plugin whose default flipped, a
 `prefers-color-scheme` block that stopped being emitted.
 
@@ -74,7 +74,7 @@ Next.js majors actually bite.
 - **The static export still exports.** `out/` holds `index.html`,
   `blog/index.html`, `docs/index.html`, `sitemap.xml`, `robots.txt`, and a
   directory per post and per doc. `tests/export-shape.test.ts` covers the
-  config; this is the artefact.
+  config; this is the artifact.
 - **`noindex` is still on the unannounced sections.** A metadata change in Next
   would break this silently, and it is the difference between a staged section
   and a published one.

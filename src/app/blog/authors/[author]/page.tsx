@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { feedAlternates } from "@/lib/feed";
+import { openGraph } from "@/app/open-graph";
+import { site } from "@/content/home";
 import { notFound } from "next/navigation";
 import { postsByAuthor } from "@/content/collections";
 import { authors, initialsOf, isAuthorKey } from "@/content/authors";
@@ -30,11 +32,15 @@ export async function generateMetadata({
   const { author } = await params;
   if (!isAuthorKey(author)) return {};
   const person = authors[author];
+  const path = `/blog/authors/${author}/`;
+  const title = `Posts by ${person.name}`;
+  const description = `Everything ${person.name} has written here.`;
   return {
-    title: `Posts by ${person.name}`,
-    description: `Everything ${person.name} has written here.`,
+    title,
+    description,
     robots: blog.announced ? undefined : { index: false, follow: false },
-    alternates: feedAlternates(`/blog/authors/${author}/`),
+    alternates: feedAlternates(path),
+    openGraph: openGraph({ title: `${title} — ${site.name}`, description, url: path }),
   };
 }
 

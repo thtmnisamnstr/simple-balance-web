@@ -9,6 +9,74 @@ than a contract with readers.
 
 ### Changed
 
+**The terms are governed by California law and follow its automatic renewal
+rules, the privacy policy names Gmail, Cloudflare and the backups, and the
+terms say no tax is added to the price.** Each was either a decision nobody
+had made or a sentence the application didn't bear out, and both documents
+are dated September 23, 2026, because a change of governing law is material.
+
+- Governing law was England and Wales, carried over from the British draft
+  rather than chosen. It's California's now, without its conflict-of-laws
+  rules, and the state and federal courts in California have jurisdiction. A
+  consumer who lives somewhere else keeps the mandatory consumer law where
+  they live, and any right it gives them to bring a claim in their own
+  courts. There's no arbitration clause and no class-action waiver.
+- The policy said "an email delivery service" would carry the confirmation,
+  reset and reminder email, and promised to name it before one was in use.
+  It's Gmail, which is Google's, and it's named in the list of providers
+  and in the short version. The policy now says what each of the
+  application's four messages carries to Google: your address, a link that
+  stops working within an hour for a confirmation or a reset, and for a
+  recurring transaction's notice or a template's reminder, the name you gave
+  it, in the subject line too, and its dates. The application adds nothing
+  else, so none of them carries your name, an amount, a balance, a payee or
+  an account unless you typed one into that name.
+- The application sends by signing in to one Gmail mailbox, and Gmail keeps
+  a copy of each message in that mailbox's Sent mail; a bounce or an
+  automatic reply can bring another copy back. Deleting an account in the
+  application doesn't reach them. So the short version and the section on
+  deleting an account no longer say deleting it removes everything: the
+  copies stay until the operator deletes them, and every copy is deleted on
+  request.
+- The hosted machine backs up the whole database every night and keeps the
+  14 most recent backups, and the policy never said so. It does now, where
+  retention and deleting are, and the short version lists what outlasts a
+  deleted account, the backups for about two weeks, the server logs,
+  Stripe's record of payments and Gmail's copies, instead of saying "two
+  things", which the logs had already made wrong.
+- The policy called its providers processors, which is a role under each
+  one's own terms: Google is a controller for advertising and for its own
+  sign-in, and a processor for Gmail only on Google Workspace. They're
+  providers now, and Google is said to decide for itself how it uses what it
+  receives for advertising and sign-in. Cloudflare is named, because mail
+  sent to info@smpl.money arrives through it, and the section on where data
+  is held says Stripe, Google and Cloudflare hold what they receive in the
+  United States and elsewhere, under the Data Privacy Framework.
+- "We do not sell or share personal information" as the CCPA defines it was
+  a conclusion that holds only while Google's restricted data processing is
+  on, which the application doesn't set. The policy says what leaves for
+  advertising instead, and that Premium sends nothing. What Google receives
+  for an ad now includes what your browser hands it, your IP address, its
+  details and Google's own cookies, and the policy says Google may collect
+  across other sites and that nothing here reads Do Not Track, the two
+  things California's online privacy law asks every policy to say.
+- The terms said prices "exclude any tax that may apply where you are". The
+  application never turns on Stripe's automatic tax and never adds a tax
+  rate of its own, so nothing is added, and the terms now say so. If that
+  changes, a renewal gets the same notice by email that a price change
+  does, with the same right to cancel first. The pricing page didn't
+  mention tax and still doesn't.
+- The notice of a price change was "at least 30 days". California's
+  automatic renewal law, for contracts from July 1, 2025, wants between 7
+  and 30 days, with how to cancel, and "at least 30" left one day to send
+  it on. It's between 7 and 30 days now, saying what it will cost and how to
+  cancel. The notice of a material change also says how to cancel, and you
+  can cancel without signing in by writing to info@smpl.money from the
+  address on your account.
+
+`tests/legal.test.tsx` holds each of these, and every check was proved by
+breaking the sentence it reads and watching it fail.
+
 **The paid plan is $3 a month, or $30 a year.** It was $2 and $20. Six places a
 reader can reach carried the old number — the price on the card, the line under
 the three plans, the question about why it costs so little, the terms, the
@@ -16,15 +84,80 @@ description a search result shows, and the picture that appears when somebody
 shares the link — and a price that moves in five of them is worse than a price
 that moves in none.
 
-The application has not published the new price yet. This repository's copy of
-the product's contract — the thing every price here is checked against — was
-moved to $3 and $30 by hand, on the maintainer's instruction, so the checks
-pass and the site can go out ahead of the product. That is normally forbidden
-and is the part worth knowing: until the application publishes the new price
-and that copy is refreshed from it, the check cannot tell the truth, the site
-advertises a price that billing does not yet collect, and the weekly drift
-report will show a difference that is this change rather than the product
-moving.
+The application publishes the new price itself now. For a while it didn't, and
+this repository's copy of the product's contract, the thing every price here is
+checked against, was moved to $3 and $30 by hand so the site could go out ahead
+of the product. That copy has since been refreshed from the application's
+release pull request, thtmnisamnstr/simple-balance#39, and matches what the
+application publishes there exactly. So the check is reading the application's
+own figures again, and the weekly drift report has no hand edit left to show.
+The price is on the release branch rather than `main` until 0.2.0 merges.
+
+The check also covers all six places now. It used to cover one: the card was
+held to the contract, the terms were held to a literal in their own test, and a
+test named for agreeing with the terms never opened them.
+`tests/app-facts.test.ts` now requires every dollar figure in the line under the
+plans, the FAQ, the search and link-preview descriptions, the terms and the
+social card to be a price the application declares, or the free plan's $0, so a
+stale number fails wherever it's written. The search and link-preview
+descriptions moved out of the page's markup so a test could read them.
+
+**Every word of the site, and of the repository behind it, is American
+English.** The copy had moved to American spelling, but the guides, the skills,
+the comments and the code hadn't, and neither had the words that are spelled the
+same on both sides and are still British. The budgets screenshot's caption said
+"tickbox", the pricing page and the terms said "carry on using", the privacy
+policy called the operator "contactable", and a docs page counted "a pension"
+among the accounts a budget shouldn't see. Both posts still priced their
+examples in pounds, written out as words ("nine hundred pounds", "forty
+pounds"), which the earlier currency fix missed. Identifiers moved with the
+prose (`blogNeighbors`, `docsNeighbors`, `Emphasized`, a `canceled` flag), and
+dates render month first, so the legal pages say
+"Last updated September 22, 2026" where they, and every post and docs page, used
+to put the day first.
+
+British spelling stays only where it's the subject: the check's own patterns and
+fixtures, and quotations of what the copy used to say. `tests/copy.test.ts` now
+refuses the words as well as the spellings, and any price in pounds, pence or
+sterling, in the copy and in every Markdown file. Its fixtures show each pattern
+catching what it's for and leaving "analysis" and "realistic" alone, both of
+which the old spelling pattern would have flagged.
+
+**The site is written from the application's release pull request, at one
+commit.** Both snapshots of the application, the contract and the feature list,
+and every screenshot come from thtmnisamnstr/simple-balance#39 at `a0c350b`.
+Before, the two snapshots named different branches and different commits, and
+one of the branches had been deleted after it merged.
+
+Four screens were re-captured, in both themes: the Overview, Reports,
+Transactions and Budgets. The Overview now leads with a dollar total across
+checking, savings and a credit card, where it showed a lone euro account on a
+site that prices in dollars. Their four alt texts were rewritten against the new
+pictures, because the description is what a reader who can't see the picture
+gets instead of it, and a refreshed picture is exactly when it goes stale.
+
+The application reworded six of its feature descriptions in the same commit, and
+the copy written from them followed: a recurring entry shows up "when it's due"
+rather than "on the day", "in one go" is gone, and the export is "every
+transaction", which the Fixed entries below explain.
+
+**Links into the application open the version of it the site describes.** The
+footer's license, changelog and deployment links, and the new links in the docs,
+name the release branch, `deployment-and-monetization`, rather than `main`.
+While a release is on its way, `main` is wrong both ways.
+`deploy/compose/single/` and `docs/deployment-profiles.md` are new in 0.2.0 and
+404 there, and `main`'s deployment guide is the previous release's, with none of
+the billing or ad settings the configuration page describes. A commit would be
+right today and never move, so the links name the branch, and they move back to
+`main` in the same change as the snapshots.
+
+`tests/app-links.test.ts` holds every link under `content/` and `src/` to the
+ref the snapshot records, the footer's included, though those are built from a
+variable that a search for the URL reads straight past. It also refuses a
+malformed link: `http:`, a doubled slash, a period swallowed from the end of a
+sentence. The weekly check holds the same links to the ref it read, which is
+what notices them still naming the branch the week the release merges, when they
+still agree with the snapshots.
 
 **The homepage and the pricing page are written for somebody who has never
 used a personal finance product.** They were not. The old copy opened on "Know
@@ -83,6 +216,208 @@ banned-words test could not see.
 
 ### Fixed
 
+**A wide table in the docs scrolls inside itself rather than pushing the page
+sideways.** The configuration page's settings tables hold names like
+`IDEMPOTENCY_RETENTION_HOURS` in code spans, which have nowhere to break, and on
+a 320px phone they took the page to 469px, which is exactly what
+`docs/standards/web.md` 4.3 forbids. Every table in Markdown is now wrapped in a
+container that scrolls, the way the pricing page's comparison already did.
+Breaking the names instead would have fit the page and split a setting somebody
+has to copy exactly. `tests/a11y.test.ts` found it at 320px and 390px, and
+passes with the wrapper.
+
+**The Agents and MCP page describes how an assistant really connects.** It told
+a reader to paste a token issued from the settings page into their client's
+configuration, and that isn't how a client connects. The server is protected by
+OAuth: the client is given the address and nothing else, registers itself, and
+opens a browser for you to sign in. The page walks through that now, says the
+scopes are the client's to ask for, and names Revoke under Connected agents as
+the way to take access back.
+
+**The pages ask for a choice of three accounts only where the product asks for
+one, and say which three keep working until then.** Stopping a subscription was
+described to everybody as picking three accounts to keep using. The product asks
+only when more than three are in use as the plan ends, which can happen on a
+first downgrade and again after a subscription in which accounts were opened or
+reopened. With three or fewer, nothing is asked. Nothing said what happens
+before the choice either, though nobody is present when a subscription lapses:
+the three oldest of the accounts in use keep working, and the rest freeze at
+once. And the terms said a frozen account accepts no changes "until you choose
+them instead", one paragraph before saying the choice is made once.
+
+The limit itself was still worded as how many accounts you can keep, in the
+pricing page's first line, the lede over the comparison, the free plan's card
+and the search snippet, though you keep every account on every plan and what the
+free plan caps is how many are in use at once. `tests/app-facts.test.ts` holds
+the FAQ's answers to the conditions, and `tests/legal.test.tsx` holds the terms
+to promising "any three" in exactly one sentence, with its condition in it.
+
+**Every promise of an export says it's every transaction, and the answer about
+moving to your own copy says how.** The homepage, the pricing table, two FAQ
+answers, the privacy policy and the terms all promised you could take
+"everything" or "all of it" out as a spreadsheet. The export is the transaction
+CSV. Budgets, templates and recurring entries have no export, and an account's
+opening balance isn't in the file, so "everything" was a privacy promise rounded
+up.
+
+The FAQ answered the question about moving to your own copy with "Yes. Export
+everything", and said what comes out "is built to go back in unchanged".
+Followed as written, it moves one month, lands all of it in one account, and
+leaves every account off by where it started: an export follows the page's date
+bar, which opens on This month, an import puts every row into the one account
+picked for it, and the opening balance is set on the account rather than carried
+in the file. A transfer is in both accounts' files, and the importer takes
+10,000 rows. The answer and the terms now give the steps, and the importing page
+says the same. `tests/app-facts.test.ts` holds the answer to the four steps a
+reader wouldn't guess, and `tests/legal.test.tsx` holds the terms to them.
+
+**The privacy policy names who holds your data, says what a sign-in and a
+subscription leave behind, and lists the cookies the application actually
+sets.** Checked against the application, it was wrong in the places a reader
+would care about most:
+
+- The host holding every balance went unnamed. The short version, which is the
+  one most people read, said the application shares data with nobody but the
+  payment processor and the ad network, and the long version called the host
+  "our hosting and database provider". Both name Oracle Cloud Infrastructure
+  now. The policy also says an email delivery service will be named before one
+  is in use, and that an AI assistant sees your ledger only if you connect one.
+- It said payment records survive deleting an account for "typically six years",
+  the UK tax authority's figure, carried over from the first draft. Deleting an
+  account deletes the billing records the application keeps and your customer
+  record at Stripe, and the payments themselves stay in Stripe's records as tax
+  law requires.
+- It described a preference cookie for the theme. There isn't one: the theme is
+  saved on the account, with a copy in the browser's local storage. What it
+  didn't mention were the short-lived cookies set during a sign-in, and Stripe's
+  own cookies on the plan page.
+- It left out that each session records the IP address and browser it started
+  from, that sign-in attempts are counted per address, and what Stripe is sent:
+  your name, your email address and an identifier for your Simple Balance
+  account, not for any account in your ledger.
+- It promised an unsubscribe from product email the application doesn't send,
+  and told readers to opt out "when you create the account", on a form with no
+  such field.
+- It said, twice, that declining ad consent means no ads. The pricing page was
+  corrected for this and the policy wasn't. Declining keeps the ads from being
+  personalized and keeps Google from setting the cookies that need consent, and
+  Google may still show what it calls a limited ad.
+
+The terms pointed automated access at "the documented rate limits", and there
+are none to document. `tests/legal.test.tsx` holds each of these. The
+`legal-review` skill's cookie check now says which cookies to expect on which
+page, starting from a fresh private window, because Stripe's lasts a year and
+shows up on every page once the plan page has been opened.
+
+**Every page tells a browser, a crawler and a link preview that it's American
+English, and previews as itself.** Next replaces a parent's Open Graph block
+rather than merging it, the trap the feed links fell into, and it cut both ways.
+The ten pages that wrote their own block, the pricing page, both posts and every
+docs page, dropped the site's locale, name and card with it, so a link to the
+pricing page, the one most likely to be shared, previewed as a blank rectangle.
+The pages that wrote none inherited the homepage's whole, so the privacy policy
+and the terms previewed with the homepage's title and address. The X card,
+declared once with the homepage's title, description and image, filled in for
+other pages the same way. Every route now asks one helper for its block.
+
+The document said `lang="en"` and the feeds said `en` or nothing, and that tells
+a spell-checker, a screen reader or a translator only "English". All of them say
+`en-US` now. The 404 had inherited the homepage's canonical, which told a
+crawler that every mistyped link was the homepage, and it declares none now. Its
+words moved out of its markup, where no copy test could read them, and its
+second button, still labeled "Get the source" after the homepage retired that
+label, takes the homepage's own. `tests/copy.test.ts` reads every page the build
+emitted for the locale, the language, and a preview address that matches the
+canonical, and it found ten pages with no locale and nine naming the homepage's
+address. It also refuses a route that writes its own block, or none.
+
+**All seven documentation pages were checked against the application, and
+rewritten where they described something else.** Among them:
+
+- Getting started said the first visitor to an empty deployment gets the sign-up
+  form, as if the first account went to whoever arrived first. The form asks for
+  a one-time setup code the server prints to its log, and the page now says
+  where to find it. It also asked for PostgreSQL 16 where 15 works, and didn't
+  say that any address but `localhost` has to be HTTPS.
+- Importing a statement said the importer works out a file's encoding and its
+  date format, asking only when the dates can't settle it. It reads UTF-8,
+  always asks for the date order and the decimal separator, and starts on
+  YYYY-MM-DD, which isn't how most US banks write a date. It also said a bad
+  import can be deleted as if the ledger never knew, when the categories it
+  created stay.
+- Configuration promised every setting the server reads and listed seven. It's
+  written from the application's own reference now, which it links, and it
+  starts with `NODE_ENV`, which production requires and a host running
+  `npm start` doesn't set.
+- Accounts and transactions described four kinds of entry. There are three, and
+  a transfer between currencies is one of them.
+- Backups said a restored copy whose trial balance nets to zero holds a complete
+  ledger. That proves the books consistent, not complete: every transaction nets
+  to zero on its own, so a ledger missing some still passes. It also says to
+  start that copy with its mail off.
+
+Both posts now describe the entries in a reader's words rather than in debits
+and credits, and a refund as a deposit filed under the category the money was
+spent in.
+
+**The weekly check reads the version of the application the site is launching
+with, and compares the pictures too.** It read `main`, which has nothing to
+compare until the release that introduces the product kit merges, so it answered
+"could not tell" every week. Pointed at the release branch by hand, it answered
+"in sync" while eight of the twelve pictures on the homepage were a capture the
+application had replaced, the hero among them, because it compared only the
+contract and the feature list.
+
+It reads `main` once `main` carries the kit now, and until then the head of the
+open pull request into `main` that does, read by commit so one run sees one
+version. It compares every screenshot the site ships byte for byte, checks that
+both snapshots name one source, and `main` once that's what it reads, and holds
+the site's links to the ref it read. Those last two are what move the site back
+to `main` the week the release merges, when the content is identical and only
+the site's records still name the branch. What the application changed and what
+the site's own records got wrong are reported under separate headings, in one
+issue now titled "The site is out of step with the application", which takes
+over one still open under the old title rather than opening a second. The
+decisions are separate from the network, so `tests/app-sync.test.ts` holds them
+offline. And the `sync-from-app` skill's own comparison of the brand tokens,
+which the script doesn't make, read the stylesheet a line at a time and so was
+silent about the one declaration wrapped across two: it compared 79 of 80.
+
+**The AdSense guide puts the steps in the order Google requires, and names the
+settings the application reads.** It put `ads.txt` after approval and never
+connected the site to the account, and review doesn't start until the site is
+connected. The publisher id exists as soon as the account does, and the file
+carrying it is how this site verifies, so it goes in before the review request.
+The guide told the operator to set `ADSENSE_PERSONALIZED`, which doesn't exist,
+left out `PRIVACY_POLICY_URL`, without which the application refuses to start
+with ads configured, and still said the privacy policy wasn't written. It now
+says the machine has to be running 0.2.0 and selling Premium before any ad
+setting does anything. It also keeps `ADSENSE_CONSENT_MANAGED` unset where the
+application's own docs say to turn it on, because Google's consent message asks
+only visitors in the EEA, the UK and Switzerland, and everybody else would be
+shown the personalized ads the policy says need consent.
+
+**The redirect check and the em dash check read what the host and the renderer
+read.** The check that no redirect can answer `/ads.txt` with HTML, the one
+mistake that silently costs the application its ad revenue, failed a harmless
+moved-path redirect such as `/old-docs/*` and passed `/:page /index.html 200`,
+which can reach the file. It took a status from a commented-out line, missed a
+table header written with spaces inside its brackets, and never opened a
+`_redirects` file, which Netlify reads as well. It reads `netlify.toml` a line
+at a time now, fails a rule it can't read rather than passing it, and reads
+`_redirects` in both `public/` and `out/` with the same predicate, whose
+fixtures show it telling the two kinds of rule apart.
+
+The em dash check read the two marketing pages and nothing else, while the legal
+pages, the 404 and every post and docs page are copy under the same rule, and
+the legal pages and seven of the nine posts and docs pages carried them. It
+reads all of those now, and in Markdown it also reads what the renderer turns
+into an em dash: exactly two hyphens outside code, and the three character
+references. "Run it with --dry-run" publishes as "—dry-run", so a flag in prose
+goes in a code span. `tests/copy.test.ts` compiles its fixtures through the
+site's own Markdown plugins, so a change to that pipeline fails the check
+instead of leaving it describing one that's gone.
+
 **The label over the Premium plan no longer sits on top of the plan's name.**
 At the widths where the three cards are narrowest — a small laptop, roughly —
 "If you outgrow Free or hate ads" wrapped onto a second line, and that line
@@ -107,8 +442,15 @@ local market" — was the one written with the file open.
 Both said nothing happens until you approve it. That is true of a connection
 limited to proposing, and the application's own reference says a write-scoped
 one "covers every ledger operation, including direct and staged commits". The
-pages now say what is actually true: when you connect an assistant you choose
-what it is allowed to do.
+pages now say what is actually true, and a second pass against the
+application's consent screen corrected the first attempt at it, which said you
+choose what an assistant is allowed to do. The screen lists the scopes the
+assistant's client asked for and offers Allow access or Deny. It grants the
+request or nothing and can't narrow it, so a client that asks for every scope
+gets write access with the rest. The homepage now says you see what it's asking
+for and can refuse, that one limited to suggesting lines entries up for you to
+approve, and that Settings shows what each one can do and lets you cut it off.
+The pricing page says it gets only what you agree to when you connect it.
 
 **The pricing page said refusing ad consent means you see no ads.** The
 application serves the slot regardless; consent decides whether the request is
@@ -155,7 +497,7 @@ for.
 It is checked now rather than remembered. `tests/copy.test.ts` sweeps both
 marketing pages, both legal pages and every Markdown file under `content/`,
 plus the declared locale and the em dash. The rule had argued this could not
-be mechanised, on the grounds that a word list "would catch the spellings and
+be mechanized, on the grounds that a word list "would catch the spellings and
 miss the register" — which is an argument for a word list on the spellings.
 The check found one the hand pass had missed on its first run.
 
@@ -281,7 +623,7 @@ browsers, so dropping `Consolas` would land a code block on Courier New. The
 rule now records the divergence, the reason, and what would end it — the
 application rendering code to a user.
 
-**`public/og.png` was a 126 KB truecolour PNG** of flat colour, one gradient
+**`public/og.png` was a 126 KB truecolor PNG** of flat color, one gradient
 wash and some text. It is a palette PNG now, at 57 KB, and the wash was looked
 at rather than assumed — it does not band. It stays a PNG rather than becoming
 WebP because the only things that fetch it are link-preview scrapers, whose
@@ -350,11 +692,47 @@ devDependency now.
 
 ### Added
 
+**`smpl.money/ads.txt` names this site's AdSense publisher id.** It is how
+Google verifies the site for review, and what authorizes the advertising the
+application will serve on `app.smpl.money`, so it arrived as soon as the
+account had an id rather than after approval. It carries exactly the DIRECT
+record for `pub-9953156598757474` and the `ownerdomain` line. The check that
+used to assert the file was absent now asserts its contents, with the id
+written in the test rather than read from the file, so a file that authorized
+somebody else, used the application's `ca-pub-` spelling or added a
+`subdomain=` referral would fail the build.
+
+**A record of which picture each phone-sized copy was made from.** The homepage
+serves a 1200px copy of every screenshot to narrow screens, made from the 1600px
+original by the image build. A pull that replaced the originals and skipped that
+build left the old copies in place, and a phone went on showing the previous
+screen while a desktop showed the new one, with a green build and nothing on
+either to say so. The build now records the hash of every original and of the
+copy made from it, and `tests/home-page.test.tsx` fails when either stops
+matching the files, when a copy outlives a deleted screen, or when a screen the
+homepage names is missing a theme.
+
+**The copy's record names the pull it was checked against.**
+`src/content/copy-source.json` says which feature list the site's words were
+last accepted for, and it was recording the list before this one: the
+`sync-from-app` skill accepts the copy in §3 and moves the snapshot's commit in
+§5. `tests/copy-provenance.test.ts` now fails until the two agree, and §5 runs
+the accept once more.
+
+**A check that every skill a document sends somebody to exists.** When
+`app-alignment` became `sync-from-app`, the old name stayed in the legal review
+skill, the roadmap, a comment in the brand stylesheet and the snapshot's own
+note about what refreshes it, and nothing failed, because a skill is named in
+prose and a name is only text. `tests/skills.test.ts` reads the guides, the
+skills, the source and the workflows for skill names and the sections cited in
+them, and checks each is one this repository has. It also checks that every
+skill's name matches its directory, and that `AGENTS.md` lists all of them.
+
 **Two rules earned this week.** `content.md` 2.4 — a marketing claim is never
 stronger than the privacy policy it links to, after the pricing page rounded
 the ad disclosure down to "nothing about you attached". And
 `code/testing.md` 2.6 — a check finds its subject by identity, not by what it
-is called, after four tests broke on a copy rewrite that changed no behaviour
+is called, after four tests broke on a copy rewrite that changed no behavior
 any of them was testing. One of those four was the check that holds this
 site's prices to the application's contract, and it failed because a heading
 was reworded.
@@ -413,7 +791,7 @@ renders before committing.
 
 **A roadmap and an AdSense guide.** `docs/roadmap.md` lists every outstanding
 item with why it is not done and what done looks like; `docs/adsense.md` is the
-full procedure, including why this site's `ads.txt` authorises revenue earned
+full procedure, including why this site's `ads.txt` authorizes revenue earned
 on a different domain.
 
 **The site, at smpl.money.** A single marketing page: what the product is, four
@@ -472,7 +850,7 @@ page uses.
 
 **The brand contract.** `src/styles/brand.css` carries the application's
 palette, the two theme blocks holding one key set, and a test that fails if a
-colour appears anywhere else. A marketing page that is a slightly different
+color appears anywhere else. A marketing page that is a slightly different
 green from the product reads as a different company.
 
 **Standards and skills.** `docs/standards/` for the design, content, operations

@@ -33,7 +33,7 @@ the product's own name.
 **House.** Sentence case, not Title Case. "Budgets that carry", not "Budgets
 That Carry".
 
-_Checked by:_ `tests/copy.test.ts`, which counts capitalised words past the
+_Checked by:_ `tests/copy.test.ts`, which counts capitalized words past the
 first.
 
 ### 1.4 The reader has never used a personal finance product
@@ -115,8 +115,8 @@ happily.
 
 **Binding.** Everything a reader sees is written in American English, with
 contractions where somebody talking would use them. That is the homepage, the
-pricing page, the privacy policy, the terms, and every Markdown file under
-`content/`.
+pricing page, the privacy policy, the terms, the 404, and every Markdown file
+under `content/`.
 
 The site prices in US dollars and the application's own screens say
 **Checking**. The copy said "current account", "recognises", "totalled",
@@ -148,10 +148,31 @@ the point rather than the character: one is punctuation, seventeen is a
 voice. Guides are prose for somebody reading closely; copy is for somebody
 skimming.
 
-_Checked by:_ `tests/copy.test.ts` for the spellings, the `locale`, and the
-em dash. The **register** is `human`, for the same reason 1.4 is.
+_Checked by:_ `tests/copy.test.ts`, for everything but the register:
 
-**The first draft of this rule claimed none of it could be mechanised**, on
+- **the spellings**, and **the words** that are British even when spelled
+  the American way (_tickbox_, _carry on_, _contactable_, _a pension_), in
+  the copy and in every Markdown file under `content/`;
+- **the currency**: no example priced in pounds, pence or sterling, in the
+  copy or in `content/`;
+- **the declared language**: `lang="en-US"` on the document and on every
+  page the build emitted, `og:locale` `en_US` on each of them, and `en-US`
+  in all three feeds;
+- **the dates**, rendered month first;
+- **the em dash**, in the copy, the legal pages, the 404, and every
+  Markdown file under `content/`, all in one test, "keeps the em dash out
+  of the copy, whatever the guides do", which reads the content modules'
+  strings and then every Markdown file. It reads the character and every
+  spelling the pipeline turns into one: exactly two hyphens outside code,
+  and `&mdash;`, `&#8212;` and `&#x2014;`. A flag written as plain text,
+  "run it with --dry-run", publishes as "—dry-run", so a flag goes in a code
+  span. "reads an em dash the way the pipeline writes one" compiles fixtures
+  through `prose.tsx`'s own remark plugins, so a change to that pipeline
+  fails here rather than on the page.
+
+The **register** is `human`, for the same reason 1.4 is.
+
+**The first draft of this rule claimed none of it could be mechanized**, on
 the grounds that "a word list would catch the spellings and miss the
 register". That is an argument for a word list on the spellings, not against
 one — and the check found a spelling the hand pass had missed on its first
@@ -192,7 +213,7 @@ _Checked by:_ `tests/copy.test.ts` and `tests/home-page.test.tsx`.
 the policy it links to.
 
 The policy is careful about advertising, because it has to be: a
-non-personalised ad is still chosen from the page and the reader's rough
+non-personalized ad is still chosen from the page and the reader's rough
 location, and it still sets a cookie. A pricing page is where the temptation
 is to round that down, and it did — the answer to "what are the ads like?"
 said they were "requested without anything about you attached", which the
@@ -203,7 +224,7 @@ that discloses server logs with request paths.
 This is 6.3's failure — two surfaces using different words at one customer —
 except that the customer who notices is reading a privacy policy, which is the
 worst possible moment to be caught rounding down. Neither claim was a lie
-anybody wrote on purpose; both were a long document summarised from memory.
+anybody wrote on purpose; both were a long document summarized from memory.
 
 **The obvious alternative is to trust that whoever writes the copy has read
 the policy.** They had. The contradiction was two levels into a sub-clause
@@ -213,6 +234,49 @@ would write from a general memory of it.
 _Checked by:_ `tests/legal.test.tsx`, which holds the ad answer and the
 homepage's privacy points against what the policy supports — the claim, not
 the prose.
+
+### 2.5 A link into the application names the ref the snapshots came from
+
+**Binding.** Every link a reader can follow to a file or a folder in the
+application's repository, a `blob/<ref>/` or `tree/<ref>/` address under
+`https://github.com/thtmnisamnstr/simple-balance`, names the ref that
+`src/content/app-facts.json` and `src/content/app-features.json` record as
+`source.ref`. That includes the footer's links, which are built from
+`site.sourceUrl` rather than written out. A link to the repository itself
+names no ref and is not covered.
+
+The site describes the version of the application its snapshots were taken
+from, so a link out of it has to open that version. **`main` is the obvious
+choice, and while a release is on its way it is wrong in both directions.** A
+file the release adds is a 404 on `main`: `deploy/compose/single/` and
+`docs/deployment-profiles.md` are both new in 0.2.0, and neither is on `main`
+until it merges. A file both have is the previous release's copy on `main`,
+and until 0.2.0 merges, `main`'s `docs/deployment.md` has none of the billing
+and ad settings the configuration page describes. Either way the reader
+follows a page about one product to a file about another.
+
+**A commit is the other obvious choice, and it never moves.** A link pinned
+to one would go on showing the commit the page was written against long
+after the release had merged and moved on. The ref is what `sync-from-app`
+§5 changes when the site moves back to `main`, and tying every link to it
+makes that move one change the checks ask for, rather than a search for
+every link somebody wrote while the release was open.
+
+_Checked by:_ `tests/app-links.test.ts` on every build, which finds every
+link into the application under `content/` and `src/`, the footer's
+spelling included, and holds each to the ref `app-facts.json` records; and
+`scripts/check-app-sync.mjs` weekly, which holds them to the ref it read over
+the network. The second is what notices the links still naming the branch
+the week the release merges, because on that day they agree with the
+snapshots and only the network knows they are stale. Whether the file is
+still at that path is `human`: offline, a link can only be well-formed.
+
+**Well-formed is narrower than it sounds.** A link is `https:`, because a
+reader whose browser has no preload list follows `http:` in the clear first,
+even though github.com is on the list. A `tree/` link may name the ref's root,
+`tree/<ref>` or `tree/<ref>/`, and a `blob/` link may not, because a blob is a
+file. An empty segment from a doubled slash is refused, `<ref>//` included,
+and so are `.` and `..`, a segment ending in a period, and more than one `#`.
 
 ## 3. Structure
 
@@ -306,7 +370,7 @@ _Checked by:_ `tests/content.test.ts`.
 that is what YAML says it is. Interpolated into a string it becomes
 "Wed Sep 17 2026 …" and then an Invalid Date — which failed a build here, and
 would otherwise have rendered the day before for every reader west of
-Greenwich. Normalising at the parser means every consumer gets one shape
+Greenwich. Normalizing at the parser means every consumer gets one shape
 however the file was written.
 
 _Checked by:_ `tests/content.test.ts`.
@@ -337,7 +401,7 @@ missing from the file sorts last, so adding a group is a one-file change.
 
 A page with no `order` sorts after every page that has one, rather than
 alphabetically among them. That is what makes adding `order: 2` to one page do
-the obvious thing without renumbering its neighbours.
+the obvious thing without renumbering its neighbors.
 
 _Checked by:_ `tests/content.test.ts`.
 
@@ -390,7 +454,11 @@ on every route that set its own canonical — ten of them, including `/blog/`,
 which is the one page a feed reader would think to look at. One route had
 re-declared the three by hand, which is what a patch to the symptom looks
 like. `feedAlternates` in `src/lib/feed.ts` is the single place that knows,
-and the count is recounted rather than written down here twice.
+and the count is recounted rather than written down here twice. Next
+replaces `openGraph` the same way, and `openGraph()` in
+`src/app/open-graph.ts` is the same remedy for the link preview:
+`tests/copy.test.ts` holds every route to asking it for a block rather than
+writing one.
 
 _Checked by:_ `tests/feeds.test.ts`, which **parses** the XML rather than
 matching strings — an unescaped ampersand in a title is the classic break and a
@@ -465,17 +533,32 @@ _Checked by:_ `tests/docs-features.test.ts`.
 ### 6.1 A price claim is checked against the application
 
 **Binding.** Every number on the pricing page is true of what the application
-enforces: three accounts on the free plan, unlimited on Premium, $30 a year or
-$3 a month, and no feature held back from either.
+enforces: three accounts in use at once on the free plan and no limit on
+Premium, $30 a year or $3 a month in US dollars, and no feature held back
+from either.
 
-Nothing here can read the application — it is a different repository — so
-`tests/pricing.test.tsx` holds what it can: that the limit agrees with itself
-across the tier summary, the comparison table and the FAQ, and that no row
-claims a feature Free lacks and Premium has. A pricing page that overstates is
-the one page whose error the customer discovers personally.
+Nothing in a test here can read the application — it is a different
+repository — so the application's own contract is read through the snapshot
+of it in `src/content/app-facts.json`. **`tests/app-facts.test.ts` holds the
+page to that snapshot**: the free account limit, both plans' labels, which
+plan sees ads, and every dollar figure in the paid tier's card, the note
+under the cards, the FAQ, the search and link-preview descriptions, the
+terms and the social card, each of which has to be a price the application
+declares or the $0 of the free plan. `tests/pricing.test.tsx` holds the rest:
+that the limit agrees with itself across the tier summary, the comparison
+table and the FAQ, and that no row claims a feature Free lacks and Premium
+has. A pricing page that overstates is the one page whose error the customer
+discovers personally.
 
-_Checked by:_ `tests/pricing.test.tsx` for internal agreement; `human` for
-agreement with the application.
+**The first version of this rule checked only internal agreement**, so the
+price could agree with the comparison table and the FAQ and all three be
+wrong together. The snapshot is what gave the numbers a referent outside
+this repository, and whether the snapshot is still the application's is
+`scripts/check-app-sync.mjs`, weekly and in `sync-from-app` §1, not a test.
+
+_Checked by:_ `tests/app-facts.test.ts` against the snapshot;
+`tests/pricing.test.tsx` for internal agreement; `scripts/check-app-sync.mjs`
+for whether the snapshot is still what the application publishes.
 
 ### 6.2 Self-hosting is a column on the pricing page
 
@@ -498,18 +581,169 @@ changes.
 
 ### 6.4 A legal page describes this product, not a template
 
-**Binding.** The privacy policy names the actual processors — Stripe, Google,
-Netlify — the actual lawful bases, and the actual retention. A generic policy
-is not merely unhelpful: it is a false statement about what happens to
-somebody's data.
+**Binding.** The privacy policy names the actual processors — Stripe,
+Google (for advertising, for Google sign-in, and through Gmail for the
+application's email), Cloudflare (for the mail sent to the contact address),
+Netlify and Oracle Cloud Infrastructure — the actual lawful bases, and the
+actual retention. A generic policy is not merely unhelpful: it is a false
+statement about what happens to somebody's data.
+
+**It calls them providers, not processors.** A processor is a role under
+each provider's own terms, not a word the page gets to choose. Google is a
+controller for advertising under its Controller-Controller Data Protection
+Terms unless restricted data processing is on, and a controller of its own
+sign-in; for Gmail it is a processor only where the mailbox is Google
+Workspace, and nothing smpl.money publishes shows one. So the policy says
+Google decides for itself how it uses what it receives for advertising and
+sign-in, and says nothing about its role for Gmail until the operator does.
+
+**Oracle was the one left out**, as "our hosting provider", and it is the
+one holding every balance: it hosts the application and its database, while
+Netlify hosts only this site. The short version, which is what most people
+read, named two of the application's providers and not the host.
+
+**The mail service was the last one unnamed**, as "an email delivery
+service" the policy promised to name before one was in use. It is Gmail, and
+naming it took more than a word. The policy says what each of the
+application's four messages carries to Google, read from the builders in its
+`mail.ts`: a recurring transaction's name and dates are ledger data somebody
+typed, so the Stripe paragraph's "nothing from your ledger" cannot be said
+of it. The limit is on what the builders add, not on what the mail holds:
+both names are free text, and a recurrence called "Chase Visa payment" puts a
+payee and an account in the subject line, so "none of them holds a payee"
+carries its exception in the same sentence. And Gmail keeps a copy of each
+message the application sends by signing in to one mailbox through
+smtp.gmail.com, in that mailbox's Sent mail, and a bounce or an automatic
+reply can bring another copy back; a deletion in the application reaches
+none of them, so the short version and the deletion section stopped saying
+that deleting an account deletes everything. The copy is said as what that
+route does rather than as what Gmail does, because the Workspace relay keeps
+no such copy unless comprehensive mail storage is on, which is why a change
+of `SMTP_HOST` on the application is a change to the retention paragraph.
+
+**What outlasts a deletion is listed, not counted.** The short version said
+"two things outlast a deleted account" while the long version already kept
+server logs for a period of their own, and the hosted machine dumps the
+whole database every night and keeps the newest 14 (`backupKeep` in the
+application's Oracle stack). Nothing mentioned the backups. The list now
+names each thing and how long, and a count is refused, because the next
+thing added would leave the number behind. The 14 is a literal: nothing
+here can read the stack, so a change to `backupKeep` is a change to the page.
+
+**A legal conclusion rests on something the page can name.** "We do not
+sell or share personal information as the CCPA defines it" holds only while
+Google is a service provider for the ad requests, which is what its
+restricted data processing makes it, and by default AdSense requests do not
+limit how data is processed. The application's tag sets no restriction, so
+the sentence rested on an AdSense account setting nothing here can read.
+The policy says the facts instead, what leaves for advertising and that
+Premium sends nothing, and the conclusion may come back only naming
+restricted data processing beside it.
+
+**CalOPPA asks two questions every policy has to answer**, however small the
+operator (Bus. & Prof. Code 22575(b)(5) and (b)(6)): whether another party
+may collect information about somebody's activity across other sites, which
+Google's advertising cookies may, and how the operator responds to Do Not
+Track, which is that nothing reads it. "What Google receives" lists what the
+reader's browser hands over, the IP address, the browser's details and
+Google's own cookies, as well as what the application adds, because a
+heading that reads as the whole list made it look shorter than it is.
+
+**The terms describe what the application charges and where a dispute
+goes.** No tax is added to the price, because the application sets no
+`automatic_tax` and adds no tax rate; "exclude any tax that may apply"
+promised a total the checkout never shows. Governing law is California's,
+the operator's decision, replacing an England and Wales clause nobody chose,
+and the consumer carve-out covers the courts as well as the law. There is no
+arbitration clause and no class-action waiver, by the same decision.
+
+**And they follow California's automatic renewal law**, Bus. & Prof. Code
+17602 as amended for contracts from July 1, 2025. A fee change is notified
+"no less than 7 days and no more than 30 days" before it takes effect, with
+what it will cost and how to cancel; "at least 30 days" left one day to send
+it on. A material change is notified before it takes effect, with how to
+cancel. And a cancellation needs a way that asks for no signing in, which is
+writing to the contact address from the account's own. Each of these is a
+promise the operator keeps by hand: the application sends none of that mail.
 
 It also carries the three disclosures Google requires of a site serving
 AdSense — third-party cookies, the vendors that set them, and how to opt out —
 because missing any one is a breach whose penalty is suspension.
 
-_Checked by:_ `tests/legal.test.tsx`, which asserts the AdSense disclosures,
-that every processor is named, the GDPR and CCPA rights, and that the terms
-do not purport to restrict the AGPL.
+_Checked by:_ `tests/legal.test.tsx`, which asserts:
+
+- the three AdSense disclosures, and that non-personalized ads are not
+  described as cookie-free;
+- every processor named, Cloudflare included, in the policy and, for the
+  host and the mail service, in the short version's list of providers; and
+  that they are listed as providers, no sentence naming Gmail calls anybody
+  a processor, and Google is said to decide for itself for advertising and
+  sign-in and not for Gmail;
+- that Gmail is named as the mail service and the promise to name one is
+  gone; what reaches Google through it, message by message, with no
+  sentence saying the mail carries nothing from the ledger, the name in the
+  subject line, and the limit carrying the exception for a name somebody
+  typed; and that Gmail's copies are disclosed where retention is, as what
+  signing in to one mailbox does rather than as what Gmail does, with the
+  bounces and automatic replies, how long they are kept, and every copy
+  deleted on request, while neither the deletion section nor the short
+  version says deleting an account removes them;
+- the nightly backups, with the 14 kept and the two weeks that makes, where
+  retention is and where deleting is; a deletion that reaches the database
+  and no further; and the short version listing what outlasts a deletion,
+  backups, logs, Stripe and Gmail, without counting it;
+- where Stripe, Google and Cloudflare hold what they receive, the Gmail
+  copies included, and the framework each takes part in;
+- what the reader's browser hands Google for an ad, the IP address, the
+  browser's details and Google's cookies; that Google may collect across
+  other sites; and how Do Not Track is answered;
+- the GDPR and CCPA rights; that no sentence says personal information is
+  not sold or shared unless it names restricted data processing in the same
+  paragraph; that the rights section says what leaves for advertising and
+  that Premium sends nothing; and that the terms do not purport to restrict
+  the AGPL;
+- that declining ad consent leaves the ads in place, on the policy and the
+  pricing page alike, and that neither says it means no ads;
+- that the cookies section names what the application actually sets: local
+  storage rather than a cookie for the theme, and Stripe's own cookies. Not
+  that the plan page is the only one loading Stripe's script: that depends
+  on how the application imports it, which nothing here can read, and
+  `legal-review` §5's devtools check is what looks;
+- that deleting an account deletes the billing records the application
+  keeps and the customer record at Stripe, that the payments stay in
+  Stripe's records, and that those billing records are never called payment
+  details;
+- what Stripe receives, what a session records, and that an AI assistant
+  somebody connects reads their ledger;
+- the downgrade as the product runs it: the choice is made once and may
+  name any three, and until it is made, a first downgrade keeps the three
+  oldest accounts, while after an earlier choice it keeps the oldest three
+  among the accounts still chosen and any opened or restored since;
+- that "choose any three" is promised in exactly one sentence, and that
+  sentence carries its condition: more than three accounts in use when a
+  subscription ends. "The choice is put to you again" is refused, and the
+  plans section calls it a choice a downgrade _may_ put to you;
+- that the billing record is described as every request it keeps:
+  subscribing, changing or canceling, replacing a card, and how the request
+  ended;
+- no rate limit the terms point at that is not documented, and no export
+  promised larger than the one the product has;
+- that the terms add no tax to the price, give tax added to a renewal the
+  same notice by email as a price change, and that the pricing page never
+  says tax is extra;
+- that every promise of notice of a price or a tax gives a window inside
+  California's 7 to 30 days, by email, with what it will cost and how to
+  cancel, and no bare "at least N days"; that the notice of a material
+  change is by email, before it takes effect, with what is changing and how
+  to cancel; and that the cancellation sentence names a way that needs no
+  signing in;
+- California's law with its conflict-of-laws rules excluded, California's
+  state and federal courts, and a consumer elsewhere keeping the law and
+  the courts of where they live; and no English law, arbitration clause or
+  class-action waiver in either document;
+- that the way back in is spelled out: each account exported from its own
+  page with the dates set to All time, a date range at a time past 10,000
+  rows, and a transfer flagged as a duplicate by the second import.
 
 ### 6.5 The copy is rewritten only where the product's description moved
 

@@ -2,7 +2,7 @@
 
 Two sets, and neither restates the other.
 
-- **[`web.md`](web.md)** — the design. Tokens, rhythm, type, colour, images,
+- **[`web.md`](web.md)** — the design. Tokens, rhythm, type, color, images,
   states and the keyboard. What the page looks like and why.
 - **[`content.md`](content.md)** — the words, and the content pipeline behind
   `/blog` and `/docs`. Voice, claims, frontmatter, and what a writer may rely
@@ -18,13 +18,13 @@ picking this up:
 - **[`../roadmap.md`](../roadmap.md)** — everything known to be outstanding,
   each item with why it is not done and what done looks like.
 - **[`../adsense.md`](../adsense.md)** — how ads reach the application, why
-  this site's `ads.txt` authorises them, and the one mistake that costs revenue
+  this site's `ads.txt` authorizes them, and the one mistake that costs revenue
   with no symptom.
 
 Eight skills in `../../.claude/skills/` turn the recurring work into
 procedures: syncing from the application, preparing a branch for merge,
 updating dependencies, writing content, keeping the guides true, reviewing
-the design, reviewing the legal pages, and optimising what ships.
+the design, reviewing the legal pages, and optimizing what ships.
 
 `../../AGENTS.md` sits above all of them and holds the invariants — the rules
 that, broken, make this site wrong rather than untidy. Where a guide and
@@ -46,7 +46,7 @@ That sentence is what makes a rule survive somebody who disagrees with it.
 
 `*Checked by:*` names a test, or says `human` and explains why no test can
 decide it. "Not checked" with no reason is not an acceptable state for a rule;
-either it can be mechanised, or the guide says what a person has to look at.
+either it can be mechanized, or the guide says what a person has to look at.
 
 ## This site's relationship to the application
 

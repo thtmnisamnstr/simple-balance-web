@@ -6,8 +6,8 @@ import type { ReactNode } from "react";
  * Available to Markdown as `<Callout kind="warning">…</Callout>`, which is the
  * one thing MDX buys over plain Markdown that a docs writer reaches for daily.
  *
- * The kind carries a visible word as well as a colour, because colour alone
- * does not survive a greyscale print, a colour-blind reader, or a forced-colours
+ * The kind carries a visible word as well as a color, because color alone
+ * does not survive a grayscale print, a color-blind reader, or a forced-colors
  * mode. That is the same rule the application follows for its charts.
  */
 const LABELS = {

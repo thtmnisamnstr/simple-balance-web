@@ -20,14 +20,14 @@ const base = `https://${site.domain}`;
  * `dangerouslySetInnerHTML` is the documented way to emit JSON-LD and is safe
  * here for a specific reason: the payload is `JSON.stringify` output, and the
  * one escape that matters inside a script element — a literal `</script>` in a
- * string — is neutralised below.
+ * string — is neutralized below.
  */
 function Ld({ data }: { readonly data: Record<string, unknown> }) {
   const json = JSON.stringify(data).replaceAll("<", "\\u003c");
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: json }} />;
 }
 
-/** The site and the organisation behind it. Rendered once, on the homepage. */
+/** The site and the organization behind it. Rendered once, on the homepage. */
 export function SiteStructuredData() {
   return (
     <>

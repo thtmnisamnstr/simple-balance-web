@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { feedAlternates } from "@/lib/feed";
+import { openGraph } from "@/app/open-graph";
+import { site } from "@/content/home";
 import { notFound } from "next/navigation";
 import { blogTags, postsByTag, tagLabel, tagSlug } from "@/content/collections";
 import { section, tagDescriptions } from "@/content/sections";
@@ -21,11 +23,15 @@ export async function generateMetadata({
   const { tag } = await params;
   const label = tagLabel(tag);
   if (!label) return {};
+  const path = `/blog/tags/${tag}/`;
+  const title = `Posts tagged ${label}`;
+  const description = tagDescriptions[tag] ?? `Everything on ${label}.`;
   return {
-    title: `Posts tagged ${label}`,
-    description: tagDescriptions[tag] ?? `Everything on ${label}.`,
+    title,
+    description,
     robots: blog.announced ? undefined : { index: false, follow: false },
-    alternates: feedAlternates(`/blog/tags/${tag}/`),
+    alternates: feedAlternates(path),
+    openGraph: openGraph({ title: `${title} — ${site.name}`, description, url: path }),
   };
 }
 

@@ -3,10 +3,10 @@ title: Backups
 description: What to back up, how to restore it, and how to check that the backup you have is one you could actually use.
 section: Operations
 order: 1
-updated: 2026-09-17
+updated: 2026-09-22
 ---
 
-There is one thing to back up: the PostgreSQL database. No uploads directory,
+There's one thing to back up: the PostgreSQL database. No uploads directory,
 no object store, no state on disk in the container.
 
 ## Taking one
@@ -16,7 +16,7 @@ pg_dump --format=custom --no-owner "$DATABASE_URL" > simple-balance-$(date +%F).
 ```
 
 `--format=custom` rather than plain SQL because it restores selectively and
-compresses, and `--no-owner` so the restore does not need the original role to
+compresses, and `--no-owner` so the restore doesn't need the original role to
 exist.
 
 ## Restoring one
@@ -31,7 +31,7 @@ startup, so a dump from an older release upgrades on first boot.
 
 <Callout kind="danger" title="Restore into a new database, not over the live one">
 `pg_restore` into a database that already has these tables produces a mixture
-of both, and a ledger that is a mixture of two ledgers balances to nothing
+of both, and a ledger that's a mixture of two ledgers balances to nothing
 meaningful.
 </Callout>
 
@@ -40,8 +40,15 @@ meaningful.
 A backup nobody has restored is a hypothesis. The cheap test:
 
 1. Restore into a scratch database.
-2. Start a deployment against it.
-3. Open the trial balance.
+2. Start a deployment against it with `SMTP_HOST` and `MAIL_FROM` unset, so
+   the copy mails nobody.
+3. Open the trial balance in Reports.
 
-If it comes back and nets to zero, the dump holds a complete ledger. That is a
-stronger check than the file's size, which is the thing people actually watch.
+If it comes back and totals zero in every currency, your books in the restore
+are consistent rather than broken. That's a stronger check than the file's
+size, which is the thing people actually watch, but it has two limits. Each
+person's trial balance covers only their own books, so on a deployment other
+people use, it checks yours and not theirs. And it can't show that nothing's
+missing: every transaction nets to zero by itself, so a ledger short a few of
+them still passes. For that, compare a few account balances with the live
+deployment, allowing for anything entered since the dump.

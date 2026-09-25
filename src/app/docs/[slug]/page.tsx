@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { feedAlternates } from "@/lib/feed";
+import { openGraph } from "@/app/open-graph";
 import { notFound } from "next/navigation";
 import {
   allEntries,
   docsBySection,
-  docsNeighbours,
+  docsNeighbors,
   entryBySlug,
   tableOfContents,
 } from "@/content/collections";
@@ -31,17 +32,19 @@ export async function generateMetadata({
   const { slug } = await params;
   const entry = entryBySlug("docs", slug);
   if (!entry) return {};
+  const canonical = entry.frontmatter.canonical ?? `/docs/${slug}/`;
   return {
     title: entry.frontmatter.title,
     description: entry.frontmatter.description,
     robots: docs.announced ? undefined : { index: false, follow: false },
-    alternates: feedAlternates(entry.frontmatter.canonical ?? `/docs/${slug}/`),
-    openGraph: {
+    alternates: feedAlternates(canonical),
+    openGraph: openGraph({
       type: "article",
       title: entry.frontmatter.title,
       description: entry.frontmatter.description,
+      url: canonical,
       ...(entry.frontmatter.updated ? { modifiedTime: entry.frontmatter.updated } : {}),
-    },
+    }),
   };
 }
 
@@ -50,7 +53,7 @@ export default async function DocPage({ params }: { params: Promise<{ slug: stri
   const entry = entryBySlug("docs", slug);
   if (!entry) notFound();
 
-  const { previous, next } = docsNeighbours(slug);
+  const { previous, next } = docsNeighbors(slug);
   const contents = tableOfContents(entry.body);
   const group = docsBySection().find((g) => g.entries.some((e) => e.slug === slug));
   const trail = [

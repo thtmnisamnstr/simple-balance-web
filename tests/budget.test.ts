@@ -61,7 +61,7 @@ describe("what the site ships", () => {
      */
     const js = files.filter((f) => f.endsWith(".js"));
     const total = kb(transferred(js));
-    expect(total, `${js.length} scripts totalling ${total} KB gzipped`).toBeLessThan(200);
+    expect(total, `${js.length} scripts totaling ${total} KB gzipped`).toBeLessThan(200);
   });
 
   it("keeps the CSS under 20 KB over the wire", () => {
@@ -84,7 +84,7 @@ describe("what the site ships", () => {
   });
 
   it("ships no source maps to production", () => {
-    // They are a build artefact, they are large, and they hand a reader the
+    // They are a build artifact, they are large, and they hand a reader the
     // original source of every dependency.
     expect(files.filter((f) => f.endsWith(".map"))).toEqual([]);
   });

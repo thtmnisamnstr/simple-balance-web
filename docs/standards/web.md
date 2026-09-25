@@ -5,10 +5,10 @@ changing rather than the whole page.
 
 ## 1. Tokens
 
-### 1.1 Colour comes from the contract and nowhere else
+### 1.1 Color comes from the contract and nowhere else
 
-**Binding.** Every colour is a `var(--token)` declared in
-`src/styles/brand.css`. A hex, an `rgb()` or a named colour anywhere else is a
+**Binding.** Every color is a `var(--token)` declared in
+`src/styles/brand.css`. A hex, an `rgb()` or a named color anywhere else is a
 defect.
 
 The contract is copied from the application's own stylesheet. A marketing page
@@ -20,7 +20,10 @@ the failure. A literal cannot re-theme, so a page built from literals looks
 correct in light mode and broken in dark, which is the mode nobody checks.
 
 _Checked by:_ `tests/brand-tokens.test.ts`, which sweeps every stylesheet but
-the contract for a hex or an `rgb()` outside a comment.
+the contract for a hex or an `rgb()` outside a comment. Whether the contract
+still matches the application's stylesheet is `sync-from-app` §1, a token
+diff over the network that should report `--art-ink` and nothing else; no
+test can make it, because the other half is in another repository.
 
 ### 1.2 Two theme blocks, not three
 
@@ -32,7 +35,7 @@ theme toggle. This site has none, so a third block would be unreachable CSS.
 `localStorage` is per-origin, so a toggle here could not carry a choice made at
 `app.smpl.money` anyway — it would be a second, contradictory preference rather
 than a shared one. Respecting the operating system and nothing else is the
-honest behaviour for a page somebody reads once.
+honest behavior for a page somebody reads once.
 
 If a toggle ever lands, the third block arrives with it and the test below
 changes in the same commit.
@@ -58,7 +61,7 @@ _Checked by:_ `tests/brand-tokens.test.ts`.
 **House.** Spacing, radius, type scale and weight are declared in
 `src/styles/site.css`, not in `brand.css`.
 
-Colour is a brand fact and has to match the app exactly. Rhythm is a layout
+Color is a brand fact and has to match the app exactly. Rhythm is a layout
 decision, and a marketing page's rhythm is not an app's: this page is read once,
 in one pass, as often on a phone as not, so it is built on larger type and more
 air than a dense ledger table could afford.
@@ -83,7 +86,7 @@ the type it wraps, which is the thing the px scale cannot do, and each is a
 fraction of a character rather than a gap between two things. The scale owns
 the space _between_ elements; `em` owns the space _inside_ one.
 
-_Checked by:_ `human`, and it is the most mechanisable rule left here — a sweep
+_Checked by:_ `human`, and it is the most mechanizable rule left here — a sweep
 of `margin`, `padding`, `gap` and `inset` for length literals, with an
 allow-list for `0`, percentages, and the `em` insets above. Run against this
 tree it reports eleven: seven `em`, the `-1px` of the `.visually-hidden`
@@ -141,11 +144,18 @@ repository, so it is read over the network like everything else
 (`AGENTS.md`):
 
 ```sh
-curl -fsSL "https://raw.githubusercontent.com/thtmnisamnstr/simple-balance/main/src/client/styles.css" \
+REF=$(node scripts/check-app-sync.mjs --json | node -p 'JSON.parse(require("fs").readFileSync(0, "utf8")).ref')
+curl -fsSL "https://raw.githubusercontent.com/thtmnisamnstr/simple-balance/$REF/src/client/styles.css" \
   | grep -A 6 "font-family"
 ```
 
-Verified byte for byte on 18 September 2026:
+The ref is the one `sync-from-app` §0 reads, rather than `main`, so the check
+looks at the stylesheet the site is being kept in step with. A `null` ref or
+a 404 is a check that failed, not a match, and `sync-from-app` §0 says how
+to find out why.
+
+Verified byte for byte on 22 September 2026, on both `main` and
+`deployment-and-monetization`:
 `Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`
 in both.
 
@@ -230,6 +240,15 @@ A fourth, in prose rather than layout: a URL the privacy policy has to print
 in full is forty-six characters with no space in them, which is wider than a
 320px screen. `.prose` and `.prose-body` carry `overflow-wrap: break-word`,
 which breaks only where a word would not otherwise fit.
+
+A fifth, in a table: **a table is as wide as its longest cell that has nowhere
+to break**, and `overflow-wrap: break-word` does not reach inside one the way
+it reaches a paragraph. The configuration page's settings tables hold names
+like `IDEMPOTENCY_RETENTION_HOURS` in code spans, and took the page to 469px
+on a 320px phone. Every table in Markdown is now wrapped in `.prose-table` by
+`prose.tsx` and scrolls inside it, the way the pricing comparison scrolls
+inside `.table-wrap`. Breaking the names instead would have fit the page and
+split a setting somebody has to copy exactly.
 
 _Checked by:_ `tests/a11y.test.ts`, over every emitted page at 320px and
 390px — the floor and an ordinary phone, because a page can pass at the floor
@@ -360,7 +379,7 @@ dark text on a dark green card: legible in dark mode and nearly invisible in
 light.
 
 The homepage terminal sample is the deliberate exception — it is a picture of a
-dark thing rather than a panel that follows the page, and it is hand-coloured
+dark thing rather than a panel that follows the page, and it is hand-colored
 rather than highlighted.
 
 _Checked by:_ `tests/docs-features.test.ts` for both themes being emitted;
@@ -476,7 +495,7 @@ asserts it; worth adding the day a second layout appears.
 
 ## 8. Motion and preference
 
-### 8.1 Reduced motion is honoured globally
+### 8.1 Reduced motion is honored globally
 
 **Binding.** WCAG 2.3.3. One block at the end of `site.css` reduces every
 animation and transition.
@@ -489,7 +508,7 @@ on.
 
 | Rule                                | Held by                                             |
 | ----------------------------------- | --------------------------------------------------- |
-| 1.1 Colour from the contract        | `tests/brand-tokens.test.ts`                        |
+| 1.1 Color from the contract         | `tests/brand-tokens.test.ts`                        |
 | 1.2 Two theme blocks                | `tests/brand-tokens.test.ts`                        |
 | 1.3 Named same-in-both tokens       | `tests/brand-tokens.test.ts`                        |
 | 1.4 Tokens all declared             | `tests/brand-tokens.test.ts`                        |
@@ -501,7 +520,7 @@ on.
 | 6.4 Link text                       | `tests/home-page.test.tsx`                          |
 | 6.5 No third-party branding         | `tests/branding.test.ts`                            |
 | 7.1–7.3 Structure                   | `tests/home-page.test.tsx`                          |
-| 2.1 Spacing scale                   | `human` — mechanisable, and the best candidate left |
+| 2.1 Spacing scale                   | `human` — mechanizable, and the best candidate left |
 | 3.1 Type scale                      | `human` — sweep `font-size:` for a digit            |
 | 3.2 Font stack                      | `human` — against the app's stylesheet, over HTTP   |
 | 4.2 Every class styles something    | `tests/dead-css.test.ts`, both directions           |
@@ -512,5 +531,5 @@ on.
 | 8.1 Reduced motion                  | `human`                                             |
 
 Nothing here can check rhythm, balance, or whether a section is in a sensible
-place. jsdom has no layout engine, so every visual judgement is a person
+place. jsdom has no layout engine, so every visual judgment is a person
 looking at a rendered page at each breakpoint. `design-review` is that pass.

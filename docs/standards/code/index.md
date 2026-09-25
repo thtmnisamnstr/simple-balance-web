@@ -16,7 +16,7 @@ TypeScript, React, and the tools that check both.
 `noFallthroughCasesInSwitch`.
 
 `noUncheckedIndexedAccess` is the one that earns its keep here: the content
-pipeline indexes arrays constantly — neighbours, first author, heading levels —
+pipeline indexes arrays constantly — neighbors, first author, heading levels —
 and every one of those is genuinely possibly-undefined.
 
 `exactOptionalPropertyTypes` is why the code spreads conditionally
@@ -82,7 +82,7 @@ _Checked by:_ `npm run lint` and `npm run format:check`, both in
 **The build runs before the tests, deliberately.** `tests/sections.test.tsx`
 reads the built output in `out/` — the `noindex` meta tag, the sitemap, the
 robots file — because those are what a crawler actually sees, and asserting on
-the source instead would prove the intent rather than the artefact.
+the source instead would prove the intent rather than the artifact.
 
 The cost is that a failing test comes after a slower step. The benefit is that
 the tests check the thing that ships.

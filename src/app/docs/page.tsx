@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { feedAlternates } from "@/lib/feed";
+import { openGraph } from "@/app/open-graph";
+import { site } from "@/content/home";
 import { docsBySection, isEmpty } from "@/content/collections";
 import { section } from "@/content/sections";
 import { EmptyState } from "@/components/empty-state";
@@ -13,6 +15,11 @@ export const metadata: Metadata = {
   description: docs.description,
   robots: docs.announced ? undefined : { index: false, follow: false },
   alternates: feedAlternates(docs.href),
+  openGraph: openGraph({
+    title: `${docs.title} — ${site.name}`,
+    description: docs.description,
+    url: docs.href,
+  }),
 };
 
 export default function DocsIndex() {

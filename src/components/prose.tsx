@@ -1,3 +1,4 @@
+import type { ComponentProps } from "react";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 import remarkSmartypants from "remark-smartypants";
@@ -17,7 +18,7 @@ import { Figure } from "@/components/figure";
  * none of this reaches the browser as JavaScript. The output is HTML, which is
  * the only shape a static export can serve, and it is why the syntax
  * highlighting below costs the reader nothing: Shiki runs during the build and
- * ships coloured markup, not a highlighter.
+ * ships colored markup, not a highlighter.
  *
  * The plugin set is the conventional one, and each earns its place:
  *
@@ -31,9 +32,13 @@ import { Figure } from "@/components/figure";
  *   matters: the autolinker needs the id that slug just added.
  * - `rehype-pretty-code` — Shiki, with a light and a dark theme emitted
  *   together as CSS custom properties. One highlighted block answers both
- *   colour schemes, which is what lets code follow the page theme without a
+ *   color schemes, which is what lets code follow the page theme without a
  *   second copy of every snippet.
  */
+// Exported for `tests/copy.test.ts`, which compiles fixtures with exactly
+// these to hold its em-dash check to what they publish.
+export const remarkPlugins = [remarkGfm, remarkSmartypants];
+
 const prettyCode = {
   theme: { light: "github-light", dark: "github-dark-dimmed" },
   // A blank line in a code block is still a line. Without this it collapses
@@ -51,6 +56,16 @@ const components = {
   // control. Overriding the element rather than asking writers to use a
   // component means an ordinary ``` fence gets the control for free.
   pre: CodeBlock,
+  // A table is as wide as its longest cell that has nowhere to break, and in
+  // the docs that is an environment variable's name in a code span. On a
+  // phone it pushed the configuration page to 469px (`web.md` 4.3), so every
+  // table scrolls inside its own container instead, the way the pricing
+  // page's comparison does, and the page around it stays put.
+  table: (props: ComponentProps<"table">) => (
+    <div className="prose-table">
+      <table {...props} />
+    </div>
+  ),
 };
 
 export function Prose({ body }: { readonly body: string }) {
@@ -61,7 +76,7 @@ export function Prose({ body }: { readonly body: string }) {
         components={components}
         options={{
           mdxOptions: {
-            remarkPlugins: [remarkGfm, remarkSmartypants],
+            remarkPlugins,
             rehypePlugins: [
               rehypeSlug,
               [

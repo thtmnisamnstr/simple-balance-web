@@ -1,10 +1,10 @@
 name: app sync
 
 # Asks, on a schedule, whether the application has changed in a way this site
-# should reflect. It opens an issue and changes nothing: the work it is
-# prompting is a rewrite, and copy is a judgement. An automated pull request
-# that rewrote the homepage would be the wrong shape and would get merged
-# unread.
+# should reflect, and whether the site's own record of it still holds
+# together. It opens an issue and changes nothing: the work it is prompting is
+# a rewrite, and copy is a judgment. An automated pull request that rewrote
+# the homepage would be the wrong shape and would get merged unread.
 on:
   schedule:
     # Monday morning. The application does not release daily, and a check
@@ -24,14 +24,39 @@ concurrency:
 jobs:
   check:
     runs-on: ubuntu-latest
+    env:
+      # Worded to cover both halves of the report, because some weeks the
+      # only thing wrong is the site's own records and the application has
+      # not changed at all.
+      ISSUE_TITLE: The site is out of step with the application
+      # What the issue was called before the report covered the site's own
+      # records. Looked up as well, so an issue opened under it is taken over
+      # and renamed rather than left open beside a new one.
+      LEGACY_TITLE: The application has changed
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
         with:
           node-version-file: .nvmrc
 
+      # The script decides which ref to read: main once it carries the kit,
+      # and until then the open release pull request whose head does. That
+      # needs one call to the pulls API, which allows sixty an hour per
+      # address without a token, and a hosted runner's address is shared.
+      # The script sends this job's token to api.github.com and
+      # raw.githubusercontent.com, with GET and HEAD only, and asks again
+      # without it wherever it is turned down.
+      #
+      # No APP_REF here, because pinning the release branch is wrong either
+      # way. The application's delete_branch_on_merge was off when this was
+      # written (read through the API on 2026-09-22), so GitHub leaves a
+      # merged branch where it is and a pin can go on reading it after the
+      # merge. A branch can still be deleted by hand, as frozen-accounts was,
+      # after which a pin 404s and reports "could not tell" every week.
       - name: Check the application
         id: check
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           set +e
           node scripts/check-app-sync.mjs > /tmp/report.txt 2>&1
@@ -43,22 +68,38 @@ jobs:
           } >> "$GITHUB_OUTPUT"
           cat /tmp/report.txt
 
-      # One issue, reopened and updated rather than a new one each week — a
-      # weekly duplicate is how a reminder becomes something people mute.
+      # One issue, reopened and updated rather than a new one each week: a
+      # weekly duplicate is how a reminder becomes something people mute. An
+      # open issue under either title is updated. Only when there is none is
+      # a closed one reopened, the latest under the current title before any
+      # under the old one, so a difference that comes back lands on the issue
+      # that already holds its history.
       - name: Open or update the issue
         if: steps.check.outputs.code == '1'
         env:
           GH_TOKEN: ${{ github.token }}
           REPORT: ${{ steps.check.outputs.report }}
         run: |
-          TITLE="The application has changed"
-          BODY=$(printf '%s\n\n---\n\nRun the `sync-from-app` skill. It diffs the contract, pulls the feature list and screenshots, and rewrites only the sections whose source descriptions moved — `tests/copy-provenance.test.ts` names those.\n\nThis issue is updated weekly while the difference remains, and closed when it does not.\n' "$REPORT")
-          EXISTING=$(gh issue list --state open --search "$TITLE in:title" --json number -q '.[0].number')
+          find_issue() {
+            gh issue list --state "$2" --search "\"$1\" in:title" --json number,title \
+              -q "[.[] | select(.title == \"$1\") | .number] | max // empty"
+          }
+          BODY=$(printf '%s\n\n---\n\nRun the `sync-from-app` skill. It diffs the contract, pulls the feature list and screenshots, and rewrites only the sections whose source descriptions moved. `tests/copy-provenance.test.ts` names those.\n\nThis issue is updated weekly while the difference remains, and closed when it does not.\n' "$REPORT")
+          EXISTING=$(find_issue "$ISSUE_TITLE" open)
+          [ -n "$EXISTING" ] || EXISTING=$(find_issue "$LEGACY_TITLE" open)
+          if [ -z "$EXISTING" ]; then
+            EXISTING=$(find_issue "$ISSUE_TITLE" closed)
+            [ -n "$EXISTING" ] || EXISTING=$(find_issue "$LEGACY_TITLE" closed)
+            if [ -n "$EXISTING" ]; then
+              gh issue reopen "$EXISTING"
+              echo "reopened issue #$EXISTING"
+            fi
+          fi
           if [ -n "$EXISTING" ]; then
-            gh issue edit "$EXISTING" --body "$BODY"
+            gh issue edit "$EXISTING" --title "$ISSUE_TITLE" --body "$BODY"
             echo "updated issue #$EXISTING"
           else
-            gh issue create --title "$TITLE" --body "$BODY" --label "" || gh issue create --title "$TITLE" --body "$BODY"
+            gh issue create --title "$ISSUE_TITLE" --body "$BODY" --label "" || gh issue create --title "$ISSUE_TITLE" --body "$BODY"
           fi
 
       - name: Close the issue when it is back in sync
@@ -66,16 +107,22 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          EXISTING=$(gh issue list --state open --search "The application has changed in:title" --json number -q '.[0].number')
+          find_issue() {
+            gh issue list --state "$2" --search "\"$1\" in:title" --json number,title \
+              -q "[.[] | select(.title == \"$1\") | .number] | max // empty"
+          }
+          EXISTING=$(find_issue "$ISSUE_TITLE" open)
+          [ -n "$EXISTING" ] || EXISTING=$(find_issue "$LEGACY_TITLE" open)
           if [ -n "$EXISTING" ]; then
             gh issue close "$EXISTING" --comment "Back in sync."
             echo "closed issue #$EXISTING"
           fi
 
-      # Exit 2 means the check could not tell — the kit is not on the tracked
-      # ref, or GitHub was unreachable. Deliberately not a failure and
-      # deliberately not silence: "nothing changed" and "I could not look"
-      # must never be reported the same way.
+      # Exit 2 means the check could not tell: neither main nor any open pull
+      # request into it carries the kit, GitHub could not be read, or this
+      # checkout's own snapshots, screenshots or pages could not be read.
+      # Deliberately not a failure and deliberately not silence: "nothing
+      # changed" and "I could not look" must never be reported the same way.
       - name: Note that it could not tell
         if: steps.check.outputs.code == '2'
         run: |

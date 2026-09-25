@@ -4,11 +4,25 @@ import { hero } from "@/content/home";
  * The two plans, as the application actually enforces them.
  *
  * Every figure here is checkable against the application's source:
- * `MAX_FREE_ACCOUNTS` is 3 (`src/shared/domain.ts`), `accountAllowance` is
- * what refuses a fourth, and `getAdPlacement` returns null for anybody not on
- * the free plan. `docs/standards/content.md` 2.1 is Binding about claims being
- * true of the shipped product, and pricing is where an overstatement is most
- * expensive.
+ * `MAX_FREE_ACCOUNTS` is 3 (`src/shared/domain.ts`), and it limits how many
+ * accounts are **in use at once, never how many somebody keeps**. Three
+ * functions beside it hold that. `frozenAccountIds` works out which accounts
+ * past the three are frozen (readable, counted in every total, closed to every
+ * write). Until the person chooses it keeps up to three of the oldest still
+ * marked active: every account for somebody who never chose, so the three
+ * oldest, but after a choice and a paid spell the ones chosen plus any opened
+ * or reopened since, which is why the FAQ says "your three oldest" only about
+ * somebody who has never chosen.
+ * `activeAccountChange` lets that choice be made once and afterwards only fill
+ * a place that has come free; and `accountAllowance` refuses a fourth account,
+ * opened or brought back from the archive, while three are in use.
+ * `getAdPlacement` (`src/server/services/billing.ts`) returns null unless the
+ * free plan is in force. So the limit is always worded as what you can use at
+ * once, never as what you keep: this page's first line went on saying "how
+ * many accounts you can keep" for two commits after the product stopped
+ * meaning it, on the branch written to describe the change.
+ * `docs/standards/content.md` 2.1 is Binding about claims being true of the
+ * shipped product, and pricing is where an overstatement is most expensive.
  *
  * The third column is the one most pricing pages would leave out and the one
  * that is most true of this product: **running it yourself has no plan at
@@ -43,8 +57,8 @@ export const pricing = {
   eyebrow: "Pricing",
   title: "What it costs, and what you get.",
   lede:
-    "Every plan gets the whole product. What you pay for is how many accounts you can keep, and " +
-    "whether you see ads.",
+    "Every plan gets the whole product. What you pay for is how many accounts you can use at " +
+    "once, and whether you see ads.",
   /**
    * The strip under the prices that answers "what am I risking".
    *
@@ -56,9 +70,9 @@ export const pricing = {
    */
   reassurances: [
     "No card to start, and nothing to cancel on the free plan.",
-    "Your records leave with you, as a spreadsheet, whenever you want them.",
-    "An AI assistant works on every plan, and you choose what it is allowed to do.",
-    "Stop paying and you keep every account you have. We delete nothing.",
+    "Your transactions leave with you, as a spreadsheet, whenever you want them.",
+    "An AI assistant works on every plan, and it gets only what you agree to when you connect it.",
+    "Stop paying and nothing is deleted. Using more than three accounts? You pick three to keep using, and the rest stay readable.",
   ],
   note:
     "Prices are in US dollars. A year costs $30, or pay $3 a month and switch between the two " +
@@ -74,11 +88,30 @@ export const pricing = {
    * actually has, and the answer is no.
    */
   compareLede:
-    "Only the first three lines are different. How many accounts you keep, whether you see ads, " +
-    "and where it runs. Everything under them is in every plan, free one included.",
+    "Only the first three lines are different. How many accounts you can use at once, whether " +
+    "you see ads, and where it runs. Everything under them is in every plan, free one included.",
   compareCaption: "What is in each plan: Free, Premium, and running it yourself",
   columns: ["Free", "Premium", "Run it yourself"],
   faqTitle: "Questions people actually ask.",
+} as const;
+
+/**
+ * The pricing page's search snippet and link preview.
+ *
+ * Here rather than in `src/app/pricing/page.tsx` because both carry a price,
+ * and a price written into markup is one no test reads: when the app moved
+ * from $20 to $30 these two were among the places nothing checked, and
+ * `tests/app-facts.test.ts` now holds every dollar figure in them to the
+ * application's contract. They also said "up to three accounts" with no
+ * "at once", which is the old limit, in the one string Google shows.
+ */
+export const pricingMeta = {
+  description:
+    "Free for up to three accounts in use at once, with ads. Premium is $30 a year for as many " +
+    "as you like, with no ads. Run it yourself and there's no plan at all.",
+  socialDescription:
+    "Free for three accounts in use at once, $30 a year for as many as you like, or run it " +
+    "yourself for nothing.",
 } as const;
 
 export const tiers: readonly Tier[] = [
@@ -87,7 +120,7 @@ export const tiers: readonly Tier[] = [
     name: "Free",
     price: "$0",
     priceNote: "",
-    summary: `Up to ${MAX_FREE_ACCOUNTS} accounts, and you see ads.`,
+    summary: `Up to ${MAX_FREE_ACCOUNTS} accounts in use at once, and you see ads.`,
     who: "Most people, most of the time. Checking, savings, and one credit card is three.",
     // One string, shared with the header's control, because a header saying
     // one thing and a pricing button saying another describes two different
@@ -140,14 +173,15 @@ export type Row = {
 export const comparison: readonly Row[] = [
   {
     id: "accounts",
-    feature: "Accounts you can keep",
+    feature: "Accounts you can use at once",
     free: `${MAX_FREE_ACCOUNTS}`,
     premium: "Unlimited",
     self: "Unlimited",
-    // The reason matters and the first version had it backwards: closing an
-    // account posts its balance out, so it stops counting toward your totals.
-    // It still counts toward the plan limit, which is the point of the row.
-    note: "An account you closed still counts toward this. Closing it zeroes it out and drops it from your totals, but the history stays and you can reopen it.",
+    // The row used to say "accounts you can keep", and that stopped being the
+    // limit: you keep all of them on every plan. What the free plan caps is how
+    // many you can keep adding to, which is a different sentence and a much
+    // easier one to be honest about.
+    note: "You keep every account you ever open, on every plan. On the free plan you choose which three you keep using, once. The rest stay readable and still count in your totals, and one can take a place when you close or delete an account you were using.",
   },
   {
     id: "ads",
@@ -204,7 +238,7 @@ export const comparison: readonly Row[] = [
   },
   {
     id: "export",
-    feature: "Taking everything out as a spreadsheet",
+    feature: "Taking every transaction out as a spreadsheet",
     free: true,
     premium: true,
     self: true,
@@ -225,7 +259,7 @@ export const comparison: readonly Row[] = [
   },
   {
     id: "bulk",
-    feature: "Changing thousands of lines in one go",
+    feature: "Changing thousands of lines at once",
     free: true,
     premium: true,
     self: true,
@@ -273,15 +307,26 @@ export const faq: readonly { readonly q: string; readonly a: string }[] = [
   },
   {
     q: "What do I actually get for free?",
-    a: "Everything the product does, for up to three accounts, with ads on the page. It isn't a trial and nothing is stripped out, and we don't ask for a card. Premium gets you a fourth account and beyond, and no ads.",
+    a: "Everything the product does, for up to three accounts you can use at once, with ads on the page. It isn't a trial and nothing is stripped out, and we don't ask for a card. Premium lets you use as many accounts as you like, and takes the ads away.",
   },
   {
     q: "What if I already have more than three accounts?",
-    a: "You keep all of them. The limit only stops you adding a new one. It never hides an account, blocks a file, or takes anything away. If you're over, you stay over until you close one or upgrade.",
+    // Worked out by `frozenAccountIds`: the three oldest of the accounts still
+    // marked in use. Only the chooser (`setActiveAccounts`) unmarks one, and
+    // opening or reopening one marks it, so somebody who never chose has every
+    // account marked and keeps the three oldest. After a choice,
+    // `activeChoicePending` asks again only once more than three are marked,
+    // which a paid spell that opened or reopened nothing never reaches: the
+    // earlier choice stands and `activeAccountChange` refuses a swap. The
+    // round before this said "after that ... you can pick any three", which
+    // promised that swap. "Up to three" because somebody who closed some of
+    // their chosen accounts while subscribed comes back with fewer in use and
+    // nothing to choose, only free places to fill.
+    a: "You keep every one of them, and you choose three to keep using. The others are frozen: still there, still complete, still counted in every balance and report you look at. You just can't add to them or change them. Until you choose, up to three stay usable. If you've never chosen, those are your three oldest, and you can pick any three, not just those. The choice is made once, so an account you are using stays that way until you close it or delete it, and only then can a frozen one take its place. That is the part worth knowing before you pick: it isn't a switch you can flip back and forth. Nothing is hidden and nothing is deleted, and upgrading brings all of them back at once. If you subscribe again, your choice still stands when that plan ends, unless you opened or reopened accounts while subscribed. Then you choose again, from all of them, and until you do, the three that stay usable are the oldest of the ones you chose and the new ones.",
   },
   {
     q: "If I close an account, does it still count?",
-    a: "Yes, toward the number of accounts you're allowed. Closing an account zeroes it out and drops it from your running totals, but we keep it rather than delete it, so the history is still there and you can reopen it. That is why it still counts. Otherwise you could get around the limit by closing accounts and reopening them.",
+    a: "No. Closing an account zeroes it out, drops it from your running totals and frees the place it held, so a frozen account can take that place. We keep it rather than delete it, so the history is still there. Reopening it needs a free place of its own, which is what stops the three from being cycled: you can close as many as you like, and you still can't use more than three at a time.",
   },
   {
     q: "What are the ads like?",
@@ -289,7 +334,7 @@ export const faq: readonly { readonly q: string; readonly a: string }[] = [
      * Worded against the privacy policy rather than against the impression we
      * would like to give. The first version said the ads were "requested
      * without anything about you attached", which the policy contradicts in
-     * its own words: a non-personalised ad is still chosen from the page and
+     * its own words: a non-personalized ad is still chosen from the page and
      * your rough location. `tests/legal.test.tsx` holds the two surfaces
      * together now, because a pricing page that undersells what is collected
      * is the same failure as a policy that oversells it.
@@ -306,15 +351,15 @@ export const faq: readonly { readonly q: string; readonly a: string }[] = [
   },
   {
     q: "How do I cancel, and will you keep charging me?",
-    a: "You cancel from the plan tab, and it stops at the end of the period you already paid for. No notice period, no phone call, no offer to sit through. Nothing is deleted when it ends. You go back to the free plan, keep every account you have, and can't add a new one until you're back under the limit.",
+    a: "You cancel from the plan tab, and it stops at the end of the period you already paid for. No notice period, no phone call, no offer to sit through. Nothing is deleted when it ends. You go back to the free plan and keep every account you have. If more than three are in use, you pick three to keep using. You make that choice once: the rest stay readable, and one can take a place when you close or delete an account you were using.",
   },
   {
     q: "What happens to everything I have put in if I stop paying?",
-    a: "You keep it. Every account, every payment, every report stays exactly as it was, and you can pull all of it out as a spreadsheet any time, on any plan. We never hold your own records back to keep you paying.",
+    a: "You keep it. Every account, every payment and every report is still there and still adds up, and you can pull every transaction out as a spreadsheet any time, on any plan. What the free plan limits is how many accounts you can keep adding to: three, and you choose which. We never hold your own records back to keep you paying.",
   },
   {
     q: "Why is it $30 when everything else costs more? Will you still be here next year?",
-    a: "Because there isn't much to pay for. It is one small program, and there's nobody else's data to look after. As for the second question, here's a fact rather than a promise: the whole product is free to run yourself, and what you export is built to load straight into your own copy. If we stop, your records don't.",
+    a: "Because there isn't much to pay for. It is one small program, and there's nobody else's data to look after. As for the second question, here's a fact rather than a promise: the whole product is free to run yourself, and every transaction you have can be exported and brought into your own copy. If we stop, your transactions don't have to.",
   },
   {
     q: "What is the difference between paying and running it yourself?",
@@ -335,7 +380,24 @@ export const faq: readonly { readonly q: string; readonly a: string }[] = [
     a: "If we run it for you, your records sit on our server. That is what running it for you means, and the privacy policy says exactly what's stored and who can get at it. Run it yourself and nobody has a copy, including us. Nothing about your spending is used to pick the ads. The product itself has no analytics either way, though on the free plan the ads bring Google's script with them.",
   },
   {
+    /*
+     * Every step is here because the application does something a reader
+     * wouldn't guess. The export is transactions only, so budgets and
+     * recurrences stay behind. An import puts every row into the one account
+     * picked for it, hence one account at a time. An opening balance is
+     * posted with no transaction (`postOpeningBalance`), so no export carries
+     * it, and the answer before this one, which never said so, left every
+     * account off by where it started. An account page exports what its date
+     * bar shows, and the bar starts on This month (`presetFromParam`), so a
+     * reader who skips the All time step moves one month of each account.
+     * A transfer is in both accounts' files and arrives with neither account
+     * filled in; picked in the second file, it matches the first as a
+     * duplicate, and committing it anyway records it twice. The importer
+     * takes 10,000 rows and its own refusal says to go a date range at a
+     * time, which is that same bar set shorter. `tests/app-facts.test.ts`
+     * holds the answer to the last four.
+     */
     q: "Can I move from the version you run to my own copy later?",
-    a: "Yes. Export everything as a spreadsheet and bring it into your own copy. What comes out is built to go back in unchanged, even if you hold more than one currency.",
+    a: "Yes, one account at a time. Only your transactions move, so you'd set up budgets and repeating payments again. First, make each account in your own copy. Give it the same currency, starting balance and start date it has here. The starting balance isn't in the file. Then open each account here, set the dates at the top to All time, export its transactions as a spreadsheet, and bring that file into the matching account. Everything in one file goes into the account you pick when you bring it in. A transfer between two of your accounts is in both files. The first time, pick both accounts for it. The second time, leave it out, since you already have it. If you pick its accounts there anyway, it's marked as one you already have. If an account has more than 10,000 transactions, pick a shorter range of dates there and move one range at a time, because that's the most one file can bring in.",
   },
 ];

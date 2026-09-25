@@ -115,7 +115,7 @@ const KNOWN_KEYS = new Set([
  * that is what YAML says an unquoted date is. Interpolating that object into
  * a string produced "Wed Sep 17 2026 …T00:00:00Z" and an Invalid Date, which
  * failed the build rather than rendering wrongly — but only because something
- * downstream happened to parse it. Normalising here means every consumer gets
+ * downstream happened to parse it. Normalizing here means every consumer gets
  * one shape no matter how the file was written.
  */
 function asDay(value: unknown, where: string): string | undefined {
@@ -223,7 +223,7 @@ export function allEntries(collection: Collection): readonly Entry[] {
  *
  * A page with no `order` sorts after every page that has one rather than
  * alphabetically among them, which is what makes adding `order: 2` to one
- * page do the obvious thing without renumbering its neighbours.
+ * page do the obvious thing without renumbering its neighbors.
  */
 function compareDocs(a: Entry, b: Entry): number {
   const bySection = sectionRank(a.frontmatter.section) - sectionRank(b.frontmatter.section);
@@ -278,7 +278,7 @@ export function docsBySection(): readonly { section: string; entries: readonly E
 }
 
 /** The page before and after this one, in sidebar order. */
-export function docsNeighbours(slug: string): {
+export function docsNeighbors(slug: string): {
   previous: Entry | undefined;
   next: Entry | undefined;
 } {
@@ -349,7 +349,7 @@ export function slugify(text: string): string {
 }
 
 /* ------------------------------------------------------------------ *
- * Blog queries: tags, authors, series, neighbours, related, paging.
+ * Blog queries: tags, authors, series, neighbors, related, paging.
  * ------------------------------------------------------------------ */
 
 /** A tag as it appears in a URL. Two tags differing only by case are one tag. */
@@ -379,7 +379,7 @@ export function postsByAuthor(key: string): readonly Entry[] {
 }
 
 /** The post before and after this one, in publication order. */
-export function blogNeighbours(slug: string): {
+export function blogNeighbors(slug: string): {
   previous: Entry | undefined;
   next: Entry | undefined;
 } {

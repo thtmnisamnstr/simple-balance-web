@@ -11,14 +11,14 @@ import AxeBuilder from "@axe-core/playwright";
  * This is the only test here that runs a browser, and it earns the seconds it
  * costs: every other rule in `web.md` that a machine can decide is checked in
  * jsdom, and jsdom has no layout engine, no computed styles and no contrast.
- * Colour contrast in particular cannot be checked any other way, and it is the
+ * Color contrast in particular cannot be checked any other way, and it is the
  * rule most likely to be broken by a token change nobody rendered.
  *
  * It serves `out/` itself rather than expecting a server, so `npm run verify`
  * needs nothing running. `verify` builds before it tests, which is what makes
  * `out/` present.
  *
- * **Both themes**, because half of this site's colour lives in the
+ * **Both themes**, because half of this site's color lives in the
  * `prefers-color-scheme` block and a light-only audit would never read it.
  */
 

@@ -13,7 +13,8 @@ this one.** A local checkout is whatever state it was left in, and checking a
 claim against a stale working tree is worse than not checking, because it
 comes with confidence. `sync-from-app` does it properly, reading
 `docs/product/` — the contract, the feature list and every screenshot — from
-the ref that holds the released behaviour.
+the ref `scripts/check-app-sync.mjs` resolves: `main` once it carries the kit,
+and the head of the open pull request into `main` that carries it until then.
 
 **Nothing here runs the application.** It used to: this repository captured
 its own screenshots. The application now publishes them, because it is the
@@ -24,13 +25,14 @@ checked out here was a picture nobody could reproduce.
 
 - This is a **static export**. `next.config.mjs` emits plain HTML into `out/`
   with no server and no platform adapter, and that portability is the point:
-  the same artefact is what Netlify publishes and what any other static host
+  the same artifact is what Netlify publishes and what any other static host
   would. Do not add a route handler, middleware, or anything else that needs a
   running server without changing that decision deliberately —
   `docs/standards/operations.md` 1.1.
-- **Colour comes from `src/styles/brand.css` and nowhere else.** That file is
+- **Color comes from `src/styles/brand.css` and nowhere else.** That file is
   copied from the application's stylesheet and is the one thing shared across
-  the two repositories.
+  the two repositories. `sync-from-app` §1 diffs its token values against the
+  application's, and `--art-ink` is the one line that diff should report.
 - Copy lives in `src/content/`, not in markup, so it can be read by a test.
 - Long-form content is Markdown under `content/`, read at build time.
 
@@ -38,21 +40,24 @@ checked out here was a picture nobody could reproduce.
 
 Break one of these and the site is wrong rather than untidy.
 
-- **Never add a catch-all rewrite.** `smpl.money/ads.txt` authorises the
+- **Never add a catch-all rewrite.** `smpl.money/ads.txt` authorizes the
   advertising inventory running on app.smpl.money. A `/* -> /index.html 200`
   rule turns every unknown path into a 200 of HTML, and Google reads an
   `ads.txt` that does not name the publisher id as an instruction to stop
-  monetising the domain. Every symptom is invisible: the file is served, the
+  monetizing the domain. Every symptom is invisible: the file is served, the
   build is green, the ads render, the revenue is zero.
-- **No `ads.txt` until there is a publisher id to put in it.** A missing file
-  is ignored and costs nothing; a well-formed one that does not name the id is
-  the documented demonetising state. It arrives with the id, in one commit.
+- **`ads.txt` names the publisher id and nothing else.** A missing file is
+  ignored and costs nothing; a well-formed one that does not name the id is
+  the documented demonetizing state. So it arrived with the id, in one commit,
+  before the review request rather than after approval, because it is how the
+  site is verified — `docs/adsense.md` §3. `tests/export-shape.test.ts`
+  holds it to exactly the DIRECT record and the `ownerdomain` line.
 - **The root `ads.txt` carries the DIRECT record, not a `subdomain=`
   referral.** Google requires a referral only when the publisher id differs
   between root and subdomain, and here it does not — both derive from one
-  `ADSENSE_CLIENT_ID`. A referral would hand the authorisation chain to a file
+  `ADSENSE_CLIENT_ID`. A referral would hand the authorization chain to a file
   the application only serves while ads are configured.
-- **A colour outside `brand.css` cannot re-theme.** A literal looks right in
+- **A color outside `brand.css` cannot re-theme.** A literal looks right in
   light mode and broken in dark, which is the mode nobody checks.
 - **`announced` decides three things at once** — the link, the `noindex`, and
   the sitemap. A section half-launched by somebody adding a link is the failure
@@ -62,7 +67,7 @@ Break one of these and the site is wrong rather than untidy.
   crawler that cannot fetch the page never sees the `noindex`.
 - **Every price and limit on the pricing page is what the application
   enforces**, and `tests/app-facts.test.ts` proves it. The application
-  publishes `docs/product-facts.json`; `src/content/app-facts.json` is a
+  publishes `docs/product/facts.json`; `src/content/app-facts.json` is a
   snapshot of it with the commit it came from. **Never refresh that snapshot
   to make a test pass** — it is the external referent, and moving it to match
   the site turns the check green while leaving the page wrong. Fix the page,
@@ -81,7 +86,7 @@ Break one of these and the site is wrong rather than untidy.
   attached" while the policy disclosed rough location and a cookie; the
   homepage promised "nothing counts your clicks" beside a policy disclosing
   server logs. Neither was written as a lie — both were a long document
-  summarised from memory. `content.md` 2.4, and `tests/legal.test.tsx` holds
+  summarized from memory. `content.md` 2.4, and `tests/legal.test.tsx` holds
   the two surfaces together.
 - **No third-party branding.** No vendor logo, badge or "powered by" mark, and
   no script or image from a vendor's domain. The privacy policy naming the
@@ -133,7 +138,7 @@ Break one of these and the site is wrong rather than untidy.
 - **Nothing here reaches the application over the network except on a
   schedule.** `.github/workflows/app-sync.yml` asks weekly whether the
   product moved and opens an issue; it changes nothing, because the work it
-  prompts is a rewrite and copy is a judgement. A network call in a test
+  prompts is a rewrite and copy is a judgment. A network call in a test
   would fail on somebody else's outage.
 - **Every claim on this site is true of the shipped application.** Nothing here
   can check that, because the application is a different repository. It is the
@@ -141,10 +146,10 @@ Break one of these and the site is wrong rather than untidy.
 - **Screenshots are captured from a real running instance**, never mocked up,
   and the page discloses that the ledger in them is seeded demo data.
 - **A client component is an island and earns its place.** Three exist, all
-  under `src/components/client/`, each because the behaviour is impossible on
+  under `src/components/client/`, each because the behavior is impossible on
   the server. The page must be correct before any of them hydrates.
 - **Never declare an ARIA pattern you have not implemented.** A `combobox`
-  role without arrow-key navigation tells a screen reader to expect behaviour
+  role without arrow-key navigation tells a screen reader to expect behavior
   that is not there, which is worse than claiming nothing.
 - **Structured data describes what a reader can see.** No invented ratings, no
   author who is not in the byline. It is both a policy violation and a lie.
@@ -152,7 +157,7 @@ Break one of these and the site is wrong rather than untidy.
   which is why page one of the blog exists at two URLs with a canonical tag.
 - **`npm run verify` builds before it tests**, because the tests read the built
   output — `noindex`, the sitemap, `robots.txt` and the shipped weight are all
-  facts about the artefact rather than about the source.
+  facts about the artifact rather than about the source.
 - **Netlify runs the gate, not just the build.** Its build command is
   `npm run verify`, so a failing test fails the deploy instead of producing a
   preview somebody approves.
@@ -205,8 +210,8 @@ Eight skills in `.claude/skills/` hold the procedures that repeat:
 - `write-content` — write a post or a documentation page, with the frontmatter
   contract and the traps that fail a build.
 - `sync-from-app` — pull the application's contract, feature list and
-  screenshots, rewrite the features for a general reader, and update the site.
-  Most runs end at the diff in §1.
+  screenshots, check the brand tokens, rewrite the features for a general
+  reader, and update the site. Most runs end at the checks in §1.
 - `legal-review` — bring the privacy policy and terms back to true when
   something changes what data is handled or who handles it.
 - `optimize` — page weight, images, fonts, metadata and findability, beyond
@@ -222,4 +227,4 @@ with the argument. `docs/adsense.md` is the AdSense procedure.
 - Anything visual looked at in a browser, in both themes, at both widths.
   jsdom has no layout engine and the suite cannot see it.
 - Any document the change made false, changed in the same commit.
-- Tests for changed behaviour, and every new check mutation-proved.
+- Tests for changed behavior, and every new check mutation-proved.

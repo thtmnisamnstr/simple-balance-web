@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { feedAlternates } from "@/lib/feed";
-import { comparison, faq, pricing, tiers } from "@/content/pricing";
+import { openGraph } from "@/app/open-graph";
+import { comparison, faq, pricing, pricingMeta, tiers } from "@/content/pricing";
 import { site } from "@/content/home";
 import { CheckIcon } from "@/components/icons";
 import { Breadcrumbs } from "@/components/breadcrumbs";
@@ -8,16 +9,13 @@ import { BreadcrumbStructuredData, FaqStructuredData } from "@/components/struct
 
 export const metadata: Metadata = {
   title: "Pricing",
-  description:
-    "Free for up to three accounts, with ads. Premium is $30 a year for as many accounts as you " +
-    "like and no ads. Run it yourself and there is no plan at all.",
+  description: pricingMeta.description,
   alternates: feedAlternates("/pricing/"),
-  openGraph: {
-    type: "website",
+  openGraph: openGraph({
     title: `Pricing — ${site.name}`,
-    description:
-      "Free for three accounts, $30 a year for as many as you like, or run it yourself for nothing.",
-  },
+    description: pricingMeta.socialDescription,
+    url: "/pricing/",
+  }),
 };
 
 const trail = [
