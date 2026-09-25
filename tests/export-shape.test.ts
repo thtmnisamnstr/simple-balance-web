@@ -203,13 +203,38 @@ describe("the published shape", () => {
     expect(block?.[0]).toMatch(/Content-Type\s*=\s*"text\/plain/);
   });
 
-  it("ships no ads.txt until there is a publisher id to put in it", () => {
+  it("ships an ads.txt that authorizes this publisher directly, and nobody else", () => {
     // A missing ads.txt is ignored by Google and costs nothing. A present one
-    // that does not name the publisher id demonetizes the domain. So the file
-    // is deliberately absent, and this check is the reminder of why — when the
-    // AdSense account exists, this expectation is inverted in the same commit
-    // that adds the file. `docs/standards/operations.md` 2.2.
-    expect(existsSync("public/ads.txt"), "see docs/standards/operations.md 2.2").toBe(false);
+    // that does not name the publisher id demonetizes the domain, so the file
+    // arrived with the id, in the commit that turned this check around from
+    // asserting its absence. `docs/standards/operations.md` 2.2.
+    //
+    // The id is written here as well as in the file, deliberately: it is the
+    // account's, it changes only with the account, and a check that read it
+    // out of the file it is checking would pass whatever the file said.
+    // `pub-`, not the application's `ca-pub-`: the same id in the spelling
+    // this file takes, and the second most common way to authorize nobody.
+    const PUBLISHER = "pub-9953156598757474";
+    expect(existsSync("public/ads.txt"), "see docs/standards/operations.md 2.2").toBe(true);
+    const records = repoFile("public/ads.txt")
+      .split("\n")
+      .map((line) => line.replace(/#.*/, "").trim())
+      .filter(Boolean);
+    // Exactly these two, in this order. A RESELLER line or a second seller is a
+    // decision `docs/adsense.md` §1 has to be re-read for, and a `subdomain=`
+    // referral would hand authority to a file the application only serves
+    // while ads are configured.
+    expect(records).toEqual([
+      `google.com, ${PUBLISHER}, DIRECT, f08c47fec0942fa0`,
+      "ownerdomain=smpl.money",
+    ]);
+    // What Netlify publishes, when a build has run: the same bytes, since
+    // `public/` is copied into the export untouched.
+    if (existsSync("out/ads.txt")) {
+      expect(repoFile("out/ads.txt"), "out/ads.txt is not public/ads.txt").toBe(
+        repoFile("public/ads.txt"),
+      );
+    }
   });
 
   it("serves every route as its own directory, so no rewrite is needed", () => {

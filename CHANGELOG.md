@@ -9,6 +9,74 @@ than a contract with readers.
 
 ### Changed
 
+**The terms are governed by California law and follow its automatic renewal
+rules, the privacy policy names Gmail, Cloudflare and the backups, and the
+terms say no tax is added to the price.** Each was either a decision nobody
+had made or a sentence the application didn't bear out, and both documents
+are dated September 23, 2026, because a change of governing law is material.
+
+- Governing law was England and Wales, carried over from the British draft
+  rather than chosen. It's California's now, without its conflict-of-laws
+  rules, and the state and federal courts in California have jurisdiction. A
+  consumer who lives somewhere else keeps the mandatory consumer law where
+  they live, and any right it gives them to bring a claim in their own
+  courts. There's no arbitration clause and no class-action waiver.
+- The policy said "an email delivery service" would carry the confirmation,
+  reset and reminder email, and promised to name it before one was in use.
+  It's Gmail, which is Google's, and it's named in the list of providers
+  and in the short version. The policy now says what each of the
+  application's four messages carries to Google: your address, a link that
+  stops working within an hour for a confirmation or a reset, and for a
+  recurring transaction's notice or a template's reminder, the name you gave
+  it, in the subject line too, and its dates. The application adds nothing
+  else, so none of them carries your name, an amount, a balance, a payee or
+  an account unless you typed one into that name.
+- The application sends by signing in to one Gmail mailbox, and Gmail keeps
+  a copy of each message in that mailbox's Sent mail; a bounce or an
+  automatic reply can bring another copy back. Deleting an account in the
+  application doesn't reach them. So the short version and the section on
+  deleting an account no longer say deleting it removes everything: the
+  copies stay until the operator deletes them, and every copy is deleted on
+  request.
+- The hosted machine backs up the whole database every night and keeps the
+  14 most recent backups, and the policy never said so. It does now, where
+  retention and deleting are, and the short version lists what outlasts a
+  deleted account, the backups for about two weeks, the server logs,
+  Stripe's record of payments and Gmail's copies, instead of saying "two
+  things", which the logs had already made wrong.
+- The policy called its providers processors, which is a role under each
+  one's own terms: Google is a controller for advertising and for its own
+  sign-in, and a processor for Gmail only on Google Workspace. They're
+  providers now, and Google is said to decide for itself how it uses what it
+  receives for advertising and sign-in. Cloudflare is named, because mail
+  sent to info@smpl.money arrives through it, and the section on where data
+  is held says Stripe, Google and Cloudflare hold what they receive in the
+  United States and elsewhere, under the Data Privacy Framework.
+- "We do not sell or share personal information" as the CCPA defines it was
+  a conclusion that holds only while Google's restricted data processing is
+  on, which the application doesn't set. The policy says what leaves for
+  advertising instead, and that Premium sends nothing. What Google receives
+  for an ad now includes what your browser hands it, your IP address, its
+  details and Google's own cookies, and the policy says Google may collect
+  across other sites and that nothing here reads Do Not Track, the two
+  things California's online privacy law asks every policy to say.
+- The terms said prices "exclude any tax that may apply where you are". The
+  application never turns on Stripe's automatic tax and never adds a tax
+  rate of its own, so nothing is added, and the terms now say so. If that
+  changes, a renewal gets the same notice by email that a price change
+  does, with the same right to cancel first. The pricing page didn't
+  mention tax and still doesn't.
+- The notice of a price change was "at least 30 days". California's
+  automatic renewal law, for contracts from July 1, 2025, wants between 7
+  and 30 days, with how to cancel, and "at least 30" left one day to send
+  it on. It's between 7 and 30 days now, saying what it will cost and how to
+  cancel. The notice of a material change also says how to cancel, and you
+  can cancel without signing in by writing to info@smpl.money from the
+  address on your account.
+
+`tests/legal.test.tsx` holds each of these, and every check was proved by
+breaking the sentence it reads and watching it fail.
+
 **The paid plan is $3 a month, or $30 a year.** It was $2 and $20. Six places a
 reader can reach carried the old number — the price on the card, the line under
 the three plans, the question about why it costs so little, the terms, the
@@ -623,6 +691,16 @@ list the sixth.
 devDependency now.
 
 ### Added
+
+**`smpl.money/ads.txt` names this site's AdSense publisher id.** It is how
+Google verifies the site for review, and what authorizes the advertising the
+application will serve on `app.smpl.money`, so it arrived as soon as the
+account had an id rather than after approval. It carries exactly the DIRECT
+record for `pub-9953156598757474` and the `ownerdomain` line. The check that
+used to assert the file was absent now asserts its contents, with the id
+written in the test rather than read from the file, so a file that authorized
+somebody else, used the application's `ca-pub-` spelling or added a
+`subdomain=` referral would fail the build.
 
 **A record of which picture each phone-sized copy was made from.** The homepage
 serves a 1200px copy of every screenshot to narrow screens, made from the 1600px

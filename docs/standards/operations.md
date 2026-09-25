@@ -103,25 +103,26 @@ without it, so `/ads.txt/` is `/ads.txt`. The same predicate reads a
 `_redirects` file, in `public/` and in `out/`, because Netlify reads rules
 from there too.
 
-### 2.2 The file is absent until there is a publisher id
+### 2.2 The file names the publisher id, and nothing else
 
-**Binding.** `public/ads.txt` does not exist yet, and its absence is checked.
+**Binding.** `public/ads.txt` holds exactly the DIRECT record for this
+account's publisher id and the `ownerdomain` line, and the check names the id.
 
 A missing `ads.txt` is ignored by Google and costs nothing. A well-formed one
 that does not name the publisher id is the documented state that demonetizes
-the domain. So the file arrives with the id, in one commit, and this
-expectation is inverted in the same commit.
+the domain. So the file arrived with the id, in one commit, and the check that
+had asserted its absence was turned around in the same commit to assert its
+contents.
 
 **The id comes early.** AdSense shows it as soon as the account exists, before
 review, and this file is how the site is verified for that review, so it lands
 before the review request rather than after approval. `docs/adsense.md` §3 has
 the order.
 
-**The content, when it exists**, is the DIRECT record and not a `subdomain=`
-referral:
+**The content** is the DIRECT record and not a `subdomain=` referral:
 
 ```
-google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0
+google.com, pub-9953156598757474, DIRECT, f08c47fec0942fa0
 ownerdomain=smpl.money
 ```
 
@@ -132,7 +133,9 @@ compared to the root domain."_ The app derives its `ads.txt` from the same
 covers the subdomain. Adding a referral would hand the whole authorization
 chain to a file the app only serves while ads are configured.
 
-_Checked by:_ `tests/export-shape.test.ts`.
+_Checked by:_ `tests/export-shape.test.ts`, which holds the file to those two
+records exactly, with the id written in the test rather than read from the
+file, and holds the built `out/ads.txt` to the same bytes.
 
 ### 2.3 The content type is pinned
 
@@ -414,7 +417,7 @@ Two that cost a day if they are wrong:
 | --------------------------- | ----------------------------------------------------------------------------------------------------------- |
 | 1.1, 1.3 Export shape       | `tests/export-shape.test.ts`                                                                                |
 | 2.1 No catch-all rewrite    | `tests/export-shape.test.ts`                                                                                |
-| 2.2 No premature `ads.txt`  | `tests/export-shape.test.ts`                                                                                |
+| 2.2 `ads.txt` names the id  | `tests/export-shape.test.ts`                                                                                |
 | 2.3 Content type            | `tests/export-shape.test.ts`                                                                                |
 | 3.1, 3.2 Headers            | `tests/export-shape.test.ts`                                                                                |
 | 6.2 Every pre-1.0 dep named | `tests/repo-references.test.ts`                                                                             |

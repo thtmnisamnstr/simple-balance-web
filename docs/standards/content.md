@@ -582,16 +582,89 @@ changes.
 ### 6.4 A legal page describes this product, not a template
 
 **Binding.** The privacy policy names the actual processors — Stripe,
-Google, Netlify and Oracle Cloud Infrastructure — the actual lawful bases,
-and the actual retention. A generic policy is not merely unhelpful: it is a
-false statement about what happens to somebody's data.
+Google (for advertising, for Google sign-in, and through Gmail for the
+application's email), Cloudflare (for the mail sent to the contact address),
+Netlify and Oracle Cloud Infrastructure — the actual lawful bases, and the
+actual retention. A generic policy is not merely unhelpful: it is a false
+statement about what happens to somebody's data.
+
+**It calls them providers, not processors.** A processor is a role under
+each provider's own terms, not a word the page gets to choose. Google is a
+controller for advertising under its Controller-Controller Data Protection
+Terms unless restricted data processing is on, and a controller of its own
+sign-in; for Gmail it is a processor only where the mailbox is Google
+Workspace, and nothing smpl.money publishes shows one. So the policy says
+Google decides for itself how it uses what it receives for advertising and
+sign-in, and says nothing about its role for Gmail until the operator does.
 
 **Oracle was the one left out**, as "our hosting provider", and it is the
 one holding every balance: it hosts the application and its database, while
 Netlify hosts only this site. The short version, which is what most people
-read, named two of the application's providers and not the host. An email
-delivery service joins the list in the change that starts using one, because
-the policy promises to name the service before one is in use.
+read, named two of the application's providers and not the host.
+
+**The mail service was the last one unnamed**, as "an email delivery
+service" the policy promised to name before one was in use. It is Gmail, and
+naming it took more than a word. The policy says what each of the
+application's four messages carries to Google, read from the builders in its
+`mail.ts`: a recurring transaction's name and dates are ledger data somebody
+typed, so the Stripe paragraph's "nothing from your ledger" cannot be said
+of it. The limit is on what the builders add, not on what the mail holds:
+both names are free text, and a recurrence called "Chase Visa payment" puts a
+payee and an account in the subject line, so "none of them holds a payee"
+carries its exception in the same sentence. And Gmail keeps a copy of each
+message the application sends by signing in to one mailbox through
+smtp.gmail.com, in that mailbox's Sent mail, and a bounce or an automatic
+reply can bring another copy back; a deletion in the application reaches
+none of them, so the short version and the deletion section stopped saying
+that deleting an account deletes everything. The copy is said as what that
+route does rather than as what Gmail does, because the Workspace relay keeps
+no such copy unless comprehensive mail storage is on, which is why a change
+of `SMTP_HOST` on the application is a change to the retention paragraph.
+
+**What outlasts a deletion is listed, not counted.** The short version said
+"two things outlast a deleted account" while the long version already kept
+server logs for a period of their own, and the hosted machine dumps the
+whole database every night and keeps the newest 14 (`backupKeep` in the
+application's Oracle stack). Nothing mentioned the backups. The list now
+names each thing and how long, and a count is refused, because the next
+thing added would leave the number behind. The 14 is a literal: nothing
+here can read the stack, so a change to `backupKeep` is a change to the page.
+
+**A legal conclusion rests on something the page can name.** "We do not
+sell or share personal information as the CCPA defines it" holds only while
+Google is a service provider for the ad requests, which is what its
+restricted data processing makes it, and by default AdSense requests do not
+limit how data is processed. The application's tag sets no restriction, so
+the sentence rested on an AdSense account setting nothing here can read.
+The policy says the facts instead, what leaves for advertising and that
+Premium sends nothing, and the conclusion may come back only naming
+restricted data processing beside it.
+
+**CalOPPA asks two questions every policy has to answer**, however small the
+operator (Bus. & Prof. Code 22575(b)(5) and (b)(6)): whether another party
+may collect information about somebody's activity across other sites, which
+Google's advertising cookies may, and how the operator responds to Do Not
+Track, which is that nothing reads it. "What Google receives" lists what the
+reader's browser hands over, the IP address, the browser's details and
+Google's own cookies, as well as what the application adds, because a
+heading that reads as the whole list made it look shorter than it is.
+
+**The terms describe what the application charges and where a dispute
+goes.** No tax is added to the price, because the application sets no
+`automatic_tax` and adds no tax rate; "exclude any tax that may apply"
+promised a total the checkout never shows. Governing law is California's,
+the operator's decision, replacing an England and Wales clause nobody chose,
+and the consumer carve-out covers the courts as well as the law. There is no
+arbitration clause and no class-action waiver, by the same decision.
+
+**And they follow California's automatic renewal law**, Bus. & Prof. Code
+17602 as amended for contracts from July 1, 2025. A fee change is notified
+"no less than 7 days and no more than 30 days" before it takes effect, with
+what it will cost and how to cancel; "at least 30 days" left one day to send
+it on. A material change is notified before it takes effect, with how to
+cancel. And a cancellation needs a way that asks for no signing in, which is
+writing to the contact address from the account's own. Each of these is a
+promise the operator keeps by hand: the application sends none of that mail.
 
 It also carries the three disclosures Google requires of a site serving
 AdSense — third-party cookies, the vendors that set them, and how to opt out —
@@ -601,9 +674,33 @@ _Checked by:_ `tests/legal.test.tsx`, which asserts:
 
 - the three AdSense disclosures, and that non-personalized ads are not
   described as cookie-free;
-- every processor named, in the policy and, for the host, in its short
-  version;
-- the GDPR and CCPA rights, and that the terms do not purport to restrict
+- every processor named, Cloudflare included, in the policy and, for the
+  host and the mail service, in the short version's list of providers; and
+  that they are listed as providers, no sentence naming Gmail calls anybody
+  a processor, and Google is said to decide for itself for advertising and
+  sign-in and not for Gmail;
+- that Gmail is named as the mail service and the promise to name one is
+  gone; what reaches Google through it, message by message, with no
+  sentence saying the mail carries nothing from the ledger, the name in the
+  subject line, and the limit carrying the exception for a name somebody
+  typed; and that Gmail's copies are disclosed where retention is, as what
+  signing in to one mailbox does rather than as what Gmail does, with the
+  bounces and automatic replies, how long they are kept, and every copy
+  deleted on request, while neither the deletion section nor the short
+  version says deleting an account removes them;
+- the nightly backups, with the 14 kept and the two weeks that makes, where
+  retention is and where deleting is; a deletion that reaches the database
+  and no further; and the short version listing what outlasts a deletion,
+  backups, logs, Stripe and Gmail, without counting it;
+- where Stripe, Google and Cloudflare hold what they receive, the Gmail
+  copies included, and the framework each takes part in;
+- what the reader's browser hands Google for an ad, the IP address, the
+  browser's details and Google's cookies; that Google may collect across
+  other sites; and how Do Not Track is answered;
+- the GDPR and CCPA rights; that no sentence says personal information is
+  not sold or shared unless it names restricted data processing in the same
+  paragraph; that the rights section says what leaves for advertising and
+  that Premium sends nothing; and that the terms do not purport to restrict
   the AGPL;
 - that declining ad consent leaves the ads in place, on the policy and the
   pricing page alike, and that neither says it means no ads;
@@ -631,6 +728,19 @@ _Checked by:_ `tests/legal.test.tsx`, which asserts:
   ended;
 - no rate limit the terms point at that is not documented, and no export
   promised larger than the one the product has;
+- that the terms add no tax to the price, give tax added to a renewal the
+  same notice by email as a price change, and that the pricing page never
+  says tax is extra;
+- that every promise of notice of a price or a tax gives a window inside
+  California's 7 to 30 days, by email, with what it will cost and how to
+  cancel, and no bare "at least N days"; that the notice of a material
+  change is by email, before it takes effect, with what is changing and how
+  to cancel; and that the cancellation sentence names a way that needs no
+  signing in;
+- California's law with its conflict-of-laws rules excluded, California's
+  state and federal courts, and a consumer elsewhere keeping the law and
+  the courts of where they live; and no English law, arbitration clause or
+  class-action waiver in either document;
 - that the way back in is spelled out: each account exported from its own
   page with the dates set to All time, a date range at a time past 10,000
   rows, and a transfer flagged as a duplicate by the second import.

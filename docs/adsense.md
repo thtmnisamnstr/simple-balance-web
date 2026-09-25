@@ -41,10 +41,10 @@ build is green, the ads render, the revenue is zero.
 
 Two ways to reach it, both guarded:
 
-- **Shipping the file before you have an id.** `public/ads.txt` does not exist
-  and `tests/export-shape.test.ts` asserts that it does not. The id exists as
-  soon as the AdSense account does (§3 step 3), before approval, so this
-  guard is lifted then, in the commit that adds the file with the id in it.
+- **Shipping the file without the id in it.** `public/ads.txt` did not exist
+  until the account did, and `tests/export-shape.test.ts` asserted that it did
+  not. The file arrived with the id (§3 step 4), and the same check now holds
+  it to exactly the DIRECT record naming that id and the `ownerdomain` line.
 - **A catch-all rewrite.** `/* → /index.html 200` on a static host turns every
   unknown path into a 200 of HTML — including `/ads.txt` before it exists, and
   `/ads.tx` after a typo. `netlify.toml` has none and the same test refuses

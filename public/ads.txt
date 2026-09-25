@@ -1,0 +1,7 @@
+# smpl.money — authorized digital sellers
+# Covers app.smpl.money: the same publisher id, so no subdomain= referral is
+# needed and adding one would delegate authority to a file the application
+# only serves while ads are configured.
+# https://support.google.com/adsense/answer/9785052
+google.com, pub-9953156598757474, DIRECT, f08c47fec0942fa0
+ownerdomain=smpl.money

@@ -18,7 +18,7 @@
  */
 
 /** Bumped whenever either document changes materially. Rendered on both. */
-export const legalUpdated = "2026-09-22";
+export const legalUpdated = "2026-09-23";
 
 const operator = {
   /** Who is responsible for the hosted deployment, in the legal sense. */
@@ -63,18 +63,35 @@ export const privacy = {
         // unmentioned. Semicolons, and the role before the name: with commas,
         // "Oracle Cloud Infrastructure, which hosts it, the payment processor"
         // read as Oracle hosting the payment processor and everything after.
+        //
+        // Named, every one. The mail service was "an email delivery service
+        // once one is in use" until one was chosen, and naming Gmail beside a
+        // nameless "advertising network" would have hidden that both are
+        // Google. Gmail keeps its own item, because it is a different thing
+        // Google does with different data.
         "The application holds the ledger you put into it, the account you signed in with, and " +
           "the operational records needed to run a service. It shares them with nobody except " +
           "the providers that run the service: the host, Oracle Cloud Infrastructure; the " +
-          "payment processor; the advertising network on the free plan; and an email delivery " +
-          "service once one is in use. Each is described below. An AI assistant sees your " +
-          "ledger only if you connect one.",
+          "payment processor, Stripe; the advertising network on the free plan, Google; and " +
+          "the email service, Gmail, which Google also runs. Each is described below. An AI " +
+          "assistant sees your ledger only if you connect one.",
         // "Every transaction", not "everything": the export is the transaction
         // CSV and nothing else. Budgets, templates and recurring entries have
         // no export, and a policy that promised them would be promising a
         // portability the product does not provide.
+        //
+        // What outlasts a deletion, said beside the deletion, and all of it:
+        // this said "two things" while the long version already had a third,
+        // the server logs, and the hosted machine's nightly dump keeps the
+        // newest 14 (`SB_BACKUP_KEEP`, from the stack's `backupKeep`), each
+        // one the whole database. No count, so the next thing added cannot
+        // leave a number behind that is wrong.
         "You can export every transaction as CSV at any time, and deleting your account deletes " +
-          "your data. Stripe keeps its own record of any payments you made, as tax law requires.",
+          "your data. Some of it outlasts a deleted account: it stays in the database's nightly " +
+          "backups for about two weeks, and in the server logs for the short time they're kept; " +
+          "Stripe keeps its own record of any payments you made, as tax law requires; and a " +
+          "copy of each email the application sent you stays in the Gmail mailbox it was sent " +
+          "from until we delete it.",
       ],
     },
     {
@@ -136,9 +153,16 @@ export const privacy = {
           "**Google AdSense**. Paid accounts are shown no advertising, and a paid account " +
           "doesn't load Google's script at all, because the server decides and the browser is " +
           "never told the rule.",
-        "Google and its partners use cookies and similar technologies to serve ads. **Ads are " +
-          "requested as non-personalized by default**, which means they are based on the page " +
-          "and your rough location rather than on a profile of you.",
+        // CalOPPA, Bus. & Prof. Code 22575(b)(6): whether another party may
+        // collect information about somebody's activity over time and across
+        // other sites. Google's advertising cookies are its own and are read on
+        // every site that carries its ads, so it may, and the sentence after
+        // is about how an ad here is chosen, which is a different question.
+        "Google and its partners use cookies and similar technologies to serve ads, and through " +
+          "the cookies it sets for advertising, Google may collect information about what you " +
+          "do over time and across other websites. **Ads are requested as non-personalized by " +
+          "default**, which means they are based on the page and your rough location rather " +
+          "than on a profile of you.",
         /*
          * What declining does, and it is not "no ads". This said "Declining
          * means no ads are served to you" while the pricing page said saying
@@ -163,8 +187,15 @@ export const privacy = {
           "Google from setting the advertising cookies that need your consent, though Google " +
           "may still show what it calls a limited ad in the same place.",
         "Ads are only ever personalized if you have consented to that specifically.",
-        "**What Google receives.** Our publisher id, and the address of the page the ad sits " +
-          "on. That address is not nothing: pages in the application carry record identifiers " +
+        // The request for an ad comes from the reader's browser, so Google
+        // gets what any site gets from one, and the rough location above is
+        // read from that address. A heading that reads as the whole list, with
+        // only what the application adds on it, made the list look shorter
+        // than it is (`content.md` 2.4).
+        "**What Google receives.** What any site your browser loads something from receives: " +
+          "your IP address and your browser's details, with Google's own cookies where they're " +
+          "allowed. From us, it receives our publisher id and the address of the page the ad " +
+          "sits on. That address is not nothing: pages in the application carry record identifiers " +
           "in their paths, so a URL identifies a row in your ledger, though not a person, a " +
           "name or an amount. No account name, no balance, no figure, no email address and no " +
           "identifier of yours is sent as a targeting parameter, and the browser's referrer is " +
@@ -253,52 +284,92 @@ export const privacy = {
         "There is no newsletter, nothing is sold to a mailing-list broker, and your address is " +
           "never shared for anybody else's marketing.",
         /*
-         * The application's four messages, and only those. This said "sends
-         * none of these", which took in the service email above "sent to
-         * every account", and beside "the hosted application doesn't use one
-         * yet" it read as the hosted service sending nobody anything. No
-         * configuration sends service or product email, so neither belongs in
-         * a sentence about configuration. A reminder is saved rather than
-         * absent: the form says so and keeps the setting, because a setting
-         * refused for want of a mail server would be lost once one is added.
+         * The first kind only, because that is what `mail.ts` sends: an
+         * address confirmation, a password reset, a recurring transaction's
+         * notice and a template's reminder. This paragraph used to say what a
+         * deployment with no mail server sends, which was the hosted one's
+         * state until Gmail was chosen and is now somebody else's deployment,
+         * which the introduction says this policy is not about.
          */
-        "A deployment configured with no mail server sends no confirmation, reset or reminder " +
-          "email. It asks nobody to confirm an address and offers no password reset, and a " +
-          "reminder you turn on is saved, with nothing sent until a mail server is added.",
+        "The application sends the email you asked for through Gmail. What Google receives " +
+          "that way is under Who else sees your data, and how long Gmail keeps a copy is under " +
+          "Where it is held.",
       ],
     },
     {
       heading: "Who else sees your data",
       paragraphs: [
-        "**Nobody, other than the processors needed to run the service**, and an AI assistant " +
-          "if you connect one yourself. We do not sell your data, rent it, or share it for " +
-          "anyone else's marketing.",
+        /*
+         * "Share it for anyone else's marketing" with no exception sat above a
+         * section saying Google receives an address and its cookies in order
+         * to show somebody else's ad, so the exception is said here.
+         */
+        "**Nobody, other than the providers needed to run the service**, and an AI assistant " +
+          "if you connect one yourself. We don't sell your data or rent it, and the only thing " +
+          "that leaves here for advertising is what Google receives to show an ad on the free " +
+          "plan, which is set out under Advertising.",
         /*
          * Named, not "our providers" (`legal-review` §5). Oracle is the
-         * application's host and holds the database, so it is the processor
+         * application's host and holds the database, so it is the provider
          * holding every balance, and it was the one left unnamed. Netlify is
          * named above because it hosts only this site.
          *
-         * The mail relay is the one that cannot be named yet, because none has
-         * been chosen. Saying so is true; naming a plausible one would not be.
-         * The service is named here in the same change that sets `SMTP_HOST`
-         * on the application.
+         * "Providers", not "processors", which is a role each has under its
+         * own terms rather than a word this page can pick. Google is a
+         * controller for advertising under its Controller-Controller Data
+         * Protection Terms unless restricted data processing is on
+         * (business.safety.google/rdp), and is a processor for Gmail only
+         * where the mailbox is Google Workspace, which nothing here shows.
          *
-         * Only that. It went on "so it sends none of those messages today",
-         * which took in the service email the section above says is "sent to
-         * every account", and the notice by email both Changes sections and
-         * the terms' price clause promise: one document saying mail goes to
-         * everybody and none goes to anybody. "Carries the messages above" did
-         * the same thing more quietly, so the relay is said to carry what the
-         * application sends, the four messages `mail.ts` has, and nothing it
-         * does not.
+         * Gmail carries what the application sends, the four messages
+         * `mail.ts` has, and nothing it does not. "Carries the messages above"
+         * would take in the service email the Email section says is "sent to
+         * every account", which the application has no way to send.
+         *
+         * Cloudflare because smpl.money's MX records are Cloudflare Email
+         * Routing, so every request this policy invites, a deletion of Gmail's
+         * copies included, reaches us through it.
          */
-        "Those processors are: **Oracle Cloud Infrastructure**, which hosts the application and " +
-          "stores its database; **Stripe**, for payments; **Google**, for advertising on the " +
-          "free plan and for Google sign-in if you use it; and an email delivery service, which " +
-          "carries the confirmation, reset and reminder email the application sends. The " +
-          "hosted application doesn't use one yet, and this page will name the service before " +
-          "one is in use.",
+        "Those providers are: **Oracle Cloud Infrastructure**, which hosts the application and " +
+          "stores its database; **Stripe**, for payments; **Google**, for advertising on the free " +
+          "plan, for Google sign-in if you use it, and through **Gmail**, which carries the " +
+          "email the application sends; and **Cloudflare**, which receives the mail you send " +
+          "to info@smpl.money and forwards it to us. For advertising and for sign-in, Google " +
+          "decides for itself how it uses what it receives, under its own privacy policy at " +
+          "policies.google.com/privacy.",
+        /*
+         * Message by message, from the builders in the application's
+         * `mail.ts`. Each goes to `user.email` alone, with no name on it. The
+         * confirmation and the reset carry the application's address and a
+         * link: the reset's is spent on use and both last an hour. The
+         * recurrence notice carries the recurrence's name, the count and each
+         * occurrence date; the template reminder its name and the one date.
+         * Neither carries an amount, a payee or an account: `mail.ts` says
+         * why, a total in a mail reads like a statement.
+         *
+         * Not "nothing from your ledger", which the Payments section can say
+         * of Stripe and this paragraph cannot: a recurrence's name and its
+         * dates are ledger data somebody typed, and the name goes in the
+         * subject line too.
+         *
+         * And the limit is on what the builders add, not on what the mail
+         * holds. Both names are free text (the forms suggest "Rent" and
+         * "Weekly groceries"), so a recurrence called "Chase Visa payment"
+         * sends a payee and an account to Google in its subject line, and an
+         * unqualified "none of them holds a payee" was false for it.
+         */
+        "**What Google receives through Gmail.** The application sends four kinds of email, " +
+          "each to the address on your account: one asking you to confirm that address, a " +
+          "password reset when you ask for one, a notice that a recurring transaction has " +
+          "proposed new entries for you to review, if you turned that on, and a reminder you " +
+          "set on a template. So Google receives your email address and each message. A " +
+          "confirmation or reset holds a link that stops working within an hour. A recurring " +
+          "transaction's notice holds the name you gave it, how many entries it proposed and " +
+          "the date of each, and a template's reminder holds the template's name and the date " +
+          "it's for. Both put that name in the subject line. Each also holds a link back to " +
+          "the application. The application adds nothing else: none of them holds your name, " +
+          "an amount, a balance, a payee or the name of an account, unless you put one into " +
+          "the name you gave the recurring transaction or the template.",
         // Not a processor: the person chooses the assistant and approves what
         // it may do, and its provider answers to them rather than to us. The
         // homepage promotes connecting one, so the policy has to say where
@@ -314,9 +385,35 @@ export const privacy = {
     {
       heading: "Where it is held, and for how long",
       paragraphs: [
+        /*
+         * The other three as well, because the paragraph after this one keeps
+         * copies at Google, and a reader of a section that names one place
+         * takes everything to be there. Each takes part in the Data Privacy
+         * Framework and its UK Extension: stripe.com/legal/data-privacy-framework,
+         * policies.google.com/privacy/frameworks, and Cloudflare's trust hub.
+         * Said as a fact about them rather than as the basis we rely on,
+         * which is the operator's to state.
+         */
         "Data for the hosted application is stored by Oracle Cloud Infrastructure, on servers in " +
           "the United States. Where you are in the UK or the EEA, transfers rely on the UK " +
-          "Addendum and the European Commission's Standard Contractual Clauses.",
+          "Addendum and the European Commission's Standard Contractual Clauses. What Stripe, " +
+          "Google and Cloudflare receive, the copies in Gmail included, is held by them, in the " +
+          "United States and in other countries. Each of them takes part in the EU-U.S. Data " +
+          "Privacy Framework and its UK Extension.",
+        /*
+         * `simple-balance-backup`, run nightly at 03:15 by its timer, which
+         * the first-boot script enables on the hosted machine. It writes a
+         * whole-database dump to the data volume and keeps the newest
+         * `SB_BACKUP_KEEP`, which the Oracle stack sets from `backupKeep`,
+         * 14 by default. A count of dumps rather than days, so a night that
+         * fails keeps an old one a night longer, which is why the period is
+         * said as the count and then as the nights it usually is.
+         */
+        "**Backups.** The database is backed up every night, and the 14 most recent backups " +
+          "are kept, at Oracle, on the machine that runs the application. So what you delete, " +
+          "or everything once you delete your account, stays in the backups taken before then " +
+          "until 14 newer ones have replaced them, which is two weeks when every night's backup " +
+          "runs.",
         /*
          * What the software deletes, not what "we" hold. `closeBillingForDeletion`
          * deletes the Stripe customer and then the row mapping the account to
@@ -342,14 +439,50 @@ export const privacy = {
           "status and dates, and none of them holds your card details. The payments themselves " +
           "stay in Stripe's records for as long as tax law requires, under Stripe's own " +
           "privacy policy.",
+        /*
+         * Google's IMAP help (support.google.com/mail/answer/78892): "Sent
+         * messages are automatically copied to the Gmail/Sent folder if your
+         * email client uses SMTP", which is how the application reaches
+         * smtp.gmail.com. Nothing in the application can delete them, and no
+         * period is promised because none has been set on that mailbox: the
+         * copy stays until somebody deletes it, and the trash then keeps it
+         * for up to 30 days (support.google.com/mail/answer/7401). What can be
+         * kept is deleting on request, by searching Sent for the address.
+         *
+         * The Workspace relay, smtp-relay.gmail.com, keeps no Sent copy unless
+         * comprehensive mail storage is on, so the copy is said as what
+         * signing in to one mailbox does rather than as what Gmail does, and
+         * a change of route is a change to this paragraph.
+         *
+         * Sent is not the only copy. A bounce goes back to the mailbox that
+         * sent the message, and an automatic reply that ignores
+         * `Auto-Submitted` goes to the reply address, and either can quote it,
+         * so deleting on request means searching for all of them.
+         */
+        "**The copies Gmail keeps.** The application sends its email by signing in to one " +
+          "Gmail mailbox, the way a mail program does, and Gmail keeps a copy of each message " +
+          "sent that way in that mailbox's Sent mail. A message that bounces, or that draws an " +
+          "automatic reply, can also come back to us with a copy of it inside. Those copies " +
+          "stay until we delete them, and a deleted message stays in Gmail's trash for up to 30 " +
+          "days before it's gone for good. Deleting your account doesn't reach them. Write to us " +
+          "and we'll delete every copy of the email sent to you.",
       ],
     },
     {
       heading: "Deleting your account",
       paragraphs: [
+        // "Every record the application keeps", not "every associated
+        // record": the copies in Gmail's Sent mail are associated with the
+        // account and are outside anything a deletion in the application can
+        // reach. "From its database", because the nightly dumps are records
+        // the deployment keeps too, and a deletion reaches none of them.
         "You can delete your account from the settings page. It removes your ledger, your " +
-          "account and every associated record in one operation, and it cancels any subscription " +
-          "at the same time. It cannot be undone, which is why exporting first is worth doing.",
+          "account and every record the application keeps about you from its database in one " +
+          "operation, and it cancels any subscription at the same time. It cannot be undone, " +
+          "which is why exporting first is worth doing. The nightly backups taken before then " +
+          "still hold it until newer ones replace them, within about two weeks. The copies " +
+          "Gmail keeps of the email the application sent you aren't part of it; we delete " +
+          "those when you ask.",
         "Deletion is refused rather than partially completed if the payment processor cannot be " +
           "reached to cancel a subscription, so that nobody is left being charged for an account " +
           "that no longer exists.",
@@ -358,11 +491,23 @@ export const privacy = {
     {
       heading: "Your rights",
       paragraphs: [
+        /*
+         * Facts, where this said "We do not sell or share personal information
+         * as those laws define it". That conclusion holds only while Google is
+         * our service provider for the ad requests, which is what its
+         * restricted data processing makes it (business.safety.google/rdp),
+         * and "by default, ad requests to Google do not limit how data is
+         * processed" (AdSense Help 9598414). The application sets no
+         * restriction on the tag, so it rests on an account setting nothing
+         * here can read. The sentence can come back naming it once it's on.
+         */
         "Where the UK or EU GDPR applies you have the right to access your data, to correct it, " +
           "to have it erased, to restrict or object to how it is used, and to receive it in a " +
           "portable form. The California Consumer Privacy Act gives California residents " +
           "comparable rights, including the right not to be discriminated against for exercising " +
-          "them. **We do not sell or share personal information** as those laws define it.",
+          "them. The only thing that leaves here for advertising is what Google receives to " +
+          "show an ad on the free plan, set out under What Google receives, and on Premium " +
+          "nothing does.",
         "Most of these you can exercise yourself and immediately: the product has CSV export of " +
           "your transactions for portability, editing for correction, and account deletion for " +
           "erasure. For anything else, write to the address below and we will answer within " +
@@ -416,6 +561,14 @@ export const privacy = {
           "Google from setting the advertising cookies that need your consent, though Google " +
           "may still show a limited ad. It doesn't limit the product in any other way, and " +
           "nothing about your account changes.",
+        // CalOPPA, Bus. & Prof. Code 22575(b)(5), asks how the operator
+        // responds to the signal, and the answer is that nothing reads it:
+        // the application's source has no `doNotTrack` and no `DNT` header.
+        // What Google's own script does with it is Google's, so it is not
+        // promised here either way.
+        "**Do Not Track.** Neither smpl.money nor the application responds to a browser's Do " +
+          "Not Track signal. The website has nothing to stop collecting, and the application " +
+          "doesn't read the signal.",
       ],
     },
     {
@@ -490,18 +643,46 @@ export const terms = {
           "the one-time choice a downgrade may put to you, if you give it a place that has come " +
           "free by archiving or deleting an account you're using, or if you subscribe. The " +
           "Premium plan is $30 per year or $3 per month, lets you use every account you have " +
-          "and removes the advertising. Prices are in US dollars and exclude any tax that may " +
-          "apply where you are.",
-        "Subscriptions renew automatically at the end of each period until canceled. We will " +
-          "give at least 30 days' notice by email before any price increase, and you may cancel " +
-          "before it takes effect.",
+          "and removes the advertising. Prices are in US dollars, and no sales tax, VAT or " +
+          "other tax is added to them today.",
+        /*
+         * What the application does, not what a tax authority may one day
+         * ask. `createStripeSubscription` sets no `automatic_tax` and adds no
+         * tax rate, and no address is asked for to calculate one from; the
+         * schedule in `scheduleStripeSubscriptionPrice` only carries over a
+         * rate somebody set on a subscription in Stripe's dashboard. So what a
+         * subscriber pays is the price. "Exclude any tax that may apply" left
+         * a reader expecting a total that never arrives, and reserved a charge
+         * nothing gave notice of. Adding tax to a renewal is a price increase
+         * to the person paying it, so it gets the same notice.
+         *
+         * A window, not "at least 30 days". California's automatic renewal
+         * law, Bus. & Prof. Code 17602(g)(2), for contracts from July 1, 2025
+         * (17602(j)), wants notice of a fee change "no less than 7 days and no
+         * more than 30 days before the fee change takes effect", carrying the
+         * change and how to cancel, and "at least 30" with "no more than 30"
+         * leaves exactly one day to send it on. Any change, not only a rise,
+         * because the statute says "a change in the fee". A switch somebody
+         * asks for themselves is left out of the promise because nothing
+         * sends that notice.
+         */
+        "Subscriptions renew automatically at the end of each period until canceled. If we " +
+          "change the price, or tax is added to what a renewal costs, we'll email you between " +
+          "7 and 30 days before the change takes effect, saying what it will cost and how to " +
+          "cancel, and you may cancel before it does.",
       ],
     },
     {
       heading: "Canceling, and refunds",
       paragraphs: [
-        "You can cancel at any time from the plan page. Cancellation takes effect at the end of " +
-          "the period you have already paid for; you keep Premium until then.",
+        // Two ways, because 17602(d)(3) lets the online one require signing
+        // in only if somebody unwilling or unable to sign in can still cancel
+        // another way under 17602(c), and an email address is one it names.
+        // Done by hand at Stripe, where a cancellation reaches the application
+        // as a subscription delivery like any other.
+        "You can cancel at any time from the plan page, or, without signing in, by writing to " +
+          "info@smpl.money from the address on your account. Cancellation takes effect at the " +
+          "end of the period you have already paid for; you keep Premium until then.",
         /*
          * What `frozenAccountIds` does in the gap before anybody chooses:
          * nobody is present when a subscription lapses, so the oldest three of
@@ -655,11 +836,27 @@ export const terms = {
     {
       heading: "Changes, and law",
       paragraphs: [
-        "If these terms change materially we will give notice by email before the change takes " +
-          "effect. Continuing to use the service after that means accepting them.",
-        "These terms are governed by the laws of England and Wales, and the courts there have " +
-          "jurisdiction. If you are a consumer elsewhere, this does not deprive you of the " +
-          "protection of your own country's mandatory consumer law.",
+        // 17602(g)(1) and (i)(3): notice of a material change goes out before
+        // it's implemented and says how to cancel, which matters most here,
+        // because continuing is what counts as accepting.
+        "If these terms change materially, we'll email you before the change takes effect, " +
+          "saying what's changing and how to cancel. Continuing to use the service after that " +
+          "means accepting them.",
+        /*
+         * California, the operator's decision. Its conflict-of-laws rules are
+         * excluded so the choice cannot route back to another state's law.
+         * The courts are named without "exclusive", as the English clause
+         * was, and the carve-out reaches the forum as well as the law: a
+         * consumer in the EU or the UK may bring a claim where they live
+         * whatever a clause chose beforehand, and a carve-out naming only the
+         * law would have read as taking that away. No arbitration clause and
+         * no class-action waiver, by the same decision.
+         */
+        "These terms are governed by the laws of the State of California, without regard to " +
+          "its conflict-of-laws rules, and the state and federal courts located in California " +
+          "have jurisdiction over any dispute about them. If you're a consumer and live " +
+          "somewhere else, this doesn't take away the protection of the mandatory consumer law " +
+          "where you live, including any right it gives you to bring a claim in your own courts.",
       ],
     },
     {

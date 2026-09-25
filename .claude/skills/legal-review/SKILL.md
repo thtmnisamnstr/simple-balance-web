@@ -86,6 +86,40 @@ the terms, and it may need opt-in at sign-up rather than opt-out.
 
 - **Processors.** Is everything in §"Who else sees your data" still true, and
   is anything new missing? Each needs naming, not "our providers".
+
+  **Mail goes through Gmail**, and the policy says what each of the
+  application's four messages carries: read the builders in its `mail.ts`
+  again if the paragraph "What Google receives through Gmail" is to stay
+  true. It also says the application signs in to one Gmail mailbox and that
+  Gmail keeps a copy of each message in that mailbox's Sent mail until it is
+  deleted, which is what `smtp.gmail.com` does. The Workspace relay,
+  `smtp-relay.gmail.com`, keeps no copy unless comprehensive mail storage is
+  on, so if `SMTP_HOST` changes, so does that paragraph. A request to delete
+  them means searching the whole mailbox, Sent, the inbox for bounces and
+  automatic replies, and the trash.
+
+  **Providers, not processors.** The policy lists them as providers and
+  says Google decides for itself for advertising and sign-in. Whether Google
+  is a processor for Gmail depends on the mailbox being Google Workspace
+  (then its Cloud Data Processing Addendum applies) or a consumer account
+  (then Google's own terms do), and the policy says neither until the
+  operator does.
+
+  **Cloudflare receives the mail sent to info@smpl.money**, because
+  smpl.money's MX records are Cloudflare Email Routing. `dig MX smpl.money`
+  says whether that is still so, and wherever it forwards to is a provider
+  the policy has to name.
+
+- **Backups.** The policy says the database is backed up every night and
+  the 14 most recent backups are kept, which is `backupKeep` in the
+  application's Oracle stack and `SB_BACKUP_KEEP` on the machine. A change
+  there, or backups copied anywhere else, is a change to the retention
+  section, the deletion section and the short version.
+- **Selling and sharing.** The policy draws no CCPA conclusion about selling
+  or sharing, because that rests on restricted data processing being on in
+  the AdSense account, which the application's tag does not set. Once it is
+  on, the sentence may come back, naming it.
+
 - **Retention.** Still what the software does?
 - **Rights.** CSV export is the portability claim, account deletion is the
   erasure claim. Both must still work — test them, do not assume.
@@ -129,7 +163,26 @@ the terms, and it may need opt-in at sign-up rather than opt-out.
 
 - **Both documents' dates.** `legalUpdated` in `src/content/legal.ts` is one
   value for both; bump it when either changes materially.
-- **Jurisdiction and contact.** Still right?
+- **Tax.** The terms say no sales tax, VAT or other tax is added to the
+  price. That holds while the application sets no `automatic_tax` on a
+  subscription and nobody sets a tax rate on one in Stripe's dashboard,
+  which the application would carry into the next phase. Doing either is a
+  change to the terms, with the notice by email they promise before tax
+  reaches a renewal: between 7 and 30 days ahead, with what it will cost and
+  how to cancel, which is California's window (Bus. & Prof. Code 17602(g)(2))
+  and so not a number to widen at either end.
+- **Cancellation and notices.** The terms promise a way to cancel that
+  needs no signing in, by writing to the contact address, and notice by
+  email of a price change or a material change. The application sends none
+  of that mail, so each is kept by hand: a cancellation by email is done at
+  Stripe.
+- **Jurisdiction and contact.** The terms are governed by California law,
+  its conflict-of-laws rules excluded, with California's state and federal
+  courts, and a consumer elsewhere keeps the law and the courts of where
+  they live. That is the operator's decision, and so is having no
+  arbitration clause and no class-action waiver: do not add either as
+  boilerplate. A change to any of it is material. Is the contact address
+  still the one published?
 
 ## 6. Where the policy covers two surfaces
 

@@ -46,12 +46,12 @@ Break one of these and the site is wrong rather than untidy.
   `ads.txt` that does not name the publisher id as an instruction to stop
   monetizing the domain. Every symptom is invisible: the file is served, the
   build is green, the ads render, the revenue is zero.
-- **No `ads.txt` until there is a publisher id to put in it.** A missing file
-  is ignored and costs nothing; a well-formed one that does not name the id is
-  the documented demonetizing state. It arrives with the id, in one commit.
-  The id exists as soon as the AdSense account does, and the file is how the
-  site is verified for review, so "with the id" means before the review
-  request, not after approval — `docs/adsense.md` §3.
+- **`ads.txt` names the publisher id and nothing else.** A missing file is
+  ignored and costs nothing; a well-formed one that does not name the id is
+  the documented demonetizing state. So it arrived with the id, in one commit,
+  before the review request rather than after approval, because it is how the
+  site is verified — `docs/adsense.md` §3. `tests/export-shape.test.ts`
+  holds it to exactly the DIRECT record and the `ownerdomain` line.
 - **The root `ads.txt` carries the DIRECT record, not a `subdomain=`
   referral.** Google requires a referral only when the publisher id differs
   between root and subdomain, and here it does not — both derive from one

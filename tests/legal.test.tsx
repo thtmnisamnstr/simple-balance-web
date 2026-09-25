@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { faq } from "@/content/pricing";
+import { comparison, faq, pricing, pricingMeta, tiers } from "@/content/pricing";
 import { privacy as privacySection } from "@/content/home";
 import { render } from "@testing-library/react";
 import PrivacyPage from "@/app/privacy/page";
@@ -30,6 +30,29 @@ function section(doc: { readonly sections: readonly Section[] }, heading: RegExp
   return found!.paragraphs.join(" ").toLowerCase();
 }
 
+/**
+ * The notice a sentence promises, as "between N and M days before", or
+ * undefined. A window rather than a floor, because California's automatic
+ * renewal law caps the notice of a fee change as well as setting its minimum.
+ */
+function noticeWindow(sentence?: string): readonly [number, number] | undefined {
+  const found = /\bbetween (\d+) and (\d+) days before\b/.exec(sentence ?? "");
+  return found ? [Number(found[1]), Number(found[2])] : undefined;
+}
+
+/** A section's sentences, lowercased. */
+function sentencesOf(doc: { readonly sections: readonly Section[] }, heading: RegExp) {
+  return section(doc, heading).split(/(?<=[.!?])\s+/);
+}
+
+/** Every string in a content value, however deeply it is nested. */
+function stringsIn(value: unknown): readonly string[] {
+  if (typeof value === "string") return [value];
+  if (Array.isArray(value)) return value.flatMap(stringsIn);
+  if (value && typeof value === "object") return Object.values(value).flatMap(stringsIn);
+  return [];
+}
+
 describe("the privacy policy", () => {
   const text = privacy.sections
     .flatMap((s) => s.paragraphs)
@@ -48,16 +71,53 @@ describe("the privacy policy", () => {
   it("names every processor that sees the data", () => {
     // Netlify hosts only this site; Oracle hosts the application and holds
     // its database, which makes it the processor with every balance in it,
-    // and it was the one the policy left as "our hosting provider". The
-    // email delivery service joins this list in the change that names it.
-    for (const processor of ["stripe", "google", "netlify", "oracle"]) {
+    // and it was the one the policy left as "our hosting provider". Gmail
+    // carries the application's email, and was "an email delivery service"
+    // until it was chosen. Cloudflare receives the mail sent to the contact
+    // address, which is where every request this policy invites arrives.
+    for (const processor of ["stripe", "google", "netlify", "oracle", "gmail", "cloudflare"]) {
       expect(text, `"${processor}" is not named`).toContain(processor);
     }
+    const others = section(privacy, /^who else sees/i);
+    expect(others, "Cloudflare is not said to receive the contact address's mail").toMatch(
+      /\bcloudflare\b[^.]*\breceives the mail you send to info@smpl\.money\b/,
+    );
     // The short version is what most people read, and it listed two of the
     // application's four providers and left out the host.
-    expect(section(privacy, /^the short version/i), "the summary leaves out the host").toContain(
-      "oracle",
+    const summary = section(privacy, /^the short version/i);
+    expect(summary, "the summary leaves out the host").toContain("oracle");
+    // In the list itself: the summary's sentence about deleting names Gmail
+    // too, as the place a copy of your email outlasts the account, and a
+    // whole-summary check was satisfied by that alone.
+    const list = /the providers that run the service: ([^.]*)\./.exec(summary)?.[1] ?? "";
+    expect(list, "the summary's providers leave out the mail service").toContain("gmail");
+  });
+
+  it("calls the providers providers, and says Google decides for itself where it does", () => {
+    /*
+     * "Processor" is a role under each provider's own terms, not a word this
+     * page gets to choose. Google is a controller for advertising unless
+     * restricted data processing is on, under its Controller-Controller Data
+     * Protection Terms, and a controller of its own sign-in; for Gmail it is a
+     * processor only if the mailbox is Google Workspace, which nothing shows.
+     * So no sentence that names Gmail calls anybody a processor, the list is
+     * of providers, and Google's own role is said for the two uses where it
+     * is known.
+     */
+    const others = sentencesOf(privacy, /^who else sees/i);
+    for (const sentence of others.filter((s) => s.includes("gmail"))) {
+      expect(sentence, "Gmail is called a processor").not.toMatch(/\bprocessors?\b/);
+    }
+    expect(others.join(" "), "the providers are listed as processors").not.toMatch(
+      /\bthose processors are\b/,
     );
+    const role = others.find((sentence) => /\bdecides for itself\b/.test(sentence));
+    expect(role, "Google's own role is not said").toBeDefined();
+    expect(role, "Google's role is not said for advertising and sign-in").toMatch(
+      /\bfor advertising and for sign-in, google decides for itself\b/,
+    );
+    expect(role, "Google's role is said for Gmail too, which nothing shows").not.toContain("gmail");
+    expect(role, "Google's own policy is not named").toContain("policies.google.com/privacy");
   });
 
   it("keeps each provider in the summary apart from the next", () => {
@@ -83,8 +143,35 @@ describe("the privacy policy", () => {
     for (const right of ["gdpr", "erased", "portable", "california"]) {
       expect(text).toContain(right);
     }
-    // "We do not sell" is the CCPA disclosure that has to be explicit.
-    expect(text).toContain("do not sell or share personal information");
+  });
+
+  it("claims nothing about selling or sharing that rests on a setting it can't see", () => {
+    /*
+     * "We do not sell or share personal information as those laws define it"
+     * is a conclusion, and it holds only while Google is our service provider
+     * for the ad requests, which is what its restricted data processing makes
+     * it. By default AdSense requests do not limit how data is processed, and
+     * the application's tag sets no restriction, so the conclusion rests on
+     * an AdSense account setting this repository cannot read. Any sentence
+     * making it has to name what makes it true, in the same paragraph.
+     *
+     * What stays is the fact: what leaves for advertising is what Google
+     * receives, on the free plan, and nothing on Premium.
+     */
+    const SELLS = /\b(do not|don't|never|doesn't|does not) sell or share\b|\bnot sold or shared\b/;
+    for (const paragraph of privacy.sections.flatMap((s) => s.paragraphs)) {
+      if (!SELLS.test(paragraph.toLowerCase())) continue;
+      expect(paragraph.toLowerCase(), "no sale or sharing, without what makes it so").toMatch(
+        /\brestricted data processing\b/,
+      );
+    }
+    const rights = section(privacy, /^your rights/i);
+    expect(rights, "what leaves for advertising is not said where the rights are").toMatch(
+      /\bfor advertising is what google receives\b[^.]*\bfree plan\b/,
+    );
+    expect(rights, "Premium is not said to send nothing for advertising").toMatch(
+      /\bon premium nothing does\b/,
+    );
   });
 
   it("distinguishes the hosted deployment from somebody else's", () => {
@@ -129,6 +216,55 @@ describe("the privacy policy", () => {
     expect(text).toContain("address of the page");
     // The limit matters as much as the disclosure: no balance, no name.
     expect(text).toContain("targeting parameter");
+    /*
+     * And what the reader's own browser hands over. The ad is requested by
+     * the browser, so Google gets the IP address the rough location is read
+     * from, the browser's details and its own cookies. A paragraph headed as
+     * the whole list with only the publisher id and the page on it made the
+     * list look shorter than it is, which is `content.md` 2.4's failure.
+     */
+    const receives = privacy.sections
+      .flatMap((s) => s.paragraphs)
+      .find((paragraph) => /^\*\*what google receives\.\*\*/i.test(paragraph))
+      ?.toLowerCase();
+    expect(receives, "no paragraph says what Google receives from an ad").toBeDefined();
+    for (const [what, pattern] of [
+      ["the IP address", /\byour ip address\b/],
+      ["the browser's details", /\byour browser's details\b/],
+      ["Google's cookies", /\bgoogle's own cookies\b/],
+    ] as const) {
+      expect(receives, `what Google receives leaves out ${what}`).toMatch(pattern);
+    }
+  });
+
+  it("answers CalOPPA's two questions: other parties across sites, and Do Not Track", () => {
+    /*
+     * Bus. & Prof. Code 22575(b)(6): whether other parties may collect
+     * information about somebody's activity over time and across other
+     * sites. Google's advertising cookies are its own and read wherever its
+     * ads run, so it may, and "rather than on a profile of you", which is
+     * about how an ad here is chosen, read as saying nothing was collected.
+     *
+     * 22575(b)(5): how the operator responds to Do Not Track. Nothing in the
+     * application reads the signal, and the website collects nothing either
+     * way, so that is what is said, and nothing about what Google's own
+     * script does with it.
+     */
+    const ads = section(privacy, /^advertising/i);
+    expect(ads, "collection across other sites is not disclosed").toMatch(
+      /\bgoogle may collect information about what you do over time and across other websites\b/,
+    );
+    const dnt = privacy.sections
+      .flatMap((s) => s.paragraphs)
+      .find((paragraph) => /\bdo not track\b/i.test(paragraph))
+      ?.toLowerCase();
+    expect(dnt, "the policy says nothing about Do Not Track").toBeDefined();
+    expect(dnt, "how the website and the application respond is not said").toMatch(
+      /\bneither smpl\.money nor the application responds\b/,
+    );
+    expect(dnt, "the response is said to be more than the application does").not.toMatch(
+      /\b(we|the application) (honou?rs?|respects?)\b/,
+    );
   });
 
   it("is not promised something it does not contain", () => {
@@ -164,27 +300,226 @@ describe("the privacy policy", () => {
     expect(text).toContain("none is sent today");
   });
 
-  it("promises to name the mail service, without saying no mail is sent at all", () => {
+  it("names Gmail as the mail service, in the list and the summary, and still sends mail", () => {
     /*
-     * "So it sends none of those messages today" took in the service email
-     * the Email section says goes to every account, and the notice by email
-     * the Changes section promises. Removing it from the processors list left
-     * the Email section's "a deployment configured with no mail server sends
-     * none of these", which said the same thing a section earlier, so the
-     * check reads the whole policy. A sentence may say what is not sent
-     * when it names it ("sends no confirmation, reset or reminder email"),
-     * which is what the application's four messages allow.
+     * The policy said "an email delivery service" carries the application's
+     * email and promised to name it before one was in use. Gmail is that
+     * service, so the promise is kept by naming it and then goes: a page
+     * that still says it will name a service it has named reads as a second
+     * one on the way.
+     *
+     * Gmail is Google's, and a reader counting who sees their data counts
+     * companies, so both places that name Gmail say whose it is.
+     *
+     * "So it sends none of those messages today" once took in the service
+     * email the Email section says goes to every account, and the notice by
+     * email the Changes section promises, so no sentence anywhere in the
+     * policy may say mail is not sent.
      */
     const processors = section(privacy, /^who else sees/i);
-    expect(processors).toContain("name the service before one is in use");
-    // The relay carries the application's own messages, not "the messages
-    // above", which included the service email beside "doesn't use one yet".
+    expect(processors, "Gmail is not said to be Google's").toMatch(/\bgoogle\b[^.]*\bgmail\b/);
+    expect(processors, "Gmail is not said to carry the application's email").toMatch(
+      /\bgmail\b[^.]*\bcarries the email the application sends\b/,
+    );
+    // The application's own messages, not "the messages above", which took
+    // in the service email the application has no way to send.
     expect(processors).not.toContain("carries the messages above");
-    expect(processors).toMatch(/carries the confirmation, reset and reminder email/);
+    const list = /the providers that run the service: ([^.]*)\./.exec(
+      section(privacy, /^the short version/i),
+    )?.[1];
+    const mail = (list ?? "").split(";").find((item) => item.includes("gmail"));
+    expect(mail, "the summary's list of providers leaves out Gmail").toBeDefined();
+    expect(mail, "the summary does not say Gmail is Google's").toMatch(/\bgoogle\b/);
+    for (const promise of [
+      /email delivery service/,
+      /\bname the (e-?mail |mail )?service\b/,
+      /doesn't use one yet|once one is in use/,
+    ]) {
+      expect(text, "the policy still promises a mail service it has named").not.toMatch(promise);
+    }
     expect(text).not.toMatch(/\bsends? (none|nothing)\b/);
     expect(text).not.toMatch(/\bsends? no (e-?mails?|mail|messages?)\b/);
-    expect(section(privacy, /^email/i)).toContain(
-      "no mail server sends no confirmation, reset or reminder email",
+  });
+
+  it("says what reaches Google through Gmail, message by message, and no more", () => {
+    /*
+     * The builders in the application's `mail.ts`, each sent to the
+     * account's address alone with no name on it: an address confirmation
+     * and a password reset, each carrying a link that lasts an hour; a
+     * recurring transaction's notice, carrying its name, the count and each
+     * date; and a template's reminder, carrying its name and the one date.
+     * None carries an amount, a payee or an account.
+     *
+     * The limit is held as closely as the disclosure. A recurrence's name
+     * and dates are ledger data somebody typed, so "nothing from your
+     * ledger", true of what Stripe is sent, is refused here.
+     */
+    const gmail = privacy.sections
+      .flatMap((s) => s.paragraphs)
+      .find((paragraph) => /what google receives through gmail/i.test(paragraph))
+      ?.toLowerCase();
+    expect(gmail, "no paragraph says what Google receives through Gmail").toBeDefined();
+    const said = gmail ?? "";
+    for (const message of [
+      /\bconfirm (that|your) address\b/,
+      /\bpassword reset\b/,
+      /\brecurring transaction\b/,
+      /\breminder you set on a template\b/,
+    ]) {
+      expect(said, `one of the application's messages is left out: ${message}`).toMatch(message);
+    }
+    expect(said, "Google is not said to receive the address").toMatch(
+      /\breceives your email address\b/,
+    );
+    // What follows each subject, up to the end of its clause, so the
+    // reminder's "date" cannot be satisfied by the notice's "date of each".
+    const after = (subject: string) => (said.split(subject)[1] ?? "").split(/\.\s|, and a /)[0]!;
+    expect(after("confirmation or reset"), "the links are not said to expire").toMatch(
+      /\blink\b[^.]*\bwithin an hour\b/,
+    );
+    const notice = after("recurring transaction's notice");
+    for (const part of [/\bname you gave it\b/, /\bhow many\b/, /\bdate of each\b/]) {
+      expect(notice, `the notice's contents leave out ${part}`).toMatch(part);
+    }
+    const reminder = after("template's reminder");
+    for (const part of [/\btemplate's name\b/, /\bdate\b/]) {
+      expect(reminder, `the reminder's contents leave out ${part}`).toMatch(part);
+    }
+    const limit = after("none of them holds");
+    for (const absent of ["your name", "an amount", "a balance", "a payee", "account"]) {
+      expect(limit, `the messages are not said to leave out ${absent}`).toContain(absent);
+    }
+    // The limit is on what the application adds. Both names are free text,
+    // so a recurrence called "Chase Visa payment" sends a payee and an
+    // account in its subject line, and the limit said without that was false.
+    expect(limit, "the limit forgets that a name you typed can hold one").toMatch(
+      /\bunless you put one into the name you gave the recurring transaction or the template\b/,
+    );
+    expect(said, "the name is not said to be in the subject line").toMatch(
+      /\bboth put that name in the subject line\b/,
+    );
+    expect(said, "a name and dates from the ledger are said not to be sent").not.toMatch(
+      /nothing (else )?from your ledger|no ledger data/,
+    );
+  });
+
+  it("says Gmail keeps a copy, for how long, and what deleting an account leaves", () => {
+    /*
+     * Google's IMAP help: "Sent messages are automatically copied to the
+     * Gmail/Sent folder if your email client uses SMTP", and the application
+     * reaches smtp.gmail.com over SMTP. Deleting an account in the
+     * application reaches nothing in a mailbox, so the copy outlasts it, and
+     * it stays until the operator deletes it, then up to 30 days in the
+     * trash. No shorter period is promised, because none is set.
+     *
+     * Said where a reader looks for how long, where a reader looks for what
+     * deleting does, and in the summary's sentence about deleting, which
+     * otherwise reads as deleting everything.
+     *
+     * Said as what signing in to one mailbox does, not as what Gmail does:
+     * the Workspace relay keeps no Sent copy unless comprehensive mail
+     * storage is on, so "Gmail saves every message sent through it" was one
+     * route's behavior stated as Gmail's. And Sent is not the only copy: a
+     * bounce, or an automatic reply that ignores `Auto-Submitted`, can quote
+     * the message back, so the promise to delete covers every copy.
+     */
+    const retention = section(privacy, /^where it is held/i);
+    expect(retention, "the Sent copy is not tied to the route that makes it").toMatch(
+      /\bby signing in to one gmail mailbox\b[^.]*\bin that mailbox's sent mail\b/,
+    );
+    expect(retention, "one route's behavior is said to be Gmail's").not.toMatch(
+      /\bgmail (saves|keeps) (a copy of )?every message sent through it\b/,
+    );
+    expect(retention, "a bounce or an automatic reply's copy is not said").toMatch(
+      /\bbounces\b[^.]*\bautomatic reply\b[^.]*\bcopy of it\b/,
+    );
+    expect(retention, "how long the copies are kept is not said").toMatch(
+      /\bthose copies stay until we delete them\b/,
+    );
+    expect(retention, "the trash is not said").toMatch(/trash for up to 30 days/);
+    expect(retention).toMatch(/deleting your account doesn't reach them/);
+    expect(retention, "not every copy is deleted on request").toMatch(
+      /we'll delete every copy of the email sent to you/,
+    );
+    const deleting = section(privacy, /^deleting your account/i);
+    expect(deleting, "deleting is said to remove every record").not.toMatch(
+      /every associated record|all (of )?your data/,
+    );
+    expect(deleting).toMatch(/copies gmail keeps[^.;]*aren't part of it/);
+    const summary = privacy.sections
+      .find((s) => /^the short version/i.test(s.heading))!
+      .paragraphs.find((paragraph) => /deleting your account/i.test(paragraph))
+      ?.toLowerCase();
+    expect(summary, "the summary no longer says what deleting does").toBeDefined();
+    expect(summary, "the summary's deletion leaves out the Gmail copy").toMatch(
+      /outlasts? a deleted account[^.]*\bgmail\b/,
+    );
+  });
+
+  it("says what outlasts a deleted account, backups and logs included, with how long", () => {
+    /*
+     * The hosted machine runs `simple-balance-backup` every night, and it
+     * dumps the whole database and keeps the newest `SB_BACKUP_KEEP`, which
+     * the Oracle stack sets from `backupKeep`, 14 unless changed. So a
+     * deleted account's ledger stays in the dumps taken before the deletion
+     * until 14 newer ones replace them. The policy never mentioned backups,
+     * and the summary said "two things outlast a deleted account" while the
+     * long version already kept server logs for a period of their own.
+     *
+     * The 14 is a literal because nothing here can read the application's
+     * stack: a change to `backupKeep` is a change to this and to the page.
+     */
+    const retention = section(privacy, /^where it is held/i);
+    expect(retention, "the nightly backups are not disclosed").toMatch(
+      /\bbacked up every night\b[^.]*\bthe 14 most recent backups are kept\b/,
+    );
+    expect(retention, "how long a deletion stays in the backups is not said").toMatch(
+      /\buntil 14 newer ones have replaced them\b[^.]*\btwo weeks\b/,
+    );
+    const deleting = section(privacy, /^deleting your account/i);
+    expect(deleting, "deleting is said to reach past the database").toMatch(
+      /\bevery record the application keeps about you from its database\b/,
+    );
+    expect(deleting, "deleting leaves out the backups").toMatch(
+      /\bbackups taken before then still hold it\b[^.]*\btwo weeks\b/,
+    );
+    const summary = privacy.sections
+      .find((s) => /^the short version/i.test(s.heading))!
+      .paragraphs.find((paragraph) => /deleting your account/i.test(paragraph))
+      ?.toLowerCase();
+    const outlasts = /outlasts? a deleted account: ([^.]*)\./.exec(summary ?? "")?.[1];
+    expect(outlasts, "the summary no longer says what outlasts a deleted account").toBeDefined();
+    expect(summary, "the summary counts what outlasts it").not.toMatch(
+      /\b(two|three|four|five) things outlast\b/,
+    );
+    for (const [what, pattern] of [
+      ["the backups, with their period", /\bnightly backups for about two weeks\b/],
+      ["the server logs", /\bserver logs\b/],
+      ["Stripe's record", /\bstripe keeps its own record\b/],
+      ["Gmail's copies", /\bgmail\b/],
+    ] as const) {
+      expect(outlasts, `the summary's list leaves out ${what}`).toMatch(pattern);
+    }
+  });
+
+  it("says where the other providers hold what they receive, the Gmail copies included", () => {
+    /*
+     * The section said where Oracle holds the data and what the transfer
+     * rests on, then kept copies at Google in the paragraph after it with no
+     * word on where. A reader of a section that names one place takes
+     * everything to be there. So the other three are named, with where, and
+     * with the framework each takes part in.
+     */
+    const held = sentencesOf(privacy, /^where it is held/i).find((sentence) =>
+      /\bheld by them\b/.test(sentence),
+    );
+    expect(held, "no sentence says where the other providers hold it").toBeDefined();
+    for (const provider of ["stripe", "google", "cloudflare", "gmail"]) {
+      expect(held, `where ${provider} holds it is not said`).toContain(provider);
+    }
+    expect(held, "no country is named").toMatch(/\bunited states and in other countries\b/);
+    expect(section(privacy, /^where it is held/i), "no safeguard is named for them").toMatch(
+      /\beach of them takes part in the eu-u\.s\. data privacy framework and its uk extension\b/,
     );
   });
 
@@ -439,6 +774,168 @@ describe("the terms", () => {
     // nothing on the API or the MCP surface. A clause binding automated
     // access to "the documented rate limits" pointed at nothing.
     expect(text).not.toContain("rate limit");
+  });
+
+  it("adds no tax to the price, and gives a price increase's notice before it would", () => {
+    /*
+     * `createStripeSubscription` in the application sets no `automatic_tax`
+     * and names no tax rate, and nothing asks for an address to work one out
+     * from. The one tax rate it ever sends is one somebody set on a
+     * subscription in Stripe's dashboard, which `scheduleStripeSubscriptionPrice`
+     * carries into the next phase. So what a subscriber pays is the price,
+     * and "exclude any tax that may apply where you are" told them to expect
+     * a total the checkout never shows.
+     *
+     * Tax added to a renewal is more money for the same plan, so it is held
+     * to the notice a price change gets: the same window of days, by email,
+     * with the right to cancel first. And the pricing page, which
+     * says nothing about tax, may not start saying it is extra.
+     */
+    const plans = section(terms, /^plans and payment/i);
+    expect(text, "the terms reserve a tax the application never adds").not.toMatch(
+      /\bexclud\w* (any )?tax|\bplus (any )?tax|\btax (may|might|will|could) apply|\bbefore tax\b/,
+    );
+    expect(plans, "the terms do not say no tax is added").toMatch(
+      /\bno sales tax\b[^.]*\bis added to them today\b/,
+    );
+    const sentences = plans.split(/(?<=[.!?])\s+/);
+    const increase = sentences.find((sentence) =>
+      /\bchange the price\b|\bprice (increase|change)\b/.test(sentence),
+    );
+    const taxed = sentences.find((sentence) =>
+      /\btax is added to (a renewal|what a renewal costs)\b/.test(sentence),
+    );
+    expect(noticeWindow(increase), "no notice before a price change").toBeDefined();
+    expect(noticeWindow(taxed), "tax on a renewal gets other notice than a price change").toEqual(
+      noticeWindow(increase),
+    );
+    expect(taxed, "the notice of tax is not by email").toMatch(/\bemail\b/);
+    expect(taxed, "no right to cancel before tax is added").toMatch(/\bcancel before\b/);
+    const pricingPage = [pricing, pricingMeta, tiers, comparison, faq].flatMap(stringsIn);
+    expect(pricingPage.length, "found no pricing copy to read").toBeGreaterThan(20);
+    for (const said of pricingPage.filter((s) => /\btax/i.test(s))) {
+      expect(said, "the pricing page says tax is extra").toMatch(
+        /\bno\b[^.]*\btax\b[^.]*\badded\b/i,
+      );
+    }
+  });
+
+  it("gives notice of a fee change inside California's window, with how to cancel", () => {
+    /*
+     * Bus. & Prof. Code 17602(g)(2), for contracts from July 1, 2025
+     * (17602(j)): notice of a change in the fee "no less than 7 days and no
+     * more than 30 days before the fee change takes effect", carrying the
+     * change and "information regarding how to cancel". The terms promised
+     * "at least 30 days", which with the statute's ceiling leaves one day to
+     * send it on, and said nothing of how to cancel. So every sentence
+     * promising notice of a price or a tax gives a window inside 7 to 30,
+     * and says what the notice holds.
+     */
+    const plans = sentencesOf(terms, /^plans and payment/i);
+    const notices = plans.filter((sentence) =>
+      /\b(change the price|price (increase|change)|tax is added to (a renewal|what a renewal costs))\b/.test(
+        sentence,
+      ),
+    );
+    expect(notices, "no sentence promises notice of a fee change").not.toEqual([]);
+    for (const sentence of notices) {
+      expect(sentence, "a floor with no ceiling").not.toMatch(/\bat least \d+ days\b/);
+      const window = noticeWindow(sentence);
+      expect(window, `no window of days: ${sentence}`).toBeDefined();
+      const [floor, ceiling] = window ?? [0, Infinity];
+      expect(floor, "notice can come later than California allows").toBeGreaterThanOrEqual(7);
+      expect(ceiling, "notice can come earlier than California allows").toBeLessThanOrEqual(30);
+      expect(floor, "the window is upside down").toBeLessThanOrEqual(ceiling);
+      expect(sentence, "the notice is not by email").toMatch(/\bemail you\b/);
+      expect(sentence, "the notice does not say what it will cost").toMatch(
+        /\bwhat it will cost\b/,
+      );
+      expect(sentence, "the notice does not say how to cancel").toMatch(/\bhow to cancel\b/);
+    }
+    expect(section(terms, /^plans and payment/i)).not.toMatch(/\bat least \d+ days' notice\b/);
+  });
+
+  it("offers a way to cancel that needs no signing in", () => {
+    /*
+     * 17602(d)(3): the online cancellation may require signing in, but
+     * somebody unwilling or unable to may not be kept from canceling another
+     * way under 17602(c), which names an email address. The plan page is the
+     * only way the terms gave, and it needs a session.
+     */
+    const cancel = sentencesOf(terms, /^canceling/i).find((sentence) =>
+      sentence.includes("cancel at any time"),
+    );
+    expect(cancel, "the terms no longer say how to cancel").toBeDefined();
+    expect(cancel, "the plan page is gone").toMatch(/\bfrom the plan page\b/);
+    expect(cancel, "no way to cancel without signing in").toMatch(
+      /\bwithout signing in, by writing to info@smpl\.money\b/,
+    );
+  });
+
+  it("gives notice of a material change before it takes effect, with how to cancel", () => {
+    /*
+     * 17602(g)(1) and (i)(3): notice of a material change says how to cancel
+     * and goes out before the change is implemented. The clause relies on
+     * continued use as acceptance, so the notice is the one chance to leave,
+     * and it said only that notice would be given.
+     */
+    const change = sentencesOf(terms, /^changes, and law/i).find((sentence) =>
+      /\bchange materially\b/.test(sentence),
+    );
+    expect(change, "no sentence says what a material change brings").toBeDefined();
+    for (const [what, pattern] of [
+      ["by email", /\bemail you\b/],
+      ["before it takes effect", /\bbefore the change takes effect\b/],
+      ["what is changing", /\bwhat's changing\b/],
+      ["how to cancel", /\bhow to cancel\b/],
+    ] as const) {
+      expect(change, `the notice of a material change leaves out ${what}`).toMatch(pattern);
+    }
+  });
+
+  it("is governed by California law, and leaves a consumer their own law and courts", () => {
+    /*
+     * The operator's decision: California's law, with its conflict-of-laws
+     * rules excluded so the choice cannot send a dispute to another state's
+     * law, and the state and federal courts in California. It said England
+     * and Wales, carried over from the British draft.
+     *
+     * The consumer carve-out stays, and reaches the forum as well as the
+     * law, because a consumer in the EU or the UK may bring a claim where
+     * they live whatever a clause chose beforehand. No arbitration clause
+     * and no class-action waiver, in either document, by the same decision.
+     */
+    const law = section(terms, /^changes, and law/i);
+    expect(law).toMatch(/\bgoverned by the laws of the state of california\b/);
+    expect(law, "conflict-of-laws rules are not excluded").toMatch(
+      /\bwithout regard to its conflict-of-laws rules\b/,
+    );
+    expect(law, "the courts are not California's").toMatch(
+      /\bstate and federal courts located in california\b/,
+    );
+    const carveOut = law.split(/(?<=[.!?])\s+/).find((sentence) => /\bconsumer\b/.test(sentence));
+    expect(carveOut, "a consumer elsewhere is not carved out").toBeDefined();
+    expect(carveOut, "the carve-out is not for somebody living elsewhere").toMatch(
+      /\bsomewhere else\b/,
+    );
+    expect(carveOut, "a consumer elsewhere loses their own law").toMatch(
+      /\bmandatory consumer law where you live\b/,
+    );
+    expect(carveOut, "a consumer elsewhere loses their own courts").toMatch(
+      /\bclaim in your own courts\b/,
+    );
+    for (const doc of [privacy, terms]) {
+      const said = doc.sections
+        .flatMap((s) => s.paragraphs)
+        .join(" ")
+        .toLowerCase();
+      expect(said, `${doc.title} still names English law`).not.toMatch(
+        /\bengland\b|\bwales\b|\benglish law\b|\bcourts there\b/,
+      );
+      expect(said, `${doc.title} takes away a day in court`).not.toMatch(
+        /\barbitrat\w*|\bclass[- ]action\b|\bjury trial\b/,
+      );
+    }
   });
 });
 
