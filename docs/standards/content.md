@@ -779,15 +779,36 @@ a reworded description, a promotion from C to A, and a new feature.
 section is linked, whether its pages are indexed, and whether it enters the
 sitemap.
 
-Today both sections are built, styled, reachable by URL, and announced nowhere.
-That is the shipped state: the machinery is finished so that publishing is
-writing a Markdown file rather than building a blog, and an empty blog
-advertised in the header is worse than no blog.
+Today `/docs` is announced and `/blog` is not. The documentation is linked from
+the header and the footer, indexed, and in the sitemap; the blog is built,
+styled and reachable by URL, and nothing points at it. The split is the shipped
+state and is deliberate on both sides: the blog's machinery is finished so that
+publishing the first post is writing a Markdown file rather than building a
+blog, and it stays unannounced because what goes in it has not been decided —
+an empty section advertised in the header is worse than none.
 
 One flag rather than three habits, because a section half-launched by somebody
 adding a link is the failure this prevents.
 
-_Checked by:_ `tests/sections.test.tsx`, which asserts all three.
+**It has to prevent the mirror failure too, and for most of this file's life it
+could not.** The rule above was written as though the flag moved all three, and
+two of them were real: each route file reads it for its `robots` metadata and
+`src/app/sitemap.ts` walks `announcedSections()`. The link did not. `primaryNav`
+and `footer.links` in `src/content/home.ts` were hand-written literals, so
+`announcedSections()` had one caller and announcing a section would have
+stopped its `noindex`, entered it in the sitemap, and linked it from nowhere —
+a page Google is invited to index and no reader can reach. Both lists derive
+from `announcedSections()` now. Writing a section's link back out by hand is
+what would restore the defect, and it would leave every behavioral check green.
+
+_Checked by:_ `tests/sections.test.tsx`. Each of the three is asserted in both
+directions, over every section in the registry: announced means linked,
+indexable and in the sitemap, unannounced means none of the three. The
+derivation is asserted separately and structurally — that `src/content/home.ts`
+calls `announcedSections()` and names no section's href — because it is a claim
+about how the link is produced rather than about what a page shows. The link
+half reads the rendered header and footer; the `noindex` and sitemap halves
+read the built output, so both need a current build to mean anything.
 
 ### 7.2 Crawling is allowed; indexing is not
 

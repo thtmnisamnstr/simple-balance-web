@@ -108,13 +108,20 @@ Read the rendered page, not the Markdown. Then:
 
 ## 5. Publishing
 
-Both sections are **unannounced** — built, reachable, linked from nowhere
-(`content.md` 6). Adding a file does not publish it to anybody.
+The docs are **announced**. The blog is **not** — built, reachable, linked from
+nowhere (`content.md` 7.1). Adding a file to an unannounced section does not
+publish it to anybody.
 
 Announcing a section is flipping `announced` in `src/content/sections.ts`,
-which changes the header link, the `noindex` and the sitemap together. Do that
-only when asked, and expect `tests/sections.test.tsx` to fail until its
-expectations are updated in the same commit — that failure is the checklist.
+which changes the header link, the `noindex` and the sitemap together; both
+link lists derive from the flag, so there is nothing to keep in sync by hand.
+Do that only when asked. `tests/sections.test.tsx` then fails in **exactly one
+place** — the assertion that names the announced set by hand — and every other
+check in it follows the flag on its own, which was measured by announcing the
+blog and running it rather than reasoned about. Update that one line in the
+same commit. **A second failure means something other than the flag moved**,
+and it is worth reading rather than fixing: the link, `noindex` and sitemap
+checks all derive, so one of them failing says the derivation broke.
 
 ## 6. Finish
 

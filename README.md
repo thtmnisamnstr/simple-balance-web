@@ -1,8 +1,8 @@
 # smpl.money
 
 The marketing site for [Simple Balance](https://github.com/thtmnisamnstr/simple-balance),
-a self-hosted double-entry ledger. One homepage today, with a blog and a
-documentation section built and not yet announced.
+a self-hosted double-entry ledger. The homepage, pricing and the documentation
+are announced; the blog is built and deliberately is not.
 
 ## Running it
 
@@ -70,11 +70,18 @@ and a contents list that tracks your position.
 
 The `write-content` skill in `.claude/skills/` is the procedure.
 
-## Blog and docs are not announced
+## The docs are announced; the blog is not
 
-Both sections are built, styled and reachable, and nothing links to them. One
-flag in `src/content/sections.ts` controls the link, the `noindex` and the
-sitemap together. Publishing is flipping it.
+One flag per section in `src/content/sections.ts` controls the link, the
+`noindex` and the sitemap together, and publishing is flipping it. The docs are
+flipped. The blog is built, styled and reachable, and nothing links to it,
+because an empty blog advertised in the header is worse than no blog.
+
+The header and footer links are _derived_ from that flag rather than listed
+beside it (`src/content/home.ts`), and that is what makes the three actually
+move together. They were listed by hand once, and `announcedSections()` had a
+single caller — the sitemap — so announcing a section indexed it, listed it,
+and linked it from nowhere.
 
 ## Deployment
 
@@ -88,8 +95,9 @@ and it is the one mistake here that costs money silently.
 
 ## Pages
 
-`/` the homepage, `/pricing` the two plans and self-hosting, `/privacy` and
-`/terms`. `/blog` and `/docs` are built and announced nowhere.
+`/` the homepage, `/pricing` the two plans and self-hosting, `/docs` the
+documentation, `/privacy` and `/terms`. `/blog` is built and announced
+nowhere.
 
 ## Outstanding work
 
