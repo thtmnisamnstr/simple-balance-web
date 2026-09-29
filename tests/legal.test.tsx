@@ -167,10 +167,24 @@ describe("the privacy policy", () => {
     }
     const rights = section(privacy, /^your rights/i);
     expect(rights, "what leaves for advertising is not said where the rights are").toMatch(
-      /\bfor advertising is what google receives\b[^.]*\bfree plan\b/,
+      /\bwhat leaves for advertising is what google receives\b/,
     );
-    expect(rights, "Premium is not said to send nothing for advertising").toMatch(
+    /*
+     * "And on Premium nothing does" was true while the only ad script on
+     * either origin was the application's. This website now loads one on
+     * every page, so a Premium subscriber reading that sentence was sending
+     * Google their address and their browser's details while reading that
+     * they were not. What Premium buys is unchanged and still said; what it
+     * does not buy is now said beside it.
+     */
+    expect(rights, "Premium is again said to send nothing for advertising").not.toMatch(
       /\bon premium nothing does\b/,
+    );
+    expect(rights, "the website's own visits are left out of the rights section").toMatch(
+      /\bfrom this website on every visit\b/,
+    );
+    expect(rights, "Premium is not bounded to the application").toMatch(
+      /\bdoesn't take the script off this website\b/,
     );
   });
 
@@ -184,11 +198,125 @@ describe("the privacy policy", () => {
     expect(text).toContain("info@smpl.money");
   });
 
-  it("says why this site has no cookie banner, rather than leaving it unsaid", () => {
-    // The question a reader has, answered in the document rather than in a
-    // support email. The site sets nothing, so a banner would be theater.
-    expect(text).toContain("sets no cookies at all");
-    expect(text).toContain("no banner");
+  it("discloses the vendor script this website loads, and the hosts it reaches", () => {
+    /*
+     * The policy said "smpl.money is a set of static files. It sets no
+     * cookies, runs no analytics, embeds no third-party scripts, and makes no
+     * network requests to anywhere other than itself", and a second copy of
+     * the same claim sat in the summary and a third in the cookies section.
+     * All three were true until the day AdSense's loader shipped on every
+     * page, and nothing in this repository failed when it did:
+     * `tests/branding.test.ts` matches a vendor-host list that never held
+     * googlesyndication.com, and no test compares what a page loads against
+     * what the policy says it loads.
+     *
+     * So the hosts are asserted by name. They were measured in a browser
+     * against a real build served as smpl.money, and the same five are what
+     * `netlify.toml` allows, which is why the policy can name them at all.
+     * If a sixth ever appears in the content security policy, this fails and
+     * the paragraph gets written rather than the reader finding out first.
+     */
+    const website = section(privacy, /^what the website/i);
+    expect(website, "the script this site loads is not disclosed").toMatch(
+      /\bloads google's advertising script\b/,
+    );
+    for (const host of [
+      "pagead2.googlesyndication.com",
+      "googleads.g.doubleclick.net",
+      "ep1.adtrafficquality.google",
+      "ep2.adtrafficquality.google",
+      "www.google.com",
+    ]) {
+      expect(website, `the policy leaves out ${host}`).toContain(host);
+    }
+    /*
+     * Auto ads is on for this account (`docs/adsense.md` §3 step 8), so the
+     * script asks on every page and Google picks the page, this one and the
+     * pricing page included. That is the fact a reader would not guess from
+     * "loads a script", and it is the one that decides whether an ad can
+     * appear beside the paragraph disclosing it.
+     */
+    expect(website, "Google choosing where an ad goes is not disclosed").toMatch(
+      /\basks google for an ad on every page\b/,
+    );
+    // The short version is the part most people read, and it carried the
+    // "collects nothing" claim in its first sentence.
+    const summary = section(privacy, /^the short version/i);
+    expect(summary, "the summary still reads as a site that loads nothing").toMatch(
+      /\bloads google's advertising script on every page\b/,
+    );
+    for (const gone of [
+      "sets no cookies at all",
+      "embeds no third-party scripts",
+      "the website collects nothing",
+      "no network requests to anywhere other than itself",
+    ]) {
+      expect(text, `the policy still says "${gone}"`).not.toContain(gone);
+    }
+  });
+
+  it("names the third-party cookie, its vendor, and how to be rid of it", () => {
+    /*
+     * The three AdSense disclosures (`AGENTS.md`, and `legal-review` §2) for
+     * this origin rather than for the application: the cookie, who sets it,
+     * and how to opt out. One cookie was measured, `test_cookie` on
+     * `.doubleclick.net`, and it is named because a policy that said "a
+     * cookie" would leave a reader unable to check the claim in the one
+     * place they can check it, their own browser.
+     *
+     * In the cookies section specifically. A cookie disclosed under
+     * Advertising is still undisclosed to somebody who opened the contents
+     * and clicked Cookies, which is what the `section` helper above is for.
+     */
+    const cookies = section(privacy, /^cookies/i);
+    expect(cookies, "the cookie is not named").toContain("test_cookie");
+    expect(cookies, "the vendor's domain is not named").toContain("doubleclick.net");
+    expect(cookies, "the cookie is not said to be Google's").toMatch(
+      /\bdoubleclick\.net, which is google's\b/,
+    );
+    expect(cookies, "what the cookie is for is not said").toMatch(
+      /\bcheck that your browser accepts cookies\b/,
+    );
+    expect(cookies, "the cookie is left sounding like an identifier").toMatch(
+      /\brather than an identifier for you\b/,
+    );
+    // One cookie is what an unfilled ad slot leaves, not the shape of the
+    // site. The first ad that fills changes it and nothing in this repository
+    // will notice, so the sentence carries its own condition.
+    expect(cookies, "one cookie is stated as the site's shape rather than today's state").toMatch(
+      /\bno ad has filled yet\b/,
+    );
+    for (const way of ["myadcenter.google.com", "youradchoices.com", "youronlinechoices.eu"]) {
+      expect(cookies, `the cookies section does not say you can opt out at ${way}`).toContain(way);
+    }
+    expect(cookies, "blocking third-party cookies is not offered").toMatch(
+      /\bblocking third-party cookies\b/,
+    );
+  });
+
+  it("says nobody is asked first, because on this origin nobody is", () => {
+    /*
+     * The heading was "Cookies, and why this site has no banner" and the
+     * paragraph under it said a consent notice on a site that stores nothing
+     * would be theater. Both went when the script shipped. What replaces
+     * them is not a softer version of the same claim: `window.googlefc` is
+     * undefined on every page of this site, so no consent platform is
+     * loading, and the cookie above lands on a first visit from anywhere with
+     * nobody asked.
+     *
+     * The heading matters as much as the paragraph, because a contents list
+     * is read by people who never open the section.
+     */
+    const heading = privacy.sections.find((s) => /^cookies/i.test(s.heading))!.heading;
+    expect(heading, "the heading still promises no banner").not.toMatch(/\bno banner\b/i);
+    const cookies = section(privacy, /^cookies/i);
+    expect(cookies, "the policy still argues a banner would be theater").not.toContain("theater");
+    expect(cookies, "the EEA position is not stated for this origin").toMatch(
+      /\bnone is published for smpl\.money today\b/,
+    );
+    expect(cookies, "the reader is not told the cookie arrives unannounced").toMatch(
+      /\bset on your first visit with no notice\b/,
+    );
   });
 
   it("does not claim non-personalized ads are cookie-free", () => {
@@ -278,9 +406,38 @@ describe("the privacy policy", () => {
     }
   });
 
-  it("says consent is collected before an ad cookie is set, and can be withdrawn", () => {
-    expect(text).toContain("before any ad cookie is set");
-    expect(text).toContain("withdraw");
+  it("promises no consent notice, because neither origin publishes one", () => {
+    /*
+     * This used to assert the policy said consent "is collected through
+     * Google's own certified consent platform before any ad cookie is set",
+     * which the policy said twice. It was written from the plan in
+     * `docs/adsense.md` §5 rather than from a browser, and a browser says
+     * `window.googlefc` is undefined on every page of this site: nothing is
+     * published, so nobody is asked.
+     *
+     * The assertion is inverted rather than dropped. A promise of a consent
+     * notice is the most consequential sentence on the page — somebody in
+     * the EEA reads it and concludes they were asked — so it stays checked,
+     * with the check pointing the other way until a notice really is
+     * published. Both copies are covered, because the old check read the
+     * whole document and either one satisfied it.
+     */
+    for (const promise of [
+      "before any ad cookie is set",
+      "you will be asked before",
+      "certified consent platform",
+    ]) {
+      expect(text, `the policy promises a consent notice: "${promise}"`).not.toContain(promise);
+    }
+    expect(text, "the requirement itself is gone").toMatch(
+      /\bconsent is required in the eea, the uk and switzerland\b/,
+    );
+    expect(text, "the policy does not say no notice is published").toMatch(
+      /\bno such notice is published today\b/,
+    );
+    // What it can still promise, kept: a notice, once published, is one
+    // somebody can change their mind in.
+    expect(text, "withdrawing is no longer mentioned at all").toContain("withdraw");
   });
 
   it("separates service email from product email, and only one has an unsubscribe", () => {
