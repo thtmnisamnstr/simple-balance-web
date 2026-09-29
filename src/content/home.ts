@@ -94,6 +94,15 @@ export type Feature = {
   readonly icon: "wallet" | "split" | "target" | "copy" | "layers" | "list";
 };
 
+import { announcedSections } from "@/content/sections";
+
+/**
+ * One entry in the header or the footer. Both lists mix hand-written links
+ * with the sections `announcedSections()` returns, so both need the shape the
+ * two have in common rather than the literal types `as const` would give.
+ */
+export type NavLink = { readonly label: string; readonly href: string };
+
 export const site = {
   name: "Simple Balance",
   domain: "smpl.money",
@@ -404,10 +413,24 @@ export const agents = {
 } as const;
 
 /**
- * The pages announced in the header. Blog and docs are deliberately absent —
- * `src/content/sections.ts` holds that decision and the flag behind it.
+ * The pages announced in the header.
+ *
+ * Derived rather than listed, and the derivation is the point.
+ * `src/content/sections.ts` promises that one flag moves three things at once
+ * — the link, the `noindex` and the sitemap — so that "an unannounced section
+ * cannot be half-launched by someone linking to it". Two of those three were
+ * real: `announcedSections()` had exactly one caller, `src/app/sitemap.ts`,
+ * and this list was written by hand. So announcing a section stopped its
+ * `noindex`, entered it in the sitemap, and linked it from nowhere — a page
+ * Google is invited to index and no reader can reach. A hand-written link
+ * here is the same half-launch from the other side.
  */
-export const primaryNav = [{ label: "Pricing", href: "/pricing/" }] as const;
+export const primaryNav: readonly NavLink[] = [
+  // Announced sections first: they are the product, and Pricing is the thing
+  // you read after you know what it is.
+  ...announcedSections().map((section) => ({ label: section.label, href: section.href })),
+  { label: "Pricing", href: "/pricing/" },
+];
 
 export const contact = {
   eyebrow: "Get in touch",
@@ -418,9 +441,13 @@ export const contact = {
   address: "info@smpl.money",
 } as const;
 
-export const footer = {
+export const footer: { readonly blurb: string; readonly links: readonly NavLink[] } = {
   blurb: "Simple Balance keeps track of your money, and every number shows you what's behind it.",
   links: [
+    // The same derivation as `primaryNav`, because `sections.ts` promises the
+    // header *and* the footer, and a flag that moves one of them is a flag
+    // somebody has to remember the other half of.
+    ...announcedSections().map((section) => ({ label: section.label, href: section.href })),
     { label: "Pricing", href: "/pricing/" },
     { label: "Privacy", href: "/privacy/" },
     { label: "Terms", href: "/terms/" },
@@ -432,4 +459,4 @@ export const footer = {
       href: `${site.sourceUrl}/blob/deployment-and-monetization/docs/deployment.md`,
     },
   ],
-} as const;
+};

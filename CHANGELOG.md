@@ -9,6 +9,60 @@ than a contract with readers.
 
 ### Changed
 
+**Google's ad script loads on smpl.money, and the privacy policy stopped
+saying it doesn't.** This site used to be a set of static files that made no
+request to anywhere but itself, and that was most of what its privacy policy
+had to say about it. One `<script>` in the root layout, from the same AdSense
+account that authorizes the application's ads, ends that.
+
+- The script is the account's own snippet, unmodified. The publisher id lives
+  once, in `src/content/ads.ts`, and the `ca-pub-` form the script wants is
+  derived from the `pub-` form `ads.txt` carries, so the file and the tag can't
+  name two different publishers — a state in which every page renders, every
+  check that reads one of the two passes, and the revenue is zero.
+- It's on every page, and React hoists it into `<head>`. React only hoists a
+  `<script>` that is `async`, has a `src` and has no event handler, so dropping
+  the `async` or writing `defer` leaves it in `<body>` with no build error and
+  no warning. The check reads the built HTML for where it landed rather than
+  the source for whether it's there.
+- **Nothing here declares an ad unit.** Whether a reader of smpl.money ever
+  sees an ad is Google's Auto ads account setting, not a decision in this tree.
+- **The content security policy names five hosts, because five is what a real
+  browser running the real script contacted.** A build carrying the script was
+  served over local HTTPS as smpl.money and driven in Chromium, and the policy
+  was written from what it did: `pagead2.googlesyndication.com`,
+  `googleads.g.doubleclick.net`, `ep1.adtrafficquality.google`,
+  `ep2.adtrafficquality.google` and `www.google.com`, each admitted only to the
+  directives it was needed in. The application's own ads policy allows a
+  blanket `https:` because it has no account to watch. This repository has one,
+  so it didn't have to guess, and `docs/adsense.md` §8 is the measurement and
+  the recipe for taking it again when an ad stops rendering.
+- **One cookie is set, and nobody is asked first.** It's `test_cookie`, on
+  `.doubleclick.net`. `window.googlefc` is undefined on every page, which is
+  how you can tell Google's consent platform isn't loading, so a visitor in the
+  EEA, the UK or Switzerland gets an ad vendor's cookie with no notice at all.
+  The privacy policy says that, instead of what it used to say, which was that
+  they'd be asked before any ad cookie was set. Publishing a European
+  regulations message in AdSense is what closes it and no commit here can do
+  it, so `docs/adsense.md` §3 step 7 records it as an open gap rather than a
+  pending step, with the note to re-read the legal pages once it's up, because
+  they're written for this state and go wrong in the other direction.
+- `AGENTS.md` forbade "no script or image from a vendor's domain", and nothing
+  in the suite could see the new host, so the rule would have been broken in
+  silence. It records the decision now: this one script by name, with the
+  argument for it, and still no vendor logo, badge, image, font, widget,
+  analytics tag or consent vendor. `tests/branding.test.ts` holds the closed
+  list, which is the half that was missing: it matched five hosting and font
+  CDNs, none of which the AdSense snippet uses.
+- `docs/adsense.md` opened by saying this site doesn't serve ads, and that
+  sentence was load-bearing — two steps of the procedure, most of the consent
+  section and three claims in the privacy policy reasoned from it. It says what
+  ships now, keeps everything still true about `ads.txt` and the demonetizing
+  failure mode the file exists to avoid, and records what changed underneath:
+  the site verified by `ads.txt` for a reason that's now half gone, and consent
+  being this origin's own obligation rather than a promise about the
+  application's.
+
 **The terms are governed by California law and follow its automatic renewal
 rules, the privacy policy names Gmail, Cloudflare and the backups, and the
 terms say no tax is added to the price.** Each was either a decision nobody
@@ -215,6 +269,29 @@ carried the old headline.
 banned-words test could not see.
 
 ### Fixed
+
+**Announcing a section now moves its link, which it never did.**
+`src/content/sections.ts` promised one flag decides three things — the link,
+the `noindex` and the sitemap — and only two were real.
+
+- **One flag was documented to move three things and moved two.**
+  `announcedSections()` had a single caller, the sitemap, and the header and
+  footer lists were written out by hand. So announcing a section would have
+  stopped its `noindex`, entered it in the sitemap, and linked it from nowhere:
+  a page Google is invited to index and no reader can reach, which is the same
+  half-launch the flag exists to prevent, arriving from the other side. Both
+  lists derive from the flag now.
+- `tests/sections.test.tsx` asserts all three in both directions rather than
+  asserting the absences alone, and reads the link off the rendered header and
+  footer rather than the list behind them, because a derivation nothing renders
+  is the same gap one step along. It also asserts the derivation itself:
+  writing the link out again passes every behavioral check in the file and puts
+  the defect straight back.
+- Two empty states in `src/content/sections.ts` said the documentation "is
+  being written" and that the first post "is not written", with seven pages and
+  two posts published. Both render only when a collection is empty, so nothing
+  ever showed them and nothing ever caught them. They describe what a reader is
+  looking at now instead of what month it was.
 
 **A wide table in the docs scrolls inside itself rather than pushing the page
 sideways.** The configuration page's settings tables hold names like
@@ -691,6 +768,20 @@ list the sixth.
 devDependency now.
 
 ### Added
+
+**The documentation is announced.** `/docs` is in the header and the footer,
+its eight pages no longer send `noindex`, and they're in the sitemap with a
+date each. Seven pages were built, styled, reachable by URL and linked from
+nowhere before this.
+
+**The blog isn't, and that's a decision rather than an oversight.** Two
+finished posts exist and `/blog/` is built and routable, and what the section
+is for hasn't been settled, so announcing it would be advertising something
+with nothing behind it. It's also more than a flag: five of its routes have no
+sitemap entry and `/blog/page/1/` is a deliberate non-canonical duplicate that
+has to stay out by name. `docs/adsense.md` §3 step 1 wants real, announced
+content before an AdSense review, and records that this is half of it on
+purpose.
 
 **`smpl.money/ads.txt` names this site's AdSense publisher id.** It is how
 Google verifies the site for review, and what authorizes the advertising the

@@ -60,8 +60,27 @@ Break one of these and the site is wrong rather than untidy.
 - **A color outside `brand.css` cannot re-theme.** A literal looks right in
   light mode and broken in dark, which is the mode nobody checks.
 - **`announced` decides three things at once** — the link, the `noindex`, and
-  the sitemap. A section half-launched by somebody adding a link is the failure
-  the single flag prevents.
+  the sitemap. `/docs` is announced; `/blog` is built and is not. The three
+  reach their surfaces separately and all read the one flag in
+  `src/content/sections.ts`: `primaryNav` and `footer.links` in
+  `src/content/home.ts` spread `announcedSections()`, each route file picks
+  its `robots` metadata from `section(key).announced`, and `src/app/sitemap.ts`
+  walks the announced sections.
+
+  **Two of the three were true and the link was not**, until `/docs` was
+  announced and somebody checked: `announcedSections()` had one caller, the
+  sitemap, and both nav lists were written out by hand. So the rule described a
+  mechanism that was a habit, and announcing a section would have stopped its
+  `noindex`, entered it in the sitemap, and linked it from nowhere — a page
+  Google is invited to index and no reader can reach. That is the same
+  half-launch as a link added ahead of the flag, arriving from the other side.
+  `tests/sections.test.tsx` asserts all three in both directions now, through
+  the rendered header and footer rather than the list behind them, because a
+  derivation nothing renders is the same gap one step along. It also asserts
+  the derivation itself, because re-hardcoding the link satisfies every
+  behavioral check in that file and puts the defect straight back: `home.ts`
+  has to name `announcedSections()` and must not name a section's href.
+
 - **Crawling is allowed everywhere; indexing is controlled per page.**
   `Disallow` on an unannounced section is the reflex and is exactly wrong: a
   crawler that cannot fetch the page never sees the `noindex`.
@@ -88,11 +107,35 @@ Break one of these and the site is wrong rather than untidy.
   server logs. Neither was written as a lie — both were a long document
   summarized from memory. `content.md` 2.4, and `tests/legal.test.tsx` holds
   the two surfaces together.
-- **No third-party branding.** No vendor logo, badge or "powered by" mark, and
-  no script or image from a vendor's domain. The privacy policy naming the
-  hosting provider and the payment processor is the one exception, and it is
-  the opposite of branding. A host can inject its own badge into the response,
-  which no test here can see — `operations.md` 8 carries those as launch steps.
+- **No third-party branding, and exactly one third-party script.** No vendor
+  logo, badge or "powered by" mark, and no image, font, widget, analytics tag
+  or consent vendor from anybody else's domain. The privacy policy naming the
+  hosting provider and the payment processor is the one exception to the
+  branding half, and it is the opposite of branding. A host can inject its own
+  badge into the response, which no test here can see — `operations.md` 8
+  carries those as launch steps.
+
+  **The one script is Google's AdSense loader**, `adsbygoogle.js` from
+  `pagead2.googlesyndication.com`, in `src/app/layout.tsx` on every page. This
+  rule used to forbid it outright, and that was written when nothing on this
+  origin needed a vendor script and the site's whole privacy claim was that it
+  made no request to anywhere but itself. An AdSense account changed what the
+  rule is about rather than whether it is worth keeping, so the decision is
+  recorded here instead of being broken quietly — `docs/adsense.md` §8 has the
+  argument and the measurements.
+
+  **What keeps it an exception rather than a door.** The snippet is the
+  account's own, unmodified, and nothing else may be added beside it. It was
+  run and watched rather than reasoned about: it reaches five hosts and sets
+  one cookie, and `netlify.toml`'s policy names those five and nothing more,
+  which is why it is far narrower than the application's blanket `https:`.
+  Widening that policy to admit a host nobody has observed is how this stops
+  being one exception. And a script that reaches another origin is a
+  disclosure: this site is no longer a set of files that talks to nobody, so
+  `src/content/legal.ts` has to say what it does, to the same standard the
+  policy holds the application to. `tests/branding.test.ts` holds both halves,
+  the visible marks and the closed list of hosts a page may load from.
+
 - **Nothing on the homepage or the pricing page may imply a bank connection —
   and nothing may promise there will never be one.** There is none today: no
   bank login, no background refresh, nothing that can go stale without saying

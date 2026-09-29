@@ -71,10 +71,36 @@ const NOT_SKILLS: Record<string, string> = {
   "prefer-tag-over-role": "a jsx-a11y lint rule",
   "prefers-color-scheme": "a CSS media feature",
   "react-jsx": "a TypeScript JSX setting",
-  "script-src": "a Content-Security-Policy directive",
   "scroll-padding-top": "a CSS property",
   "ui-monospace": "a CSS generic font family",
+  // The policy in `netlify.toml` names hosts per directive now that an ad
+  // script ships, so the documents arguing about it name the directives.
+  // `script-src` was here alone while it was the only one worth mentioning.
+  "base-uri": "a Content-Security-Policy directive",
+  "child-src": "a Content-Security-Policy directive",
+  "connect-src": "a Content-Security-Policy directive",
+  "default-src": "a Content-Security-Policy directive",
+  "font-src": "a Content-Security-Policy directive",
+  "form-action": "a Content-Security-Policy directive",
+  "frame-ancestors": "a Content-Security-Policy directive",
+  "frame-src": "a Content-Security-Policy directive",
+  "img-src": "a Content-Security-Policy directive",
+  "object-src": "a Content-Security-Policy directive",
+  "script-src": "a Content-Security-Policy directive",
+  "style-src": "a Content-Security-Policy directive",
+  "upgrade-insecure-requests": "a Content-Security-Policy directive",
+  "worker-src": "a Content-Security-Policy directive",
 };
+
+/**
+ * An identifier rather than a name: `pub-9953156598757474`.
+ *
+ * Narrowed rather than listed, per `code/testing.md` 2.5. The publisher id has
+ * the shape this sweep looks for and is not a name at all, and writing the
+ * digits into a dictionary of things that are not skills would make a check
+ * about documents depend on which AdSense account owns the site.
+ */
+const AN_IDENTIFIER = /-\d{6,}$/;
 
 const manifest = JSON.parse(readFileSync("package.json", "utf8")) as {
   dependencies?: Record<string, string>;
@@ -87,7 +113,8 @@ function isNamedOtherwise(name: string): boolean {
     name in NOT_SKILLS ||
     name in APPLICATION_SKILLS ||
     packages.has(name) ||
-    /^(aria|data)-/.test(name)
+    /^(aria|data)-/.test(name) ||
+    AN_IDENTIFIER.test(name)
   );
 }
 
