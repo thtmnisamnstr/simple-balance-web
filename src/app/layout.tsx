@@ -8,6 +8,7 @@ import { SiteHeader } from "@/components/site-header";
 import { feedAlternates } from "@/lib/feed";
 import { SiteFooter } from "@/components/site-footer";
 import { site, hero } from "@/content/home";
+import { adsense } from "@/content/ads";
 import { openGraph } from "@/app/open-graph";
 
 export const metadata: Metadata = {
@@ -87,6 +88,28 @@ export default function RootLayout({ children }: { readonly children: ReactNode 
     // "English" by the bare tag, and the copy is American.
     <html lang="en-US">
       <body>
+        {/*
+         * The AdSense loader, which React 19 hoists out of here into <head>.
+         *
+         * A static export has no <head> to render into from a layout, and
+         * `next/script` either injects the tag after hydration or pulls a
+         * client component into the root layout — neither is what an ad
+         * loader wants. React's own hoisting of a plain element is the
+         * mechanism, and `tests/adsense.test.ts` reads the built HTML to
+         * prove it landed above </head> on every page rather than trusting
+         * that it did.
+         *
+         * **`async` is load-bearing and its absence is silent.** React hoists
+         * a <script> only when it is async with a src and no event handler.
+         * Drop `async`, write `defer` instead, or add an `onLoad`, and the
+         * tag stays in <body> with no build error and no warning — which is
+         * why the test asserts the position and not merely the presence.
+         *
+         * The inline JSON-LD in `src/components/structured-data.tsx` is the
+         * deliberate opposite: it has no src, so it is not hoisted, and it
+         * belongs where it renders.
+         */}
+        <script async src={adsense.scriptSrc} crossOrigin="anonymous" />
         <a className="skip-link" href="#main">
           Skip to content
         </a>

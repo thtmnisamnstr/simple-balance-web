@@ -256,10 +256,15 @@ describe("the published shape", () => {
     ]) {
       expect(netlify, `${header} is not set`).toContain(header);
     }
-    // The page talks to nothing and takes no input. These two directives are
-    // what make the 'unsafe-inline' that Next.js forces on `script-src`
-    // tolerable, so they are the ones worth asserting.
-    expect(netlify).toContain("connect-src 'self'");
+    // The page takes no input, so `form-action 'none'` is absolute and is
+    // what still makes the 'unsafe-inline' that Next.js forces on
+    // `script-src` tolerable.
+    //
+    // `connect-src` is no longer absolute: the page loads an advertising
+    // script that calls two of Google's hosts. Asserting it here as a
+    // substring would pass over any widening at all, which is the shape of
+    // green test this file exists to avoid — `tests/adsense.test.ts` parses
+    // the policy into directives instead and holds every source in it.
     expect(netlify).toContain("form-action 'none'");
     // The CSP's own clickjacking defense, which supersedes X-Frame-Options in
     // current browsers. Asserting the header and not this left the modern

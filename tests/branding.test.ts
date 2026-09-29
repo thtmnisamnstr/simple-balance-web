@@ -31,6 +31,25 @@ const VENDORS = [
   "hosted on",
 ];
 
+/** Hosts a badge or a widget would arrive from, matched against a hostname. */
+const VENDOR_HOSTS =
+  /netlify|vercel|cloudflare|gstatic|googleapis|googlesyndication|doubleclick|adtrafficquality/;
+
+/**
+ * Subresources from one of those hosts that this site loads on purpose, by
+ * exact address, with the reason each is here.
+ *
+ * One entry, and it is a decision rather than a lapse: `docs/adsense.md`
+ * carries the argument for serving the AdSense loader from this origin. It is
+ * written out rather than imported from `src/content/ads.ts`, so that
+ * changing the address there is a change this exception has to be re-granted
+ * for rather than one it follows.
+ */
+const ALLOWED_SUBRESOURCES: Record<string, string> = {
+  "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9953156598757474":
+    "The AdSense loader, in <head> on every page. `tests/adsense.test.ts` holds it and the policy that admits it.",
+};
+
 /** Pages whose subject matter is the vendors, with the reason each is here. */
 const DISCLOSURES: Record<string, string> = {
   "/privacy/": "Names the hosting provider and payment processor, as a policy must.",
@@ -82,13 +101,18 @@ describe("third-party branding", () => {
 
   it("loads no script or image from a vendor's domain", () => {
     // The other shape branding arrives in: a badge served from the host.
+    //
+    // The host list has to name the advertising domains, or this check cannot
+    // see the one subresource the site actually loads and the rule it is
+    // credited with has no mechanism at all. It matched five hosting and
+    // font CDNs, none of which the AdSense snippet uses, so the script
+    // shipped on every page and the suite stayed green.
     const offenders: string[] = [];
     for (const page of all) {
       for (const [, url] of page.html.matchAll(/(?:src|href)="(https?:\/\/[^"]+)"/g)) {
+        if (Object.hasOwn(ALLOWED_SUBRESOURCES, url!)) continue;
         const host = new URL(url!).hostname;
-        if (/netlify|vercel|cloudflare|gstatic|googleapis/.test(host)) {
-          offenders.push(`${page.route} loads from ${host}`);
-        }
+        if (VENDOR_HOSTS.test(host)) offenders.push(`${page.route} loads from ${host}`);
       }
     }
     expect(offenders).toEqual([]);
