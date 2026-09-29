@@ -55,21 +55,22 @@
     X-Frame-Options = "DENY"
     Strict-Transport-Security = "max-age=31536000; includeSubDomains"
     # `interest-cohort` named FLoC, which Chrome withdrew in 2022 and which no
-    # shipping browser implements, so the token denied nothing and read as a
-    # stance this header was no longer taking. `browsing-topics` is the live
-    # successor and the same objection: it is how an ad network asks the
-    # browser what a visitor is interested in. Denying it here was measured
-    # against the real AdSense script — same five hosts, no violation, no
-    # console message, the loader still initializes — because this origin
-    # carries the verification snippet and no ad slot, so nothing on it asks.
+    # shipping browser implements, so the token denied nothing while reading
+    # as a stance. `browsing-topics` is the live successor and the same
+    # objection — it is how an ad network asks the browser what a visitor is
+    # interested in — so denying it keeps the stance this header was already
+    # taking rather than inventing a new one.
+    #
+    # It denies the targeting signal and not the ad. Measured against the
+    # real script: same five hosts, no violation, no console message, and the
+    # ad request still goes out. What it costs is relevance, and that is the
+    # thing the withdrawn token was refusing.
     #
     # The auction and measurement features (`join-ad-interest-group`,
     # `run-ad-auction`, `attribution-reporting`, `private-aggregation`) are
     # deliberately left alone. Denying them measured just as clean, but they
-    # are what an ad would actually be sold through, so a blanket denial here
-    # would quietly cost fill on the day Auto ads is turned on rather than
-    # refusing anything today. Turning Auto ads on for this domain is the
-    # trigger to measure this header again.
+    # are what an ad is sold through, so a blanket denial would cost fill
+    # rather than refuse a signal.
     Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), browsing-topics=()"
     # `script-src` carries 'unsafe-inline' because Next.js emits its hydration
     # payload as inline <script> tags and a static export has no request in
@@ -86,6 +87,12 @@
     # one that permits anybody. `src/content/ads.ts` carries the same five with
     # what each serves, and `tests/adsense.test.ts` fails if this line loses
     # one or grows a wildcard.
+    #
+    # **The measurement was taken with the ad slot unfilled**, which is what
+    # Auto ads returns on this origin today. A filled ad draws its creative
+    # inside the `googleads.g.doubleclick.net` frame, where this policy does
+    # not reach, so the five should hold — but the first page that fills is
+    # the one to watch a console on before trusting that.
     #
     # Two absences are deliberate. `frame-src` names no 'self', because a
     # directive that is present replaces `default-src` for frames and nothing

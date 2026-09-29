@@ -43,6 +43,13 @@ const publisherId = "pub-9953156598757474";
  * the symptom is a blocked subresource in a console nobody is watching, so
  * `docs/adsense.md` carries re-measuring as the step to take when an ad unit
  * stops rendering.
+ *
+ * **The measurement was taken with the ad slot unfilled.** Auto ads is on for
+ * this account, so the script places an `ins.adsbygoogle` and asks; the ask
+ * comes back `unfilled` today. A filled ad draws its creative inside the
+ * `googleads.g.doubleclick.net` frame, which this origin's policy does not
+ * reach, so these five should still hold — but the first page that fills is
+ * the one to watch a console on.
  */
 export type AdHost = {
   /** The CSP directives this host appears in. */
