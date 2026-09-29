@@ -472,12 +472,13 @@ needed.
 
 ## 8. What the script actually does, and how that was measured
 
-Everything in this section is an **observation**, not a reading of Google's
-documentation. The content security policy in `netlify.toml` is written from
-it, which is why it is far narrower than the application's own ads policy: the
-application has no AdSense account to watch and had to allow a blanket
-`https:`, and this repository does have one, so guessing wide was their only
-option and is not ours.
+One subsection of argument, then the facts it rests on. Everything from
+**Five hosts** down is an **observation**, not a reading of Google's
+documentation, and the content security policy in `netlify.toml` is written
+from it. That is why the policy here is far narrower than the application's own
+ads policy: the application has no AdSense account to watch and had to allow a
+blanket `https:`, and this repository does have one, so guessing wide was their
+only option and is not ours.
 
 ### Why a rule had to be rewritten first
 
