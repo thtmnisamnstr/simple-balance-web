@@ -25,8 +25,12 @@ account that authorizes the application's ads, ends that.
   the `async` or writing `defer` leaves it in `<body>` with no build error and
   no warning. The check reads the built HTML for where it landed rather than
   the source for whether it's there.
-- **Nothing here declares an ad unit.** Whether a reader of smpl.money ever
-  sees an ad is Google's Auto ads account setting, not a decision in this tree.
+- **Nothing here declares an ad unit**, and Google's Auto ads setting is on, so
+  the script places its own slot and asks on every page. Every ask comes back
+  unfilled while the account is unapproved, so nothing renders yet — which is a
+  fact about approval rather than a setting. It also bounds the measurement
+  below: it was taken with every slot unfilled, and a filled ad draws inside
+  the doubleclick frame where this policy doesn't reach.
 - **The content security policy names five hosts, because five is what a real
   browser running the real script contacted.** A build carrying the script was
   served over local HTTPS as smpl.money and driven in Chromium, and the policy
@@ -273,14 +277,13 @@ banned-words test could not see.
 **Announcing a section now moves its link, which it never did.**
 `src/content/sections.ts` promised one flag decides three things — the link,
 the `noindex` and the sitemap — and only two were real.
+`announcedSections()` had a single caller, the sitemap, and the header and
+footer lists were written out by hand. So announcing a section would have
+stopped its `noindex`, entered it in the sitemap, and linked it from nowhere:
+a page Google is invited to index and no reader can reach, which is the same
+half-launch the flag exists to prevent, arriving from the other side. Both
+lists derive from the flag now.
 
-- **One flag was documented to move three things and moved two.**
-  `announcedSections()` had a single caller, the sitemap, and the header and
-  footer lists were written out by hand. So announcing a section would have
-  stopped its `noindex`, entered it in the sitemap, and linked it from nowhere:
-  a page Google is invited to index and no reader can reach, which is the same
-  half-launch the flag exists to prevent, arriving from the other side. Both
-  lists derive from the flag now.
 - `tests/sections.test.tsx` asserts all three in both directions rather than
   asserting the absences alone, and reads the link off the rendered header and
   footer rather than the list behind them, because a derivation nothing renders

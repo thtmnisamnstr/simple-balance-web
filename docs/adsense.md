@@ -21,8 +21,12 @@ That is the account's own snippet, unmodified, on all twenty-two pages and the
 404 — the homepage, the pricing page, the docs and the legal pages alike.
 **Nothing in this repository declares an ad unit.** There is no
 `<ins class="adsbygoogle">` anywhere, so whether a reader of `smpl.money` ever
-sees an ad is Google's Auto ads account setting and not a decision in this tree
-(§3 step 8).
+sees an ad is Google's Auto ads account setting and not a decision in this
+tree. **That setting is on** (§3 step 8): the script places its own
+`ins.adsbygoogle` and asks for an ad on every page, and the ask comes back
+unfilled today because the account is not approved yet. So this origin is
+already asking for inventory, not merely loading a loader, and the first page
+that fills is a state nobody here has seen.
 
 This document used to open "This site does not serve ads", and most of what
 followed was reasoned from that. Three things follow from its being false, and
@@ -174,16 +178,23 @@ never starts.
    a notice exists. The `legal-review` skill names "before turning ads on" as
    one of the times it must run; this is the same trigger arriving late.
 
-8. **Turn Auto ads off** for the site, or decide to leave it on with your eyes
-   open. On the application it is an account setting no code can override and
-   it injects formats the application promises not to show, so there it is off.
+8. **Decide Auto ads deliberately. On this site it is currently on.** For the
+   application it is an account setting no code can override and it injects
+   formats the application promises not to show, so there it must be off.
 
    **On `smpl.money` it is the only thing that can put an ad on the page**,
-   because this repository declares no ad unit. Auto ads on means Google
-   chooses where an ad goes, and the pages it may choose include `/privacy/`
-   and `/pricing/` — the page that discloses the advertising, and the page
-   that sells the plan without it. Off means the script loads, sets its cookie
-   and shows nothing, which is the state the privacy policy is written for.
+   because this repository declares no ad unit. It is on, so the script places
+   its own slot and asks on every page. Nothing renders yet — the ask comes
+   back unfilled while the account is unapproved — but that is a fact about
+   approval, not a setting, and it will stop being true.
+
+   **The pages Google may choose include `/privacy/` and `/pricing/`**: the
+   page that discloses the advertising, and the page that sells the plan
+   without it. That is the decision to take on purpose rather than discover,
+   and it is the one reason to turn it off here. The legal pages are written
+   for either state, because they describe the script rather than the
+   inventory, and §8's measurement is not: it was taken unfilled, and the
+   first page that fills is the one to watch a console on.
 
 9. **Wait for the crawl, then configure the application.** Confirm in the
    AdSense dashboard that `ads.txt` is found and authorized.
@@ -308,8 +319,10 @@ covered one and denied the other in so many words.
 **The trigger is the tag going into the head, not the first ad rendering.** A
 script that contacts an ad vendor and is handed a cookie has already done the
 thing a policy exists to disclose, whether or not anything was drawn on the
-page — and with Auto ads off (§3 step 8) nothing is. So the rewrite came with
-the element, not with the inventory.
+page — and nothing is drawn today, because the account is not approved and
+every ask comes back unfilled (§3 step 8). So the rewrite came with the
+element, not with the inventory, and it needs no second pass when the first
+ad fills.
 
 **It is written, and live at `https://smpl.money/privacy/`**: an ordinary page
 under `src/app/privacy/`, its words in `src/content/legal.ts`, and
@@ -558,3 +571,13 @@ exists rather than a test.
 
 A run is only evidence if it produced **zero** violations across all six page
 shapes. The run this section records did.
+
+**It was taken with every slot unfilled, and that is the limit of what it
+proves.** Auto ads is on (§3 step 8), so the script places an
+`ins.adsbygoogle` and asks on every page, and today every ask comes back
+`unfilled` because the account is not approved. A filled ad draws its creative
+inside the `googleads.g.doubleclick.net` frame, which this origin's policy
+does not reach, so the five hosts should hold — **should**, not do. The first
+page that fills is the one to open a console on, and it is the one occasion on
+this list where finding a sixth host would be unsurprising rather than
+alarming.
