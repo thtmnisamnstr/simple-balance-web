@@ -25,11 +25,14 @@ account that authorizes the application's ads, ends that.
   the `async` or writing `defer` leaves it in `<body>` with no build error and
   no warning. The check reads the built HTML for where it landed rather than
   the source for whether it's there.
-- **Nothing here declares an ad unit**, and Google's Auto ads setting is on, so
-  the script places its own slot and asks on every page. Every ask comes back
-  unfilled while the account is unapproved, so nothing renders yet — which is a
-  fact about approval rather than a setting. It also bounds the measurement
-  below: it was taken with every slot unfilled, and a filled ad draws inside
+- **Nothing here declares an ad unit and Auto ads is off**, so no advertising
+  is displayed on this site at all. The script is carried because `ads.txt` on
+  this domain authorizes the advertising the application serves and because it
+  is how the site is verified, not because this site sells inventory. The
+  script still runs and still sets the cookie the privacy policy names: no ads
+  displayed is not no third party involved. It also bounds the measurement
+  below, which was taken while Auto ads was on and every slot unfilled — a
+  ceiling rather than an exact list. A filled ad draws inside
   the doubleclick frame where this policy doesn't reach.
 - **The content security policy names five hosts, because five is what a real
   browser running the real script contacted.** A build carrying the script was

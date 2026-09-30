@@ -135,18 +135,25 @@ export const privacy = {
           "googleads.g.doubleclick.net, ep1.adtrafficquality.google, ep2.adtrafficquality.google " +
           "and www.google.com. Nothing else on the site reaches anywhere but itself.",
         /*
-         * Auto ads is on for this account (`docs/adsense.md` §3 step 8), so
-         * the script places its own slot and asks on every page rather than
-         * this repository marking one out. Every ask comes back unfilled
-         * while the account is unapproved, which is a fact about approval and
-         * not a setting, so it is said as today's state. The five hosts above
-         * were measured in that state, and `src/content/ads.ts` carries the
-         * same bound: a filled creative draws inside Google's own frame.
+         * Auto ads is OFF for this account and this repository declares no ad
+         * unit, so nothing places an ad here at all. Said as what it is rather
+         * than as "no ads yet": the absence is a decision, not a queue.
+         *
+         * What does NOT follow is that Google is uninvolved. The script is
+         * still fetched, still reaches the hosts named above, and still sets
+         * the cookie this policy discloses. A reader who sees no advertising
+         * and concludes nothing reached Google would be wrong, and that is the
+         * inference this paragraph exists to prevent.
+         *
+         * The five hosts were measured while Auto ads was on, so they are a
+         * ceiling on what is contacted now rather than an exact list.
          */
-        "That script asks Google for an ad on every page, because Google decides where an ad " +
-          "goes here rather than this site marking out a place for one. No ad has filled yet, " +
-          "while the advertising account is waiting to be approved, and the hosts above were " +
-          "measured while that was true.",
+        "That script doesn't currently show you any advertising. This site marks out no place " +
+          "for an ad, and the setting that would let Google pick its own place is turned off, " +
+          "so nothing is displayed. The script still runs, still contacts the hosts above, and " +
+          "still sets the cookie described further down: seeing no ads doesn't mean nothing " +
+          "reached Google. The hosts were measured while that setting was on, so they're the " +
+          "most it contacts rather than an exact list.",
         /*
          * What the request carries, and the one place this origin is better
          * than the application: `Referrer-Policy: strict-origin-when-cross-origin`
@@ -310,6 +317,23 @@ export const privacy = {
           "unless a consent platform has said otherwise. **The script on this website carries " +
           "no such instruction.** It's the plain AdSense loader, so where the law allows " +
           "personalization without consent, an ad here can be personalized.",
+        /*
+         * Named because the `Permissions-Policy` header stopped denying it,
+         * and a header and a policy disagreeing about what reaches Google is
+         * exactly the failure `content.md` 2.4 is about. The header carried
+         * `browsing-topics=()` for a while; denying it was measured and does
+         * work, costing relevance rather than fill. It was dropped
+         * deliberately, because advertising is how this site is paid for —
+         * so the honest thing is to say the signal is available rather than
+         * let a header imply it is not.
+         */
+        "**Your browser may tell Google what you're interested in.** Chrome and some other " +
+          "browsers keep a short list of topics inferred from the sites you visit, and offer " +
+          "it to advertisers through what Google calls the Topics API. This website doesn't " +
+          "block that, so an ad shown here may be chosen partly from it. The list is your " +
+          "browser's rather than ours: we never see it, it's built from your browsing and " +
+          "not from anything you do here, and your browser settings control it. In Chrome " +
+          "that's Settings, then Privacy and security, then Ads.",
         // The request for an ad comes from the reader's browser, so Google
         // gets what any site gets from one, and the rough location above is
         // read from that address. A heading that reads as the whole list, with

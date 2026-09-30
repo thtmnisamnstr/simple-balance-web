@@ -178,15 +178,22 @@ never starts.
    a notice exists. The `legal-review` skill names "before turning ads on" as
    one of the times it must run; this is the same trigger arriving late.
 
-8. **Decide Auto ads deliberately. On this site it is currently on.** For the
+8. **Decide Auto ads deliberately. On this site it is off.** For the
    application it is an account setting no code can override and it injects
    formats the application promises not to show, so there it must be off.
 
-   **On `smpl.money` it is the only thing that can put an ad on the page**,
-   because this repository declares no ad unit. It is on, so the script places
-   its own slot and asks on every page. Nothing renders yet — the ask comes
-   back unfilled while the account is unapproved — but that is a fact about
-   approval, not a setting, and it will stop being true.
+   **On `smpl.money` it is the only thing that could put an ad on the page**,
+   because this repository declares no ad unit. With it off, both halves are
+   absent: no slot is declared here and none is injected there, so this site
+   loads Google's script and displays nothing. That is the intended state.
+   The script is carried for verification and because `ads.txt` on this domain
+   is what authorizes the advertising the application serves — §1 — not
+   because this site sells inventory.
+
+   The consequence to keep in view is that the script still runs. It is
+   fetched, it still reaches Google, and it still sets the cookie the privacy
+   policy names. "No ads displayed" is not "no third party involved", and the
+   policy is written for the second.
 
    **The pages Google may choose include `/privacy/` and `/pricing/`**: the
    page that discloses the advertising, and the page that sells the plan
@@ -607,12 +614,20 @@ exists rather than a test.
 A run is only evidence if it produced **zero** violations across all six page
 shapes. The run this section records did.
 
-**It was taken with every slot unfilled, and that is the limit of what it
-proves.** Auto ads is on (§3 step 8), so the script places an
-`ins.adsbygoogle` and asks on every page, and today every ask comes back
-`unfilled` because the account is not approved. A filled ad draws its creative
-inside the `googleads.g.doubleclick.net` frame, which this origin's policy
-does not reach, so the five hosts should hold — **should**, not do. The first
-page that fills is the one to open a console on, and it is the one occasion on
+**It was taken with Auto ads ON and every slot unfilled, and that is the
+limit of what it proves.** At the time of the run the script placed an
+`ins.adsbygoogle` and asked on every page, and every ask came back `unfilled`
+because the account was not approved. Auto ads has since been turned **off**
+(§3 step 8), so the script now asks for nothing at all — which can only
+*narrow* what it contacts, never widen it. The five-host list is therefore a
+ceiling rather than an exact figure, and a ceiling is the safe direction for a
+policy: the risk of a CSP is being too tight, and this one is measured against
+a busier state than the site is now in.
+
+A filled ad would draw its creative inside the
+`googleads.g.doubleclick.net` frame, which this origin's policy does not
+reach, so the five hosts should still hold if Auto ads is ever turned back on
+— **should**, not do. The first page that fills is the one to open a console
+on, and it is the one occasion on
 this list where finding a sixth host would be unsurprising rather than
 alarming.

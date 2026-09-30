@@ -230,15 +230,28 @@ describe("the privacy policy", () => {
       expect(website, `the policy leaves out ${host}`).toContain(host);
     }
     /*
-     * Auto ads is on for this account (`docs/adsense.md` §3 step 8), so the
-     * script asks on every page and Google picks the page, this one and the
-     * pricing page included. That is the fact a reader would not guess from
-     * "loads a script", and it is the one that decides whether an ad can
-     * appear beside the paragraph disclosing it.
+     * Auto ads is OFF and this repository declares no ad unit
+     * (`docs/adsense.md` §3 step 8), so no advertising is displayed here at
+     * all. That makes a *different* fact the one a reader would get wrong,
+     * and it is the more dangerous direction: seeing no ads, they would
+     * reasonably conclude that nothing reached Google. The script is still
+     * fetched, still contacts the five hosts above, and still sets the
+     * cookie disclosed further down.
+     *
+     * So the policy has to say both halves — nothing is shown, and something
+     * still happens — and this holds it to the second, which is the half that
+     * disappears if somebody later simplifies the paragraph to "we don't show
+     * ads". Written as two separate matches rather than one phrase, so a
+     * rewording that keeps the meaning does not fail while a rewording that
+     * drops the disclosure does.
      */
-    expect(website, "Google choosing where an ad goes is not disclosed").toMatch(
-      /\basks google for an ad on every page\b/,
+    expect(website, "the policy does not say no advertising is displayed").toMatch(
+      /\bnothing is displayed\b|\bdoesn't currently show you any advertising\b/,
     );
+    expect(
+      website,
+      "the policy lets a reader think no ads means nothing reached Google",
+    ).toMatch(/seeing no ads doesn't mean nothing reached google/);
     // The short version is the part most people read, and it carried the
     // "collects nothing" claim in its first sentence.
     const summary = section(privacy, /^the short version/i);

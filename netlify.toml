@@ -54,24 +54,33 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     X-Frame-Options = "DENY"
     Strict-Transport-Security = "max-age=31536000; includeSubDomains"
-    # `interest-cohort` named FLoC, which Chrome withdrew in 2022 and which no
-    # shipping browser implements, so the token denied nothing while reading
-    # as a stance. `browsing-topics` is the live successor and the same
-    # objection — it is how an ad network asks the browser what a visitor is
-    # interested in — so denying it keeps the stance this header was already
-    # taking rather than inventing a new one.
+    # `browsing-topics` is deliberately NOT denied, and this is a decision
+    # rather than an omission.
     #
-    # It denies the targeting signal and not the ad. Measured against the
-    # real script: same five hosts, no violation, no console message, and the
-    # ad request still goes out. What it costs is relevance, and that is the
-    # thing the withdrawn token was refusing.
+    # The header used to carry `interest-cohort=()`, which named FLoC — a
+    # proposal Chrome withdrew in 2022 and no shipping browser implements. It
+    # denied nothing and read as a stance. `browsing-topics` is its live
+    # successor and the same objection in substance: it is how an ad network
+    # asks the browser what a visitor is interested in. Denying it was measured
+    # and works — same five hosts, no violation, the ad request still goes out
+    # — so what it costs is relevance rather than fill.
+    #
+    # It is left allowed because this site's advertising is how it is paid for,
+    # and refusing the signal lowers what the inventory earns. The privacy
+    # policy says so plainly rather than the header quietly implying otherwise;
+    # a policy and a header disagreeing about what reaches Google is the
+    # failure this repository already writes down.
+    #
+    # Note that the application takes the opposite default: `ADSENSE_PERSONALIZED`
+    # is false there, so a person reading their own balances is not profiled
+    # unless an operator asks. Different surfaces, different trade: a marketing
+    # page carries nobody's ledger.
     #
     # The auction and measurement features (`join-ad-interest-group`,
     # `run-ad-auction`, `attribution-reporting`, `private-aggregation`) are
-    # deliberately left alone. Denying them measured just as clean, but they
-    # are what an ad is sold through, so a blanket denial would cost fill
-    # rather than refuse a signal.
-    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), browsing-topics=()"
+    # likewise left alone — they are what an ad is sold through, so denying
+    # them would cost fill rather than refuse a signal.
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=()"
     # `script-src` carries 'unsafe-inline' because Next.js emits its hydration
     # payload as inline <script> tags and a static export has no request in
     # which to mint a nonce. Removing it means either build-time hashing of

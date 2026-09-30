@@ -245,11 +245,20 @@ describe("the permissions policy", () => {
     }
   });
 
-  it("denies the live interest API rather than the withdrawn one", () => {
-    // `interest-cohort` named FLoC, which Chrome withdrew and no shipping
-    // browser implements, so the token denied nothing while reading as a
-    // stance. `browsing-topics` is the successor and the same objection.
+  it("leaves the interest APIs alone, and neither token pretends otherwise", () => {
+    // Both absences are deliberate and they are different kinds of absence.
+    //
+    // `interest-cohort` named FLoC, withdrawn by Chrome in 2022 and
+    // implemented by no shipping browser, so the token denied nothing while
+    // reading as a stance. It is gone because it was theater.
+    //
+    // `browsing-topics` is its live successor and really would deny the
+    // targeting signal — that was measured. It is allowed because advertising
+    // is how this site is paid for, and the privacy policy states that Google
+    // may use interest signals rather than the header implying it cannot.
+    // Re-adding it is a revenue decision, not a security fix, so it should not
+    // arrive as a tidy-up: this assertion is here to make that deliberate.
     expect(features.has("interest-cohort")).toBe(false);
-    expect(features.get("browsing-topics")).toBe("()");
+    expect(features.has("browsing-topics")).toBe(false);
   });
 });
