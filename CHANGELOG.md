@@ -820,13 +820,16 @@ nowhere before this.
 **The blog isn't, and that's a decision rather than an oversight.** Two
 finished posts exist and `/blog/` is built and routable, and what the section
 is for hasn't been settled, so announcing it would be advertising something
-with nothing behind it. Flipping the flag would work, and that was measured
-rather than assumed: announcing it and rebuilding fails exactly one assertion,
-the one naming the announced set by hand, and the sitemap picks the posts up
-unprompted. What the flag wouldn't do is list the section's other five routes,
-and `/blog/page/1/` is a deliberate non-canonical duplicate that has to stay
-out by name — both judgments about what a blog should advertise rather than
-anything standing in the flag's way. `docs/adsense.md` §3 step 1 wants real, announced
+with nothing behind it. It is also not purely a flag today, and that was
+measured rather than assumed: announcing it and rebuilding fails two
+assertions, not one. The first is the one naming the announced set by hand,
+which is the intended checklist. The second is `tests/sitemap.test.ts`, because
+`src/app/sitemap.ts` lists a section's front page and its entries and nothing
+else — so the blog's archive, its two tag pages and its author page would be
+indexable and absent from the sitemap. `/blog/page/1/` holds the same content
+as `/blog/` and already canonicalises there, so it has to stay out by name
+rather than be added. Fixing that is a separate change; until it lands,
+announcing the blog is two edits rather than one. `docs/adsense.md` §3 step 1 wants real, announced
 content before an AdSense review, and records that this is half of it on
 purpose.
 
