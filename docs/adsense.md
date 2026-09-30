@@ -619,7 +619,7 @@ limit of what it proves.** At the time of the run the script placed an
 `ins.adsbygoogle` and asked on every page, and every ask came back `unfilled`
 because the account was not approved. Auto ads has since been turned **off**
 (§3 step 8), so the script now asks for nothing at all — which can only
-*narrow* what it contacts, never widen it. The five-host list is therefore a
+_narrow_ what it contacts, never widen it. The five-host list is therefore a
 ceiling rather than an exact figure, and a ceiling is the safe direction for a
 policy: the risk of a CSP is being too tight, and this one is measured against
 a busier state than the site is now in.

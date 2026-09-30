@@ -248,10 +248,9 @@ describe("the privacy policy", () => {
     expect(website, "the policy does not say no advertising is displayed").toMatch(
       /\bnothing is displayed\b|\bdoesn't currently show you any advertising\b/,
     );
-    expect(
-      website,
-      "the policy lets a reader think no ads means nothing reached Google",
-    ).toMatch(/seeing no ads doesn't mean nothing reached google/);
+    expect(website, "the policy lets a reader think no ads means nothing reached Google").toMatch(
+      /seeing no ads doesn't mean nothing reached google/,
+    );
     // The short version is the part most people read, and it carried the
     // "collects nothing" claim in its first sentence.
     const summary = section(privacy, /^the short version/i);
