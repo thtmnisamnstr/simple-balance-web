@@ -820,16 +820,16 @@ nowhere before this.
 **The blog isn't, and that's a decision rather than an oversight.** Two
 finished posts exist and `/blog/` is built and routable, and what the section
 is for hasn't been settled, so announcing it would be advertising something
-with nothing behind it. It is also not purely a flag today, and that was
-measured rather than assumed: announcing it and rebuilding fails two
-assertions, not one. The first is the one naming the announced set by hand,
-which is the intended checklist. The second is `tests/sitemap.test.ts`, because
-`src/app/sitemap.ts` lists a section's front page and its entries and nothing
-else — so the blog's archive, its two tag pages and its author page would be
-indexable and absent from the sitemap. `/blog/page/1/` holds the same content
-as `/blog/` and already canonicalises there, so it has to stay out by name
-rather than be added. Fixing that is a separate change; until it lands,
-announcing the blog is two edits rather than one. `docs/adsense.md` §3 step 1 wants real, announced
+with nothing behind it. Announcing it is now one edit, and that is measured
+rather than assumed: with the flag flipped and the site rebuilt, exactly one
+assertion fails, the one naming the announced set by hand, which is the
+intended checklist. It took two until `src/app/sitemap.ts` learned a section's
+secondary index pages — the blog's archive, a page per tag and a page per
+author would otherwise have been indexable and absent from the sitemap, a
+defect invisible while the section is unannounced because
+`tests/sitemap.test.ts` excuses a route under one. `/blog/page/1/` holds the
+same content as `/blog/` and already canonicalises there, so it is recorded as
+a named exception rather than listed. `docs/adsense.md` §3 step 1 wants real, announced
 content before an AdSense review, and records that this is half of it on
 purpose.
 
