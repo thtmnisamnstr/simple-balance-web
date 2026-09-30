@@ -347,7 +347,23 @@ export const faq: readonly { readonly q: string; readonly a: string }[] = [
      * address can name a record — lives in the policy, which this now points
      * at rather than paraphrasing.
      */
-    a: "Ordinary Google ads, never on the billing page or the sign-in screen. They aren't picked from what you spend, and they are only personalized if you specifically agreed to that. In the UK, the EEA and Switzerland you get asked before any advertising cookie is set, and saying no keeps the ads off your spending rather than off the page. The privacy policy covers the rest, including what does reach Google.",
+    /*
+     * **It said "you get asked before any advertising cookie is set"**, which
+     * was the last consent promise left on the site after the policy stopped
+     * making one. Nobody is asked: `window.googlefc` is undefined on every
+     * page and this page's own script sets Google's advertising identifier on
+     * a visit, so the sentence was false on the page that carried it. It
+     * states the requirement now and says no notice is published, which is
+     * what the policy says a click away.
+     *
+     * The invariant is one-directional and this was the inverse of the
+     * failure it was written for: a marketing claim may not be *stronger*
+     * than the policy it links to, and here the sales page promised a
+     * protection the policy denies. The cross-surface check could not see it,
+     * because it asked that consent be mentioned rather than that it not be
+     * promised.
+     */
+    a: "Ordinary Google ads, never on the billing page or the sign-in screen. They aren't picked from what you spend, and they are only personalized if you specifically agreed to that. In the UK, the EEA and Switzerland consent has to be collected through a notice before any advertising cookie is set. That notice is published from the advertising account rather than by any code in this product, and none is published today. Once one is up, saying no keeps the ads off your spending rather than off the page. The privacy policy covers the rest, including what does reach Google and the cookie this website itself sets.",
   },
   {
     q: "How do I cancel, and will you keep charging me?",

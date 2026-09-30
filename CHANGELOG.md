@@ -41,23 +41,47 @@ account that authorizes the application's ads, ends that.
   blanket `https:` because it has no account to watch. This repository has one,
   so it didn't have to guess, and `docs/adsense.md` §8 is the measurement and
   the recipe for taking it again when an ad stops rendering.
-- **One cookie is set, and nobody is asked first.** It's `test_cookie`, on
-  `.doubleclick.net`. `window.googlefc` is undefined on every page, which is
-  how you can tell Google's consent platform isn't loading, so a visitor in the
-  EEA, the UK or Switzerland gets an ad vendor's cookie with no notice at all.
-  The privacy policy says that, instead of what it used to say, which was that
-  they'd be asked before any ad cookie was set. Publishing a European
-  regulations message in AdSense is what closes it and no commit here can do
-  it, so `docs/adsense.md` §3 step 7 records it as an open gap rather than a
-  pending step, with the note to re-read the legal pages once it's up, because
-  they're written for this state and go wrong in the other direction.
+- **One cookie is left, and it's an advertising identifier.** The first page
+  gets `test_cookie` on `.doubleclick.net`, a fifteen-minute probe, and the
+  next navigation replaces it with `IDE` — DoubleClick's per-browser
+  advertising identifier, which Google sends with a two-year expiry and the
+  browser keeps for 400 days. The first telling of this called the one cookie
+  short-lived and "not an identifier for you", which was the probe described
+  and the identifier missed, because the run that produced it stopped at the
+  first page. `docs/adsense.md` §8's recipe now says to navigate rather than
+  load, and the check in `tests/legal.test.tsx` had pinned the wrong strings,
+  so the suite was green because the disclosure was false.
+- **Nobody is asked first.** `window.googlefc` is undefined on every page,
+  which is how you can tell Google's consent platform isn't loading, so a
+  visitor in the EEA, the UK or Switzerland gets an advertising identifier
+  with no notice at all. The privacy policy says that, instead of what it used
+  to say, which was that they'd be asked before any ad cookie was set — and so
+  does the pricing page, which went on promising "in the UK, the EEA and
+  Switzerland you get asked before any advertising cookie is set" for a
+  commit after the policy stopped. That was the strongest consent promise left
+  on the site, on the page selling the paid plan, one click from a policy
+  denying it. Publishing a European regulations message in AdSense is what
+  closes it and no commit here can do it, so `docs/adsense.md` §3 step 7
+  records it as an open gap rather than a pending step, with the note to
+  re-read the legal pages once it's up, because they're written for this state
+  and go wrong in the other direction.
 - `AGENTS.md` forbade "no script or image from a vendor's domain", and nothing
   in the suite could see the new host, so the rule would have been broken in
   silence. It records the decision now: this one script by name, with the
   argument for it, and still no vendor logo, badge, image, font, widget,
-  analytics tag or consent vendor. `tests/branding.test.ts` holds the closed
-  list, which is the half that was missing: it matched five hosting and font
-  CDNs, none of which the AdSense snippet uses.
+  analytics tag or consent vendor. `docs/standards/web.md` 6.5 carries the
+  same two halves, because a guide still stating as Binding the rule the
+  shipped tree breaks is the state that invariant exists to avoid.
+- **Two checks, and neither one can see a sixth host.**
+  `tests/branding.test.ts` reads built markup — it matched five hosting and
+  font CDNs and none of the advertising ones, so the loader shipped on every
+  page with the suite green — and it now names the advertising domains and
+  grants the loader's exact address by hand. But only that one host is ever
+  written down; the other four are reached at runtime by injected script.
+  `tests/adsense.test.ts` holds `netlify.toml`'s five against a host lost, a
+  host added and a wildcard. A host Google _starts_ using is caught by
+  re-running the recipe and by nothing else, which three documents said
+  otherwise and now say plainly.
 - `docs/adsense.md` opened by saying this site doesn't serve ads, and that
   sentence was load-bearing — two steps of the procedure, most of the consent
   section and three claims in the privacy policy reasoned from it. It says what
@@ -66,6 +90,19 @@ account that authorizes the application's ads, ends that.
   the site verified by `ads.txt` for a reason that's now half gone, and consent
   being this origin's own obligation rather than a promise about the
   application's.
+- **"This origin talks to nothing" was load-bearing in four more places**, and
+  all four outlived it. `operations.md` 3.2 rested the case for tolerating
+  `'unsafe-inline'` on an absolute `connect-src`, and credited a test with an
+  assertion that had been deleted in the same change; it argues from
+  `form-action 'none'` and `frame-ancestors 'none'`, which are still absolute,
+  plus a closed and measured host list, and credits the two tests that hold
+  each. `docs/roadmap.md` 3 said this origin talks to nothing and sets no
+  cookies, in the section that exists so nobody reopens a decision without
+  reading why; both decisions survive on their own merits and now say so
+  without the false premise. The `legal-review` skill told its reader to
+  expect no cookie at all on `smpl.money`, which is the one expectation that
+  would make a correct policy look like the error, and the `optimize` skill
+  told its reader there was no third-party script to think about.
 
 **The terms are governed by California law and follow its automatic renewal
 rules, the privacy policy names Gmail, Cloudflare and the backups, and the
@@ -780,9 +817,13 @@ nowhere before this.
 **The blog isn't, and that's a decision rather than an oversight.** Two
 finished posts exist and `/blog/` is built and routable, and what the section
 is for hasn't been settled, so announcing it would be advertising something
-with nothing behind it. It's also more than a flag: five of its routes have no
-sitemap entry and `/blog/page/1/` is a deliberate non-canonical duplicate that
-has to stay out by name. `docs/adsense.md` §3 step 1 wants real, announced
+with nothing behind it. Flipping the flag would work, and that was measured
+rather than assumed: announcing it and rebuilding fails exactly one assertion,
+the one naming the announced set by hand, and the sitemap picks the posts up
+unprompted. What the flag wouldn't do is list the section's other five routes,
+and `/blog/page/1/` is a deliberate non-canonical duplicate that has to stay
+out by name — both judgments about what a blog should advertise rather than
+anything standing in the flag's way. `docs/adsense.md` §3 step 1 wants real, announced
 content before an AdSense review, and records that this is half of it on
 purpose.
 

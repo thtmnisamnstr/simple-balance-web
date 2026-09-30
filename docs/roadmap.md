@@ -59,23 +59,37 @@ page wrong. Fix the page, then refresh, in that order and the same commit.
 These are not omissions. They are here so nobody reopens them without reading
 why.
 
-- **No analytics.** This origin talks to nothing, and `connect-src 'self'` is
-  what makes the CSP's `'unsafe-inline'` tolerable (`operations.md` 3.2).
-  Netlify's own request logs already answer "how many people came". If a
-  counter is ever wanted, a self-hosted cookieless one keeps the property; a
-  third-party tag does not.
+- **No analytics.** Netlify's own request logs already answer "how many people
+  came", and a third-party tag is a second vendor on a page whose privacy
+  policy has to name every one. If a counter is ever wanted, a self-hosted
+  cookieless one costs no vendor and no disclosure.
+
+  **The argument this used to make is gone.** It was "this origin talks to
+  nothing, and `connect-src 'self'` is what makes the CSP's `'unsafe-inline'`
+  tolerable". The origin loads Google's ad script now, so `connect-src` names
+  two of Google's hosts and is not absolute; `operations.md` 3.2 carries the
+  replacement, which is that the list is closed and was measured. The decision
+  above survives it, which is why it is still here.
+
 - **No newsletter.** Three feeds already exist (`content.md` 5.9). A
   subscription form means a vendor, a CSP exception, a consent question and a
   list to look after, in exchange for a channel the reader already has.
 - **No separate comparison page.** The pricing table is the comparison, and a
   page comparing this to named competitors is work to keep honest and ages
   badly.
-- **No cookie banner on this site.** It sets no cookies. The _application's_
-  ads need a consent notice for visitors in the EEA, the UK and Switzerland,
-  and that is Google's own European regulations message, published from the
-  AdSense account before any ad setting goes on the application
-  (`docs/adsense.md` §3 step 7 and §5). It is set up in AdSense rather than
-  in either codebase, but it is this site's privacy policy that promises it.
+- **No cookie banner on this site, and that is now an open gap rather than a
+  decision.** It used to read "it sets no cookies", which was true of a site
+  that loaded nothing. Google's ad script loads here, and it sets an
+  advertising identifier on `.doubleclick.net` with nobody asked. A visitor in
+  the EEA, the UK or Switzerland has to be asked before that, for _this_
+  origin and not only for the application, and the notice that asks is
+  Google's own European regulations message, published from the AdSense
+  account (`docs/adsense.md` §3 step 7 and §5). It is a dashboard setting
+  rather than a commit in either codebase, so nothing here closes it. What
+  changed is the promise: the privacy policy used to say a visitor would be
+  asked, and now states the position instead, which is that none is published
+  and the cookie is set anyway. When the message goes up, that paragraph is
+  wrong in the other direction and has to move back.
 - **No documentation versioning**, and **no multi-level sidebar.**
   `content.md` 5.1 and 5.5. Both are large structural changes, and building
   either early means maintaining it before anything uses it. The trigger for

@@ -166,8 +166,9 @@ export const privacy = {
         // for cookies will look, and named here so that somebody reading this
         // section straight through is not told about the script and left to
         // discover the cookie somewhere else.
-        "That script sets one cookie today. Cookies names it, says what it's for and why " +
-          "nobody is asked about it first, and says what you can do.",
+        "That script sets one cookie today, and it's Google's advertising identifier. Cookies " +
+          "names it, says how long your browser keeps it and why nobody is asked about it " +
+          "first, and says what you can do.",
         "The site stores nothing of its own in your browser. It has no analytics and no " +
           "tracking pixel, and the light or dark theme you see follows the setting your browser " +
           "already has, so there's nothing to save.",
@@ -684,22 +685,37 @@ export const privacy = {
       paragraphs: [
         /*
          * Measured in a browser against a real build served as smpl.money,
-         * not read off a vendor page: one third-party cookie, `test_cookie`
-         * on `.doubleclick.net`. No duration is promised, because the
-         * measurement recorded the cookie and not its lifetime, and a
-         * plausible number copied from a consent-manager's database is
-         * exactly the kind of thing this file exists to refuse.
+         * not read off a vendor page, and measured twice because the first
+         * reading stopped at the first page. The sequence is `test_cookie` on
+         * `.doubleclick.net` while Google checks that cookies work, then
+         * `IDE` on the next navigation, in the response that deletes
+         * `test_cookie`. `IDE` is what the browser is left holding.
          *
-         * `__gads` and `__gpi` are named as what follows if ads run here,
-         * rather than as what is set today, because an ad unit rendering on
-         * this site is a change nothing in this repository would announce.
+         * The first telling of this paragraph called the cookie short-lived
+         * and "not an identifier for you", which was the probe described and
+         * the identifier missed, and it is the worst direction to be wrong
+         * in: a reader who opens their own cookie list to check finds an
+         * advertising identifier where the policy promised a probe. The
+         * lifetime is stated because it was read off the stored cookie
+         * (Google sends two years, the browser caps it at 400 days), not
+         * copied from a consent manager's database.
+         *
+         * `__gads` and `__gpi` are named as what follows if an ad ever fills
+         * here, rather than as what is set today, because an ad unit
+         * rendering on this site is a change nothing in this repository would
+         * announce. What is no longer said is that the identifier waits for
+         * one: it does not, and saying so made an unfilled slot sound like a
+         * reason not to worry.
          */
         "**smpl.money sets no cookie of its own, and Google's script on it sets one.** It's " +
-          "called test_cookie, it belongs to doubleclick.net, which is Google's, and it's " +
-          "short-lived. It's Google's check that your browser accepts cookies at all rather " +
-          "than an identifier for you. It's the only one today because no ad has filled yet. " +
-          "When one does, Google's advertising cookies follow, the ones named below under the " +
-          "free plan, and this page will say so.",
+          "called IDE, it belongs to doubleclick.net, which is Google's, and it's an " +
+          "advertising identifier: a number that lets Google recognize your browser on the " +
+          "other sites carrying its ads, for measurement and for targeting. Your browser " +
+          "keeps it for about thirteen months. On a first visit a short-lived test_cookie " +
+          "lands there instead, while Google checks that cookies work at all, and the next " +
+          "page replaces it with IDE. No ad has filled on this site yet, and the identifier " +
+          "is set anyway. If one ever fills, Google's advertising cookies __gads and __gpi " +
+          "follow it, and this page will say so.",
         /*
          * The honest answer to "why is there no banner", which is no longer
          * "because there is nothing to ask about". A notice is published from
@@ -710,10 +726,11 @@ export const privacy = {
          * be true and useless.
          */
         "**Nobody is asked first, and in the EEA, the UK and Switzerland you should be.** " +
-          "A cookie like that one needs your consent before it's set, and the notice that asks " +
-          "for it is published from the advertising account rather than by this site's code. " +
-          "None is published for smpl.money today, so the cookie is set on your first visit " +
-          "with no notice. That's the position as it stands, said here rather than left for " +
+          "An advertising identifier needs your consent before it's set, and the notice that " +
+          "asks for it is published from the advertising account rather than by this site's " +
+          "code. None is published for smpl.money today, so a cookie is set on your first visit " +
+          "with no notice and the identifier lands on the page after. That's the position as " +
+          "it stands, said here rather than left for " +
           "you to find in your browser's developer tools. Until a notice is published, " +
           "blocking third-party cookies in your browser keeps this one out, and clearing your " +
           "cookies removes it. The opt-outs under Advertising work on what Google already " +

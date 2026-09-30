@@ -349,10 +349,16 @@ application, and each rounded in the flattering direction:
 
 **A marketing claim is never stronger than the privacy policy it links to**, and
 this is the inverse failure: the policy was stronger than the origin it
-described. The pricing page and the homepage inherited it, because both were
-written against the policy. §8 is what the replacement sentences are written
-from — the vendor, the five hosts, the one cookie, and what a visitor can do
-about it.
+described. The pricing page inherited it, because it was written against the
+policy, and it outlived the fix by a commit: the policy stopped promising a
+consent notice while `src/content/pricing.ts` went on saying "in the UK, the
+EEA and Switzerland you get asked before any advertising cookie is set" — the
+strongest consent promise on the site, on the page selling the paid plan, one
+click from a policy denying it. It states the requirement now and says no
+notice is published. The check that missed it asked whether consent was
+_mentioned_; `tests/legal.test.tsx` now also asks that it not be _promised_.
+§8 is what the replacement sentences are written from: the vendor, the five
+hosts, the cookie and what a visitor can do about it.
 
 Keeping it true is the `legal-review` skill, which names "before turning ads
 on" as one of the times it must run. This document does not restate the
@@ -371,9 +377,10 @@ Two separate rules, and this section used to run them together:
 ad.** A non-personalized ad still sets cookies, for frequency capping and
 fraud prevention, so a visitor in the EEA, the UK or Switzerland has to be
 asked before any is set, whatever the application's settings say. Avoiding the
-second rule does not avoid this one. And the loader on `smpl.money` sets
-`test_cookie` on `.doubleclick.net` before any ad unit exists at all (§8), so
-this origin is inside the first rule already.
+second rule does not avoid this one. And the loader on `smpl.money` leaves
+`IDE` on `.doubleclick.net`, Google's advertising identifier, before any ad
+unit exists at all (§8), so this origin is inside the first rule already and
+is inside it with the cookie that matters most rather than a probe.
 
 **A certified CMP is Google's condition for personalized ads, and only those.**
 With `ADSENSE_CONSENT_MANAGED` unset, the application forces
@@ -500,10 +507,17 @@ section exists. **The snippet is the account's own, unmodified, and nothing is
 added beside it** — no second tag, no ad unit, no consent vendor of our own.
 And **the hosts it may reach are a closed list that was observed**, not a
 category. `netlify.toml` names five; `src/content/ads.ts` says what each is
-for; `tests/branding.test.ts` holds the closed list, so a sixth host on a page
-fails rather than being noticed later in somebody's console. Widening that
-list on a hunch is exactly how one exception becomes a general permission,
-which is why the recipe below is written out rather than left as "measure it".
+for; `tests/adsense.test.ts` parses that policy and fails if it loses a
+measured host, grows a wildcard, or admits one nobody measured.
+
+**What no test here catches is a sixth host.** `tests/adsense.test.ts` reads
+a string in a TOML file and `tests/branding.test.ts` reads built markup, where
+only `pagead2.googlesyndication.com` ever appears — the other four are reached
+at runtime by injected script, which is the same reason this section exists
+at all. So a host Google starts using is a blocked subresource in a console
+nobody is watching, and the remedy is the recipe below rather than a check.
+Widening the list on a hunch is exactly how one exception becomes a general
+permission, which is why it is written out rather than left as "measure it".
 
 There is a second consequence, and it is not about scripts at all. A script
 that reaches another origin is a **disclosure**: this site is no longer a set
@@ -531,21 +545,35 @@ for frames, so nothing same-origin can be framed. Nothing is today.
 `default-src 'self'`. The measurement was clean without them, so they stay
 out; widening on a hunch is the habit this whole section exists to replace.
 
-### One cookie
+### One cookie, and it takes two pages to see which
 
-`test_cookie`, on `.doubleclick.net`. That is the whole of it: no cookie on
-`smpl.money` itself, and no other third-party cookie from any of the five
-hosts. This site still stores nothing of its own — the theme follows
-`prefers-color-scheme` with no local storage — so the honest sentence is that
-the site stores nothing and Google's script does.
+`googleads.g.doubleclick.net` sets `test_cookie=CheckForPermission` on the
+first page, with a fifteen-minute expiry. On the **next navigation** the same
+host sets `IDE` and deletes `test_cookie` in the same response, so the browser
+is left holding one cookie: `IDE` on `.doubleclick.net`, `Secure`, `HttpOnly`,
+`SameSite=None`. Google sends a two-year expiry and the browser stores it
+capped at 400 days, about thirteen months.
+
+`IDE` is DoubleClick's per-browser advertising identifier, and it arrives with
+every slot unfilled and no consent notice. No cookie on `smpl.money` itself,
+and no other third-party cookie from any of the five hosts.
+
+**A run that stops at the first page reports the probe and misses the
+identifier**, which is what happened: the privacy policy said for a while that
+the one cookie was short-lived and "not an identifier for you", and the check
+holding it asserted the same wrong string. So step 3 of the recipe below says
+to navigate, not just to load. This site still stores nothing of its own — the
+theme follows `prefers-color-scheme` with no local storage — so the honest
+sentence is that the site stores nothing and Google's script stores an
+advertising identifier.
 
 ### No consent platform
 
 `window.googlefc` is `undefined` on every page. That is the global Google's
 Funding Choices platform defines, so its absence is how you can tell no
-consent message is loading on this origin. An EEA or UK visitor gets
-`test_cookie` with no notice. §3 step 7 is what closes that, and it is an
-account setting rather than a commit.
+consent message is loading on this origin. An EEA or UK visitor gets `IDE`,
+an advertising identifier, with no notice. §3 step 7 is what closes that, and
+it is an account setting rather than a commit.
 
 ### How it was measured, so it can be done again
 
@@ -563,11 +591,17 @@ exists rather than a test.
    rules and `upgrade-insecure-requests` does nothing, and the script reports
    the page's origin to Google, so a measurement taken on `localhost` is a
    measurement of a different page.
-3. Open it in Chromium with the console visible and load at least one page of
-   each shape: the homepage, `/pricing/`, `/docs/`, a docs page, `/blog/` and
-   a post. A violation shows up as `Refused to load …` naming the directive.
+3. Open it in Chromium with the console visible and **navigate** through at
+   least one page of each shape in one session, rather than loading each in a
+   fresh one: the homepage, `/pricing/`, `/docs/`, a docs page, `/blog/` and a
+   post. A violation shows up as `Refused to load …` naming the directive.
+   One session and more than one page is not a detail — the cookie changes on
+   the second navigation, and a per-page run never sees it.
 4. Read the cookies from the browser's own storage pane rather than
-   `document.cookie`, which cannot see another origin's.
+   `document.cookie`, which cannot see another origin's. Read them **after
+   each navigation**, and read the raw `Set-Cookie` headers too: the response
+   that sets `IDE` is the one that deletes `test_cookie`, and a jar inspected
+   once at the end shows the result without the sequence.
 5. Evaluate `window.googlefc`.
 
 A run is only evidence if it produced **zero** violations across all six page

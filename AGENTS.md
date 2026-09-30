@@ -126,15 +126,24 @@ Break one of these and the site is wrong rather than untidy.
 
   **What keeps it an exception rather than a door.** The snippet is the
   account's own, unmodified, and nothing else may be added beside it. It was
-  run and watched rather than reasoned about: it reaches five hosts and sets
-  one cookie, and `netlify.toml`'s policy names those five and nothing more,
-  which is why it is far narrower than the application's blanket `https:`.
+  run and watched rather than reasoned about: it reaches five hosts and leaves
+  one cookie, Google's advertising identifier `IDE` on `.doubleclick.net`, and
+  `netlify.toml`'s policy names those five and nothing more, which is why it
+  is far narrower than the application's blanket `https:`.
   Widening that policy to admit a host nobody has observed is how this stops
   being one exception. And a script that reaches another origin is a
   disclosure: this site is no longer a set of files that talks to nobody, so
   `src/content/legal.ts` has to say what it does, to the same standard the
-  policy holds the application to. `tests/branding.test.ts` holds both halves,
-  the visible marks and the closed list of hosts a page may load from.
+  policy holds the application to.
+
+  **Two checks, and neither one is the whole rule.**
+  `tests/branding.test.ts` reads built markup: it holds the visible marks, and
+  it grants the loader's exact address by name so moving it has to be
+  re-granted. `tests/adsense.test.ts` reads `netlify.toml`: it holds the five
+  measured hosts against a host lost and against an unmeasured one added, and
+  against a wildcard. Neither can see a request, so **a sixth host the vendor
+  starts reaching at runtime is caught by nothing here** — only by re-running
+  `docs/adsense.md` §8's recipe, which is why that document writes it out.
 
 - **Nothing on the homepage or the pricing page may imply a bank connection —
   and nothing may promise there will never be one.** There is none today: no

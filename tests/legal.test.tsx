@@ -259,32 +259,50 @@ describe("the privacy policy", () => {
     /*
      * The three AdSense disclosures (`AGENTS.md`, and `legal-review` §2) for
      * this origin rather than for the application: the cookie, who sets it,
-     * and how to opt out. One cookie was measured, `test_cookie` on
-     * `.doubleclick.net`, and it is named because a policy that said "a
-     * cookie" would leave a reader unable to check the claim in the one
-     * place they can check it, their own browser.
+     * and how to opt out. It is named because a policy that said "a cookie"
+     * would leave a reader unable to check the claim in the one place they
+     * can check it, their own browser.
+     *
+     * **This check used to pin the wrong cookie.** It required `test_cookie`,
+     * "check that your browser accepts cookies" and "rather than an
+     * identifier for you", all read off a measurement that stopped at the
+     * first page. Driven further, the same host replaces `test_cookie` with
+     * `IDE` on the next navigation: DoubleClick's advertising identifier,
+     * kept for about thirteen months. So the suite was green *because* the
+     * disclosure was false, which is the one failure a check like this must
+     * not have. The assertions below are the re-measurement, and the two
+     * that described the probe as the whole story are inverted rather than
+     * dropped.
      *
      * In the cookies section specifically. A cookie disclosed under
      * Advertising is still undisclosed to somebody who opened the contents
      * and clicked Cookies, which is what the `section` helper above is for.
      */
     const cookies = section(privacy, /^cookies/i);
-    expect(cookies, "the cookie is not named").toContain("test_cookie");
+    expect(cookies, "the durable cookie is not named").toMatch(/\bide\b/);
     expect(cookies, "the vendor's domain is not named").toContain("doubleclick.net");
     expect(cookies, "the cookie is not said to be Google's").toMatch(
       /\bdoubleclick\.net, which is google's\b/,
     );
-    expect(cookies, "what the cookie is for is not said").toMatch(
-      /\bcheck that your browser accepts cookies\b/,
+    expect(cookies, "the cookie is not said to be an advertising identifier").toMatch(
+      /\bit's an advertising identifier\b/,
     );
-    expect(cookies, "the cookie is left sounding like an identifier").toMatch(
+    expect(cookies, "how long the browser keeps it is not said").toMatch(
+      /\babout thirteen months\b/,
+    );
+    // The probe is still named, because a reader who checks on a first visit
+    // sees `test_cookie` and nothing else, and a policy that named only the
+    // cookie of the second page would be unverifiable on the first.
+    expect(cookies, "the first-visit probe is not named").toContain("test_cookie");
+    expect(cookies, "the probe is not said to be replaced").toMatch(/\breplaces it with ide\b/);
+    // The framing that went with the wrong cookie: an unfilled slot was
+    // offered as the reason there was only one, which reads as "the tracking
+    // starts when the ads do". The identifier arrives with every slot empty.
+    expect(cookies, "the identifier is made to sound like it waits for an ad").toMatch(
+      /\bthe identifier is set anyway\b/,
+    );
+    expect(cookies, "the old probe-only framing is still here").not.toMatch(
       /\brather than an identifier for you\b/,
-    );
-    // One cookie is what an unfilled ad slot leaves, not the shape of the
-    // site. The first ad that fills changes it and nothing in this repository
-    // will notice, so the sentence carries its own condition.
-    expect(cookies, "one cookie is stated as the site's shape rather than today's state").toMatch(
-      /\bno ad has filled yet\b/,
     );
     for (const way of ["myadcenter.google.com", "youradchoices.com", "youronlinechoices.eu"]) {
       expect(cookies, `the cookies section does not say you can opt out at ${way}`).toContain(way);
@@ -1139,6 +1157,39 @@ describe("the marketing pages, against the policy", () => {
     const answer = ads!.a.toLowerCase();
     expect(answer).toMatch(/personalised|personalized/);
     expect(answer).toMatch(/agreed|consent|asked before/);
+  });
+
+  it("does not promise a consent notice that neither origin publishes", () => {
+    /*
+     * The other direction of the same invariant, and the one that shipped.
+     * The check above requires consent to be *mentioned*, which the sentence
+     * "in the UK, the EEA and Switzerland you get asked before any
+     * advertising cookie is set" satisfied — so the strongest consent promise
+     * on the site sat on the page selling the paid plan while the policy one
+     * click away said nobody is asked.
+     *
+     * Asserted as the promise rather than as the requirement, because the
+     * requirement is true and worth stating: what may not appear is a
+     * sentence telling a reader that they, personally, are asked.
+     */
+    const answer = ads!.a.toLowerCase();
+    for (const promise of [
+      "you get asked",
+      "you'll be asked",
+      "you will be asked",
+      "you are asked",
+      "asked before any advertising cookie",
+      "asked before any ad cookie",
+    ]) {
+      expect(answer, `the pricing page promises a consent notice: "${promise}"`).not.toContain(
+        promise,
+      );
+    }
+    // And says the thing that makes the requirement honest rather than
+    // reassuring, in the same words the policy uses.
+    expect(answer, "the pricing page does not say no notice is published").toMatch(
+      /\bnone is published today\b/,
+    );
   });
 
   /*

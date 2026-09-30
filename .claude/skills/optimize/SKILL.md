@@ -97,8 +97,14 @@ possible divergence.
 
 - **Client components.** `ls src/components/client/` is the whole audit.
   Three, each argued in `code/react.md` 1.1. A fourth is a decision.
-- **No render-blocking anything.** No synchronous third-party script, because
-  there is no third-party script at all (`web.md` 6.5).
+- **No render-blocking anything.** There is exactly one third-party script,
+  Google's AdSense loader (`web.md` 6.5), and it is `async`, so it blocks
+  nothing. It is also the heaviest external request on every page and the
+  largest single thing here that is not ours. Leave it alone: it is the
+  account's own snippet unmodified, `tests/adsense.test.ts` asserts it is in
+  `<head>`, `async` and `crossorigin`, and deferring or lazy-loading it is a
+  revenue decision rather than a performance one. A second third-party script
+  is forbidden outright.
 - **Check the CSS is still all used.** The dead-class sweep is in
   `merge-prep` §4.
 
@@ -133,9 +139,11 @@ page.
 - **Do not add Lighthouse to CI.** It measures a network and a CPU that are
   not the same twice; a flaky performance gate is one people re-run rather
   than read. Run it by hand here if you want a second opinion.
-- **Do not add analytics to find out if this worked.** `operations.md` 3.2
-  and `docs/roadmap.md` 3 — this origin talks to nothing, and that property
-  is load-bearing for the CSP argument.
+- **Do not add analytics to find out if this worked.** `docs/roadmap.md` 3 has
+  the decision and it survives the ad script: a third-party tag is a second
+  vendor, a second host in the policy, and a second thing the privacy policy
+  has to disclose. One vendor script is the exception `web.md` 6.5 argues
+  for; a second is what turns an exception into a general permission.
 - **Do not raise a budget to make a change fit.** Raising one is fine;
   raising one without saying so in the commit is how the budget stops
   meaning anything.

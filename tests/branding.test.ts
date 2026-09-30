@@ -3,22 +3,31 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 /**
- * No third-party branding in what this repository ships.
+ * No third-party branding, and no vendor subresource but the one, in what
+ * this repository ships.
  *
  * A marketing site is an argument about one product. A vendor's logo, badge
  * or "powered by" mark in the corner is a second brand on the page, it is
  * advertising the reader did not ask for, and on a page about somebody's
- * money it is a second party to wonder about.
+ * money it is a second party to wonder about. `docs/standards/web.md` 6.5 is
+ * the rule, in both halves.
  *
- * **This is about what this repository emits.** A host can inject its own
- * badge into the served response, which no test here can see — Netlify does
- * exactly that on new free projects, and turning it off is a setting in their
- * dashboard rather than anything in this tree. `docs/standards/web.md` 6.4
- * carries that as a launch step; this check holds the half that is ours.
+ * **This is about what this repository emits, in markup.** Two things follow.
+ * A host can inject its own badge into the served response, which no test
+ * here can see — Netlify does exactly that on new free projects, and turning
+ * it off is a setting in their dashboard rather than anything in this tree;
+ * `docs/standards/operations.md` 8 carries it as a launch step. And of the
+ * five hosts the AdSense loader reaches, only the loader's own is ever
+ * written down: the other four are reached at runtime by injected script, so
+ * this file cannot hold the closed list and does not claim to.
+ * `tests/adsense.test.ts` holds the policy that admits them, and
+ * `docs/adsense.md` §8 is the only thing that can see a sixth.
  *
- * The named exception is the privacy policy, which must name the hosting
- * provider and the payment processor because a policy that hides who
- * processes the data is not a privacy policy.
+ * Two named exceptions. The privacy policy must name the hosting provider and
+ * the payment processor, because a policy that hides who processes the data
+ * is not a privacy policy. And the AdSense loader is allowed by its exact
+ * address, written out below rather than imported, so moving it is a change
+ * this exception has to be re-granted for.
  */
 
 const VENDORS = [
@@ -31,9 +40,16 @@ const VENDORS = [
   "hosted on",
 ];
 
-/** Hosts a badge or a widget would arrive from, matched against a hostname. */
+/**
+ * Hosts a badge or a widget would arrive from, matched against a hostname.
+ *
+ * `google\.com` covers `www.google.com`, the fifth measured ad host and the
+ * one this list left out. It cannot appear in markup today and the other four
+ * never will, but a list that names four of five reads as the closed list it
+ * is not.
+ */
 const VENDOR_HOSTS =
-  /netlify|vercel|cloudflare|gstatic|googleapis|googlesyndication|doubleclick|adtrafficquality/;
+  /netlify|vercel|cloudflare|gstatic|googleapis|googlesyndication|doubleclick|adtrafficquality|google\.com/;
 
 /**
  * Subresources from one of those hosts that this site loads on purpose, by

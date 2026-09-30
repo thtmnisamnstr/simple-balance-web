@@ -33,9 +33,15 @@ git diff main...HEAD --stat
 
 Then ask the question the diff does not answer: **does anything now leave the
 browser that did not before?** A `fetch`, a `<script src>`, an `<img>` from
-another origin, a form action. `operations.md` 3.2 leans on this origin
-talking to nothing, so a new outbound request is a CSP change _and_ a policy
-change.
+another origin, a form action. A new outbound request is a CSP change _and_ a
+policy change, and `netlify.toml`'s policy names hosts one at a time
+(`operations.md` 3.2), so a request to an unnamed one is blocked on the live
+site and nowhere else.
+
+**One vendor script is expected here**, the AdSense loader
+(`web.md` 6.5). Anything else from another origin is the thing this grep is
+looking for, and the loader arriving was the change this section failed to
+catch.
 
 ```sh
 grep -rn "fetch(\|<script\|src=\"http\|action=" src/ | grep -v "\.test\." | head
@@ -66,6 +72,15 @@ them once:
 
 Avoiding the first is not avoiding the second. `docs/adsense.md` §5 and the
 policy's cookies section both carry this; check they still agree.
+
+**Neither is satisfied on `smpl.money` today**, and the right-hand column is
+what _would_ satisfy each rather than what does. No consent message is
+published from the AdSense account, so an EEA visitor gets Google's
+advertising identifier with nothing asked (the cookie walkthrough in §5 says
+what to expect in devtools). The policy says
+exactly that and promises no notice, which is the state to preserve: when a
+message is published the policy is wrong in the other direction, and this is
+the review that has to move it back.
 
 ## 4. Email
 
@@ -132,7 +147,18 @@ the terms, and it may need opt-in at sign-up rather than opt-out.
   opened in a browser, devtools lists it on every page after, including the
   sign-in screen. A window that has been to the plan page cannot tell you
   which page loaded Stripe.
-  1. **`smpl.money`**: nothing, in the cookie list or in local storage.
+  1. **`smpl.money`**: nothing of the site's own, in the cookie list or in
+     local storage, and **one third-party cookie from Google**, set by the
+     AdSense loader with no notice before it. Two pages, not one: the first
+     sets `test_cookie` on `.doubleclick.net` while Google checks that
+     cookies work, and the next navigation replaces it with `IDE`, Google's
+     advertising identifier, kept for about thirteen months. Stopping at the
+     first page is how the policy came to describe a probe and miss the
+     identifier. `window.googlefc` is `undefined` on every page, which is how
+     you can tell no consent message loaded, so **nothing asked first** —
+     that is today's state and not a browser quirk. `docs/adsense.md` §8 is
+     the recipe for measuring it properly, over local HTTPS as `smpl.money`,
+     because a run on `localhost` is a measurement of a different page.
   2. **The application's sign-in screen, then the dashboard**, before
      `/settings/plan`. Expect the sign-in cookies once you are signed in, and
      **no theme cookie**: the theme is saved on the account, with a copy in
