@@ -1,31 +1,31 @@
 {
   "$comment": "The application descriptions this site's copy was written from. Updated only by `npm run copy:accept`, which is the explicit act of saying the words here have been re-read against the words there. Never edited by hand and never refreshed to make a test pass.",
-  "acceptedFor": "a0c350b2369d360bc0f2c89a390ebdc8d412b243",
-  "acceptedAt": "2026-09-23",
+  "acceptedFor": "5b3888f44cb932e8989b5ceb15eb4d2b3a103cd0",
+  "acceptedAt": "2026-10-02",
   "entries": {
     "all-accounts-one-page": {
       "name": "Every account in one place",
       "plain": "See what you have across every bank account, card, and wallet on a single page, in whatever currency each one is in.",
-      "why": "Most people's money is spread across five or six logins and nobody adds it up.",
-      "tier": "A",
-      "rank": 1
-    },
-    "import-statements": {
-      "name": "Bank statements that file themselves",
-      "plain": "Upload the file your bank gives you. It works out the layout, sorts the payees and categories, and flags anything that looks like a duplicate before it counts.",
-      "why": "Typing in transactions by hand is the reason most people quit after two weeks.",
+      "why": "Most people's money is spread across five or six logins and nobody adds it up. Table stakes rather than a reason to choose this: eight competitors lead on it, so it belongs on the page and not at the top of it.",
       "tier": "A",
       "rank": 2
     },
-    "numbers-that-tie-out": {
-      "name": "Numbers you can actually check",
-      "plain": "Every figure can be traced back to the entries behind it. When something looks wrong, you can open it up and find the row that caused it.",
-      "why": "The common complaint about budgeting apps is that the totals do not agree and there is no way to find out why.",
+    "import-statements": {
+      "name": "Bring in a statement without retyping it",
+      "plain": "Download the file your bank gives you and upload it. It works out the layout, sorts the payees and categories, and flags anything that looks like a duplicate before it counts. Nothing arrives from your bank by itself.",
+      "why": "Anybody arriving from a hosted competitor assumes the transactions turn up on their own, so the honest answer has to be somewhere they will read it rather than somewhere they will discover it.",
       "tier": "A",
       "rank": 3
     },
+    "numbers-that-tie-out": {
+      "name": "Numbers you can follow back",
+      "plain": "Every figure can be traced back to the entries behind it. When something looks wrong, you can open it up and find the row that caused it.",
+      "why": "The common complaint about budgeting apps is that the totals do not agree and there is no way to find out why. Every competitor can show somebody a number; this is about whether they can check one.",
+      "tier": "A",
+      "rank": 1
+    },
     "own-your-data": {
-      "name": "Your data stays yours",
+      "name": "Your records stay yours",
       "plain": "Run it on your own machine and nobody else has a copy. Export every transaction to a spreadsheet whenever you want.",
       "why": "It is a record of everything somebody spends money on.",
       "tier": "A",
@@ -36,45 +36,45 @@
       "plain": "Set a limit per category. What you do not spend can carry into next month, and money you get refunded goes back into the budget it came out of.",
       "why": "A budget that resets to zero every month is one people abandon in March.",
       "tier": "B",
-      "rank": 1
+      "rank": 3
     },
     "recurring": {
-      "name": "Nothing to remember",
+      "name": "Rent and payday, set up once",
       "plain": "Rent, payday, a subscription: set it up once and it shows up when it is due, waiting for you to approve it.",
-      "why": "The annual renewal nobody remembers is the classic way a budget gets blown.",
+      "why": "A repeating payment somebody sets up themselves turns up on time. This does not go hunting for subscriptions nobody told it about, and competitors that do have made that a weak thing to lead on.",
       "tier": "B",
-      "rank": 2
+      "rank": 4
     },
     "find-anything": {
       "name": "Find any transaction",
       "plain": "Search and filter everything you have ever entered, by payee, category, account, amount or date.",
       "why": "\"When did I last pay for that?\" is the most common question anybody asks their own records.",
       "tier": "B",
-      "rank": 3
+      "rank": 5
     },
     "duplicates": {
       "name": "No duplicates",
       "plain": "Import the same statement twice and it shows you the rows you already have instead of adding them again.",
       "why": "Importing twice is easy to do and tedious to undo.",
       "tier": "B",
-      "rank": 4
+      "rank": 6
     },
     "multi-currency": {
       "name": "More than one currency",
       "plain": "Hold accounts in different currencies. Totals are kept separate rather than converted at a rate that would be out of date tomorrow.",
       "why": "Anybody who has moved to another country, works abroad, or travels has this problem and most tools guess at it.",
       "tier": "B",
-      "rank": 5
+      "rank": 7
     },
     "categories": {
       "name": "Spending by category",
       "plain": "Group your spending the way you think about it, and see where the money actually went.",
-      "why": "It is the first question people ask and the last one most tools answer clearly.",
+      "why": "It is the first question people ask of their own records.",
       "tier": "B",
-      "rank": 6
+      "rank": 8
     },
     "splits": {
-      "name": "One receipt, several categories",
+      "name": "One purchase split across categories",
       "plain": "Split a grocery run between groceries and household, each counted on its own.",
       "why": "A supermarket trip is rarely one category.",
       "tier": "C",
@@ -97,30 +97,30 @@
     "register": {
       "name": "A running balance for every account",
       "plain": "Every entry with the balance before and after it, so you can find the exact point a figure went wrong.",
-      "why": "This is how you reconcile against a real bank statement.",
-      "tier": "C",
-      "rank": 4
+      "why": "This is how you reconcile against a real bank statement, and it is the screen that makes the tier A promise above something a person can actually do rather than something they are asked to believe.",
+      "tier": "B",
+      "rank": 1
     },
     "history": {
-      "name": "Nothing is ever quietly overwritten",
+      "name": "A correction never erases what it corrected",
       "plain": "Corrections are added on top rather than replacing what was there, so the history of a mistake survives the fix.",
-      "why": "It is the difference between a record and a guess.",
-      "tier": "C",
-      "rank": 5
+      "why": "It is the difference between a record and a guess, and the other half of why a figure here can be checked at all.",
+      "tier": "B",
+      "rank": 2
     },
     "agents": {
       "name": "Let an AI assistant do the filing",
       "plain": "Connect an assistant and let it import statements and clean up categories. When you connect it you see exactly what it is asking to do and can refuse; an assistant limited to suggesting queues entries for you to approve, and Settings shows what each connected assistant can do and lets you cut it off.",
-      "why": "It is genuinely useful and genuinely alarming, so the limits matter more than the capability.",
+      "why": "It is genuinely useful and genuinely alarming, so the limits matter more than the capability. It is not a reason to choose this over anything else: PocketSmith shipped the same idea, down to the permission levels, and a capability two products share decides nothing.",
       "tier": "C",
-      "rank": 6
+      "rank": 4
     },
     "payees": {
-      "name": "Everywhere you spend",
+      "name": "Everyone you have paid",
       "plain": "A list of everyone you have paid, and everything you have paid them.",
       "why": "It is how you notice the subscription you forgot about.",
       "tier": "C",
-      "rank": 7
+      "rank": 5
     }
   }
 }

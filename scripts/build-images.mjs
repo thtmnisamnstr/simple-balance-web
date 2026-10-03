@@ -72,14 +72,29 @@ const pick = (key) => {
   if (!match) throw new Error(`src/content/home.ts has no ${key}`);
   return match[1];
 };
-/** "See everything you have. Check every number." -> the two lines of the card. */
+/**
+ * The hero headline, as the one or two lines the card draws.
+ *
+ * It used to insist on exactly two, because the hero was two sentences
+ * ("See everything you have. Check every number.") and the card had a `<text>`
+ * element for each. That made a one-sentence hero a build failure rather than
+ * a design decision: "Your money should add up." splits into one part and the
+ * script threw before anything could be drawn.
+ *
+ * So one sentence is allowed and drawn on its own line, centered in the space
+ * the pair used to occupy. Three or more is still refused — at 66px there is
+ * room for two lines above the tagline and no more, and a hero that long is a
+ * copy problem the card should not quietly crop.
+ */
 const HEADLINE = pick("title")
   .split(/(?<=\.)\s+/)
   .map((part) => part.trim())
   .filter(Boolean);
-if (HEADLINE.length !== 2) {
-  throw new Error(`the hero title does not split into two lines: ${pick("title")}`);
+if (HEADLINE.length < 1 || HEADLINE.length > 2) {
+  throw new Error(`the hero title is not one or two sentences: ${pick("title")}`);
 }
+/** Where each headline line sits. One line takes the midpoint of the two. */
+const HEADLINE_Y = HEADLINE.length === 2 ? [316, 396] : [356];
 const TAGLINE = pick("titleTagline");
 
 const brand = readFileSync("src/styles/brand.css", "utf8");
@@ -130,10 +145,13 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" 
           font-size="38" font-weight="600" fill="${INK}">Simple Balance</text>
   </g>
 
-  <text x="84" y="316" font-family="Inter, ui-sans-serif, system-ui, sans-serif"
-        font-size="66" font-weight="600" fill="${INK}" letter-spacing="-1.5">${HEADLINE[0]}</text>
-  <text x="84" y="396" font-family="Inter, ui-sans-serif, system-ui, sans-serif"
-        font-size="66" font-weight="600" fill="${INK}" letter-spacing="-1.5">${HEADLINE[1]}</text>
+  ${HEADLINE.map(
+    (
+      line,
+      index,
+    ) => `<text x="84" y="${HEADLINE_Y[index]}" font-family="Inter, ui-sans-serif, system-ui, sans-serif"
+        font-size="66" font-weight="600" fill="${INK}" letter-spacing="-1.5">${line}</text>`,
+  ).join("\n  ")}
 
   <text x="84" y="472" font-family="Inter, ui-sans-serif, system-ui, sans-serif"
         font-size="30" fill="${MUTED}">${TAGLINE}</text>

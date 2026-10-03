@@ -13,7 +13,7 @@
  * than none: it is a false statement about what happens to somebody's data.
  *
  * **No em dash in anything a reader sees**, the same as the marketing pages
- * (`content.md` 1.6). The comments here are prose for a maintainer and keep
+ * (`content.md` 1.5). The comments here are prose for a maintainer and keep
  * theirs.
  */
 

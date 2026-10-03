@@ -1,8 +1,16 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import snapshot from "@/content/app-facts.json";
-import { comparison, faq, MAX_FREE_ACCOUNTS, pricing, pricingMeta, tiers } from "@/content/pricing";
+import {
+  comparison,
+  faq,
+  included,
+  MAX_FREE_ACCOUNTS,
+  pricing,
+  pricingMeta,
+  tiers,
+} from "@/content/pricing";
 import { site } from "@/content/home";
 import { terms } from "@/content/legal";
 
@@ -237,6 +245,29 @@ describe("what this site claims the paid plan adds", () => {
     expect(facts.declared.capabilities.length).toBeGreaterThan(10);
     expect(comparison.length).toBeLessThanOrEqual(facts.declared.capabilities.length + 6);
   });
+
+  it("enumerates what every plan includes, and keeps that list beside the contract", () => {
+    /*
+     * The check above tied the comparison table's size to the application's
+     * capability list, and the table stopped being where capabilities are
+     * enumerated: it is four rows now, all of them differences, so that
+     * assertion passes however far the product moves. `included` is where
+     * the enumeration went, so it is what has to answer for the count.
+     *
+     * Three either way rather than an exact match, because the two lists are
+     * written for different readers and the site is allowed to put two
+     * capabilities in one line or leave out the one it has no plain word for.
+     * What it is not allowed to do is drift: a capability the application
+     * adds and this page never hears about is the drift this whole file
+     * exists to catch, and after the table was collapsed nothing else here
+     * could see it.
+     */
+    const declared = facts.declared.capabilities.length;
+    expect(included.length, "the included list emptied out").toBeGreaterThanOrEqual(declared - 3);
+    expect(included.length, "the included list outgrew the contract").toBeLessThanOrEqual(
+      declared + 3,
+    );
+  });
 });
 
 describe("the FAQ", () => {
@@ -308,9 +339,26 @@ describe("the FAQ", () => {
    * as long as it still says all four.
    */
   it("tells somebody moving to their own copy what the files will not do for them", () => {
+    /*
+     * The procedure moved to `content/docs/moving-to-your-own-copy.md`, so
+     * this reads the guide rather than the FAQ answer. A pricing page settles
+     * whether somebody is locked in; it does not teach a data migration
+     * before they have signed up. What must not move is this check: the four
+     * steps below exist because the application does something nobody would
+     * guess, and the page that carries them is the page that has to say them.
+     *
+     * The FAQ still has to point somewhere, so it is held to naming the guide
+     * rather than to carrying it. A pointer at a page that does not exist is
+     * the failure this split introduces, and it is the one a reader meets.
+     */
     const move = faq.find((f) => f.q.toLowerCase().includes("own copy"));
     expect(move, "the FAQ answers the question about moving").toBeDefined();
-    const answer = move!.a.toLowerCase();
+    expect(move!.a.toLowerCase(), "the FAQ points at the guide").toContain(
+      "moving to your own copy",
+    );
+    const guide = join(process.cwd(), "content/docs/moving-to-your-own-copy.md");
+    expect(existsSync(guide), `${guide} is missing; the FAQ points at it`).toBe(true);
+    const answer = readFileSync(guide, "utf8").toLowerCase();
     expect(answer, "each account is made with the same starting balance").toMatch(
       /same[^.]*(?:starting|opening) balance/,
     );

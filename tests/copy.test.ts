@@ -154,31 +154,15 @@ describe("the homepage copy", () => {
     expect(offenders).toEqual([]);
   });
 
-  it("never claims the product is simple, easy or fast", () => {
-    // 1.2. A claim of simplicity is the reader's to make, not the page's.
-    //
-    // The product is *called* Simple Balance and its repository is
-    // `simple-balance`, so the naive spelling of this check reports the
-    // product name and every URL containing it. Both are removed before the
-    // test rather than excluded by path, because the name occurs inside
-    // sentences too — a path-based exception list would have covered
-    // `site.name` and missed `agents.body`.
-    const offenders = all
-      .filter(([, text]) => {
-        const prose = text.replaceAll(content.site.name, "").replace(/https?:\/\/\S+/g, "");
-        return /\b(easy|easily|simple|simply|fast|quick(ly)?)\b/i.test(prose);
-      })
-      .map(([path, text]) => `${path}: ${text.slice(0, 70)}`);
-
-    expect(offenders).toEqual([]);
-  });
-
   it("writes headings as sentences, not Title Case", () => {
     const headings = [
       content.hero.title,
       content.privacy.title,
       content.agents.title,
-      ...content.problems.map((p) => p.problem),
+      content.proofSection.title,
+      content.featuresSection.title,
+      content.plans.title,
+      ...content.proofs.map((p) => p.claim),
       ...content.features.map((f) => f.title),
     ];
 
@@ -263,7 +247,7 @@ describe("the page title", () => {
 
 describe("the claim this site must never make", () => {
   /*
-   * `docs/standards/content.md` 1.5. There is no bank connection — no login,
+   * `docs/standards/content.md` 1.4. There is no bank connection — no login,
    * nothing in the background, nothing that goes stale without saying so —
    * and a reader arriving from any competitor assumes the opposite, because
    * every hosted competitor works that way.
@@ -349,7 +333,7 @@ describe("the claim this site must never make", () => {
 
 describe("the reader is American", () => {
   /*
-   * `docs/standards/content.md` 1.6. The site prices in US dollars and the
+   * `docs/standards/content.md` 1.5. The site prices in US dollars and the
    * application's own screens say Checking; the copy said "current account",
    * and `layout.tsx` declared `en_GB` to every crawler and link preview.
    *

@@ -45,6 +45,11 @@ a date range at a time. An account's opening balance is set on the account
 rather than carried in the file, and a transfer between two of your accounts is
 in both accounts' exports, so the second import flags it as a duplicate.
 
+Moving a whole ledger out of the version we run and into a copy you run
+yourself is this same mechanism applied account by account, plus the two things
+no export carries.
+[Moving to your own copy](/docs/moving-to-your-own-copy/) is the procedure.
+
 ## What it asks you
 
 - **The date order**: YYYY-MM-DD, MM/DD/YYYY or DD/MM/YYYY. It starts on
