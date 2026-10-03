@@ -9,6 +9,91 @@ than a contract with readers.
 
 ### Changed
 
+**The homepage and the pricing page argue something different, because the
+old argument stopped being ours alone.** A competitive read in October 2026
+checked this site's claims against the eight products it competes with.
+"All your accounts on one page" is run by eight of them. "Know where your money
+went" by four. Multi-currency by two. And agent access, which this site treated
+as the thing nothing else does and gave the third section of the homepage to,
+is now PocketSmith's as well — a first-party MCP server with read and
+full-access permission levels and a promise that an answer can be checked
+against the figures behind it, which is this page's own pitch almost clause for
+clause.
+
+What survived the comparison is not a feature. It is that a figure here can be
+taken apart, and every section is now arranged behind that.
+
+- **The hero is "Your money should add up."** One sentence, and a complaint the
+  reader already has rather than two imperatives in a row. The lede says what
+  the product keeps and then what you can do when a total looks wrong.
+- **The first section is the proof, not four problems.** "You shouldn't have to
+  trust a number you can't explain", answered by three things the product does:
+  the running balance beside every payment, a correction that does not erase
+  what it corrected, and an import nothing counts until you have looked at it.
+  The section's heading used to be "Four money problems, and what this does
+  about them", which describes the section instead of saying anything in it.
+- **The assistant moved from third to fourth** and out of the hero's last
+  clause. It is a reason to stay, which is what it was always worth.
+- **The page ends on plans.** It ended on privacy, which is a good last
+  impression and leaves a persuaded reader with nowhere to go.
+- **The screenshots moved next to the claims they prove.** There was a gallery
+  headed "the two pages you will use most"; a screenshot is evidence for a
+  sentence somebody doubts, and it stops being evidence the moment it is
+  separated from the sentence.
+- **Both pages now say there is no automatic pull from a bank today**, in the
+  import copy, after the value. The site has had a rule against implying a
+  connection and a rule against promising there will never be one, and between
+  them sat a third state the page was in: saying nothing. Every hosted
+  competitor pulls transactions, so silence reads as a connection.
+
+**The pricing page leads with the monetization model, which is the unusual
+thing about it.** The headline was "What it costs, and what you get", which
+heads any pricing page ever written, while the fact worth reading — that every
+plan is the whole product and the paid one raises a limit and removes
+advertising — sat underneath it. It is the headline now.
+
+- **The comparison table went from sixteen rows to four.** Thirteen of the
+  sixteen were a tick in all three columns, so the picture argued "many
+  differences" directly underneath a sentence promising three. Those thirteen
+  are a list headed "in every plan, including the free one", which is the same
+  information arranged to prove the claim rather than undercut it.
+  `tests/app-facts.test.ts` holds that list's length beside the application's
+  published capability count, because collapsing the table removed the one
+  check that tied this page's size to what the product actually does.
+- **The step-by-step migration procedure left the FAQ** for
+  `/docs/moving-to-your-own-copy/`. It was eleven sentences, the longest answer
+  on the page, and it taught a data migration to somebody who had not decided
+  to sign up yet. The FAQ keeps what bears on the purchase: it is possible, it
+  is not one button, and two things do not travel. The five facts
+  `tests/app-facts.test.ts` holds are now read out of the guide.
+- **"Why is it $30 when everything else costs more? Will you still be here next
+  year?" is gone.** It was an honest answer to a question the page itself
+  raised, and raising it beside a price is the problem.
+- **"If you outgrow Free or hate ads", "Most people, most of the time" and
+  "it's your computer" are gone**, for three different reasons that are the
+  same reason: a badge should say what the plan does, a plan should not tell
+  the reader they are unusual, and the slot beside a price is not where a joke
+  goes.
+
+**`content.md` 1.2 is gone, and the rules below it renumbered.** It banned
+"simple", "easy" and "fast" from every string on the site, on the argument that
+a claim of simplicity is the reader's to make. The site's tagline is now
+"Personal finance that's simple", which is a deliberate play on the product's
+own name, so the rule and the copy could not both stand. Its test went with it.
+Everything else in section 1 moved down one, and the ten citations to those
+rules moved with them; `tests/standards-citations.test.ts` is what checks that.
+
+**The voice patterns a test cannot see are written down.** `sync-from-app` §3
+had a list for sentence length, throat-clearing and tricolons, and nothing for
+the eight tells that actually shipped here: meta-headings, coy feature names,
+performative authenticity, forced colloquialism, over-symmetry across cards,
+pronoun chains, defensive explanation and two-beat fragments. It is three
+passes now, in order, because a sentence fixed for one fault gets left broken
+for another when they are run together. The AI section's body carried the
+phrase "lines entries up" for a release — a mangled sentence with no banned
+word, no British spelling and no em dash in it, which is what `human` checks
+are for.
+
 **Google's ad script loads on smpl.money, and the privacy policy stopped
 saying it doesn't.** This site used to be a set of static files that made no
 request to anywhere but itself, and that was most of what its privacy policy

@@ -359,13 +359,13 @@ svg {
   margin-top: var(--s-4);
 }
 
-.problems {
+.proofs {
   display: grid;
   gap: var(--s-6);
   margin-top: var(--s-7);
 }
 
-.problem {
+.proof {
   display: grid;
   grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
   gap: var(--s-6);
@@ -376,7 +376,7 @@ svg {
   box-shadow: var(--shadow);
 }
 
-.problem-q {
+.proof-claim {
   font-size: var(--step-2);
   font-weight: var(--weight-semi);
   letter-spacing: -0.02em;
@@ -384,12 +384,12 @@ svg {
   color: var(--ink);
 }
 
-.problem-a {
+.proof-body {
   color: var(--ink-soft);
   margin: 0;
 }
 
-.problem-a + .problem-a {
+.proof-body + .proof-body {
   margin-top: var(--s-4);
 }
 
@@ -538,7 +538,7 @@ svg {
 
 @media (max-width: 62rem) {
   .hero-inner,
-  .problem,
+  .proof,
   .band-inner {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -625,8 +625,8 @@ svg {
   margin-top: var(--s-5);
 }
 
-/* A section's own heading. Deliberately not `.problem-q`: that one belongs to
-   the cards inside the problems section, and a shared class between a section
+/* A section's own heading. Deliberately not `.proof-claim`: that one belongs
+   to the cards inside the proof section, and a shared class between a section
    title and a card title is how the two stop being able to differ. */
 .section-title {
   font-size: var(--step-3);
@@ -671,8 +671,8 @@ svg {
   height: auto;
 }
 
-/* A figure pairing a shot with a caption, used inside a problem card and in
-   the showcase grid. */
+/* A figure pairing a shot with a caption, used inside a proof card and in the
+   pair of screens under the feature grid. */
 .shot-figure {
   margin: 0;
   display: grid;
@@ -692,10 +692,10 @@ svg {
   margin-top: var(--s-7);
 }
 
-/* A problem card that carries a screenshot puts it below the prose on narrow
+/* A proof card that carries a screenshot puts it below the prose on narrow
    screens and beside it on wide ones. The card's own two-column rule already
    collapses at 62rem, so this only has to widen the image column. */
-.problem-shot {
+.proof-shot {
   grid-column: 1 / -1;
   margin-top: var(--s-2);
 }

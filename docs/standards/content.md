@@ -16,19 +16,7 @@ built by a page that sounds like every other page.
 
 _Checked by:_ `tests/copy.test.ts`, over every string in the content module.
 
-### 1.2 The page never claims the product is simple, easy or fast
-
-**Binding.** Including "simply" and "quickly". The product is _called_ Simple
-Balance, and that is the only place the word appears.
-
-A claim of simplicity is the reader's to make. A page that makes it for them is
-arguing with somebody who has not tried it yet.
-
-_Checked by:_ `tests/copy.test.ts`, which strips the product name and any URL
-before testing — the naive version reported the repository URL and the word in
-the product's own name.
-
-### 1.3 Headings are sentences
+### 1.2 Headings are sentences
 
 **House.** Sentence case, not Title Case. "Budgets that carry", not "Budgets
 That Carry".
@@ -36,7 +24,7 @@ That Carry".
 _Checked by:_ `tests/copy.test.ts`, which counts capitalized words past the
 first.
 
-### 1.4 The reader has never used a personal finance product
+### 1.3 The reader has never used a personal finance product
 
 **Binding.** Every word on the homepage and the pricing page is one a reader
 with about a ninth-grade education understands without looking it up. No
@@ -68,7 +56,7 @@ _Checked by:_ `human`. A word list in a test would catch the spellings and
 miss the sentence, and the failure is a register rather than a vocabulary —
 the previous copy contained no banned word at all.
 
-### 1.5 The page describes how data gets in today, and promises nothing about tomorrow
+### 1.4 The page describes how data gets in today, and promises nothing about tomorrow
 
 **Binding, and contingent.** There is no automatic sync **today**: no bank
 login, nothing running in the background, nothing that goes stale without
@@ -94,10 +82,26 @@ revisit** is the product gaining a scheduled pull — at which point this rule
 inverts rather than disappears, because the page will then have to stop
 implying there is no connection.
 
+**And say so once, plainly, in the present tense.** Not implying a connection
+and not promising there will never be one still left a third state, and the
+page sat in it: nothing anywhere said there is no connection today. Silence is
+not neutral here. Every hosted competitor pulls transactions, so a reader
+arriving from one assumes this does too, and the first thing that corrects
+them is their own first afternoon. That is the worst place to learn it and the
+most expensive.
+
+The disclosure goes **after the value and inside the import copy**, never in
+the hero and never as a positioning line. "There's no automatic pull from your
+bank today. You download the file and bring it in yourself" is a description of
+the present that survives the day a scheduled pull ships, which is the whole
+test a sentence here has to pass. The homepage carries it in the import card
+and the pricing page in the answer to "how does my spending get in". Leading on
+it is the mistake above, wearing a different coat.
+
 This is 2.1 applied to the one claim this page is most likely to make by
 accident, which is why it is written down separately.
 
-**Unlike 1.4, a word list is the right check here.** 1.4 is about register and
+**Unlike 1.3, a word list is the right check here.** 1.3 is about register and
 a list would catch the spellings and miss the sentence; this is about specific
 affirmative constructions whose presence _is_ the defect.
 
@@ -111,7 +115,7 @@ _Checked by:_ `tests/copy.test.ts`, over the homepage **and** the pricing
 page, mutation-proved on four sentences a competitor's site would carry
 happily.
 
-### 1.6 American English, and contractions
+### 1.5 American English, and contractions
 
 **Binding.** Everything a reader sees is written in American English, with
 contractions where somebody talking would use them. That is the homepage, the
@@ -170,7 +174,7 @@ _Checked by:_ `tests/copy.test.ts`, for everything but the register:
   through `prose.tsx`'s own remark plugins, so a change to that pipeline
   fails here rather than on the page.
 
-The **register** is `human`, for the same reason 1.4 is.
+The **register** is `human`, for the same reason 1.3 is.
 
 **The first draft of this rule claimed none of it could be mechanized**, on
 the grounds that "a word list would catch the spellings and miss the
@@ -294,16 +298,45 @@ because of this.
 
 ### 3.2 Section order is an argument
 
-**House.** The reader arrives not knowing what this is: the hero says what it
-is, the problems say why they would want it, the showcase shows it, the
-features say what else is in the box, privacy answers the question a finance
-product always raises, and agents is the thing nothing else does.
+**House.** The reader arrives not knowing what this is. So: the hero says what
+it is, the proof section makes the one case a competitor cannot copy by
+writing a sentence, the features answer "does it do the normal things",
+agents is a reason to stay, privacy answers the question a money product
+always raises, and the plans section is where the reader goes next.
 
-The privacy section is stated as a promise to the reader — "we never ask for
-your bank password" — rather than as a property of the software. "This is
-software you run, not a service you join" was the previous opening, and it
-asks the reader to translate an architecture into a reason to feel safe, which
-is the translation this reader cannot do.
+**Agents is fourth, and the reason is a market fact rather than a taste.**
+This rule used to end "and agents is the thing nothing else does", which was
+true when it was written and is the sort of sentence that outlives its
+evidence. A competitive read in October 2026 found PocketSmith shipping a
+first-party MCP server with read and full-access permission levels and an
+explicit promise that an answer can be checked against the figures behind it,
+which is this product's own pitch almost clause for clause. A capability two
+products share decides nothing, so it stopped being allowed to decide the
+section order. The application's own feature list had reached the same
+conclusion first and ranks `agents` at tier C, so the page was also
+contradicting the kit it is written from.
+
+**What leads instead is the thing the comparison left standing.** "All your
+accounts in one place" is run by eight competitors and "know where your money
+went" by four, so neither can open the page. What no competitor's copy
+answers is the reader's next question, which is why they should believe the
+total: the running balance beside every row, a correction that never erases
+what it corrected, and an import nothing counts until somebody has looked at
+it. The proof section is those three, and every other section is arranged
+behind it.
+
+**The page ends on plans, not on privacy.** Privacy is a good last impression
+and a bad last sentence: it leaves a reader persuaded and with nowhere to go.
+The closing section states the monetization model in one paragraph and links
+the pricing page, which is where somebody convinced by the rest of it was
+always going to have to end up.
+
+The privacy section itself is stated as a promise to the reader rather than as
+a property of the software. "This is software you run, not a service you join"
+was an earlier opening, and it asks the reader to translate an architecture
+into a reason to feel safe, which is the translation this reader cannot do. It
+opened on "we never ask for your bank password" for a while, and 1.4 is where
+that went and why.
 
 Reordering is fine. Reordering without a reason is what this rule is about.
 

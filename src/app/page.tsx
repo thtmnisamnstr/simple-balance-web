@@ -1,11 +1,12 @@
 import {
   hero,
   heroShot,
-  problems,
-  problemsSection,
+  proofs,
+  proofSection,
   features,
   featuresSection,
-  showcase,
+  featureShots,
+  plans,
   privacy,
   agents,
   site,
@@ -20,16 +21,18 @@ import { SiteStructuredData } from "@/components/structured-data";
 /**
  * The homepage.
  *
- * Section order is an argument, not a layout. The reader arrives not knowing
- * what this is: the hero says what it is, the problems say why they would
- * want it, **agents comes third** because it is the thing nothing else does
- * and the reader has by then been told what this does with their money, the
- * showcase shows it, the features say what else is in the box, and privacy
- * answers the question a money product always raises.
+ * Section order is an argument, not a layout, and
+ * `docs/standards/content.md` 3.2 holds the current one. The short version:
+ * the hero says what this is, the proof section makes the one case a
+ * competitor cannot copy by writing a sentence, the features answer "does it
+ * do the normal things", the assistant is a reason to stay rather than a
+ * reason to read on, privacy answers the question a money product always
+ * raises, and the plans section is where the reader goes next.
  *
- * Agents has been last (wrong — it is the distinctive part) and first (also
- * wrong — it answers a question nobody arrives with).
- * `docs/standards/content.md` 3.2.
+ * The assistant has been last, first and third. It is fourth because the
+ * capability stopped being distinctive: PocketSmith ships the same idea down
+ * to the permission levels, so a page that spends its third section on it is
+ * spending it on a tie.
  *
  * Every section is a landmark with its own heading, and the headings step
  * h1 -> h2 -> h3 with nothing skipped, because a screen reader's document
@@ -63,25 +66,29 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="section" aria-labelledby="problems-title">
+      <section className="section" aria-labelledby="proofs-title">
         <div className="page">
-          <p className="eyebrow">{problemsSection.eyebrow}</p>
-          <h2 id="problems-title" className="section-title">
-            {problemsSection.title}
+          <p className="eyebrow">{proofSection.eyebrow}</p>
+          <h2 id="proofs-title" className="section-title">
+            {proofSection.title}
           </h2>
-          <div className="problems">
-            {problems.map((entry) => (
-              <article className="problem" key={entry.problem}>
-                <h3 className="problem-q">{entry.problem}</h3>
+          <div className="proofs">
+            {proofs.map((entry) => (
+              <article className="proof" key={entry.claim}>
+                <h3 className="proof-claim">{entry.claim}</h3>
                 <div>
-                  {entry.answer.map((paragraph) => (
-                    <p className="problem-a" key={paragraph}>
+                  {entry.body.map((paragraph) => (
+                    <p className="proof-body" key={paragraph}>
                       {paragraph}
                     </p>
                   ))}
                 </div>
+                {/* The shot sits inside the card whose claim it proves, rather
+                    than in a gallery of its own: a screenshot is evidence for a
+                    sentence somebody has reason to doubt, and loses that job the
+                    moment it is separated from the sentence. */}
                 {entry.shot ? (
-                  <figure className="shot-figure problem-shot">
+                  <figure className="shot-figure proof-shot">
                     <Shot
                       name={entry.shot.name}
                       alt={entry.shot.alt}
@@ -94,6 +101,47 @@ export default function HomePage() {
               </article>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="section" aria-labelledby="features-title">
+        <div className="page">
+          <p className="eyebrow">{featuresSection.eyebrow}</p>
+          <h2 id="features-title" className="section-title">
+            {featuresSection.title}
+          </h2>
+          <div className="grid">
+            {features.map((feature) => {
+              const Icon = featureIcons[feature.icon];
+              return (
+                <article className="card" key={feature.title}>
+                  <span className="card-icon">
+                    <Icon />
+                  </span>
+                  <h3>{feature.title}</h3>
+                  <p>{feature.body}</p>
+                </article>
+              );
+            })}
+          </div>
+          {/* The two screens the cards above describe, and the disclosure that
+              the money in them is invented, which `content.md` 2.2 requires to
+              sit with the screenshots rather than in a footer nobody reaches. */}
+          <div className="showcase">
+            {featureShots.map((shot) => (
+              <figure className="shot-figure" key={shot.name}>
+                <Shot
+                  name={shot.name}
+                  alt={shot.alt}
+                  width={SHOT_WIDTH}
+                  height={SHOT_HEIGHT}
+                  span="half"
+                />
+                <figcaption className="shot-caption">{shot.caption}</figcaption>
+              </figure>
+            ))}
+          </div>
+          <p className="shot-caption shot-disclosure">{shotDisclosure}</p>
         </div>
       </section>
 
@@ -125,52 +173,6 @@ export default function HomePage() {
           </pre>
         </div>
       </section>
-      <section className="section" aria-labelledby="showcase-title">
-        <div className="page">
-          <p className="eyebrow">{showcase.eyebrow}</p>
-          <h2 id="showcase-title" className="section-title">
-            {showcase.title}
-          </h2>
-          <div className="showcase">
-            {showcase.shots.map((shot) => (
-              <figure className="shot-figure" key={shot.name}>
-                <Shot
-                  name={shot.name}
-                  alt={shot.alt}
-                  width={SHOT_WIDTH}
-                  height={SHOT_HEIGHT}
-                  span="half"
-                />
-                <figcaption className="shot-caption">{shot.caption}</figcaption>
-              </figure>
-            ))}
-          </div>
-          <p className="shot-caption shot-disclosure">{shotDisclosure}</p>
-        </div>
-      </section>
-
-      <section className="section" aria-labelledby="features-title">
-        <div className="page">
-          <p className="eyebrow">{featuresSection.eyebrow}</p>
-          <h2 id="features-title" className="section-title">
-            {featuresSection.title}
-          </h2>
-          <div className="grid">
-            {features.map((feature) => {
-              const Icon = featureIcons[feature.icon];
-              return (
-                <article className="card" key={feature.title}>
-                  <span className="card-icon">
-                    <Icon />
-                  </span>
-                  <h3>{feature.title}</h3>
-                  <p>{feature.body}</p>
-                </article>
-              );
-            })}
-          </div>
-        </div>
-      </section>
 
       <section className="section band" aria-labelledby="privacy-title">
         <div className="page band-inner">
@@ -191,6 +193,24 @@ export default function HomePage() {
               </li>
             ))}
           </ul>
+        </div>
+      </section>
+
+      {/* The page used to end on privacy, which is a good last impression and
+          a bad last sentence: every reason to trust the product and no reason
+          to find out what it costs. */}
+      <section className="section" aria-labelledby="plans-title">
+        <div className="page">
+          <p className="eyebrow">{plans.eyebrow}</p>
+          <h2 id="plans-title" className="section-title">
+            {plans.title}
+          </h2>
+          <p className="prose">{plans.body}</p>
+          <p className="hero-actions">
+            <a className="button button-primary" href={plans.ctaHref}>
+              {plans.ctaLabel}
+            </a>
+          </p>
         </div>
       </section>
     </>

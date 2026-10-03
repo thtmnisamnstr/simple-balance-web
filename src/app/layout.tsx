@@ -29,11 +29,30 @@ export const metadata: Metadata = {
     default: `${site.name} — ${site.titleTagline}`,
     template: `%s — ${site.name}`,
   },
-  description: hero.lede,
+  /*
+   * `site.description`, not `hero.lede`. The two have different jobs and only
+   * one of them is this. A lede persuades somebody already on the page and may
+   * run as long as it needs to; a description has to make a stranger click,
+   * inside the roughly 155 characters a result listing renders. `hero.lede`
+   * ran to 233, so a third of it — the whole clause about the assistant — was
+   * written for a search result that never showed it.
+   */
+  description: site.description,
   applicationName: site.name,
+  /*
+   * The link preview says something different from the tab, on purpose. A tab
+   * is read by somebody who already has the page open and wants to find it
+   * among twenty others, so it carries the category: "Simple Balance —
+   * Personal finance that's simple". A preview is read by somebody deciding
+   * whether to follow a link a friend sent, so it carries the hook.
+   *
+   * Composed from `hero.title` rather than written out, because a literal here
+   * is exactly what left the social card advertising a sentence that appeared
+   * nowhere else on the site for four rewrites.
+   */
   openGraph: openGraph({
-    title: `${site.name} — ${site.tagline}`,
-    description: hero.lede,
+    title: `${hero.title.replace(/\.$/, "")} — ${site.name}`,
+    description: site.description,
     url: "/",
   }),
   /*

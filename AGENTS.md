@@ -145,14 +145,19 @@ Break one of these and the site is wrong rather than untidy.
   starts reaching at runtime is caught by nothing here** — only by re-running
   `docs/adsense.md` §8's recipe, which is why that document writes it out.
 
-- **Nothing on the homepage or the pricing page may imply a bank connection —
-  and nothing may promise there will never be one.** There is none today: no
-  bank login, no background refresh, nothing that can go stale without saying
-  so, so copy describing one would be false. But the page also spent a while
-  leading on "we never ask for your bank password", which is a promise about
-  a future this page does not decide, and unwinding it cost the hero, the
-  tagline, the social card, a comparison row and two FAQ answers.
-  `docs/standards/content.md` 1.5 carries both halves and the trigger to
+- **Nothing on the homepage or the pricing page may imply a bank connection,
+  nothing may promise there will never be one, and both pages must say once
+  that there is not one today.** There is none: no bank login, no background
+  refresh, nothing that can go stale without saying so, so copy describing one
+  would be false. But the page also spent a while leading on "we never ask for
+  your bank password", which is a promise about a future this page does not
+  decide, and unwinding it cost the hero, the tagline, the social card, a
+  comparison row and two FAQ answers. The third half was added after both
+  earlier mistakes had been fixed and the page still said nothing either way:
+  every hosted competitor pulls transactions, so silence is read as a
+  connection, and the reader finds out on their first afternoon. The
+  disclosure goes after the value and inside the import copy, never in the
+  hero. `docs/standards/content.md` 1.4 carries all three and the trigger to
   revisit.
 - **Those two pages are written for somebody who has never used a personal
   finance product.** No accounting vocabulary, no operations vocabulary, and
@@ -161,7 +166,7 @@ Break one of these and the site is wrong rather than untidy.
   before and after it" and "AGPL-3.0, one machine and a PostgreSQL", and the
   search result read "Self-hosted double-entry bookkeeping" — both of the two
   words a general reader cannot parse, in the one string Google shows them.
-  `docs/standards/content.md` 1.4. The rest of the site is not held to this:
+  `docs/standards/content.md` 1.3. The rest of the site is not held to this:
   a deployment guide is read by somebody deploying.
 - **The application decides what the product does; this site decides how to
   say it.** `src/content/app-features.json` is its list, pulled verbatim and
@@ -177,7 +182,7 @@ Break one of these and the site is wrong rather than untidy.
   The site prices in dollars and the application's own screens say _Checking_;
   the copy said "current account", the docs said it on the page explaining
   what an account is, and `layout.tsx` declared `en_GB`.
-  `docs/standards/content.md` 1.6, checked by `tests/copy.test.ts`, which also
+  `docs/standards/content.md` 1.5, checked by `tests/copy.test.ts`, which also
   records that a blind contraction pass turned "See everything you have" into
   "you've".
 - **The copy is rewritten only where the product's description moved.**

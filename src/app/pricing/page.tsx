@@ -1,18 +1,18 @@
 import type { Metadata } from "next";
 import { feedAlternates } from "@/lib/feed";
 import { openGraph } from "@/app/open-graph";
-import { comparison, faq, pricing, pricingMeta, tiers } from "@/content/pricing";
+import { comparison, faq, included, pricing, pricingMeta, tiers } from "@/content/pricing";
 import { site } from "@/content/home";
 import { CheckIcon } from "@/components/icons";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { BreadcrumbStructuredData, FaqStructuredData } from "@/components/structured-data";
 
 export const metadata: Metadata = {
-  title: "Pricing",
+  title: pricingMeta.title,
   description: pricingMeta.description,
   alternates: feedAlternates("/pricing/"),
   openGraph: openGraph({
-    title: `Pricing — ${site.name}`,
+    title: `${pricingMeta.socialTitle} — ${site.name}`,
     description: pricingMeta.socialDescription,
     url: "/pricing/",
   }),
@@ -165,6 +165,24 @@ export default function PricingPage() {
               </tbody>
             </table>
           </div>
+
+          {/* The thirteen rows that were a tick in all three columns, as a
+              list. In the table they argued against the sentence above it:
+              sixteen rows is a picture of a product with tiers, and this one
+              has a limit and some advertising. Here they do the job those
+              rows were added for, which is answering "is the cheap one the
+              cut-down one" without implying there is a cut-down one. */}
+          <h3 className="section-title">{pricing.includedTitle}</h3>
+          <ul className="checklist">
+            {included.map((item) => (
+              <li key={item}>
+                <span className="check" aria-hidden="true">
+                  <CheckIcon size={18} />
+                </span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
@@ -180,6 +198,11 @@ export default function PricingPage() {
               <details className="faq-item" key={item.q}>
                 <summary>{item.q}</summary>
                 <p>{item.a}</p>
+                {item.link ? (
+                  <p>
+                    <a href={item.link.href}>{item.link.label}</a>
+                  </p>
+                ) : null}
               </details>
             ))}
           </div>

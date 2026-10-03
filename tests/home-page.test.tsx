@@ -185,8 +185,10 @@ describe("the homepage", () => {
 /**
  * Every screenshot the content module names, found by shape rather than by
  * where it sits: anything with a `name` beside an `alt` is a picture. The hero,
- * the problems and the showcase each hold theirs differently, and a list of
- * those three places would miss the fourth somebody adds.
+ * the proof cards and the pair under the feature grid each hold theirs
+ * differently, and a list of those three places would miss the fourth somebody
+ * adds — which is exactly what the shots moving out of a gallery and in beside
+ * the claims they prove would otherwise have done to this walk.
  */
 function shotNames(value: unknown): readonly string[] {
   if (Array.isArray(value)) return value.flatMap(shotNames);

@@ -1,4 +1,4 @@
-import { site, hero, primaryNav } from "@/content/home";
+import { site, hero, primaryNav, headerSourceLink } from "@/content/home";
 import { LogoMark } from "@/components/icons";
 
 /**
@@ -27,8 +27,8 @@ export function SiteHeader() {
               {item.label}
             </a>
           ))}
-          <a className="header-link" href={site.sourceUrl}>
-            Source
+          <a className="header-link" href={headerSourceLink.href}>
+            {headerSourceLink.label}
           </a>
           <span className="button button-pending">{hero.primaryLabel}</span>
         </nav>

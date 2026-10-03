@@ -412,7 +412,7 @@ coming, and why would they wait for it. This names the thing.
 It used to read "Hosted version soon", which named the thing accurately and
 named it in the product's vocabulary rather than the reader's: hosting is a
 word for somebody who knows the alternative, and what the reader is actually
-waiting for is the ability to sign up. `content.md` 1.4 is the rule that moved
+waiting for is the ability to sign up. `content.md` 1.3 is the rule that moved
 it.
 
 **It is one string, not two.** `src/content/pricing.ts` imports

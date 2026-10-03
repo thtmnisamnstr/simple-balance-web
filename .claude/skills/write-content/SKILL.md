@@ -19,7 +19,7 @@ If it would need "as of September 2026" to stay honest, it is a post.
 
 ## The voice
 
-American English, with contractions. `docs/standards/content.md` 1.6, and
+American English, with contractions. `docs/standards/content.md` 1.5, and
 `tests/copy.test.ts` fails the build on a British spelling anywhere under
 `content/`.
 
