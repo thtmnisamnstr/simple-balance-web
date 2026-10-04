@@ -458,14 +458,16 @@ keeping, so the decision is recorded here rather than broken quietly —
 `AGENTS.md` carries the same decision and `docs/adsense.md` §8 has the
 argument and the measurements.
 
-**Three things keep it an exception rather than a door.** The snippet is the
-account's own, unmodified, and nothing may be added beside it. The hosts it
-may reach are a closed list that was **observed** — five, in the directives
-each was needed in — so widening `netlify.toml`'s policy to admit a host
-nobody has watched is how this stops being one exception. And a script that
-reaches another origin is a **disclosure**: `src/content/legal.ts` has to say
-what it loads, what cookie it sets and how to be rid of it, to the same
-standard the policy holds the application to.
+**Three things keep it an exception rather than a door.** The loader is the
+account's own, unmodified, and the one thing that may run beside it is the
+account's own manual banner unit — `src/components/ad-banner.tsx`, also
+unmodified, nothing past it: no second unit, no consent vendor, no analytics
+tag. The hosts it may reach are a closed list that was **observed** — five,
+in the directives each was needed in — so widening `netlify.toml`'s policy to
+admit a host nobody has watched is how this stops being one exception. And a
+script that reaches another origin is a **disclosure**: `src/content/legal.ts`
+has to say what it loads, what cookie it sets and how to be rid of it, to the
+same standard the policy holds the application to.
 
 **One exception to the branding half, and it is the opposite of branding.**
 The privacy policy names the hosting provider and the payment processor,
@@ -484,10 +486,11 @@ _Checked by:_ `tests/branding.test.ts`, for the half that is ours: no vendor
 word in any page's visible markup, and no subresource from a vendor's domain
 except the one exact URL its `ALLOWED_SUBRESOURCES` grants by name, so moving
 the loader's address is a change this exception has to be re-granted for.
-It sees markup and not runtime, so the other four hosts are outside it:
 `tests/adsense.test.ts` holds the policy's five against widening in either
-direction, and a host the vendor adds at runtime is caught only by re-running
-`docs/adsense.md` §8's recipe.
+direction and holds the built unit's client and slot ids against the
+configured ones, and `tests/ad-placement.test.ts` holds which pages carry the
+unit at all. None of the three sees a request at runtime, so a host the
+vendor adds there is caught only by re-running `docs/adsense.md` §8's recipe.
 
 ## 7. Structure
 

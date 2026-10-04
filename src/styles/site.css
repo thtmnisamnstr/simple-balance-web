@@ -160,6 +160,33 @@ svg {
   border-top: 1px solid var(--line-soft);
 }
 
+.ad-banner {
+  margin-block: var(--s-7);
+  padding-block: var(--s-5);
+  border-block: 1px solid var(--line-soft);
+  text-align: center;
+}
+
+/* An ad unit Google had nothing to fill, collapsed rather than left as blank
+   space. AdSense marks the <ins> with data-ad-status="unfilled" once it
+   knows, and its help page on hiding unfilled ad units gives exactly this
+   rule for it, !important included: the unit carries display: block inline,
+   which is what the tag is documented with and what AdBanner renders, and
+   only an important declaration outranks an inline one. Left alone, an
+   unfilled responsive unit kept its reserved height: a blank band with a
+   border above and below it on every page, which is worse than the ad it is
+   standing in for. The wrapper goes with it, because an empty .ad-banner is
+   still a block in the page's flow and would keep its own margin and border
+   on both sides of nothing. `src/client/styles.css` in the application
+   repository has the identical pair, for the identical reason. */
+.ad-banner ins.adsbygoogle[data-ad-status="unfilled"] {
+  display: none !important;
+}
+
+.ad-banner:has(> ins.adsbygoogle[data-ad-status="unfilled"]) {
+  display: none;
+}
+
 .stack {
   display: flex;
   flex-direction: column;

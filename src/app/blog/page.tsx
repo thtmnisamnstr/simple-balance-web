@@ -6,6 +6,7 @@ import { blogIndex, blogTags } from "@/content/collections";
 import { section } from "@/content/sections";
 import { EmptyState } from "@/components/empty-state";
 import { PostCard } from "@/components/post-card";
+import { AdBanner } from "@/components/ad-banner";
 
 const blog = section("blog");
 
@@ -79,6 +80,8 @@ export default function BlogIndex() {
             ) : null}
           </>
         )}
+
+        <AdBanner />
       </div>
     </section>
   );

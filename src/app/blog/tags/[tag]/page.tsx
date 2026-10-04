@@ -8,6 +8,7 @@ import { section, tagDescriptions } from "@/content/sections";
 import { PostCard } from "@/components/post-card";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { BreadcrumbStructuredData } from "@/components/structured-data";
+import { AdBanner } from "@/components/ad-banner";
 
 const blog = section("blog");
 
@@ -65,6 +66,8 @@ export default async function TagPage({ params }: { params: Promise<{ tag: strin
             <PostCard key={post.slug} post={post} />
           ))}
         </ul>
+
+        <AdBanner />
       </div>
     </section>
   );

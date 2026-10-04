@@ -8,6 +8,7 @@ import { authors, initialsOf, isAuthorKey } from "@/content/authors";
 import { section } from "@/content/sections";
 import { PostCard } from "@/components/post-card";
 import { Breadcrumbs } from "@/components/breadcrumbs";
+import { AdBanner } from "@/components/ad-banner";
 
 const blog = section("blog");
 
@@ -94,6 +95,8 @@ export default async function AuthorPage({ params }: { params: Promise<{ author:
             <PostCard key={post.slug} post={post} />
           ))}
         </ul>
+
+        <AdBanner />
       </div>
     </section>
   );

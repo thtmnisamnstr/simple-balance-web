@@ -8,6 +8,7 @@ import { section } from "@/content/sections";
 import { PostCard } from "@/components/post-card";
 import { Pagination } from "@/components/pagination";
 import { Breadcrumbs } from "@/components/breadcrumbs";
+import { AdBanner } from "@/components/ad-banner";
 
 const blog = section("blog");
 
@@ -83,6 +84,8 @@ export default async function BlogPage({ params }: { params: Promise<{ page: str
           pages={result.pages}
           hrefFor={(n) => (n === 1 ? blog.href : `/blog/page/${n}/`)}
         />
+
+        <AdBanner />
       </div>
     </section>
   );

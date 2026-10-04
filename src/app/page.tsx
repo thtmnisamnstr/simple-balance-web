@@ -17,6 +17,7 @@ import {
 import { featureIcons, CheckIcon } from "@/components/icons";
 import { Shot } from "@/components/shot";
 import { SiteStructuredData } from "@/components/structured-data";
+import { AdBanner } from "@/components/ad-banner";
 
 /**
  * The homepage.
@@ -213,6 +214,10 @@ export default function HomePage() {
           </p>
         </div>
       </section>
+
+      <div className="page">
+        <AdBanner />
+      </div>
     </>
   );
 }

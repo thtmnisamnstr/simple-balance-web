@@ -230,27 +230,24 @@ describe("the privacy policy", () => {
       expect(website, `the policy leaves out ${host}`).toContain(host);
     }
     /*
-     * Auto ads is OFF and this repository declares no ad unit
-     * (`docs/adsense.md` §3 step 8), so no advertising is displayed here at
-     * all. That makes a *different* fact the one a reader would get wrong,
-     * and it is the more dangerous direction: seeing no ads, they would
-     * reasonably conclude that nothing reached Google. The script is still
-     * fetched, still contacts the five hosts above, and still sets the
-     * cookie disclosed further down.
-     *
-     * So the policy has to say both halves — nothing is shown, and something
-     * still happens — and this holds it to the second, which is the half that
-     * disappears if somebody later simplifies the paragraph to "we don't show
-     * ads". Written as two separate matches rather than one phrase, so a
-     * rewording that keeps the meaning does not fail while a rewording that
-     * drops the disclosure does.
+     * One manual banner unit is live, in a fixed place on the page, and the
+     * policy's claim is about it rather than about Auto ads, which stays off:
+     * `docs/adsense.md` §3 step 8 and `src/components/ad-banner.tsx` are why.
+     * The claim that matters is the one nothing else checks — that the ad is
+     * non-personalized, stated as a fact rather than promised as a courtesy,
+     * because `ADSENSE_CONSENT_MANAGED` forces it in code rather than it
+     * being asked for. A reader seeing a real ad and assuming it was chosen
+     * from their own browsing is the inference this paragraph exists to
+     * head off, which is the opposite of the inference the old "nothing is
+     * displayed" paragraph had to head off.
      */
-    expect(website, "the policy does not say no advertising is displayed").toMatch(
-      /\bnothing is displayed\b|\bdoesn't currently show you any advertising\b/,
+    expect(website, "the policy does not say the ad is non-personalized").toMatch(
+      /\bnon-personalized\b/,
     );
-    expect(website, "the policy lets a reader think no ads means nothing reached Google").toMatch(
-      /seeing no ads doesn't mean nothing reached google/,
-    );
+    expect(
+      website,
+      "the policy does not say a request and a cookie happen whether or not the ad fills",
+    ).toMatch(/whether or not the ad is filled/);
     // The short version is the part most people read, and it carried the
     // "collects nothing" claim in its first sentence.
     const summary = section(privacy, /^the short version/i);

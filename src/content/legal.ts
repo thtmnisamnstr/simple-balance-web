@@ -18,7 +18,7 @@
  */
 
 /** Bumped whenever either document changes materially. Rendered on both. */
-export const legalUpdated = "2026-09-29";
+export const legalUpdated = "2026-10-04";
 
 const operator = {
   /** Who is responsible for the hosted deployment, in the legal sense. */
@@ -135,25 +135,24 @@ export const privacy = {
           "googleads.g.doubleclick.net, ep1.adtrafficquality.google, ep2.adtrafficquality.google " +
           "and www.google.com. Nothing else on the site reaches anywhere but itself.",
         /*
-         * Auto ads is OFF for this account and this repository declares no ad
-         * unit, so nothing places an ad here at all. Said as what it is rather
-         * than as "no ads yet": the absence is a decision, not a queue.
+         * One banner unit, in a fixed place on each page, replacing Auto ads
+         * rather than adding to it — Auto ads is still OFF, so Google is not
+         * choosing the page or the format, only filling the one box this site
+         * marks out. `src/components/ad-banner.tsx` is the unit and
+         * `legal-review` is where this paragraph is re-checked whenever that
+         * changes.
          *
-         * What does NOT follow is that Google is uninvolved. The script is
-         * still fetched, still reaches the hosts named above, and still sets
-         * the cookie this policy discloses. A reader who sees no advertising
-         * and concludes nothing reached Google would be wrong, and that is the
-         * inference this paragraph exists to prevent.
-         *
-         * The five hosts were measured while Auto ads was on, so they are a
-         * ceiling on what is contacted now rather than an exact list.
+         * Non-personalized is stated as a fact rather than a promise, because
+         * it is forced in code (`ADSENSE_CONSENT_MANAGED` unset) rather than
+         * asked for: `docs/adsense.md` §5 is why — no certified consent
+         * platform is published from this account, and that is Google's
+         * condition for personalized ads specifically. ePrivacy consent is
+         * the separate rule this does not satisfy, covered in the next
+         * paragraph and the cookies section below.
          */
-        "That script doesn't currently show you any advertising. This site marks out no place " +
-          "for an ad, and the setting that would let Google pick its own place is turned off, " +
-          "so nothing is displayed. The script still runs, still contacts the hosts above, and " +
-          "still sets the cookie described further down: seeing no ads doesn't mean nothing " +
-          "reached Google. The hosts were measured while that setting was on, so they're the " +
-          "most it contacts rather than an exact list.",
+        "That ad is non-personalized: it is not chosen using your browsing history or interests. " +
+          "Requesting one still contacts the hosts above and still sets the cookie described " +
+          "further down, whether or not the ad is filled.",
         /*
          * What the request carries, and the one place this origin is better
          * than the application: `Referrer-Policy: strict-origin-when-cross-origin`

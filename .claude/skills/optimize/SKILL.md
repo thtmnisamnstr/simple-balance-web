@@ -99,12 +99,14 @@ possible divergence.
   Three, each argued in `code/react.md` 1.1. A fourth is a decision.
 - **No render-blocking anything.** There is exactly one third-party script,
   Google's AdSense loader (`web.md` 6.5), and it is `async`, so it blocks
-  nothing. It is also the heaviest external request on every page and the
-  largest single thing here that is not ours. Leave it alone: it is the
-  account's own snippet unmodified, `tests/adsense.test.ts` asserts it is in
-  `<head>`, `async` and `crossorigin`, and deferring or lazy-loading it is a
-  revenue decision rather than a performance one. A second third-party script
-  is forbidden outright.
+  nothing. It is also the heaviest external request on every page it reaches
+  and the largest single thing here that is not ours. Leave it alone: it is
+  the account's own snippet unmodified, `tests/adsense.test.ts` asserts it is
+  in `<head>`, `async` and `crossorigin`, and deferring or lazy-loading it is
+  a revenue decision rather than a performance one. The banner unit beside it
+  (`src/components/ad-banner.tsx`) costs nothing extra to load — same script,
+  already fetched — and is the one thing allowed to sit next to the loader; a
+  second one, or a second vendor's script, is forbidden outright.
 - **Check the CSS is still all used.** The dead-class sweep is in
   `merge-prep` §4.
 

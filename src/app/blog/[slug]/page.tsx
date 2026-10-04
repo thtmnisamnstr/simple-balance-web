@@ -23,6 +23,7 @@ import { RelatedPosts } from "@/components/related-posts";
 import { PostPager } from "@/components/post-pager";
 import { ShareLinks } from "@/components/share-links";
 import { BreadcrumbStructuredData, PostStructuredData } from "@/components/structured-data";
+import { AdBanner } from "@/components/ad-banner";
 
 const blog = section("blog");
 
@@ -111,6 +112,8 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
         {contents.length >= 4 ? <Contents items={contents} /> : null}
 
         <Prose body={post.body} />
+
+        <AdBanner />
 
         <TagList tags={meta.tags ?? []} />
         <ShareLinks title={meta.title} path={`/blog/${slug}/`} />

@@ -7,6 +7,7 @@ import { section } from "@/content/sections";
 import { formatDate } from "@/lib/format";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { EmptyState } from "@/components/empty-state";
+import { AdBanner } from "@/components/ad-banner";
 
 const blog = section("blog");
 
@@ -67,6 +68,8 @@ export default function ArchivePage() {
             </section>
           ))
         )}
+
+        <AdBanner />
       </div>
     </section>
   );

@@ -25,6 +25,19 @@ const COMPOSED: Record<string, string> = {
   "callout-danger": "callout.tsx: `callout-${kind}`",
 };
 
+/**
+ * A vendor's own class name, which this stylesheet deliberately defines no
+ * bare rule for — Google's script styles the ad creative itself once it
+ * fills, and the one thing `site.css` owns is the unfilled state, reached
+ * through a descendant selector (`.ad-banner ins.adsbygoogle[...]`) rather
+ * than a top-level `.adsbygoogle` rule, which is why `defined` above never
+ * sees it. Not `COMPOSED`: there is no template literal to point at, the
+ * string is written once, literally, in the component.
+ */
+const VENDOR: Record<string, string> = {
+  adsbygoogle: "ad-banner.tsx: Google's required class name for a manual ad unit",
+};
+
 describe("the stylesheets", () => {
   const css =
     readFileSync("src/styles/site.css", "utf8") + readFileSync("src/styles/brand.css", "utf8");
@@ -73,7 +86,7 @@ describe("the stylesheets", () => {
 
     expect(written.size, "no classes found in the markup").toBeGreaterThan(30);
 
-    const unstyled = [...written].filter((name) => !defined.includes(name));
+    const unstyled = [...written].filter((name) => !defined.includes(name) && !(name in VENDOR));
     expect(unstyled, "these are in the markup and style nothing").toEqual([]);
   });
 
@@ -83,6 +96,19 @@ describe("the stylesheets", () => {
     for (const [name, where] of Object.entries(COMPOSED)) {
       const prefix = name.slice(0, name.lastIndexOf("-") + 1);
       expect(source, `${name} claims to come from ${where}`).toContain(`${prefix}\${`);
+    }
+  });
+
+  it("keeps the vendor list to names a descendant selector actually reaches", () => {
+    // The other half of the same accountability: an entry here is excused
+    // from having its own rule only while the stylesheet still styles
+    // something through it, and the component still writes the literal
+    // class name a reader of `where` is pointed at.
+    for (const [name, where] of Object.entries(VENDOR)) {
+      expect(css, `${name} claims to be reached by a descendant selector`).toMatch(
+        new RegExp(`\\.${name}\\b`),
+      );
+      expect(source, `${name} claims to come from ${where}`).toContain(`"${name}"`);
     }
   });
 });

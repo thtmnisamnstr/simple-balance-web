@@ -17,6 +17,20 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
+    env:
+      # Fixture values, not secrets, so the build this job runs is an
+      # ad-bearing one rather than the absent-config state every contributor's
+      # machine is in. `ADSENSE_CLIENT_ID` is the real account's id — already
+      # public, in `public/ads.txt` and in every page's rendered HTML — so
+      # using it here is what lets `tests/adsense.test.ts` keep proving the
+      # two files agree. `ADSENSE_BANNER_SLOT_ID` is a placeholder: nobody has
+      # told this repository the real one, and these tests are about the
+      # mechanics of rendering whatever slot is configured, not about which
+      # unit it is. The real values for the live site are Netlify's own
+      # environment variables, never committed here.
+      ADSENSE_CLIENT_ID: ca-pub-9953156598757474
+      ADSENSE_BANNER_SLOT_ID: "1234567890"
+      ADSENSE_CONSENT_MANAGED: "false"
     steps:
       - uses: actions/checkout@v5
 

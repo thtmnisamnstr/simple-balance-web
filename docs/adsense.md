@@ -1,13 +1,14 @@
 # Adding AdSense
 
-**Both origins carry Google's ad script.** The application at `app.smpl.money`
-shows ads to accounts on the free plan. This site, `smpl.money`, loads the same
-account's script on every page. The root domain's `ads.txt` is what authorizes
-the inventory on both, which is the genuinely surprising thing in this document
-and what §1 is about.
+**Both origins carry Google's ad script, and now both carry a banner unit
+from the same account.** The application at `app.smpl.money` shows the unit to
+accounts on the free plan. This site, `smpl.money`, shows the same unit on
+every page except the legal pages and the 404. The root domain's `ads.txt` is
+what authorizes the inventory on both, which is the genuinely surprising thing
+in this document and what §1 is about.
 
-What ships here is one element in `src/app/layout.tsx`, built from
-`src/content/ads.ts` so the id has one home:
+The loader is one element in `src/app/layout.tsx`, on every page regardless of
+where the unit itself appears:
 
 ```html
 <script
@@ -17,31 +18,51 @@ What ships here is one element in `src/app/layout.tsx`, built from
 ></script>
 ```
 
-That is the account's own snippet, unmodified, on all twenty-two pages and the
-404 — the homepage, the pricing page, the docs and the legal pages alike.
-**Nothing in this repository declares an ad unit.** There is no
-`<ins class="adsbygoogle">` anywhere, so whether a reader of `smpl.money` ever
-sees an ad is Google's Auto ads account setting and not a decision in this
-tree. **That setting is on** (§3 step 8): the script places its own
-`ins.adsbygoogle` and asks for an ad on every page, and the ask comes back
-unfilled today because the account is not approved yet. So this origin is
-already asking for inventory, not merely loading a loader, and the first page
-that fills is a state nobody here has seen.
+That is the account's own snippet, unmodified. The banner unit is a second,
+smaller piece of the account's own markup, in `src/components/ad-banner.tsx`
+and built from `src/content/ads.ts`, which both origins' ids are read into
+from the same two environment variables the application uses —
+`ADSENSE_CLIENT_ID` and `ADSENSE_BANNER_SLOT_ID` — rather than from a literal
+in source:
 
-This document used to open "This site does not serve ads", and most of what
-followed was reasoned from that. Three things follow from its being false, and
-each has a section here:
+```html
+<ins
+  class="adsbygoogle"
+  style="display:block"
+  data-ad-client="ca-pub-9953156598757474"
+  data-ad-slot="…"
+  data-ad-format="auto"
+  data-full-width-responsive="true"
+></ins>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).requestNonPersonalizedAds = 1;
+  (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+```
+
+**Auto ads stays off.** It would be the only thing choosing the page and the
+format if nothing else did, and now something else does: a manual unit, whose
+format is fixed and whose pages are a decision in this tree rather than
+Google's to make — every page except `/privacy/`, `/terms/` and the 404,
+`tests/ad-placement.test.ts` holds the set by route and by name.
+
+This document used to open "This site does not serve ads", and later "this
+repository declares no ad unit". Both were true when written and neither is
+now. What follows each still has a section here:
 
 - The content security policy had to admit hosts. It names five, because five
   is what a real browser running the real script actually contacted — **§8 is
-  the measurement and the recipe for repeating it.**
+  the measurement and the recipe for repeating it**, and it needs repeating:
+  it was taken while Auto ads asked on every page, which is a different shape
+  of traffic from one persistent unit asking on ten.
 - The privacy policy had to stop saying this site sets no cookies, because it
   now sets one (§4), and had to stop saying a visitor in the EEA or the UK is
-  asked first, because today nobody is (§5).
+  asked first, because today nobody is (§5). It then had to stop saying no
+  advertising is displayed, because now some is.
 - `AGENTS.md`'s rule against a script from a vendor's domain had to be
   rewritten to record the decision rather than be broken quietly. It now
-  permits this one script by name and still forbids every other vendor image,
-  font, widget, analytics tag and consent vendor.
+  permits this one script and this one manual unit by name, and still forbids
+  every other vendor image, font, widget, analytics tag and consent vendor.
 
 ## 1. Why a marketing site has an `ads.txt` at all
 
@@ -150,8 +171,12 @@ never starts.
 
 5. **Request review.**
 6. **On approval, create the ad units**: one display unit for the banner, and
-   a second for the footer if you want one. Note each slot id, which is ten
-   digits. These are the application's units. This site declares none.
+   a second for the footer if the application should have one. Note each slot
+   id, which is ten digits. **The banner unit is shared.** Its slot id is the
+   one both origins read into `ADSENSE_BANNER_SLOT_ID` — one Google object
+   filled by two deployments rather than two separate units, which is what
+   "the same banner ad unit as in the app" means. The footer slot, if created,
+   belongs to the application alone; this site declares no second unit.
 7. **Publish a European regulations message. This is the open gap, not a
    future step.** In AdSense, open **Privacy and messaging**, create a
    **European regulations** message for `smpl.money` (which covers
@@ -182,26 +207,24 @@ never starts.
    application it is an account setting no code can override and it injects
    formats the application promises not to show, so there it must be off.
 
-   **On `smpl.money` it is the only thing that could put an ad on the page**,
-   because this repository declares no ad unit. With it off, both halves are
-   absent: no slot is declared here and none is injected there, so this site
-   loads Google's script and displays nothing. That is the intended state.
-   The script is carried for verification and because `ads.txt` on this domain
-   is what authorizes the advertising the application serves — §1 — not
-   because this site sells inventory.
+   **On `smpl.money` it would be the only thing choosing the page and the
+   format**, and a manual unit is now what does both instead:
+   `src/components/ad-banner.tsx` is the unit, placed in code on every page
+   except `/privacy/`, `/terms/` and the 404 — `/pricing/` included, which is
+   a decision taken on purpose rather than left to Google: the legal pages are
+   excluded because one discloses the advertising and a reader there should
+   not be reading it beside an ad, and because a consent-adjacent policy page
+   framed by the thing it is disclosing reads as the wrong kind of example.
+   `tests/ad-placement.test.ts` holds the exact set by route, so a page added
+   later carries the unit by doing nothing and a legal page added later has
+   to be named there deliberately.
 
-   The consequence to keep in view is that the script still runs. It is
-   fetched, it still reaches Google, and it still sets the cookie the privacy
-   policy names. "No ads displayed" is not "no third party involved", and the
-   policy is written for the second.
-
-   **The pages Google may choose include `/privacy/` and `/pricing/`**: the
-   page that discloses the advertising, and the page that sells the plan
-   without it. That is the decision to take on purpose rather than discover,
-   and it is the one reason to turn it off here. The legal pages are written
-   for either state, because they describe the script rather than the
-   inventory, and §8's measurement is not: it was taken unfilled, and the
-   first page that fills is the one to watch a console on.
+   The consequence to keep in view is the one that held when nothing was
+   declared and holds more now that something is: the script runs regardless
+   of where the unit appears, on the legal pages too, still reaches Google,
+   and still sets the cookie the privacy policy names. "No ad shown on this
+   page" is not "no third party involved", and the policy is written for the
+   second.
 
 9. **Wait for the crawl, then configure the application.** Confirm in the
    AdSense dashboard that `ads.txt` is found and authorized.
@@ -316,6 +339,36 @@ never starts.
    exist, was here instead of `ADSENSE_CONSENT_MANAGED`; check the names
    against that reference rather than against memory.
 
+10. **Configure this site.** Far shorter than step 9, because there is no
+    machine, no systemd unit and no `PRIVACY_POLICY_URL` to set — the privacy
+    policy lives here, so there is nowhere else for its own link to point.
+
+    `src/content/ads.ts` reads the same two names step 9 does,
+    `ADSENSE_CLIENT_ID` and `ADSENSE_BANNER_SLOT_ID`, from `process.env` at
+    build time rather than from a request: this is a static export, so
+    "configure it" means "set it where the build that ships runs", which is
+    Netlify's own environment variables (Site configuration → Environment
+    variables) for the live site, and a local `.env` or `.env.local` for
+    `next dev` — `.env.example` has both names, commented out, with the
+    format each must satisfy. Never `netlify.toml`, which is committed.
+
+    Set both to the same values step 9 used — one account, one banner unit,
+    shown on both origins — trigger a new deploy, and confirm with
+    `curl -s https://smpl.money/ | grep -o 'data-ad-slot="[^"]*"'`, which
+    should print the slot id back. Absent, this site builds and ships exactly
+    as it did before this change: no loader, no unit, nothing to the content
+    security policy's five hosts. Half-set — one variable with no other —
+    fails the build outright, in Netlify's own log, rather than shipping a
+    page with one half missing and no indication why.
+
+    **`ADSENSE_CONSENT_MANAGED` is the one place this site's answer differs
+    from a literal copy of the application's**, and only because the
+    application's own docs are written for an operator who may have published
+    a European regulations message and this account, as of step 7, has not.
+    Leave it unset, which is `false`, until that message is live — §5 has the
+    two rules it does and does not satisfy, and the `legal-review` skill is
+    where the privacy policy is re-read once it is.
+
 ## 4. The privacy policy
 
 Google's terms require one on any site serving their ads, naming third-party
@@ -325,11 +378,10 @@ covered one and denied the other in so many words.
 
 **The trigger is the tag going into the head, not the first ad rendering.** A
 script that contacts an ad vendor and is handed a cookie has already done the
-thing a policy exists to disclose, whether or not anything was drawn on the
-page — and nothing is drawn today, because the account is not approved and
-every ask comes back unfilled (§3 step 8). So the rewrite came with the
-element, not with the inventory, and it needs no second pass when the first
-ad fills.
+thing a policy exists to disclose, whether or not anything is drawn on the
+page. So the rewrite came with the element, not with the inventory, and the
+same policy covers both an unfilled request and a filled one without needing
+a second pass when the account's approval state changes between them.
 
 **It is written, and live at `https://smpl.money/privacy/`**: an ordinary page
 under `src/app/privacy/`, its words in `src/content/legal.ts`, and
@@ -337,7 +389,7 @@ under `src/app/privacy/`, its words in `src/content/legal.ts`, and
 site's footer, and that same URL is the application's `PRIVACY_POLICY_URL`
 (§3 step 9), which the application links from its sidebar on every page.
 
-**Four sentences in it were true when they were written and are not now**, and
+**Five sentences in it were true when they were written and are not now**, and
 they are recorded here because the shape of the mistake matters more than the
 words. Each was a summary of the site rather than a claim about the
 application, and each rounded in the flattering direction:
@@ -353,6 +405,12 @@ application, and each rounded in the flattering direction:
   that the same change made wrong.
 - That a visitor in the EEA, the UK or Switzerland "will be asked before any
   of them are set". Nobody is asked; §5 and §3 step 7 are why.
+- "That script doesn't currently show you any advertising … so nothing is
+  displayed", under a paragraph arguing that Auto ads being off meant no ad
+  could appear. A manual unit is what now stands where that argument stood;
+  the replacement says the ad is non-personalized rather than that there is
+  none, which is the distinction worth drawing out loud now that the second
+  one would be false.
 
 **A marketing claim is never stronger than the privacy policy it links to**, and
 this is the inverse failure: the policy was stronger than the origin it
@@ -380,22 +438,26 @@ Two separate rules, and this section used to run them together:
 | **ePrivacy consent**       | Any ad cookie, personalized or not | A consent notice, before the cookie is set |
 | Google's **certified CMP** | Personalized ads only              | A consent platform Google has certified    |
 
-**ePrivacy consent applies to every ad, and to this site's script even with no
-ad.** A non-personalized ad still sets cookies, for frequency capping and
-fraud prevention, so a visitor in the EEA, the UK or Switzerland has to be
-asked before any is set, whatever the application's settings say. Avoiding the
-second rule does not avoid this one. And the loader on `smpl.money` leaves
-`IDE` on `.doubleclick.net`, Google's advertising identifier, before any ad
-unit exists at all (§8), so this origin is inside the first rule already and
-is inside it with the cookie that matters most rather than a probe.
+**ePrivacy consent applies to every ad, and to this site's script even before
+either origin's unit asks for one.** A non-personalized ad still sets cookies,
+for frequency capping and fraud prevention, so a visitor in the EEA, the UK or
+Switzerland has to be asked before any is set, whatever the two settings say.
+Avoiding the second rule does not avoid this one. And the loader on
+`smpl.money` leaves `IDE` on `.doubleclick.net`, Google's advertising
+identifier, on the first navigation (§8), so this origin is inside the first
+rule already and is inside it with the cookie that matters most rather than a
+probe.
 
-**A certified CMP is Google's condition for personalized ads, and only those.**
-With `ADSENSE_CONSENT_MANAGED` unset, the application forces
-`requestNonPersonalizedAds` on every request, and Google serves those without
-a certified platform. **That assurance does not reach this site.** The snippet
-here is the bare loader with no such parameter, so nothing in this repository
-makes a request non-personalized, and the privacy policy may not imply
-otherwise about `smpl.money`.
+**A certified CMP is Google's condition for personalized ads, and only
+those.** With `ADSENSE_CONSENT_MANAGED` unset, both origins force
+`requestNonPersonalizedAds` on every request their unit makes, and Google
+serves those without a certified platform. **That assurance now reaches this
+site too** — it did not when the loader here was bare, with no ad unit and no
+parameter, and it does as of the unit in `src/components/ad-banner.tsx`, which
+sets the same flag the same way, before the same `push({})`, for the same
+reason: `docs/adsense.md`, this file, is the one place that reasoning is
+written, so a reader of `ad-banner.tsx` is pointed back here rather than
+finding the argument repeated.
 
 **Google's own European regulations message satisfies both** (§3 step 7). It
 is part of the AdSense account and is itself a certified platform, and the ad
@@ -413,17 +475,20 @@ is set. It is not asked and it is set, so the policy says what is actually
 true and points at Google's own controls instead. When the message goes up,
 that paragraph is wrong in the other direction and has to move back.
 
-**`ADSENSE_CONSENT_MANAGED` stays unset on `app.smpl.money`**, whatever the
-application's own docs recommend once the message is published (§3 step 9
-says where they differ). Setting it to
-`true` stops forcing non-personalized ads and lets each visitor's consent
-answer decide. But the European regulations message asks only visitors in
-those three places, so everybody else, the United States included, would be
-shown personalized ads without ever being asked. The privacy policy says the
-application's ads are only ever personalized with specific consent, and the
-pricing page's answer about ads says the same. If personalization is ever
-wanted, rewrite both in `src/content/legal.ts` and `src/content/pricing.ts`
-first, and change the setting after.
+**`ADSENSE_CONSENT_MANAGED` stays unset on `app.smpl.money` and on
+`smpl.money` alike**, whatever either deployment's own instructions recommend
+once the message is published (§3 steps 9 and 10 say where the application's
+depart). Setting it to `true` stops forcing non-personalized ads and lets each
+visitor's consent answer decide. But the European regulations message asks
+only visitors in those three places, so everybody else, the United States
+included, would be shown personalized ads without ever being asked. The
+privacy policy says the application's ads are only ever personalized with
+specific consent, and the pricing page's answer about ads says the same, and
+this document's own §4 now says the same about this site's unit. If
+personalization is ever wanted, rewrite all three first — `src/content/legal.ts`
+and `src/content/pricing.ts` here, and the application's own privacy policy —
+and change the setting after, on both origins at once rather than one at a
+time.
 
 ## 6. The file
 
@@ -439,14 +504,21 @@ google.com, pub-9953156598757474, DIRECT, f08c47fec0942fa0
 ownerdomain=smpl.money
 ```
 
-**The id is written three ways and two of them are in this repository.** The
-AdSense dashboard shows it as `pub-…`; this file wants `pub-…`; the
-application's environment variable and the script's `client` parameter want
+**The id is written in two spellings, and this file holds the one the other
+does not.** The AdSense dashboard shows it as `pub-…`; this file wants
+`pub-…`; `ADSENSE_CLIENT_ID` — on both origins, in Netlify's environment
+variables and in the application's — and the script's `client` parameter want
 `ca-pub-…`. Getting that wrong is the second most common way to serve a file
-that authorizes nobody. `src/content/ads.ts` holds the `pub-` form once and
-derives the `ca-pub-` one from it, so the file and the script tag cannot name
-two different publishers — a state in which everything renders, every check
-that reads only one of the two passes, and the revenue is zero.
+that authorizes nobody. This file is the only place the bare `pub-` form is
+written at all: `src/content/ads.ts` no longer derives one from the other the
+way it once did, because there is no longer a `pub-` form in source to derive
+it from — `ca-pub-…` is what the environment variable holds, matching the
+application exactly, and this file is what a build-time value can never keep
+in sync with on a static export. The two have to agree by whoever sets
+`ADSENSE_CLIENT_ID` matching this file, same as they always did when the
+`pub-` form lived in source instead of in an environment variable — what
+moved is where the literal is written, not who is responsible for the two
+agreeing.
 
 `f08c47fec0942fa0` is Google's own TAG id and is the same for everyone.
 
@@ -472,6 +544,13 @@ needed.
   `https://smpl.money/privacy/`. It appears only when `PRIVACY_POLICY_URL`
   is set, so it is the visible sign that the setting reached the running
   container rather than stopping at `env.local`.
+- **Check this site's banner reads back the real slot id**:
+  `curl -s https://smpl.money/ | grep -o 'data-ad-slot="[^"]*"'` should print
+  the one from step 6, not the placeholder `.github/workflows/verify.yml`
+  builds this repository's own CI with. Check a page from the excluded set
+  too — `curl -s https://smpl.money/privacy/ | grep -c adsbygoogle` should
+  print `0` — because the two states look identical in the AdSense dashboard
+  and differ only in what a page actually sent.
 - **Check the European regulations message shows**, on the first page with an
   ad, to a browser in the EEA or the UK. A VPN is the practical way to be one.
   The dashboard saying it is published is not the same as seeing it. Until it
@@ -510,12 +589,15 @@ it, and the state to avoid is the third one: a rule the shipped tree breaks
 while the document still says it does not.
 
 Two things keep it an exception rather than a door, and both are why this
-section exists. **The snippet is the account's own, unmodified, and nothing is
-added beside it** — no second tag, no ad unit, no consent vendor of our own.
-And **the hosts it may reach are a closed list that was observed**, not a
-category. `netlify.toml` names five; `src/content/ads.ts` says what each is
-for; `tests/adsense.test.ts` parses that policy and fails if it loses a
-measured host, grows a wildcard, or admits one nobody measured.
+section exists. **The loader is the account's own, unmodified, and the only
+thing allowed beside it is the account's own manual ad unit, also unmodified**
+— one banner, in the exact shape Google documents, and nothing past that: no
+second unit, no consent vendor of our own, no analytics tag. `AGENTS.md` is
+where the boundary is drawn, not restated here. And **the hosts it may reach
+are a closed list that was observed**, not a category. `netlify.toml` names
+five; `src/content/ads.ts` says what each is for; `tests/adsense.test.ts`
+parses that policy and fails if it loses a measured host, grows a wildcard,
+or admits one nobody measured.
 
 **What no test here catches is a sixth host.** `tests/adsense.test.ts` reads
 a string in a TOML file and `tests/branding.test.ts` reads built markup, where
@@ -614,20 +696,21 @@ exists rather than a test.
 A run is only evidence if it produced **zero** violations across all six page
 shapes. The run this section records did.
 
-**It was taken with Auto ads ON and every slot unfilled, and that is the
-limit of what it proves.** At the time of the run the script placed an
+**It was taken with Auto ads ON and every slot unfilled, and both halves of
+that have changed since.** At the time of the run the script placed an
 `ins.adsbygoogle` and asked on every page, and every ask came back `unfilled`
-because the account was not approved. Auto ads has since been turned **off**
-(§3 step 8), so the script now asks for nothing at all — which can only
-_narrow_ what it contacts, never widen it. The five-host list is therefore a
-ceiling rather than an exact figure, and a ceiling is the safe direction for a
-policy: the risk of a CSP is being too tight, and this one is measured against
-a busier state than the site is now in.
+because the account was not approved. Auto ads is now off and a manual banner
+asks instead, on ten pages rather than all twenty-some, and whether it fills
+is whatever the account's approval state is at the time this is read rather
+than something this document can assert. Neither change obviously widens what
+is contacted — a persistent display unit is not a format Auto ads would
+refuse to place, and asking on fewer pages can only narrow — but neither was
+true of the run that produced these five, so **this measurement is now a
+thing to repeat, not a ceiling to trust on the strength of that argument
+alone.** Re-run the recipe above once the unit is live and reads back a real
+slot id, and sooner if a console shows a blocked subresource in the meantime.
 
-A filled ad would draw its creative inside the
-`googleads.g.doubleclick.net` frame, which this origin's policy does not
-reach, so the five hosts should still hold if Auto ads is ever turned back on
-— **should**, not do. The first page that fills is the one to open a console
-on, and it is the one occasion on
-this list where finding a sixth host would be unsurprising rather than
-alarming.
+A filled ad draws its creative inside the `googleads.g.doubleclick.net` frame,
+which this origin's policy does not reach, so the five hosts should still hold
+once the banner fills — **should**, not do, for the reason above. The first
+page that fills is the one to open a console on.

@@ -7,6 +7,7 @@ import { section } from "@/content/sections";
 import { EmptyState } from "@/components/empty-state";
 import { DocsSidebar } from "@/components/docs-sidebar";
 import { Breadcrumbs } from "@/components/breadcrumbs";
+import { AdBanner } from "@/components/ad-banner";
 
 const docs = section("docs");
 
@@ -62,6 +63,8 @@ export default function DocsIndex() {
             </section>
           ))
         )}
+
+        <AdBanner />
       </div>
     </div>
   );
