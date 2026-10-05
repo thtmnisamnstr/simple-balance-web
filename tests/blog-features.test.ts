@@ -1,6 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { darkVariant } from "@/components/cover";
+import sharp from "sharp";
+import { COVER_HEIGHT, COVER_WIDTH, darkVariant } from "@/components/cover";
 import {
   allEntries,
   blogNeighbors,
@@ -171,6 +172,35 @@ describe("post covers", () => {
       .filter((src) => !existsSync(`public${src}`));
 
     expect(missing, "run `npm run build:images`").toEqual([]);
+  });
+
+  /*
+   * `web.md` 5.3: the box is reserved before the file arrives. Held against
+   * the files rather than against a number written here a second time, so a
+   * cover redrawn at another size fails until the component says so too.
+   */
+  it("declares every cover's real size", async () => {
+    const files = posts
+      .filter((post) => post.frontmatter.image)
+      .flatMap((post) => {
+        const light = String(post.frontmatter.image);
+        return [light, darkVariant(light)];
+      });
+    expect(files.length, "no cover to check").toBeGreaterThan(0);
+    const sizes = await Promise.all(
+      files.map(async (src) => {
+        const { width, height } = await sharp(`public${src}`).metadata();
+        return { src, width, height };
+      }),
+    );
+    for (const size of sizes) {
+      expect(size).toEqual({ src: size.src, width: COVER_WIDTH, height: COVER_HEIGHT });
+    }
+
+    const html = readFileSync("out/blog/what-a-refund-actually-is/index.html", "utf8");
+    const img = /<img[^>]*class="entry-cover"[^>]*>/.exec(html)?.[0] ?? "";
+    expect(img).toContain(`width="${COVER_WIDTH}"`);
+    expect(img).toContain(`height="${COVER_HEIGHT}"`);
   });
 
   it("offers the dark file to a browser that asks for it", () => {

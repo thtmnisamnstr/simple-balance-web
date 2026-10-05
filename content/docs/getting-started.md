@@ -3,7 +3,7 @@ title: Getting started
 description: Try Simple Balance on your own machine with Docker and PostgreSQL, create the first account with its setup code, and see what running it for real takes.
 section: Install
 order: 1
-updated: 2026-09-22
+updated: 2026-10-04
 ---
 
 Simple Balance runs as a container against a PostgreSQL database. The version
@@ -77,43 +77,53 @@ of the settings the server reads.
 
 ## Running it for real
 
-The application describes three shapes. What separates them is how many
-machines there are and where the database lives.
+The application describes two shapes. What separates them is how many machines
+there are and what runs on each.
 
-| Profile  | What it is                                                                  |
-| -------- | --------------------------------------------------------------------------- |
-| `single` | One machine, running the app and whatever handles TLS.                      |
-| `vps`    | One small VPS per service, with the database as one of them.                |
-| `ha`     | A Kubernetes cluster, with PostgreSQL spread across several nodes by Citus. |
+| Profile  | What it is                                                                                                             |
+| -------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `single` | Two machines: one running the app and whatever handles TLS, and one running PostgreSQL, unreachable from the internet. |
+| `ha`     | A Kubernetes cluster, with PostgreSQL spread across several nodes by Citus.                                            |
 
 **Start with `single`.** It's the supported shape, and the one the
 application's own docs assume. There are two ways to stand it up:
 
-- [`deploy/compose/single`](https://github.com/thtmnisamnstr/simple-balance/tree/deployment-and-monetization/deploy/compose/single)
-  runs the app under Docker Compose against a PostgreSQL you already have,
-  managed or on a server you keep. Its `compose.caddy.yml` overlay adds Caddy,
-  which gets and renews the certificate and sets `TRUST_PROXY` for you, and the
-  unit in `deploy/systemd` starts it after a reboot. With a proxy of your own
-  instead, set `TRUST_PROXY=true` yourself, once the proxy replaces
-  `X-Forwarded-For` rather than appending to it
-  ([Behind a proxy](/docs/configuration/#behind-a-proxy)).
-- [`deploy/pulumi`](https://github.com/thtmnisamnstr/simple-balance/tree/deployment-and-monetization/deploy/pulumi)
-  has `oci-single` and `aws-single`, which stand up one Oracle Cloud or EC2
-  machine running the app and Caddy under systemd, against a PostgreSQL you
-  supply. There's no database on the machine. Its separate data disk holds the
-  nightly backups, the generated secret and the settings you add. The app waits
-  for your `DATABASE_URL` before it starts, and the machine's login message says
-  where that goes. After that, a setting is an edit to
-  `/var/lib/simple-balance/env.local` followed by
-  `sudo systemctl restart simple-balance`. The programs deploy the pinned
-  release image, which is 0.1.6 until 0.2.0 is released. 0.1.6 has no billing
-  and no ads, so those reach a machine with the 0.2.0 release. A machine that's
-  already running moves to a new release on the machine itself, as the
-  programs' README describes, not from another `pulumi up`.
+- [`deploy/compose/single`](https://github.com/thtmnisamnstr/simple-balance/tree/main/deploy/compose/single)
+  runs the app under Docker Compose, given a `DATABASE_URL`: a PostgreSQL you
+  already have, or the one its `compose.postgres.yml` runs on a second machine.
+  Its `compose.caddy.yml` overlay adds Caddy, which gets and renews the
+  certificate and sets `TRUST_PROXY` for you, and the unit in `deploy/systemd`
+  starts it after a reboot. With a proxy of your own instead, set
+  `TRUST_PROXY=true` yourself, once the proxy replaces `X-Forwarded-For` rather
+  than appending to it ([Behind a proxy](/docs/configuration/#behind-a-proxy)).
+- [`deploy/pulumi`](https://github.com/thtmnisamnstr/simple-balance/tree/main/deploy/pulumi)
+  has `oci-single` and `aws-single`, which stand up both machines on Oracle
+  Cloud or EC2, the app with Caddy under systemd. The app machine's separate
+  data disk holds the nightly backups and the generated secret. With
+  `simple-balance:databaseNode` set to `false` you get only the app machine,
+  and it waits until the stack has the `DATABASE_URL` of a PostgreSQL you
+  already run. Its login message says how.
 
-[Deployment profiles](https://github.com/thtmnisamnstr/simple-balance/blob/deployment-and-monetization/docs/deployment-profiles.md)
-compares the three, and the
-[deployment reference](https://github.com/thtmnisamnstr/simple-balance/blob/deployment-and-monetization/docs/deployment.md)
+On the machines the Pulumi programs build, settings live in the stack, and the
+program keeps them in the cloud's own secret store, so nothing gets typed into
+a file on the machine. Set one and apply it, and the machine picks it up within
+five minutes:
+
+```sh
+pulumi config set --path 'simple-balance:env.SB_BILLING_ENABLED' true
+pulumi config set --secret --path 'simple-balance:secrets.STRIPE_SECRET_KEY'
+pulumi up
+```
+
+The second line names a secret and no value, so Pulumi asks for it, which
+keeps it out of your shell history. The programs deploy the pinned release
+image, which is 0.2.0. A machine that's already running moves to a new release
+on the machine itself, as the programs' README describes, not from another
+`pulumi up`.
+
+[Deployment profiles](https://github.com/thtmnisamnstr/simple-balance/blob/main/docs/deployment-profiles.md)
+compares the two, and the
+[deployment reference](https://github.com/thtmnisamnstr/simple-balance/blob/main/docs/deployment.md)
 covers the settings in more depth, along with the reverse proxy configuration
 and backups.
 

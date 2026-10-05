@@ -37,6 +37,11 @@ function emittedRoutes(dir = "out", prefix = "/"): readonly string[] {
 const NOT_INDEXED: Record<string, string> = {
   "/404/": "An error page. Indexing it is how a 404 ends up in search results.",
   "/_not-found/": "Next's own name for the same page.",
+  "/blog/page/1/":
+    "The same content as /blog/, and its own canonical says so. Next refuses a " +
+    "dynamic route whose generateStaticParams returns nothing, so page one is " +
+    "generated rather than skipped; listing it would ask a crawler to index a " +
+    "duplicate this site has already disclaimed.",
 };
 
 describe("the sitemap", () => {

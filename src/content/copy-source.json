@@ -1,7 +1,7 @@
 {
   "$comment": "The application descriptions this site's copy was written from. Updated only by `npm run copy:accept`, which is the explicit act of saying the words here have been re-read against the words there. Never edited by hand and never refreshed to make a test pass.",
-  "acceptedFor": "5b3888f44cb932e8989b5ceb15eb4d2b3a103cd0",
-  "acceptedAt": "2026-10-02",
+  "acceptedFor": "71a17a57e763e92059ea5b37b3dc551bdb68ff09",
+  "acceptedAt": "2026-10-05",
   "entries": {
     "all-accounts-one-page": {
       "name": "Every account in one place",

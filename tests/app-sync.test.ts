@@ -388,15 +388,17 @@ describe("where the snapshots say they came from", () => {
   });
 });
 
+/** A link into the application, as the scanner reports one. */
+const link = (target: string, file = "content/docs/getting-started.md", line = 88): Link => ({
+  file,
+  line,
+  kind: "blob",
+  target,
+  url: `https://github.com/${APP}/blob/${target}`,
+});
+
 describe("the links into the application", () => {
   const onMain: Resolution = { ref: "main", read: "main", pullRequest: null, why: "" };
-  const link = (target: string, file = "content/docs/getting-started.md", line = 88): Link => ({
-    file,
-    line,
-    kind: "blob",
-    target,
-    url: `https://github.com/${APP}/blob/${target}`,
-  });
 
   it("names every link still pointing at the release branch once the check reads main", () => {
     // The week the release merges: every link resolves, the kit is identical,
@@ -466,19 +468,20 @@ describe("the report", () => {
   });
 });
 
+/** A stand-in for `fetch` that answers with these statuses, in order, and records what it was sent. */
+function transport(...statuses: number[]) {
+  const sent: Sent[] = [];
+  const send: Send = async (url, init) => {
+    sent.push({ url, ...init });
+    const status = statuses.shift() ?? 500;
+    return { status, ok: status >= 200 && status < 300 };
+  };
+  return { send, sent };
+}
+
 describe("asking GitHub", () => {
   const RAW = "https://raw.githubusercontent.com/o/r/main/docs/product/facts.json";
   const API = "https://api.github.com/repos/o/r/pulls";
-
-  function transport(...statuses: number[]) {
-    const sent: Sent[] = [];
-    const send: Send = async (url, init) => {
-      sent.push({ url, ...init });
-      const status = statuses.shift() ?? 500;
-      return { status, ok: status >= 200 && status < 300 };
-    };
-    return { send, sent };
-  }
 
   it.each([RAW, API])("sends the token to %s", async (url) => {
     const { send, sent } = transport(200);

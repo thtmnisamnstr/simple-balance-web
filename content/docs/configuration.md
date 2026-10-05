@@ -3,14 +3,14 @@ title: Configuration
 description: Every environment variable the server reads, what it defaults to, and which ones it refuses to start without.
 section: Reference
 order: 1
-updated: 2026-09-22
+updated: 2026-10-04
 ---
 
 Configuration is environment variables. There's no configuration file. This
 page is written from the application's own reference,
-[`docs/deployment.md`](https://github.com/thtmnisamnstr/simple-balance/blob/deployment-and-monetization/docs/deployment.md)
+[`docs/deployment.md`](https://github.com/thtmnisamnstr/simple-balance/blob/main/docs/deployment.md)
 and
-[`.env.example`](https://github.com/thtmnisamnstr/simple-balance/blob/deployment-and-monetization/.env.example),
+[`.env.example`](https://github.com/thtmnisamnstr/simple-balance/blob/main/.env.example),
 which go into more depth on most settings.
 
 Almost every setting is checked at startup. A value the server can't use stops
@@ -181,22 +181,37 @@ one is configured, but nothing queues in the meantime: a reminder whose moment
 passed isn't sent later. Accounts created without a mail server keep working
 after one is added.
 
+## Your privacy policy and terms
+
+<Callout kind="note" title="From 0.2.0">
+The server reads these settings from 0.2.0 on. An older image ignores them.
+</Callout>
+
+| Variable             | Default | What it does                                                                                                                                                                                                                                                                 |
+| -------------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PRIVACY_POLICY_URL` | unset   | Where this deployment's privacy policy lives. Linked from the sign-in and sign-up screens and from the sidebar on every page. **Required whenever AdSense is configured**, and the server refuses to start without it then.                                                  |
+| `TERMS_OF_USE_URL`   | unset   | Where this deployment's terms of use live, linked beside the privacy policy. With it set, the sign-up form and the **Continue with Google** button each say that creating an account accepts these terms, and the plan tab links them beside every request to pay. Optional. |
+
+Both have to be absolute `https` addresses, or the server refuses to start and
+names the variable. A blank value is the same as unset. The app ships neither
+document and can't write yours: what it does is one input to them, and the rest
+is who you are and what else you run.
+
 ## Selling a plan
 
 <Callout kind="note" title="From 0.2.0">
-The server reads these settings from 0.2.0 on. The 0.1.6 image, which `:latest`
-and the application's deployment recipes run by default until 0.2.0 ships, has
-no billing and ignores them.
+The server reads these settings from 0.2.0 on. An older image has no billing
+and ignores them.
 </Callout>
 
-| Variable                  | Default | What it does                                                                                                                                                                                                  |
-| ------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `SB_BILLING_ENABLED`      | `false` | Whether this deployment sells a plan and holds a free account to three financial accounts in use. `true` or `false`. Setting it without the five Stripe settings below refuses to start.                      |
-| `STRIPE_SECRET_KEY`       | unset   | The key this process charges, refunds and cancels with: `sk_…`, or a restricted `rk_…`. A live key while `NODE_ENV` isn't `production` refuses to start. It also takes a `_FILE`.                             |
-| `STRIPE_PUBLISHABLE_KEY`  | unset   | The key the browser loads Stripe's payment form with, `pk_…`. It's published to every visitor, so it's a setting rather than a secret. A live key beside a test secret key, or the reverse, refuses to start. |
-| `STRIPE_WEBHOOK_SECRET`   | unset   | What a delivery from Stripe is verified against, `whsec_…`. It also takes a `_FILE`.                                                                                                                          |
-| `STRIPE_PRICE_MONTHLY_ID` | unset   | The monthly price, `price_…`. A product id here is the usual mistake and is refused at startup.                                                                                                               |
-| `STRIPE_PRICE_YEARLY_ID`  | unset   | The annual price, `price_…`. Both prices belong to one product.                                                                                                                                               |
+| Variable                  | Default | What it does                                                                                                                                                                                                                                                                                                                                              |
+| ------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SB_BILLING_ENABLED`      | `false` | Whether this deployment sells a plan and holds a free account to three financial accounts in use. `true` or `false`. Setting it without the five Stripe settings below refuses to start.                                                                                                                                                                  |
+| `STRIPE_SECRET_KEY`       | unset   | The key this process charges, refunds and cancels with: `sk_…`, or a restricted `rk_…`. A restricted key needs Write on PaymentIntents and on PaymentMethods. Without the second, replacing a card fails, and a test account rarely gets far enough to show it. A live key while `NODE_ENV` isn't `production` refuses to start. It also takes a `_FILE`. |
+| `STRIPE_PUBLISHABLE_KEY`  | unset   | The key the browser loads Stripe's payment form with, `pk_…`. It's published to every visitor, so it's a setting rather than a secret. A live key beside a test secret key, or the reverse, refuses to start.                                                                                                                                             |
+| `STRIPE_WEBHOOK_SECRET`   | unset   | What a delivery from Stripe is verified against, `whsec_…`. It also takes a `_FILE`.                                                                                                                                                                                                                                                                      |
+| `STRIPE_PRICE_MONTHLY_ID` | unset   | The monthly price, `price_…`. A product id here is the usual mistake and is refused at startup.                                                                                                                                                                                                                                                           |
+| `STRIPE_PRICE_YEARLY_ID`  | unset   | The annual price, `price_…`. Both prices belong to one product.                                                                                                                                                                                                                                                                                           |
 
 **The five Stripe settings are set together or not at all.** Setting only some
 of them refuses to start. Set none and this process never opens a connection to
@@ -243,18 +258,21 @@ ignores it.
 ## Advertising
 
 <Callout kind="note" title="From 0.2.0">
-The server reads these settings from 0.2.0 on. The 0.1.6 image, which `:latest`
-and the application's deployment recipes run by default until 0.2.0 ships,
-shows no ads and ignores them.
+The server reads these settings from 0.2.0 on. An older image shows no ads and
+ignores them.
 </Callout>
 
-| Variable                  | Default | What it does                                                                                                                                                                                                                                                                                               |
-| ------------------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `PRIVACY_POLICY_URL`      | unset   | Where this deployment's privacy policy lives. **Required whenever AdSense is configured**, because Google's program policies require one; the server refuses to start without it. Must be absolute and `https`. Linked from the sidebar on every page. Read from 0.2.0 on, and the 0.1.6 image ignores it. |
-| `ADSENSE_CLIENT_ID`       | unset   | The AdSense publisher id, `ca-pub-` followed by sixteen digits. The dashboard shows it as `pub-…`, and the missing `ca-` is refused at startup.                                                                                                                                                            |
-| `ADSENSE_BANNER_SLOT_ID`  | unset   | The ad unit shown once in the application shell. Ten digits. Set with the client id or not at all.                                                                                                                                                                                                         |
-| `ADSENSE_FOOTER_SLOT_ID`  | unset   | A second unit at the foot of the page. An addition to the banner rather than a replacement, so setting it alone refuses to start.                                                                                                                                                                          |
-| `ADSENSE_CONSENT_MANAGED` | `false` | Whether a certified consent platform decides which ads are personalized. Off, every ad request asks for non-personalized ads. Turn it on only if you want personalized ads, and read [the consent message](#the-consent-message) first.                                                                    |
+| Variable                  | Default | What it does                                                                                                                                                                                                                            |
+| ------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ADSENSE_CLIENT_ID`       | unset   | The AdSense publisher id, `ca-pub-` followed by sixteen digits. The dashboard shows it as `pub-…`, and the missing `ca-` is refused at startup.                                                                                         |
+| `ADSENSE_BANNER_SLOT_ID`  | unset   | The ad unit shown once in the application shell. Ten digits. Set with the client id or not at all.                                                                                                                                      |
+| `ADSENSE_FOOTER_SLOT_ID`  | unset   | A second unit at the foot of the page. An addition to the banner rather than a replacement, so setting it alone refuses to start.                                                                                                       |
+| `ADSENSE_CONSENT_MANAGED` | `false` | Whether a certified consent platform decides which ads are personalized. Off, every ad request asks for non-personalized ads. Turn it on only if you want personalized ads, and read [the consent message](#the-consent-message) first. |
+
+AdSense also needs
+[`PRIVACY_POLICY_URL`](#your-privacy-policy-and-terms), because Google's
+program policies require a privacy policy on any site serving their ads. The
+server refuses to start with the AdSense settings and without it.
 
 **An ad is shown only where a limited plan is in force**: a free account on a
 deployment that's selling one. Configuring AdSense with `SB_BILLING_ENABLED`
@@ -312,7 +330,7 @@ the default with no symptom at all. `PORT` has to be a whole number from 1 to
 65535 and `LOG_LEVEL` one of its four words, or the server refuses to start.
 
 Running the app split into separate containers, under Kubernetes or Compose,
-adds settings of its own for the nginx frontend container. Four of them arrive
+adds settings of its own for the nginx frontend container. Five of them arrived
 in 0.2.0:
 
 - `SB_BILLING_CONFIGURED` and `SB_ADS_CONFIGURED` have to agree with the
@@ -324,6 +342,11 @@ in 0.2.0:
   address. When something terminates TLS in front of nginx, it has to name that
   terminator's range, or the server counts every visitor against one
   allowance, even with [`TRUST_PROXY`](#behind-a-proxy) on.
+- `SB_REAL_IP_RECURSIVE` decides how nginx reads that address. Leave it off
+  behind a proxy that replaces `X-Forwarded-For`, which Caddy, nginx and
+  ingress-nginx all do by default. Turn it on only behind a chain where every
+  hop adds to the header and is in `SB_TRUSTED_PROXY_CIDR`, the way Google's
+  load balancer does.
 
 The application's reference covers all of them, along with what the containers
 have to agree about.

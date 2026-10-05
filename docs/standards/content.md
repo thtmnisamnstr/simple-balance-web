@@ -253,11 +253,11 @@ The site describes the version of the application its snapshots were taken
 from, so a link out of it has to open that version. **`main` is the obvious
 choice, and while a release is on its way it is wrong in both directions.** A
 file the release adds is a 404 on `main`: `deploy/compose/single/` and
-`docs/deployment-profiles.md` are both new in 0.2.0, and neither is on `main`
-until it merges. A file both have is the previous release's copy on `main`,
-and until 0.2.0 merges, `main`'s `docs/deployment.md` has none of the billing
-and ad settings the configuration page describes. Either way the reader
-follows a page about one product to a file about another.
+`docs/deployment-profiles.md` were both new in 0.2.0, and neither was on
+`main` until it merged. A file both have is the previous release's copy on
+`main`, and until 0.2.0 merged, `main`'s `docs/deployment.md` had none of the
+billing and ad settings the configuration page describes. Either way the
+reader follows a page about one product to a file about another.
 
 **A commit is the other obvious choice, and it never moves.** A link pinned
 to one would go on showing the commit the page was written against long

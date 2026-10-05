@@ -124,25 +124,51 @@ Break one of these and the site is wrong rather than untidy.
   recorded here instead of being broken quietly — `docs/adsense.md` §8 has the
   argument and the measurements.
 
-  **What keeps it an exception rather than a door.** The snippet is the
-  account's own, unmodified, and nothing else may be added beside it. It was
-  run and watched rather than reasoned about: it reaches five hosts and leaves
-  one cookie, Google's advertising identifier `IDE` on `.doubleclick.net`, and
-  `netlify.toml`'s policy names those five and nothing more, which is why it
-  is far narrower than the application's blanket `https:`.
-  Widening that policy to admit a host nobody has observed is how this stops
-  being one exception. And a script that reaches another origin is a
-  disclosure: this site is no longer a set of files that talks to nobody, so
-  `src/content/legal.ts` has to say what it does, to the same standard the
-  policy holds the application to.
+  **What keeps it an exception rather than a door.** The loader is the
+  account's own, unmodified. **One manual ad unit may run beside it, and
+  nothing else may** — the account's own banner, in `src/components/ad-banner.tsx`,
+  in exactly the shape Google documents: an `<ins class="adsbygoogle">`
+  carrying the account's client id and the banner's own slot id, and the
+  `push({})` that asks for it, forcing non-personalized unless a certified
+  consent platform is published. Not a second unit, not a consent vendor of
+  our own, not an analytics tag — those stay refused by the same sentence that
+  used to refuse the loader itself. The id and the slot are read from
+  `ADSENSE_CLIENT_ID` and `ADSENSE_BANNER_SLOT_ID`, the same two names the
+  application reads for the same account's same unit, so one parser two
+  deployments agree with is the thing not to let drift into two.
 
-  **Two checks, and neither one is the whole rule.**
+  **Which pages carry it is a decision, not Google's.** A manual unit has no
+  format or placement Google chooses the way Auto ads would, which stays off
+  here for that reason among others — every page the unit appears on is one
+  somebody wrote `<AdBanner />` into. Every page except the legal pages and
+  the 404 today; `tests/ad-placement.test.ts` holds the exact set by route,
+  by name, so a page added later carries it by doing nothing and a legal page
+  added later has to be named there deliberately or the build does not fail,
+  it just quietly shows somebody an ad beside the policy that discloses it.
+
+  **The hosts and the cookie were run and watched rather than reasoned
+  about**, while Auto ads asked on every page: five hosts, one cookie,
+  Google's advertising identifier `IDE` on `.doubleclick.net`, and
+  `netlify.toml`'s policy names those five and nothing more, which is why it
+  is far narrower than the application's blanket `https:`. **That measurement
+  is now a ceiling to re-verify, not a current reading** — a single persistent
+  unit asking on ten pages is a different shape of traffic than Auto ads
+  asking on all twenty-two, and `docs/adsense.md` §8's recipe is how to find
+  out whether it still holds. Widening the policy to admit a host nobody has
+  observed is how this stops being one exception. And a script that reaches
+  another origin is a disclosure: this site is no longer a set of files that
+  talks to nobody, so `src/content/legal.ts` has to say what it does, to the
+  same standard the policy holds the application to.
+
+  **Three checks, and none of them is the whole rule.**
   `tests/branding.test.ts` reads built markup: it holds the visible marks, and
   it grants the loader's exact address by name so moving it has to be
-  re-granted. `tests/adsense.test.ts` reads `netlify.toml`: it holds the five
-  measured hosts against a host lost and against an unmeasured one added, and
-  against a wildcard. Neither can see a request, so **a sixth host the vendor
-  starts reaching at runtime is caught by nothing here** — only by re-running
+  re-granted. `tests/adsense.test.ts` reads `netlify.toml` and the built
+  pages: it holds the five measured hosts against a host lost and against an
+  unmeasured one added and against a wildcard, and holds the rendered unit to
+  the configured client and slot ids. `tests/ad-placement.test.ts` holds
+  which pages carry it. None can see a request at runtime, so **a sixth host
+  the vendor starts reaching is caught by nothing here** — only by re-running
   `docs/adsense.md` §8's recipe, which is why that document writes it out.
 
 - **Nothing on the homepage or the pricing page may imply a bank connection,

@@ -122,6 +122,13 @@ jsdom has no layout engine and no computed styles, so a token change that
 makes text unreadable is invisible to every other test here and to every
 reviewer who did not happen to open that page in that theme.
 
+It also measures layout, for the same reason: reflow at 320px and 390px, and
+the defects `web.md` §9 attributes to its "layout" block — a lede flush
+against its title, a code block narrower than its column, two figures that do
+not line up, a frame left where no ad loaded. Each was found by looking first
+and written down second, so the block is a record of what a review caught
+rather than a claim about layout in general.
+
 It is the only test that needs a browser, and it is skippable by one named
 variable — `SKIP_BROWSER_TESTS=1`, set in `netlify.toml` and nowhere else,
 because Netlify's build image is not guaranteed to have the libraries Chromium

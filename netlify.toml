@@ -71,10 +71,11 @@
     # a policy and a header disagreeing about what reaches Google is the
     # failure this repository already writes down.
     #
-    # Note that the application takes the opposite default: `ADSENSE_PERSONALIZED`
-    # is false there, so a person reading their own balances is not profiled
-    # unless an operator asks. Different surfaces, different trade: a marketing
-    # page carries nobody's ledger.
+    # The application's own default is the opposite, ads forced
+    # non-personalized unless an operator says a consent message decides, and
+    # this operator now does on both surfaces: `ADSENSE_CONSENT_MANAGED` is on
+    # here and there, with Google's European and US-state messages published,
+    # and the privacy policy says so (`docs/adsense.md` §5).
     #
     # The auction and measurement features (`join-ad-interest-group`,
     # `run-ad-auction`, `attribution-reporting`, `private-aggregation`) are

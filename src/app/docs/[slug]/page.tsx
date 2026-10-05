@@ -16,6 +16,7 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 import { BreadcrumbStructuredData, DocStructuredData } from "@/components/structured-data";
 import { DocsSidebar } from "@/components/docs-sidebar";
 import { ActiveContents } from "@/components/client/active-contents";
+import { AdBanner } from "@/components/ad-banner";
 import { formatDate } from "@/lib/format";
 
 const docs = section("docs");
@@ -119,6 +120,8 @@ export default async function DocPage({ params }: { params: Promise<{ slug: stri
             ) : null}
           </nav>
         ) : null}
+
+        <AdBanner />
       </article>
     </div>
   );

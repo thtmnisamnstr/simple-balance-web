@@ -4,6 +4,7 @@ import { extname, join, normalize } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { chromium, type Browser } from "playwright";
 import AxeBuilder from "@axe-core/playwright";
+import { adsense } from "@/content/ads";
 
 /**
  * Accessibility, against the built pages in a real browser.
@@ -237,4 +238,155 @@ describe.skipIf(SKIPPED)("reflow", () => {
       }, 30_000);
     }
   }
+});
+
+/** The focus ring on whatever has focus, read in the page. */
+function ring(): string {
+  const style = getComputedStyle(document.activeElement!);
+  return `${style.outlineStyle} ${style.outlineWidth} ${style.outlineColor}`;
+}
+
+/** Open a built page with the ad loader blocked, and read something off it. */
+async function measure<T>(path: string, read: () => T, width = 1280): Promise<T> {
+  const context = await browser.newContext({ viewport: { width, height: 900 } });
+  const page = await context.newPage();
+  // The ad loader changes heights while it decides, and nothing here is
+  // about the ad but the one test that blocks it on purpose.
+  await page.route(/googlesyndication|doubleclick|adtrafficquality|www\.google\.com/, (r) =>
+    r.abort(),
+  );
+  await page.goto(`http://localhost:${PORT}${path}`);
+  await page.waitForLoadState("networkidle").catch(() => {});
+  const result = await page.evaluate(read);
+  await context.close();
+  return result;
+}
+
+/**
+ * Layout that only a renderer can see, each found by looking.
+ *
+ * `design-review` found every one of these on rendered pages after the suite
+ * had passed them, which is the argument for having them here: jsdom has no
+ * layout, so the rest of the suite cannot tell a lede flush against its title
+ * from one with room to breathe. Each is a measurement of the defect it was
+ * found as, not of the rule that fixed it, so a different way of breaking the
+ * same thing fails too.
+ */
+describe.skipIf(SKIPPED)("layout", () => {
+  /*
+   * Headings and paragraphs both zero their margins, and for as long as that
+   * has been true the lede under every title sat flush against it — on the
+   * homepage's sections, pricing, the blog and the docs — while the 404 alone
+   * had a gap, from a flex column nothing else used.
+   */
+  for (const path of ["/", "/pricing/", "/blog/", "/docs/", "/docs/backups/", "/404.html"]) {
+    it(`leaves room between a title and the text under it: ${path}`, async () => {
+      const gaps = await measure(path, () =>
+        [
+          ...document.querySelectorAll(
+            ".section-title + .lede, .section-title + .prose, .entry-heading + .lede",
+          ),
+        ].map((text) => {
+          const title = text.previousElementSibling!.getBoundingClientRect();
+          return Math.round(text.getBoundingClientRect().top - title.bottom);
+        }),
+      );
+      expect(gaps.length, `no title with text under it on ${path}`).toBeGreaterThan(0);
+      for (const gap of gaps) expect(gap).toBeGreaterThanOrEqual(12);
+    }, 30_000);
+  }
+
+  /*
+   * rehype-pretty-code wraps every block in a `<figure>`, which kept the
+   * browser's own 40px a side, so every code block on the site sat inset
+   * from the column its tables and callouts fill.
+   */
+  it("lets a code block fill the column its text does", async () => {
+    const { column, blocks } = await measure("/docs/backups/", () => ({
+      column: document.querySelector(".prose-body")!.getBoundingClientRect().width,
+      blocks: [...document.querySelectorAll(".prose-body .code-block")].map(
+        (block) => block.getBoundingClientRect().width,
+      ),
+    }));
+    expect(blocks.length, "no code block to measure").toBeGreaterThan(0);
+    for (const width of blocks) expect(Math.abs(width - column)).toBeLessThan(1);
+  }, 30_000);
+
+  /*
+   * The two screens under the feature grid stopped lining up whenever one
+   * caption ran a line longer than the other: the figure was stretched to its
+   * neighbor's height, and the shot's frame took the slack as blank surface.
+   */
+  it("lines up the two screens under the feature grid", async () => {
+    const heights = await measure("/", () =>
+      [...document.querySelectorAll(".showcase .shot")].map((shot) =>
+        Math.round(shot.getBoundingClientRect().height),
+      ),
+    );
+    expect(heights).toHaveLength(2);
+    expect(heights[0]).toBe(heights[1]);
+  }, 30_000);
+
+  /*
+   * The docs search is the one field on the site, and the shared focus rule
+   * named links, buttons and `[tabindex]` but not `input`, so it fell back to
+   * the browser's own blue ring while every link beside it wore the theme's.
+   */
+  for (const scheme of ["light", "dark"] as const) {
+    it(`rings the search field the way it rings a link (${scheme})`, async () => {
+      const context = await browser.newContext({ colorScheme: scheme });
+      const page = await context.newPage();
+      await page.goto(`http://localhost:${PORT}/docs/configuration/`);
+      await page.focus(".docs-search-input");
+      const field = await page.evaluate(ring);
+      await page.focus(".header-link");
+      await page.keyboard.press("Shift+Tab");
+      await page.keyboard.press("Tab");
+      const link = await page.evaluate(ring);
+      await context.close();
+      expect(link).toMatch(/^solid /);
+      expect(field).toBe(link);
+    }, 30_000);
+  }
+
+  /*
+   * The cover's top margin is the gap under a post's byline, and leading the
+   * featured card it stacked on the card's padding: twice the space above the
+   * picture that the card has beside it.
+   */
+  it("starts the featured card's cover at the card's own padding", async () => {
+    const inset = await measure("/blog/", () => {
+      const card = document.querySelector(".entry-featured")!.getBoundingClientRect();
+      const cover = document.querySelector(".entry-featured .entry-cover")!.getBoundingClientRect();
+      return { top: Math.round(cover.top - card.top), side: Math.round(cover.left - card.left) };
+    });
+    expect(inset.top).toBe(inset.side);
+  }, 30_000);
+});
+
+/*
+ * A reader whose blocker or DNS filter stops the ad loader. The unit is then
+ * never marked filled or unfilled, so the rule that collapses an unfilled one
+ * never fires, and every page ended on an empty band between two rules.
+ * Skipped where nothing is configured, as `tests/adsense.test.ts` is, and
+ * never in CI, which builds with the ids set.
+ */
+describe.skipIf(SKIPPED || (!adsense && !process.env.CI))("an ad that never loads", () => {
+  it("leaves no frame where the ad would have been", async () => {
+    const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+    const page = await context.newPage();
+    await page.route(/googlesyndication|doubleclick|adtrafficquality|www\.google\.com/, (r) =>
+      r.abort(),
+    );
+    await page.goto(`http://localhost:${PORT}/blog/archive/`);
+    await page.waitForLoadState("networkidle").catch(() => {});
+    const heights = await page.evaluate(() =>
+      [...document.querySelectorAll(".ad-banner")].map(
+        (banner) => banner.getBoundingClientRect().height,
+      ),
+    );
+    await context.close();
+    expect(heights, "the archive carries the banner").toHaveLength(1);
+    expect(heights[0]).toBe(0);
+  }, 30_000);
 });

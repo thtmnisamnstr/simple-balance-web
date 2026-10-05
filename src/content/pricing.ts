@@ -373,26 +373,22 @@ export const faq: readonly FaqItem[] = [
      */
     /*
      * **It said "you get asked before any advertising cookie is set"**, which
-     * was the last consent promise left on the site after the policy stopped
-     * making one. Nobody is asked: `window.googlefc` is undefined on every
-     * page and this page's own script sets Google's advertising identifier on
-     * a visit, so the sentence was false on the page that carried it. It
-     * states the requirement now and says no notice is published, which is
-     * what the policy says a click away.
+     * was false for a while: no consent message was published, so it was a
+     * promise to everybody that nobody kept, and the answer was rewritten to
+     * say none was published. The operator has since published Google's
+     * European and US-state messages for both origins and turned off the
+     * forced non-personalized flag, so the answer now says what happens by
+     * region, and never as a promise to everybody: a reader in Ohio is not
+     * asked, and a sentence telling them they are would be the old failure
+     * back again. `tests/legal.test.tsx` holds every "asked before" to the
+     * region it is true in.
      *
-     * The invariant is one-directional and this was the inverse of the
-     * failure it was written for: a marketing claim may not be *stronger*
-     * than the policy it links to, and here the sales page promised a
-     * protection the policy denies. The cross-surface check could not see it,
-     * because it asked that consent be mentioned rather than that it not be
-     * promised.
-     *
-     * Left alone by the voice pass that rewrote everything around it. Six
-     * assertions in `tests/legal.test.tsx` hold this string in both
-     * directions, and the thing a voice pass does to a sentence like this is
-     * shorten it past one of its conditions.
+     * The invariant is one-directional: a marketing claim may not be
+     * *stronger* than the policy it links to. "They are only personalized if
+     * you specifically agreed" went for that reason — outside Europe they
+     * can be, without anybody agreeing.
      */
-    a: "Ordinary Google ads, never on the billing page or the sign-in screen. They aren't picked from what you spend, and they are only personalized if you specifically agreed to that. In the UK, the EEA and Switzerland consent has to be collected through a notice before any advertising cookie is set. That notice is published from the advertising account rather than by any code in this product, and none is published today. Once one is up, saying no keeps the ads off your spending rather than off the page. The privacy policy covers the rest, including what does reach Google and the cookie this website itself sets.",
+    a: "Ordinary Google ads, never on the billing page or the sign-in screen. They aren't picked from what you spend, but they can be personalized from what Google knows of your browsing. In the UK, the EEA and Switzerland, Google's message asks for your consent before any advertising cookie is set; in US states with privacy laws, it offers a link to opt out instead. Saying no doesn't remove the ads. It keeps them from being personalized. The privacy policy covers the rest, including what does reach Google and the cookie this website itself sets.",
   },
   {
     q: "How do I cancel, and will you keep charging me?",

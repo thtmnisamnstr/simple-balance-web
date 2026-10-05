@@ -77,19 +77,18 @@ why.
 - **No separate comparison page.** The pricing table is the comparison, and a
   page comparing this to named competitors is work to keep honest and ages
   badly.
-- **No cookie banner on this site, and that is now an open gap rather than a
-  decision.** It used to read "it sets no cookies", which was true of a site
-  that loaded nothing. Google's ad script loads here, and it sets an
-  advertising identifier on `.doubleclick.net` with nobody asked. A visitor in
-  the EEA, the UK or Switzerland has to be asked before that, for _this_
-  origin and not only for the application, and the notice that asks is
-  Google's own European regulations message, published from the AdSense
-  account (`docs/adsense.md` §3 step 7 and §5). It is a dashboard setting
-  rather than a commit in either codebase, so nothing here closes it. What
-  changed is the promise: the privacy policy used to say a visitor would be
-  asked, and now states the position instead, which is that none is published
-  and the cookie is set anyway. When the message goes up, that paragraph is
-  wrong in the other direction and has to move back.
+- **Google's consent messages are published, and not yet seen working
+  here.** This site sets an advertising identifier on `.doubleclick.net`, and
+  a visitor in the EEA, the UK or Switzerland has to be asked before that. On
+  4 October 2026 the operator reported a European regulations message and a
+  US state regulations message published from the AdSense account for both
+  origins, and both surfaces now leave personalization to them
+  (`docs/adsense.md` §5), so the privacy policy says who is asked, region by
+  region. What is open is the observation: the same day, a build served as
+  `smpl.money` and driven from California found `window.googlefc` undefined
+  on every page and no request for a message at all. Re-run `docs/adsense.md`
+  §8 from inside each region once the site serves ads, and if a message still
+  does not load, the policy is promising something that is not happening.
 - **No documentation versioning**, and **no multi-level sidebar.**
   `content.md` 5.1 and 5.5. Both are large structural changes, and building
   either early means maintaining it before anything uses it. The trigger for

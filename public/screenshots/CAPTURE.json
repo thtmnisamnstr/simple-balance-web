@@ -1,17 +1,17 @@
 {
-  "capturedAt": "2026-09-22",
+  "capturedAt": "2026-10-02",
   "viewport": "1440x900@2x",
   "shippedWidth": 1600,
   "images": [
     {
       "file": "public/screenshots/budgets-dark.webp",
-      "kb": 62,
+      "kb": 58,
       "w": 1600,
       "h": 1000
     },
     {
       "file": "public/screenshots/budgets-light.webp",
-      "kb": 62,
+      "kb": 58,
       "w": 1600,
       "h": 1000
     },
@@ -23,7 +23,7 @@
     },
     {
       "file": "public/screenshots/dashboard-light.webp",
-      "kb": 44,
+      "kb": 45,
       "w": 1600,
       "h": 1000
     },
@@ -40,32 +40,20 @@
       "h": 1000
     },
     {
-      "file": "public/screenshots/payees-dark.webp",
-      "kb": 52,
-      "w": 1600,
-      "h": 1000
-    },
-    {
-      "file": "public/screenshots/payees-light.webp",
-      "kb": 53,
-      "w": 1600,
-      "h": 1000
-    },
-    {
       "file": "public/screenshots/reports-dark.webp",
-      "kb": 45,
+      "kb": 47,
       "w": 1600,
       "h": 1000
     },
     {
       "file": "public/screenshots/reports-light.webp",
-      "kb": 46,
+      "kb": 47,
       "w": 1600,
       "h": 1000
     },
     {
       "file": "public/screenshots/transactions-dark.webp",
-      "kb": 64,
+      "kb": 63,
       "w": 1600,
       "h": 1000
     },

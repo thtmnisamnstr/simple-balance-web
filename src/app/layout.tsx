@@ -127,8 +127,13 @@ export default function RootLayout({ children }: { readonly children: ReactNode 
          * The inline JSON-LD in `src/components/structured-data.tsx` is the
          * deliberate opposite: it has no src, so it is not hoisted, and it
          * belongs where it renders.
+         *
+         * Absent entirely where `adsense` is `undefined` — every contributor's
+         * machine and every CI run that has not set the two variables, per
+         * `.env.example`. A loader with nothing to ask for is a request this
+         * build has no account to make.
          */}
-        <script async src={adsense.scriptSrc} crossOrigin="anonymous" />
+        {adsense ? <script async src={adsense.scriptSrc} crossOrigin="anonymous" /> : null}
         <a className="skip-link" href="#main">
           Skip to content
         </a>

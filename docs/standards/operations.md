@@ -213,9 +213,10 @@ curl -fsSL "https://raw.githubusercontent.com/$APP/$REF/docs/product/screenshots
 both themes, then the narrow copies and `public/screenshots/CAPTURE.json`.
 
 **The ref is resolved, not assumed, and not by whoever runs the command.**
-Until 0.2.0 merges, `docs/product/` exists only on the release branch, and a
-fetch against `main` returns 404 rather than something stale — which is the
-right failure and an easy one to misread as "no screenshots".
+Until 0.2.0 merged, `docs/product/` existed only on the release branch, and a
+fetch against `main` returned 404 rather than something stale — which is the
+right failure and an easy one to misread as "no screenshots". A release that
+adds to the kit will do the same again.
 `scripts/check-app-sync.mjs` resolves the ref itself: `main` once `main`
 carries the kit, and the head of the open pull request into `main` that
 carries it until then. The weekly workflow sets no ref, and the `curl` above
@@ -395,14 +396,14 @@ re-run rather than read.
 repository needs somewhere to live that is not a test.** None of these can be
 set from this tree, and each is a launch step.
 
-| Where                                     | Setting                           | Why                                                                                                                                                                                          |
-| ----------------------------------------- | --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Netlify → Project configuration → General | **Powered by Netlify badge: off** | On by default for free projects created on or after 19 August 2026. It is third-party branding on the page, which `web.md` 6.5 forbids from this repository and cannot forbid from the host. |
-| Netlify → Project configuration → Build   | Build command is `npm run verify` | Set from `netlify.toml`, but confirm it took. A deploy that only ran `next build` is a deploy with no gate.                                                                                  |
-| Netlify → Deploy previews                 | On                                | The preview is the only place anybody looks at a change before it ships.                                                                                                                     |
-| GitHub → Branch protection                | Require the `verify` check        | Otherwise Actions reports a failure nothing acts on.                                                                                                                                         |
-| AdSense → Privacy and messaging           | A European regulations message    | Required before ads may serve to the EEA, the UK or Switzerland, and published before any ad setting goes on the application. `docs/adsense.md` §3 step 7 and §5.                            |
-| AdSense → account                         | Auto ads **off**                  | An account setting no code can override, injecting formats the application promises not to show.                                                                                             |
+| Where                                     | Setting                                                                              | Why                                                                                                                                                                                                                                                    |
+| ----------------------------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Netlify → Project configuration → General | **Powered by Netlify badge: off**                                                    | On by default for free projects created on or after 19 August 2026. It is third-party branding on the page, which `web.md` 6.5 forbids from this repository and cannot forbid from the host.                                                           |
+| Netlify → Project configuration → Build   | Build command is `npm run verify`                                                    | Set from `netlify.toml`, but confirm it took. A deploy that only ran `next build` is a deploy with no gate.                                                                                                                                            |
+| Netlify → Deploy previews                 | On                                                                                   | The preview is the only place anybody looks at a change before it ships.                                                                                                                                                                               |
+| GitHub → Branch protection                | Require the `verify` check                                                           | Otherwise Actions reports a failure nothing acts on.                                                                                                                                                                                                   |
+| AdSense → Privacy and messaging           | A European regulations message, and a US state regulations message, for both origins | The first is required before ads may serve to the EEA, the UK or Switzerland; the second is the opt-out the privacy policy points US readers at. Both published before `ADSENSE_CONSENT_MANAGED` goes on anywhere. `docs/adsense.md` §3 step 7 and §5. |
+| AdSense → account                         | Auto ads **off**                                                                     | An account setting no code can override, injecting formats the application promises not to show.                                                                                                                                                       |
 
 ## 9. DNS
 

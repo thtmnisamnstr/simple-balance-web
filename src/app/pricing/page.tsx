@@ -6,6 +6,7 @@ import { site } from "@/content/home";
 import { CheckIcon } from "@/components/icons";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { BreadcrumbStructuredData, FaqStructuredData } from "@/components/structured-data";
+import { AdBanner } from "@/components/ad-banner";
 
 export const metadata: Metadata = {
   title: pricingMeta.title,
@@ -208,6 +209,10 @@ export default function PricingPage() {
           </div>
         </div>
       </section>
+
+      <div className="page page-narrow">
+        <AdBanner />
+      </div>
     </>
   );
 }

@@ -230,27 +230,23 @@ describe("the privacy policy", () => {
       expect(website, `the policy leaves out ${host}`).toContain(host);
     }
     /*
-     * Auto ads is OFF and this repository declares no ad unit
-     * (`docs/adsense.md` §3 step 8), so no advertising is displayed here at
-     * all. That makes a *different* fact the one a reader would get wrong,
-     * and it is the more dangerous direction: seeing no ads, they would
-     * reasonably conclude that nothing reached Google. The script is still
-     * fetched, still contacts the five hosts above, and still sets the
-     * cookie disclosed further down.
-     *
-     * So the policy has to say both halves — nothing is shown, and something
-     * still happens — and this holds it to the second, which is the half that
-     * disappears if somebody later simplifies the paragraph to "we don't show
-     * ads". Written as two separate matches rather than one phrase, so a
-     * rewording that keeps the meaning does not fail while a rewording that
-     * drops the disclosure does.
+     * One manual banner unit is live, and what the policy has to say about
+     * it is whether it can be personalized. It said "non-personalized" as a
+     * fact here while a later section said the opposite, and both were in
+     * the same document. The operator then published Google's consent
+     * messages and stopped forcing the flag, so the claim is the other one,
+     * held both ways: said here, and the contradicting fact gone.
      */
-    expect(website, "the policy does not say no advertising is displayed").toMatch(
-      /\bnothing is displayed\b|\bdoesn't currently show you any advertising\b/,
+    expect(website, "the policy does not say the ad can be personalized").toMatch(
+      /\bthat ad can be personalized\b/,
     );
-    expect(website, "the policy lets a reader think no ads means nothing reached Google").toMatch(
-      /seeing no ads doesn't mean nothing reached google/,
+    expect(website, "the policy still says the ad is non-personalized, as a fact").not.toMatch(
+      /\bthat ad is non-personalized\b/,
     );
+    expect(
+      website,
+      "the policy does not say a request and a cookie happen whether or not the ad fills",
+    ).toMatch(/whether or not the ad is filled/);
     // The short version is the part most people read, and it carried the
     // "collects nothing" claim in its first sentence.
     const summary = section(privacy, /^the short version/i);
@@ -324,28 +320,26 @@ describe("the privacy policy", () => {
     );
   });
 
-  it("says nobody is asked first, because on this origin nobody is", () => {
+  it("says who is asked first, region by region, and that elsewhere nobody is", () => {
     /*
-     * The heading was "Cookies, and why this site has no banner" and the
-     * paragraph under it said a consent notice on a site that stores nothing
-     * would be theater. Both went when the script shipped. What replaces
-     * them is not a softer version of the same claim: `window.googlefc` is
-     * undefined on every page of this site, so no consent platform is
-     * loading, and the cookie above lands on a first visit from anywhere with
-     * nobody asked.
-     *
-     * The heading matters as much as the paragraph, because a contents list
-     * is read by people who never open the section.
+     * The heading was "Cookies, and why this site has no banner", and then
+     * the section said nobody is asked first, because `window.googlefc` was
+     * undefined on every page and no message was published. The operator
+     * has since published Google's European and US-state messages, so the
+     * answer depends on where the reader is, and each region is held to
+     * what happens there. The third is the one a rewrite would drop: outside
+     * both, the cookie still arrives with no notice.
      */
     const heading = privacy.sections.find((s) => /^cookies/i.test(s.heading))!.heading;
     expect(heading, "the heading still promises no banner").not.toMatch(/\bno banner\b/i);
     const cookies = section(privacy, /^cookies/i);
     expect(cookies, "the policy still argues a banner would be theater").not.toContain("theater");
-    expect(cookies, "the EEA position is not stated for this origin").toMatch(
-      /\bnone is published for smpl\.money today\b/,
+    expect(cookies, "Europe is not said to be asked before the cookie").toMatch(
+      /\bin the eea, the uk and switzerland, google's message asks before\b/,
     );
-    expect(cookies, "the reader is not told the cookie arrives unannounced").toMatch(
-      /\bset on your first visit with no notice\b/,
+    expect(cookies, "the US-state opt-out is not said").toMatch(/\bus states\b[^.]*\bopt out\b/);
+    expect(cookies, "the reader outside both is not told the cookie arrives unannounced").toMatch(
+      /\beverywhere else, the cookie is set on your first visit with no notice\b/,
     );
   });
 
@@ -436,37 +430,36 @@ describe("the privacy policy", () => {
     }
   });
 
-  it("promises no consent notice, because neither origin publishes one", () => {
+  it("promises to ask only where Google's message asks", () => {
     /*
-     * This used to assert the policy said consent "is collected through
-     * Google's own certified consent platform before any ad cookie is set",
-     * which the policy said twice. It was written from the plan in
-     * `docs/adsense.md` §5 rather than from a browser, and a browser says
-     * `window.googlefc` is undefined on every page of this site: nothing is
-     * published, so nobody is asked.
-     *
-     * The assertion is inverted rather than dropped. A promise of a consent
-     * notice is the most consequential sentence on the page — somebody in
-     * the EEA reads it and concludes they were asked — so it stays checked,
-     * with the check pointing the other way until a notice really is
-     * published. Both copies are covered, because the old check read the
-     * whole document and either one satisfied it.
+     * This was "promises no consent notice, because neither origin publishes
+     * one", and before that it asserted the opposite promise, which the
+     * policy made twice from a plan rather than a browser. Now the messages
+     * are published, so asking may be promised, and the failure to guard is
+     * the old one in a new place: a sentence that tells every reader they
+     * are asked, when only a reader in Europe is. So every sentence that
+     * says somebody is asked before something has to name the region it is
+     * true in.
      */
-    for (const promise of [
-      "before any ad cookie is set",
-      "you will be asked before",
-      "certified consent platform",
-    ]) {
-      expect(text, `the policy promises a consent notice: "${promise}"`).not.toContain(promise);
+    const asking = /\basks?\b[^.]*\bbefore\b|\basked\b[^.]*\bbefore\b/;
+    const sentences = privacy.sections
+      .flatMap((s) => s.paragraphs)
+      .flatMap((paragraph) => paragraph.toLowerCase().split(/(?<=[.!?;])\s+/));
+    // "Nothing asks before the cookie is set" is the US sentence saying the
+    // opposite, and the first version of this check read it as a promise.
+    const denied = /\b(nothing|nobody|no one|never|not)\s+(asks?|is asked|are asked)\b/;
+    const promises = sentences.filter(
+      (sentence) => asking.test(sentence) && !denied.test(sentence),
+    );
+    expect(promises.length, "the policy no longer says anybody is asked").toBeGreaterThan(0);
+    expect("in the us states, nothing asks before the cookie is set").toMatch(denied);
+    expect("google's message asks before any cookie is set").not.toMatch(denied);
+    for (const promise of promises) {
+      expect(promise, "a promise to ask that does not say where").toMatch(/\beea\b|\beurope\b/);
     }
     expect(text, "the requirement itself is gone").toMatch(
       /\bconsent is required in the eea, the uk and switzerland\b/,
     );
-    expect(text, "the policy does not say no notice is published").toMatch(
-      /\bno such notice is published today\b/,
-    );
-    // What it can still promise, kept: a notice, once published, is one
-    // somebody can change their mind in.
     expect(text, "withdrawing is no longer mentioned at all").toContain("withdraw");
   });
 
@@ -1171,36 +1164,27 @@ describe("the marketing pages, against the policy", () => {
     expect(answer).toMatch(/agreed|consent|asked before/);
   });
 
-  it("does not promise a consent notice that neither origin publishes", () => {
+  it("promises to ask only where the policy says Google's message asks", () => {
     /*
-     * The other direction of the same invariant, and the one that shipped.
-     * The check above requires consent to be *mentioned*, which the sentence
-     * "in the UK, the EEA and Switzerland you get asked before any
-     * advertising cookie is set" satisfied — so the strongest consent promise
-     * on the site sat on the page selling the paid plan while the policy one
-     * click away said nobody is asked.
-     *
-     * Asserted as the promise rather than as the requirement, because the
-     * requirement is true and worth stating: what may not appear is a
-     * sentence telling a reader that they, personally, are asked.
+     * The other direction of the same invariant, and the one that shipped
+     * once: "in the UK, the EEA and Switzerland you get asked before any
+     * advertising cookie is set" sat on the page selling the paid plan while
+     * the policy said nobody was asked. The messages are published now, so
+     * the pricing page may say somebody is asked, and the check is the one
+     * the policy is held to: no "asked before" without the region, and the
+     * US opt-out said beside it, because "only personalized if you agreed"
+     * is the stronger claim the policy does not make.
      */
     const answer = ads!.a.toLowerCase();
-    for (const promise of [
-      "you get asked",
-      "you'll be asked",
-      "you will be asked",
-      "you are asked",
-      "asked before any advertising cookie",
-      "asked before any ad cookie",
-    ]) {
-      expect(answer, `the pricing page promises a consent notice: "${promise}"`).not.toContain(
-        promise,
-      );
+    const sentences = answer.split(/(?<=[.!?;])\s+/);
+    const promises = sentences.filter((s) => /\basks?\b[^.]*\bbefore\b|\basked\b/.test(s));
+    expect(promises.length, "the pricing page no longer says anybody is asked").toBeGreaterThan(0);
+    for (const promise of promises) {
+      expect(promise, "the pricing page promises asking without saying where").toMatch(/\beea\b/);
     }
-    // And says the thing that makes the requirement honest rather than
-    // reassuring, in the same words the policy uses.
-    expect(answer, "the pricing page does not say no notice is published").toMatch(
-      /\bnone is published today\b/,
+    expect(answer, "the US opt-out is missing beside the promise").toMatch(/\bopt out\b/);
+    expect(answer, "the pricing page claims more consent than the policy does").not.toMatch(
+      /\bonly personali[sz]ed if you\b/,
     );
   });
 

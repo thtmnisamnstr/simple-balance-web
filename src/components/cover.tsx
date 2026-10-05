@@ -22,6 +22,17 @@ export type CoverProps = {
   readonly priority?: boolean;
 };
 
+/**
+ * The size `scripts/build-images.mjs` draws every cover at, light and dark.
+ *
+ * On the `<img>` so the browser reserves the cover's box before the file
+ * arrives, which is `docs/standards/web.md` 5.3. The covers went without it
+ * after the screenshots had it, and a post opened by pushing its own first
+ * paragraph down the page once the picture above it loaded.
+ */
+export const COVER_WIDTH = 1600;
+export const COVER_HEIGHT = 800;
+
 /** `/covers/a.webp` -> `/covers/a-dark.webp`. */
 export function darkVariant(src: string): string {
   const dot = src.lastIndexOf(".");
@@ -38,6 +49,8 @@ export function Cover({ src, alt, priority = false }: CoverProps) {
         className="entry-cover"
         src={src}
         alt={alt}
+        width={COVER_WIDTH}
+        height={COVER_HEIGHT}
         loading={priority ? "eager" : "lazy"}
         decoding={priority ? "sync" : "async"}
       />
