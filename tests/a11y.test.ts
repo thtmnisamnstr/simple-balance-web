@@ -240,6 +240,28 @@ describe.skipIf(SKIPPED)("reflow", () => {
   }
 });
 
+/** The focus ring on whatever has focus, read in the page. */
+function ring(): string {
+  const style = getComputedStyle(document.activeElement!);
+  return `${style.outlineStyle} ${style.outlineWidth} ${style.outlineColor}`;
+}
+
+/** Open a built page with the ad loader blocked, and read something off it. */
+async function measure<T>(path: string, read: () => T, width = 1280): Promise<T> {
+  const context = await browser.newContext({ viewport: { width, height: 900 } });
+  const page = await context.newPage();
+  // The ad loader changes heights while it decides, and nothing here is
+  // about the ad but the one test that blocks it on purpose.
+  await page.route(/googlesyndication|doubleclick|adtrafficquality|www\.google\.com/, (r) =>
+    r.abort(),
+  );
+  await page.goto(`http://localhost:${PORT}${path}`);
+  await page.waitForLoadState("networkidle").catch(() => {});
+  const result = await page.evaluate(read);
+  await context.close();
+  return result;
+}
+
 /**
  * Layout that only a renderer can see, each found by looking.
  *
@@ -250,28 +272,7 @@ describe.skipIf(SKIPPED)("reflow", () => {
  * found as, not of the rule that fixed it, so a different way of breaking the
  * same thing fails too.
  */
-/** The focus ring on whatever has focus, read in the page. */
-function ring(): string {
-  const style = getComputedStyle(document.activeElement!);
-  return `${style.outlineStyle} ${style.outlineWidth} ${style.outlineColor}`;
-}
-
 describe.skipIf(SKIPPED)("layout", () => {
-  async function measure<T>(path: string, read: () => T, width = 1280): Promise<T> {
-    const context = await browser.newContext({ viewport: { width, height: 900 } });
-    const page = await context.newPage();
-    // The ad loader changes heights while it decides, and nothing here is
-    // about the ad but the one test that blocks it on purpose.
-    await page.route(/googlesyndication|doubleclick|adtrafficquality|www\.google\.com/, (r) =>
-      r.abort(),
-    );
-    await page.goto(`http://localhost:${PORT}${path}`);
-    await page.waitForLoadState("networkidle").catch(() => {});
-    const result = await page.evaluate(read);
-    await context.close();
-    return result;
-  }
-
   /*
    * Headings and paragraphs both zero their margins, and for as long as that
    * has been true the lede under every title sat flush against it — on the

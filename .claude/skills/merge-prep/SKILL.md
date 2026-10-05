@@ -109,9 +109,11 @@ npm run verify
 on purpose — `code/index.md` 4 says why.
 
 `verify` now includes an accessibility audit that drives a real browser over
-nine pages in both themes (`tests/a11y.test.ts`), so contrast and computed
-styles are covered. What it still cannot see is rhythm, alignment, balance, and
-whether a section is in a sensible place.
+every page the build emits, in both themes (`tests/a11y.test.ts`), so contrast
+and computed styles are covered, along with the handful of layout defects
+`web.md` §9 attributes to it. What it still cannot see is everything nobody
+has measured yet: rhythm in general, balance, and whether a section is in a
+sensible place.
 
 Then look at it:
 
