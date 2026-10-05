@@ -37,10 +37,11 @@ const PUBLISHER = "pub-9953156598757474";
 const CLIENT_ID = `ca-${PUBLISHER}`;
 
 /**
- * The banner's slot id, as set in `.github/workflows/verify.yml` for this
- * build. A placeholder: nobody has told this repository the real one, and it
- * would not matter here either way — these tests are about the mechanics of
- * rendering whatever slot id is configured, not about which unit it is.
+ * A well-formed slot id for the parser's own cases, and the placeholder
+ * `.github/workflows/verify.yml` builds with. The built pages are held to
+ * whatever slot their build was given rather than to this, because these
+ * tests are about the mechanics of rendering the configured slot, not about
+ * which unit it is — and the live build carries the real one.
  */
 const SLOT_ID = "1234567890";
 
@@ -223,7 +224,12 @@ describe.skipIf(!adsense && !process.env.CI)("the built pages", () => {
       if (!ins.includes(`data-ad-client="${CLIENT_ID}"`)) {
         offenders.push(`${page.route} ins has the wrong client id`);
       }
-      if (!ins.includes(`data-ad-slot="${SLOT_ID}"`)) {
+      // The slot this build was given, not CI's placeholder. Holding the
+      // page to `SLOT_ID` failed every build carrying the real unit, which
+      // is Netlify's for the live site and a developer's with a real `.env`,
+      // and the gate is `npm run verify` on both. What this checks is that
+      // the configured slot reaches the page, whichever one it is.
+      if (!ins.includes(`data-ad-slot="${adsense!.bannerSlotId}"`)) {
         offenders.push(`${page.route} ins has the wrong slot id`);
       }
       if (
@@ -239,12 +245,27 @@ describe.skipIf(!adsense && !process.env.CI)("the built pages", () => {
         offenders.push(`${page.route} has no push script immediately after the unit`);
       }
       if (!after.includes("requestNonPersonalizedAds = 1")) {
-        offenders.push(
-          `${page.route} does not force non-personalized ads (ADSENSE_CONSENT_MANAGED is false in this build)`,
-        );
+        offenders.push(`${page.route} does not force non-personalized ads`);
       }
     }
     expect(offenders).toEqual([]);
+  });
+
+  /*
+   * The privacy policy says the ad on smpl.money is non-personalized, as a
+   * fact, because this build forces it rather than asking. A build with
+   * `ADSENSE_CONSENT_MANAGED=true` stops forcing it, which is right only once
+   * a certified consent message is published from the account and the policy
+   * says so, and neither is true: `window.googlefc` is undefined on every
+   * page. So the setting fails the gate by name, here, rather than as one
+   * line in the rendering check above, because the thing to change first is
+   * the policy and `legal-review` is where that happens.
+   */
+  it("is the non-personalized ad the privacy policy says it is", () => {
+    expect(
+      adsense!.consentManaged,
+      "ADSENSE_CONSENT_MANAGED is true, and the privacy policy says the ad is non-personalized",
+    ).toBe(false);
   });
 });
 

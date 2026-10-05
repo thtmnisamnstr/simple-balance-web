@@ -424,6 +424,15 @@ banned-words test could not see.
 
 ### Fixed
 
+**The live site's own build can pass its gate again.** The check that the
+banner reaches every page held it to the placeholder slot the CI build uses,
+so a build carrying the real one failed, and Netlify's deploy is that build
+running the same tests. It now checks that whichever slot was configured is
+the one on the page. The non-personalized flag became a test of its own,
+because it is what the privacy policy promises: a build that turns consent
+management on now fails by name, pointing at the policy, until somebody
+publishes a consent message and the policy says so.
+
 **Every title has room under it.** The lede beneath a page's or a section's
 title sat flush against it everywhere but the 404, which was the one page that
 had laid itself out differently. One rule spaces them all now. The same review

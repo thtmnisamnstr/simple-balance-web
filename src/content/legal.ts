@@ -741,9 +741,11 @@ export const privacy = {
           "follow it, and this page will say so.",
         /*
          * The honest answer to "why is there no banner", which is no longer
-         * "because there is nothing to ask about". A notice is published from
-         * the AdSense account, `window.googlefc` is undefined on every page of
-         * this site, and the cookie above lands on the first visit. Stating it
+         * "because there is nothing to ask about". A notice would be published
+         * from the AdSense account rather than by this site's code, none is —
+         * `window.googlefc` is undefined on every page of this site, measured
+         * again on 4 October 2026 — and the cookie above lands on the first
+         * visit. Stating it
          * and giving the reader something to do about it is the only version
          * of this paragraph that is both true and useful; a vaguer one would
          * be true and useless.
