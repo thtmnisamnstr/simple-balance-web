@@ -1,17 +1,30 @@
 /**
  * Which parts of the site are announced, and which merely exist.
  *
- * `/blog` and `/docs` are built, routable and styled, and nothing links to
- * them. That is the state this site ships in: the machinery is finished so
- * that publishing the first post is writing a Markdown file rather than
- * building a blog, but an empty blog advertised in the header is worse than
- * no blog at all.
+ * `/docs` is announced: linked, indexed, and in the sitemap. `/blog` is built,
+ * routable and styled, and nothing links to it. That is the state this site
+ * ships in. The blog's machinery is finished so that publishing the first post
+ * is writing a Markdown file rather than building a blog, and it stays
+ * unannounced because what goes in it has not been decided yet.
  *
- * Flipping `announced` to true does three things at once, which is the reason
- * it is one flag rather than three habits: the section appears in the header
- * and the footer, its pages stop sending `noindex`, and it enters the
- * sitemap. `tests/sections.test.ts` holds all three to this value, so an
- * unannounced section cannot be half-launched by someone linking to it.
+ * Flipping `announced` does three things at once, which is the reason it is
+ * one flag rather than three habits: the section appears in the header and the
+ * footer, its pages stop sending `noindex`, and it enters the sitemap. Each
+ * reaches its surface differently and all three read this one value.
+ * `primaryNav` and `footer.links` in `src/content/home.ts` spread
+ * `announcedSections()`, the section's own route files choose their `robots`
+ * metadata from `section(key).announced`, and `src/app/sitemap.ts` walks the
+ * announced sections and the entries under each.
+ *
+ * **Two of those three were true and the link was not**, until `/docs` was
+ * announced and somebody checked. `announcedSections()` had exactly one
+ * caller, the sitemap, and the two nav lists were written out by hand — so
+ * this docstring described a mechanism that was really a habit, and announcing
+ * a section would have stopped its `noindex`, entered it in the sitemap, and
+ * linked it from nowhere. That is the same half-launch as a link added ahead
+ * of the flag, arriving from the other side, and it is why
+ * `tests/sections.test.tsx` now asserts all three in both directions rather
+ * than asserting the absences alone.
  */
 export type SectionKey = "blog" | "docs";
 
@@ -35,10 +48,16 @@ export const sections: readonly Section[] = [
     description:
       "How to run Simple Balance: installing it, importing your first statement, and what each " +
       "part of the ledger does.",
-    announced: false,
+    announced: true,
     empty: {
       title: "No pages published yet",
-      body: "The documentation is being written. Until it lands, the repository's own docs directory is the reference.",
+      /*
+       * What the reader is looking at, not what month it is. An empty state
+       * saying the documentation "is being written" was written when none of
+       * it was, and it survived seven published pages because it renders only
+       * when the collection is empty and the collection never is.
+       */
+      body: "Nothing is here to read. The repository's own docs directory is the reference until something is.",
     },
   },
   {
@@ -51,7 +70,9 @@ export const sections: readonly Section[] = [
     announced: false,
     empty: {
       title: "Nothing posted yet",
-      body: "The first post is not written. There is nothing to subscribe to and nothing you are missing.",
+      // Same trap as the docs empty state above: this one said the first post
+      // was not written while two were published, because nothing renders it.
+      body: "No posts are published. There is nothing to subscribe to and nothing you are missing.",
     },
   },
 ];
@@ -75,7 +96,14 @@ export function section(key: SectionKey): Section {
   return found;
 }
 
-/** Sections a reader is told about. Empty today, by design. */
+/**
+ * Sections a reader is told about. `/docs` today, and not `/blog`.
+ *
+ * Three callers, which is the whole of the coupling: `src/app/sitemap.ts` for
+ * the sitemap, and `primaryNav` and `footer.links` in `src/content/home.ts`
+ * for the two links. The `noindex` reads the flag directly, per section, in
+ * the eight route files that own a page.
+ */
 export function announcedSections(): readonly Section[] {
   return sections.filter((s) => s.announced);
 }

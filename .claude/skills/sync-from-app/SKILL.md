@@ -350,37 +350,96 @@ marketing page is actually for, and the `plain` is the answer to it.
 
 ### How to make it sound like a person
 
-- **Read it aloud.** If you run out of breath, it is too long. If it sounds
-  like a brochure, it is a brochure.
-- **Vary the sentence length.** Three medium sentences in a row is the single
-  clearest tell of generated text. Let one be four words.
+**Three passes, in this order, and do not merge them.** Each one is looking
+for something the previous pass cannot see, and running them together is how
+a sentence gets fixed for one fault and left broken for another.
+
+#### Pass 1: the tells
+
+The obvious ones are a word list and `tests/copy.test.ts` has them. These are
+the ones a word list cannot catch, and every one of them shipped on this site
+at some point:
+
+- **Meta-headings.** "Four money problems, and what this does about them" and
+  "The two pages you will use most" describe the section's own structure
+  instead of saying anything in it. An outline generator narrating itself.
+- **Coy feature names.** "One trip, counted as two things", "The things you
+  type over and over", "What you don't spend stays there". Each is a riddle
+  whose answer is a word the reader already knows: split, template, budget.
+  Making the copywriter visible is the cost, and the reader doing the
+  decoding is the price.
+- **Performative authenticity.** "Questions people actually ask" insists the
+  copy is human rather than being it. "Questions about pricing" is more human
+  precisely because it does not advertise that it is.
+- **Forced colloquialism.** "If you outgrow Free or hate ads", "it's your
+  computer", "sometimes you can just ask". A formal writer inserting
+  casualness reads as a formal writer inserting casualness.
+- **Over-symmetry.** Six cards whose bodies are all two sentences of the same
+  shape. Let each one take the length it needs.
+- **Pronoun chains.** "That one", "the one", "this one" three sentences
+  running. Repeat the noun.
+- **Defensive explanation before anybody objected.** Answering an edge case
+  in the top-level copy gives the page an anxious, lawyerly feel even when
+  every sentence is plain. The rule goes on the page; the state machine goes
+  in the FAQ or the docs.
 - **No throat-clearing.** "It's worth noting that", "In today's world",
-  "Whether you're a X or a Y" — cut all of it.
+  "Whether you're a X or a Y".
 - **No tricolons.** "Simple, powerful, and secure" is the rhythm of a machine
   trying to sound confident.
+
+#### Pass 2: the rhythm
+
+- **Read it aloud.** If you run out of breath, it is too long. If it sounds
+  like a brochure, it is a brochure.
+- **Vary the sentence length.** Three medium sentences in a row is the
+  clearest tell there is. Let one be four words.
+- **Count the fragments.** "Checking, savings, credit cards, cash. They all
+  sit on one page. Wonder where a number came from? Open it up." is four
+  beats in a row — a fragment, a short sentence, a rhetorical question and an
+  imperative — and it was the homepage's lede for a release. Plain language
+  is not the same as deliberately short language, and this is the difference.
+- **One idea per sentence**, but not one sentence per idea. Joining two
+  related clauses is what stops prose being choppy, and a colon will carry
+  three parallel options that would otherwise be three stub sentences.
+
+#### Pass 3: would somebody say this
+
 - **Second person, present tense.** "You upload the file your bank gives
   you", not "Users can upload bank-provided files".
-- **One idea per sentence**, but not one sentence per idea — joining two
-  related clauses is what stops prose being choppy.
 - **Name the concrete thing.** "The annual subscription you forgot about",
   not "unexpected recurring charges".
+- **Don't hide a familiar noun to avoid sounding like other software.**
+  Budget, transaction, split, template, import and report are useful words. A
+  reader should not have to solve anything to find out the product splits a
+  transaction.
 - **Let it be plain.** A sentence with nothing clever in it is fine. Most of
   them should be.
 
 `docs/standards/content.md` 1 is Binding over all of this — the banned
-vocabulary, and never claiming the product is simple or easy — and
-`tests/copy.test.ts` enforces it. **2.1 is the one that matters most:** every
-claim has to be true of the shipped application, and the feature list is what
-makes that checkable.
+vocabulary, the vocabulary a reader has not met, and the sentence that implies
+a bank connection — and `tests/copy.test.ts` enforces what a test can.
+**2.1 is the one that matters most:** every claim has to be true of the
+shipped application, and the feature list is what makes that checkable.
+
+Everything in the three passes above is `human`. A sentence can satisfy every
+test in the repository and still be the thing this section is about: the AI
+section's body read "One that's only allowed to suggest lines entries up for
+you to approve" for a release, which is a mangled sentence with no banned
+word, no British spelling and no em dash in it.
 
 ### What goes where
 
-- **Tier A** → the hero and the problem sections. Four things, and they carry
+- **Tier A** → the hero and the proof section. Four things, and they carry
   the page.
-- **Tier B** → the feature grid.
+- **Tier B** → the feature grid, and whichever tier B entries are the
+  _evidence_ for a tier A claim belong in the proof section beside it. The
+  running balance and the correction history are the proof that a figure can
+  be followed back, so they sit in the proof cards rather than in the grid,
+  even though the application ranks them B.
 - **Tier C** → mostly not on the homepage at all. It is documentation
   material, and putting it on a landing page is how a landing page becomes a
-  changelog.
+  changelog. The exceptions are the ones that answer a question a reader
+  arrives with: splits, bulk edits and templates are each one card.
 
 Dropping a feature from the site is a decision, not an oversight; the site is
 allowed to say less than the product does. **Saying more is not allowed.**

@@ -9,6 +9,189 @@ than a contract with readers.
 
 ### Changed
 
+**The homepage and the pricing page argue something different, because the
+old argument stopped being ours alone.** A competitive read in October 2026
+checked this site's claims against the eight products it competes with.
+"All your accounts on one page" is run by eight of them. "Know where your money
+went" by four. Multi-currency by two. And agent access, which this site treated
+as the thing nothing else does and gave the third section of the homepage to,
+is now PocketSmith's as well — a first-party MCP server with read and
+full-access permission levels and a promise that an answer can be checked
+against the figures behind it, which is this page's own pitch almost clause for
+clause.
+
+What survived the comparison is not a feature. It is that a figure here can be
+taken apart, and every section is now arranged behind that.
+
+- **The hero is "Your money should add up."** One sentence, and a complaint the
+  reader already has rather than two imperatives in a row. The lede says what
+  the product keeps and then what you can do when a total looks wrong.
+- **The first section is the proof, not four problems.** "You shouldn't have to
+  trust a number you can't explain", answered by three things the product does:
+  the running balance beside every payment, a correction that does not erase
+  what it corrected, and an import nothing counts until you have looked at it.
+  The section's heading used to be "Four money problems, and what this does
+  about them", which describes the section instead of saying anything in it.
+- **The assistant moved from third to fourth** and out of the hero's last
+  clause. It is a reason to stay, which is what it was always worth.
+- **The page ends on plans.** It ended on privacy, which is a good last
+  impression and leaves a persuaded reader with nowhere to go.
+- **The screenshots moved next to the claims they prove.** There was a gallery
+  headed "the two pages you will use most"; a screenshot is evidence for a
+  sentence somebody doubts, and it stops being evidence the moment it is
+  separated from the sentence.
+- **Both pages now say there is no automatic pull from a bank today**, in the
+  import copy, after the value. The site has had a rule against implying a
+  connection and a rule against promising there will never be one, and between
+  them sat a third state the page was in: saying nothing. Every hosted
+  competitor pulls transactions, so silence reads as a connection.
+
+**The pricing page leads with the monetization model, which is the unusual
+thing about it.** The headline was "What it costs, and what you get", which
+heads any pricing page ever written, while the fact worth reading — that every
+plan is the whole product and the paid one raises a limit and removes
+advertising — sat underneath it. It is the headline now.
+
+- **The comparison table went from sixteen rows to four.** Thirteen of the
+  sixteen were a tick in all three columns, so the picture argued "many
+  differences" directly underneath a sentence promising three. Those thirteen
+  are a list headed "in every plan, including the free one", which is the same
+  information arranged to prove the claim rather than undercut it.
+  `tests/app-facts.test.ts` holds that list's length beside the application's
+  published capability count, because collapsing the table removed the one
+  check that tied this page's size to what the product actually does.
+- **The step-by-step migration procedure left the FAQ** for
+  `/docs/moving-to-your-own-copy/`. It was eleven sentences, the longest answer
+  on the page, and it taught a data migration to somebody who had not decided
+  to sign up yet. The FAQ keeps what bears on the purchase: it is possible, it
+  is not one button, and two things do not travel. The five facts
+  `tests/app-facts.test.ts` holds are now read out of the guide.
+- **"Why is it $30 when everything else costs more? Will you still be here next
+  year?" is gone.** It was an honest answer to a question the page itself
+  raised, and raising it beside a price is the problem.
+- **"If you outgrow Free or hate ads", "Most people, most of the time" and
+  "it's your computer" are gone**, for three different reasons that are the
+  same reason: a badge should say what the plan does, a plan should not tell
+  the reader they are unusual, and the slot beside a price is not where a joke
+  goes.
+
+**`content.md` 1.2 is gone, and the rules below it renumbered.** It banned
+"simple", "easy" and "fast" from every string on the site, on the argument that
+a claim of simplicity is the reader's to make. The site's tagline is now
+"Personal finance that's simple", which is a deliberate play on the product's
+own name, so the rule and the copy could not both stand. Its test went with it.
+Everything else in section 1 moved down one, and the ten citations to those
+rules moved with them; `tests/standards-citations.test.ts` is what checks that.
+
+**The voice patterns a test cannot see are written down.** `sync-from-app` §3
+had a list for sentence length, throat-clearing and tricolons, and nothing for
+the eight tells that actually shipped here: meta-headings, coy feature names,
+performative authenticity, forced colloquialism, over-symmetry across cards,
+pronoun chains, defensive explanation and two-beat fragments. It is three
+passes now, in order, because a sentence fixed for one fault gets left broken
+for another when they are run together. The AI section's body carried the
+phrase "lines entries up" for a release — a mangled sentence with no banned
+word, no British spelling and no em dash in it, which is what `human` checks
+are for.
+
+**Google's ad script loads on smpl.money, and the privacy policy stopped
+saying it doesn't.** This site used to be a set of static files that made no
+request to anywhere but itself, and that was most of what its privacy policy
+had to say about it. One `<script>` in the root layout, from the same AdSense
+account that authorizes the application's ads, ends that.
+
+- The script is the account's own snippet, unmodified. The publisher id lives
+  once, in `src/content/ads.ts`, and the `ca-pub-` form the script wants is
+  derived from the `pub-` form `ads.txt` carries, so the file and the tag can't
+  name two different publishers — a state in which every page renders, every
+  check that reads one of the two passes, and the revenue is zero.
+- It's on every page, and React hoists it into `<head>`. React only hoists a
+  `<script>` that is `async`, has a `src` and has no event handler, so dropping
+  the `async` or writing `defer` leaves it in `<body>` with no build error and
+  no warning. The check reads the built HTML for where it landed rather than
+  the source for whether it's there.
+- **Nothing here declares an ad unit and Auto ads is off**, so no advertising
+  is displayed on this site at all. The script is carried because `ads.txt` on
+  this domain authorizes the advertising the application serves and because it
+  is how the site is verified, not because this site sells inventory. The
+  script still runs and still sets the cookie the privacy policy names: no ads
+  displayed is not no third party involved. It also bounds the measurement
+  below, which was taken while Auto ads was on and every slot unfilled — a
+  ceiling rather than an exact list. A filled ad draws inside
+  the doubleclick frame where this policy doesn't reach.
+- **The content security policy names five hosts, because five is what a real
+  browser running the real script contacted.** A build carrying the script was
+  served over local HTTPS as smpl.money and driven in Chromium, and the policy
+  was written from what it did: `pagead2.googlesyndication.com`,
+  `googleads.g.doubleclick.net`, `ep1.adtrafficquality.google`,
+  `ep2.adtrafficquality.google` and `www.google.com`, each admitted only to the
+  directives it was needed in. The application's own ads policy allows a
+  blanket `https:` because it has no account to watch. This repository has one,
+  so it didn't have to guess, and `docs/adsense.md` §8 is the measurement and
+  the recipe for taking it again when an ad stops rendering.
+- **One cookie is left, and it's an advertising identifier.** The first page
+  gets `test_cookie` on `.doubleclick.net`, a fifteen-minute probe, and the
+  next navigation replaces it with `IDE` — DoubleClick's per-browser
+  advertising identifier, which Google sends with a two-year expiry and the
+  browser keeps for 400 days. The first telling of this called the one cookie
+  short-lived and "not an identifier for you", which was the probe described
+  and the identifier missed, because the run that produced it stopped at the
+  first page. `docs/adsense.md` §8's recipe now says to navigate rather than
+  load, and the check in `tests/legal.test.tsx` had pinned the wrong strings,
+  so the suite was green because the disclosure was false.
+- **Nobody is asked first.** `window.googlefc` is undefined on every page,
+  which is how you can tell Google's consent platform isn't loading, so a
+  visitor in the EEA, the UK or Switzerland gets an advertising identifier
+  with no notice at all. The privacy policy says that, instead of what it used
+  to say, which was that they'd be asked before any ad cookie was set — and so
+  does the pricing page, which went on promising "in the UK, the EEA and
+  Switzerland you get asked before any advertising cookie is set" for a
+  commit after the policy stopped. That was the strongest consent promise left
+  on the site, on the page selling the paid plan, one click from a policy
+  denying it. Publishing a European regulations message in AdSense is what
+  closes it and no commit here can do it, so `docs/adsense.md` §3 step 7
+  records it as an open gap rather than a pending step, with the note to
+  re-read the legal pages once it's up, because they're written for this state
+  and go wrong in the other direction.
+- `AGENTS.md` forbade "no script or image from a vendor's domain", and nothing
+  in the suite could see the new host, so the rule would have been broken in
+  silence. It records the decision now: this one script by name, with the
+  argument for it, and still no vendor logo, badge, image, font, widget,
+  analytics tag or consent vendor. `docs/standards/web.md` 6.5 carries the
+  same two halves, because a guide still stating as Binding the rule the
+  shipped tree breaks is the state that invariant exists to avoid.
+- **Two checks, and neither one can see a sixth host.**
+  `tests/branding.test.ts` reads built markup — it matched five hosting and
+  font CDNs and none of the advertising ones, so the loader shipped on every
+  page with the suite green — and it now names the advertising domains and
+  grants the loader's exact address by hand. But only that one host is ever
+  written down; the other four are reached at runtime by injected script.
+  `tests/adsense.test.ts` holds `netlify.toml`'s five against a host lost, a
+  host added and a wildcard. A host Google _starts_ using is caught by
+  re-running the recipe and by nothing else, which three documents said
+  otherwise and now say plainly.
+- `docs/adsense.md` opened by saying this site doesn't serve ads, and that
+  sentence was load-bearing — two steps of the procedure, most of the consent
+  section and three claims in the privacy policy reasoned from it. It says what
+  ships now, keeps everything still true about `ads.txt` and the demonetizing
+  failure mode the file exists to avoid, and records what changed underneath:
+  the site verified by `ads.txt` for a reason that's now half gone, and consent
+  being this origin's own obligation rather than a promise about the
+  application's.
+- **"This origin talks to nothing" was load-bearing in four more places**, and
+  all four outlived it. `operations.md` 3.2 rested the case for tolerating
+  `'unsafe-inline'` on an absolute `connect-src`, and credited a test with an
+  assertion that had been deleted in the same change; it argues from
+  `form-action 'none'` and `frame-ancestors 'none'`, which are still absolute,
+  plus a closed and measured host list, and credits the two tests that hold
+  each. `docs/roadmap.md` 3 said this origin talks to nothing and sets no
+  cookies, in the section that exists so nobody reopens a decision without
+  reading why; both decisions survive on their own merits and now say so
+  without the false premise. The `legal-review` skill told its reader to
+  expect no cookie at all on `smpl.money`, which is the one expectation that
+  would make a correct policy look like the error, and the `optimize` skill
+  told its reader there was no third-party script to think about.
+
 **The terms are governed by California law and follow its automatic renewal
 rules, the privacy policy names Gmail, Cloudflare and the backups, and the
 terms say no tax is added to the price.** Each was either a decision nobody
@@ -215,6 +398,28 @@ carried the old headline.
 banned-words test could not see.
 
 ### Fixed
+
+**Announcing a section now moves its link, which it never did.**
+`src/content/sections.ts` promised one flag decides three things — the link,
+the `noindex` and the sitemap — and only two were real.
+`announcedSections()` had a single caller, the sitemap, and the header and
+footer lists were written out by hand. So announcing a section would have
+stopped its `noindex`, entered it in the sitemap, and linked it from nowhere:
+a page Google is invited to index and no reader can reach, which is the same
+half-launch the flag exists to prevent, arriving from the other side. Both
+lists derive from the flag now.
+
+- `tests/sections.test.tsx` asserts all three in both directions rather than
+  asserting the absences alone, and reads the link off the rendered header and
+  footer rather than the list behind them, because a derivation nothing renders
+  is the same gap one step along. It also asserts the derivation itself:
+  writing the link out again passes every behavioral check in the file and puts
+  the defect straight back.
+- Two empty states in `src/content/sections.ts` said the documentation "is
+  being written" and that the first post "is not written", with seven pages and
+  two posts published. Both render only when a collection is empty, so nothing
+  ever showed them and nothing ever caught them. They describe what a reader is
+  looking at now instead of what month it was.
 
 **A wide table in the docs scrolls inside itself rather than pushing the page
 sideways.** The configuration page's settings tables hold names like
@@ -691,6 +896,27 @@ list the sixth.
 devDependency now.
 
 ### Added
+
+**The documentation is announced.** `/docs` is in the header and the footer,
+its eight pages no longer send `noindex`, and they're in the sitemap with a
+date each. Seven pages were built, styled, reachable by URL and linked from
+nowhere before this.
+
+**The blog isn't, and that's a decision rather than an oversight.** Two
+finished posts exist and `/blog/` is built and routable, and what the section
+is for hasn't been settled, so announcing it would be advertising something
+with nothing behind it. It is also not purely a flag today, and that was
+measured rather than assumed: announcing it and rebuilding fails two
+assertions, not one. The first is the one naming the announced set by hand,
+which is the intended checklist. The second is `tests/sitemap.test.ts`, because
+`src/app/sitemap.ts` lists a section's front page and its entries and nothing
+else — so the blog's archive, its two tag pages and its author page would be
+indexable and absent from the sitemap. `/blog/page/1/` holds the same content
+as `/blog/` and already canonicalises there, so it has to stay out by name
+rather than be added. Fixing that is a separate change; until it lands,
+announcing the blog is two edits rather than one. `docs/adsense.md` §3 step 1 wants real, announced
+content before an AdSense review, and records that this is half of it on
+purpose.
 
 **`smpl.money/ads.txt` names this site's AdSense publisher id.** It is how
 Google verifies the site for review, and what authorizes the advertising the

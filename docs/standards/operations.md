@@ -156,15 +156,29 @@ CSP.
 **Contested, recorded.** Next.js emits its hydration payload as inline
 `<script>` tags, and a static export has no request in which to mint a nonce.
 
-What makes it tolerable is that this origin renders no user input, holds no
-session, and talks to nothing: `connect-src 'self'` and `form-action 'none'`
-are the directives doing the real work, and they are absolute.
+What makes it tolerable is that this origin renders no user input and holds no
+session: `form-action 'none'` and `frame-ancestors 'none'` are the directives
+doing the real work, and they are absolute. There is nothing for injected
+script to post anywhere, and nothing to frame this page inside.
+
+**It used to rest on `connect-src 'self'` too, and that half is gone.** This
+origin talks to Google now (`web.md` 6.5), so `connect-src` names two of its
+hosts and is no longer absolute. What replaces the argument is that the list
+is closed and was **observed**: a build carrying the AdSense snippet was
+served over local HTTPS as smpl.money and driven in Chromium, and the policy
+admits the five hosts it reached, each only in the directives it needed.
+No wildcard, no bare `https:`, and a sixth host is a re-measurement rather
+than an edit — `docs/adsense.md` §8 is the recipe. That is a weaker guarantee
+than "absolute" and it is stated as one; what it is not is an open door.
 
 Removing it means either build-time hashing of Next's bootstrap or dropping
 Next for this page. Both are real options and neither is worth it today.
 
-_Checked by:_ `tests/export-shape.test.ts` asserts the two directives that
-carry the argument.
+_Checked by:_ `tests/export-shape.test.ts` for `form-action 'none'` and
+`frame-ancestors 'none'`, the two that are still absolute;
+`tests/adsense.test.ts` parses the policy into directives and holds every
+source in it, in both directions — a measured host missing, and an unmeasured
+one added.
 
 ## 4. Screenshots come from the application
 
@@ -419,7 +433,8 @@ Two that cost a day if they are wrong:
 | 2.1 No catch-all rewrite    | `tests/export-shape.test.ts`                                                                                |
 | 2.2 `ads.txt` names the id  | `tests/export-shape.test.ts`                                                                                |
 | 2.3 Content type            | `tests/export-shape.test.ts`                                                                                |
-| 3.1, 3.2 Headers            | `tests/export-shape.test.ts`                                                                                |
+| 3.1 Headers                 | `tests/export-shape.test.ts`                                                                                |
+| 3.2 The CSP's own sources   | `tests/export-shape.test.ts` for the absolute two, `tests/adsense.test.ts` directive by directive           |
 | 6.2 Every pre-1.0 dep named | `tests/repo-references.test.ts`                                                                             |
 | 7.4 Weight budget           | `tests/budget.test.ts`                                                                                      |
 | 1.2 `force-static`          | the build, which fails without it                                                                           |

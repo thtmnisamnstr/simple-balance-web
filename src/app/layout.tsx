@@ -8,6 +8,7 @@ import { SiteHeader } from "@/components/site-header";
 import { feedAlternates } from "@/lib/feed";
 import { SiteFooter } from "@/components/site-footer";
 import { site, hero } from "@/content/home";
+import { adsense } from "@/content/ads";
 import { openGraph } from "@/app/open-graph";
 
 export const metadata: Metadata = {
@@ -28,11 +29,30 @@ export const metadata: Metadata = {
     default: `${site.name} — ${site.titleTagline}`,
     template: `%s — ${site.name}`,
   },
-  description: hero.lede,
+  /*
+   * `site.description`, not `hero.lede`. The two have different jobs and only
+   * one of them is this. A lede persuades somebody already on the page and may
+   * run as long as it needs to; a description has to make a stranger click,
+   * inside the roughly 155 characters a result listing renders. `hero.lede`
+   * ran to 233, so a third of it — the whole clause about the assistant — was
+   * written for a search result that never showed it.
+   */
+  description: site.description,
   applicationName: site.name,
+  /*
+   * The link preview says something different from the tab, on purpose. A tab
+   * is read by somebody who already has the page open and wants to find it
+   * among twenty others, so it carries the category: "Simple Balance —
+   * Personal finance that's simple". A preview is read by somebody deciding
+   * whether to follow a link a friend sent, so it carries the hook.
+   *
+   * Composed from `hero.title` rather than written out, because a literal here
+   * is exactly what left the social card advertising a sentence that appeared
+   * nowhere else on the site for four rewrites.
+   */
   openGraph: openGraph({
-    title: `${site.name} — ${site.tagline}`,
-    description: hero.lede,
+    title: `${hero.title.replace(/\.$/, "")} — ${site.name}`,
+    description: site.description,
     url: "/",
   }),
   /*
@@ -87,6 +107,28 @@ export default function RootLayout({ children }: { readonly children: ReactNode 
     // "English" by the bare tag, and the copy is American.
     <html lang="en-US">
       <body>
+        {/*
+         * The AdSense loader, which React 19 hoists out of here into <head>.
+         *
+         * A static export has no <head> to render into from a layout, and
+         * `next/script` either injects the tag after hydration or pulls a
+         * client component into the root layout — neither is what an ad
+         * loader wants. React's own hoisting of a plain element is the
+         * mechanism, and `tests/adsense.test.ts` reads the built HTML to
+         * prove it landed above </head> on every page rather than trusting
+         * that it did.
+         *
+         * **`async` is load-bearing and its absence is silent.** React hoists
+         * a <script> only when it is async with a src and no event handler.
+         * Drop `async`, write `defer` instead, or add an `onLoad`, and the
+         * tag stays in <body> with no build error and no warning — which is
+         * why the test asserts the position and not merely the presence.
+         *
+         * The inline JSON-LD in `src/components/structured-data.tsx` is the
+         * deliberate opposite: it has no src, so it is not hoisted, and it
+         * belongs where it renders.
+         */}
+        <script async src={adsense.scriptSrc} crossOrigin="anonymous" />
         <a className="skip-link" href="#main">
           Skip to content
         </a>

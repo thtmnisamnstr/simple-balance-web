@@ -28,8 +28,8 @@ import { hero } from "@/content/home";
  * that is most true of this product: **running it yourself has no plan at
  * all**. The limits exist only where an operator has configured billing.
  * Somebody running their own copy gets everything, unlimited, with no ads,
- * forever, and saying so is not a giveaway — it is the reason to trust the
- * other two columns.
+ * and saying so is not a giveaway — it is the reason to trust the other two
+ * columns.
  *
  * **The ads are disclosed first, in the word "ads".** They used to arrive in
  * the lede as "whether the page carries an ad" and again as a table row
@@ -37,6 +37,18 @@ import { hero } from "@/content/home";
  * after signing up treats it as a betrayal rather than as a term they
  * accepted, so the blunt word goes above the prices and the reassurance
  * follows it rather than replacing it.
+ *
+ * **The page's own argument is the monetization model, and it was buried.**
+ * The headline read "What it costs, and what you get", which heads any
+ * pricing page ever written, while the genuinely unusual fact — that the free
+ * plan is the whole product and the paid one raises a limit and removes
+ * advertising — sat in the lede underneath it. A sixteen-row comparison table
+ * then argued the opposite of that lede: thirteen of its rows were identical
+ * across all three columns, so the picture said "lots of differences" while
+ * the sentence above it said "three". The table now carries only the lines
+ * that change, and `included` carries the rest as a list, which is the same
+ * information arranged so that it proves the claim instead of undercutting
+ * it.
  */
 
 export type Tier = {
@@ -55,10 +67,11 @@ export const MAX_FREE_ACCOUNTS = 3;
 
 export const pricing = {
   eyebrow: "Pricing",
-  title: "What it costs, and what you get.",
+  title: "Every plan is the whole product.",
   lede:
-    "Every plan gets the whole product. What you pay for is how many accounts you can use at " +
-    "once, and whether you see ads.",
+    "Free gives you everything Simple Balance does, for three accounts you can use at once, " +
+    "with ads on the page. Premium takes away the limit and the ads for $3 a month or $30 a " +
+    "year. You can also run the whole thing yourself, for nothing.",
   /**
    * The strip under the prices that answers "what am I risking".
    *
@@ -67,32 +80,46 @@ export const pricing = {
    * cancel on a free plan because there is nothing being charged, and the
    * export is a feature of the product rather than a policy that could be
    * revised.
+   *
+   * The line about an AI assistant left this list, not because it stopped
+   * being true but because it was answering a question nobody asks with a
+   * price in front of them. What goes here is the four things somebody
+   * hesitating over a card is actually weighing: whether they need one,
+   * whether they can stop, whether stopping costs them anything, and whether
+   * they can leave with what they put in.
    */
   reassurances: [
     "No card to start, and nothing to cancel on the free plan.",
+    "Cancel Premium yourself, from your own plan page, whenever you want.",
+    "Stop paying and nothing is deleted. If more than three accounts are in use, you pick three to keep using and the rest stay readable.",
     "Your transactions leave with you, as a spreadsheet, whenever you want them.",
-    "An AI assistant works on every plan, and it gets only what you agree to when you connect it.",
-    "Stop paying and nothing is deleted. Using more than three accounts? You pick three to keep using, and the rest stay readable.",
   ],
+  /*
+   * "Running it yourself works today, and always will" is what this said. The
+   * license makes continued independent use about as durable as software gets,
+   * and "always" is still a word a marketing page does not get to use about
+   * the future. The present tense says the part that is checkable.
+   */
   note:
     "Prices are in US dollars. A year costs $30, or pay $3 a month and switch between the two " +
     "whenever you like. The version we run for you isn't open yet. Running it yourself works " +
-    "today, and always will.",
+    "today.",
   /** The flag over the recommended tier. */
-  featuredFlag: "If you outgrow Free or hate ads",
-  compareTitle: "What each one includes.",
+  featuredFlag: "Unlimited accounts, no ads",
+  compareTitle: "Only four lines change.",
   /**
-   * The three rows at the top are the only rows that differ. The other
-   * fourteen are identical across all three columns and are there to answer
-   * "is the cheap one the cut-down one" — which is the question a reader
-   * actually has, and the answer is no.
+   * The lede over the table, which now describes a table that agrees with it.
+   * It promised that only three lines differed while the table showed sixteen
+   * rows, thirteen of them identical across all three columns, which is an
+   * argument with its own illustration.
    */
   compareLede:
-    "Only the first three lines are different. How many accounts you can use at once, whether " +
-    "you see ads, and where it runs. Everything under them is in every plan, free one included.",
-  compareCaption: "What is in each plan: Free, Premium, and running it yourself",
+    "How many accounts you can use at once, whether you see ads, who runs it, and what it " +
+    "costs. Everything else is the same on all three, the free plan included.",
+  compareCaption: "What changes between Free, Premium, and running it yourself",
   columns: ["Free", "Premium", "Run it yourself"],
-  faqTitle: "Questions people actually ask.",
+  includedTitle: "In every plan, including the free one.",
+  faqTitle: "Questions about pricing.",
 } as const;
 
 /**
@@ -106,9 +133,27 @@ export const pricing = {
  * "at once", which is the old limit, in the one string Google shows.
  */
 export const pricingMeta = {
+  /**
+   * The page title a result listing shows, which was the word "Pricing".
+   *
+   * True, and it wastes the one line a searcher reads deciding between this
+   * result and nine others. The price is the thing they are searching for and
+   * it is small, so it goes in the title rather than being discovered a click
+   * later. `%s — Simple Balance` is the template every route gets, which
+   * leaves this one forty-three characters before the composed title runs past
+   * what a listing renders.
+   *
+   * Here rather than in `src/app/pricing/page.tsx` for the reason the two
+   * below are: a price written into markup is a price no test reads, and
+   * `tests/app-facts.test.ts` sweeps every string in this object.
+   */
+  title: "Pricing: free, or $30 a year",
+  /** The link preview's headline, which names the third option a search result has no room for. */
+  socialTitle: "Pricing: free, Premium, or run it yourself",
   description:
-    "Free for up to three accounts in use at once, with ads. Premium is $30 a year for as many " +
-    "as you like, with no ads. Run it yourself and there's no plan at all.",
+    "Every feature is in every plan. Free covers three accounts in use at once, with ads. " +
+    "Premium is $3 a month or $30 a year for as many as you like, with no ads. Run it yourself " +
+    "and there's no plan at all.",
   socialDescription:
     "Free for three accounts in use at once, $30 a year for as many as you like, or run it " +
     "yourself for nothing.",
@@ -121,7 +166,14 @@ export const tiers: readonly Tier[] = [
     price: "$0",
     priceNote: "",
     summary: `Up to ${MAX_FREE_ACCOUNTS} accounts in use at once, and you see ads.`,
-    who: "Most people, most of the time. Checking, savings, and one credit card is three.",
+    /*
+     * "Most people, most of the time" was a claim about the reader rather
+     * than about the plan, and it is slightly rude to somebody with four
+     * accounts: they are being told they are unusual on the page where they
+     * are deciding whether to pay. The condition is the honest version, and
+     * the example is an example rather than a conclusion.
+     */
+    who: "A good fit if three accounts cover what you actually use. For example: checking, savings and one credit card.",
     // One string, shared with the header's control, because a header saying
     // one thing and a pricing button saying another describes two different
     // states. It used to be a second literal that happened to match.
@@ -141,8 +193,13 @@ export const tiers: readonly Tier[] = [
     key: "self",
     name: "Run it yourself",
     price: "$0",
-    priceNote: "it's your computer",
-    summary: "Everything, unlimited, no ads, no account with us.",
+    /*
+     * "it's your computer" was here, which is a joke in the slot where a
+     * reader is looking for a number's terms. The slot beside a price says
+     * what the price repeats on, and for this one the answer is nothing.
+     */
+    priceNote: "No subscription",
+    summary: "Everything, unlimited, with no ads.",
     who: "People who already run their own software and would rather their money never left their own computer. Same product, nothing stripped out.",
     cta: {
       label: "See how to run it yourself",
@@ -170,6 +227,16 @@ export type Row = {
   readonly note?: string;
 };
 
+/**
+ * The lines that differ, and only those.
+ *
+ * Thirteen rows left this table and became `included` below. Each of them was
+ * a tick in all three columns, which is a row that answers "is the cheap one
+ * the cut-down one" at the cost of making the table look like a feature
+ * matrix — and a feature matrix is a picture of a product with tiers. This
+ * one has no tiers, only a limit and some advertising, and four rows is what
+ * that actually looks like.
+ */
 export const comparison: readonly Row[] = [
   {
     id: "accounts",
@@ -198,112 +265,65 @@ export const comparison: readonly Row[] = [
     premium: false,
     self: true,
   },
-
   {
-    id: "payments",
-    feature: "Payments you can record",
-    free: "Unlimited",
-    premium: "Unlimited",
-    self: "Unlimited",
-  },
-  {
-    id: "currencies",
-    feature: "Currencies",
-    free: "Unlimited",
-    premium: "Unlimited",
-    self: "Unlimited",
-  },
-  {
-    id: "reports",
-    feature: "Every report",
-    free: true,
-    premium: true,
-    self: true,
-    note: "What you own and what you owe, what came in and what went out, and where it all went.",
-  },
-  {
-    id: "budgets",
-    feature: "Budgets, with what you don't spend carried over",
-    free: true,
-    premium: true,
-    self: true,
-  },
-  {
-    id: "import",
-    feature: "Bringing in a file from your bank",
-    free: true,
-    premium: true,
-    self: true,
-    note: "Including the rows that look like payments you already have, shown before any of them count.",
-  },
-  {
-    id: "export",
-    feature: "Taking every transaction out as a spreadsheet",
-    free: true,
-    premium: true,
-    self: true,
-  },
-  {
-    id: "recurring",
-    feature: "Rent, payday and renewals, set up once",
-    free: true,
-    premium: true,
-    self: true,
-  },
-  {
-    id: "templates",
-    feature: "Saved entries for what you record often",
-    free: true,
-    premium: true,
-    self: true,
-  },
-  {
-    id: "bulk",
-    feature: "Changing thousands of lines at once",
-    free: true,
-    premium: true,
-    self: true,
-  },
-  {
-    id: "splits",
-    feature: "One trip counted as two things",
-    free: true,
-    premium: true,
-    self: true,
-  },
-  {
-    id: "history",
-    feature: "A running balance, and a record of every correction",
-    free: true,
-    premium: true,
-    self: true,
-  },
-  {
-    id: "agents",
-    feature: "Letting an AI assistant do the filing",
-    free: true,
-    premium: true,
-    self: true,
-  },
-  {
-    id: "email",
-    // A tick in all three columns with the condition in the note, rather than
-    // "If you set up email" in the third. The condition is real but it is not
-    // a plan difference — it is a thing you configure on a machine you own —
-    // and putting it in the column made the lede above the table false, since
-    // that promises the first three lines are the only ones that change.
-    feature: "Email reminders",
-    free: true,
-    premium: true,
-    self: true,
-    note: "Run it yourself and this is the one piece that needs a mail server. Nothing else does, and nothing else breaks without one.",
+    id: "subscription",
+    feature: "What it costs",
+    free: "Nothing",
+    premium: "$3 a month or $30 a year",
+    self: "Nothing",
   },
 ];
 
-export const faq: readonly { readonly q: string; readonly a: string }[] = [
+/**
+ * Everything that does not change between plans.
+ *
+ * This is the thirteen rows that used to be ticks, as a list, which is the
+ * shape that matches the claim. It is checked against the application's own
+ * published capability list rather than written freely:
+ * `tests/app-facts.test.ts` holds the count beside
+ * `facts.declared.capabilities`, so a capability the application adds cannot
+ * quietly fail to reach the one place on this site that enumerates them.
+ */
+export const included: readonly string[] = [
+  "A running balance beside every payment, and a record of every correction",
+  "Every report: what you own and what you owe, what came in and what went out, and where it all went",
+  "Budgets, with what you don't spend carried over",
+  "Bringing in a file from your bank, with anything that looks like a duplicate shown first",
+  "Taking every transaction out as a spreadsheet",
+  "Rent, payday and renewals, set up once",
+  "Saved entries for what you record often",
+  "One purchase split across categories",
+  "Changing thousands of lines at once",
+  "As many payments and as many currencies as you like",
+  "Letting an AI assistant do the filing",
+  "Email reminders, where there's a mail server to send them",
+];
+
+export type FaqItem = {
+  readonly q: string;
+  readonly a: string;
+  /**
+   * A page the answer names, where it names one.
+   *
+   * The migration answer ended "the guide to moving to your own copy has
+   * every step" and was plain text in a `<p>`, so it named a page and gave
+   * no way to reach it. That is worse than the eleven-sentence procedure it
+   * replaced: the long answer at least worked.
+   */
+  readonly link?: { readonly label: string; readonly href: string };
+};
+
+export const faq: readonly FaqItem[] = [
   {
     q: "How does my spending get in?",
-    a: "You bring it in yourself. Your bank lets you download a file of what you spent, the kind that opens in a spreadsheet. Drag it in and Simple Balance figures out which column is which, files the names it knows, and flags anything that looks like a payment you already have before it counts. You can also type entries in by hand, or have an AI assistant line them up for you to approve.",
+    /*
+     * The no-connection disclosure, in the second-to-last sentence rather
+     * than the first. A reader needs to know this before they sign up and
+     * after they know what the product is for, and `content.md` 1.4 is the
+     * rule: describe the mechanism, state its present limits, promise nothing
+     * about the future.
+     */
+    a: "You bring it in yourself, because there's no automatic pull from your bank today. Your bank lets you download a file of what you spent, the kind that opens in a spreadsheet. Drag it in and Simple Balance figures out which column is which, files the names it knows, and flags anything that looks like a payment you already have before it counts. You can also type entries in by hand, or have an AI assistant queue them up for you to approve.",
   },
   {
     q: "What do I actually get for free?",
@@ -322,7 +342,11 @@ export const faq: readonly { readonly q: string; readonly a: string }[] = [
     // promised that swap. "Up to three" because somebody who closed some of
     // their chosen accounts while subscribed comes back with fewer in use and
     // nothing to choose, only free places to fill.
-    a: "You keep every one of them, and you choose three to keep using. The others are frozen: still there, still complete, still counted in every balance and report you look at. You just can't add to them or change them. Until you choose, up to three stay usable. If you've never chosen, those are your three oldest, and you can pick any three, not just those. The choice is made once, so an account you are using stays that way until you close it or delete it, and only then can a frozen one take its place. That is the part worth knowing before you pick: it isn't a switch you can flip back and forth. Nothing is hidden and nothing is deleted, and upgrading brings all of them back at once. If you subscribe again, your choice still stands when that plan ends, unless you opened or reopened accounts while subscribed. Then you choose again, from all of them, and until you do, the three that stay usable are the oldest of the ones you chose and the new ones.",
+    //
+    // Shorter than it was by about a third, and every one of those clauses is
+    // still here. What went was the restatement: the answer said three times,
+    // in different words, that nothing is deleted.
+    a: "You keep every one of them, and you choose three to keep using. The others are frozen: still there, still complete, still counted in every balance and report you look at. You just can't add to them or change them. The part worth knowing before you pick is that it isn't a switch you can flip back and forth. The choice is made once, so an account you are using stays usable until you close it or delete it, and only then can a frozen one take its place. Until you choose, up to three stay usable. If you've never chosen, those are your three oldest, and you can pick any three, not just those. Upgrading brings all of them back at once. If you subscribe again, your choice still stands when that plan ends, unless you opened or reopened accounts while subscribed. Then you choose again, from all of them, and until you do, the three that stay usable are the oldest of the ones you chose and the new ones.",
   },
   {
     q: "If I close an account, does it still count?",
@@ -347,7 +371,28 @@ export const faq: readonly { readonly q: string; readonly a: string }[] = [
      * address can name a record — lives in the policy, which this now points
      * at rather than paraphrasing.
      */
-    a: "Ordinary Google ads, never on the billing page or the sign-in screen. They aren't picked from what you spend, and they are only personalized if you specifically agreed to that. In the UK, the EEA and Switzerland you get asked before any advertising cookie is set, and saying no keeps the ads off your spending rather than off the page. The privacy policy covers the rest, including what does reach Google.",
+    /*
+     * **It said "you get asked before any advertising cookie is set"**, which
+     * was the last consent promise left on the site after the policy stopped
+     * making one. Nobody is asked: `window.googlefc` is undefined on every
+     * page and this page's own script sets Google's advertising identifier on
+     * a visit, so the sentence was false on the page that carried it. It
+     * states the requirement now and says no notice is published, which is
+     * what the policy says a click away.
+     *
+     * The invariant is one-directional and this was the inverse of the
+     * failure it was written for: a marketing claim may not be *stronger*
+     * than the policy it links to, and here the sales page promised a
+     * protection the policy denies. The cross-surface check could not see it,
+     * because it asked that consent be mentioned rather than that it not be
+     * promised.
+     *
+     * Left alone by the voice pass that rewrote everything around it. Six
+     * assertions in `tests/legal.test.tsx` hold this string in both
+     * directions, and the thing a voice pass does to a sentence like this is
+     * shorten it past one of its conditions.
+     */
+    a: "Ordinary Google ads, never on the billing page or the sign-in screen. They aren't picked from what you spend, and they are only personalized if you specifically agreed to that. In the UK, the EEA and Switzerland consent has to be collected through a notice before any advertising cookie is set. That notice is published from the advertising account rather than by any code in this product, and none is published today. Once one is up, saying no keeps the ads off your spending rather than off the page. The privacy policy covers the rest, including what does reach Google and the cookie this website itself sets.",
   },
   {
     q: "How do I cancel, and will you keep charging me?",
@@ -356,10 +401,6 @@ export const faq: readonly { readonly q: string; readonly a: string }[] = [
   {
     q: "What happens to everything I have put in if I stop paying?",
     a: "You keep it. Every account, every payment and every report is still there and still adds up, and you can pull every transaction out as a spreadsheet any time, on any plan. What the free plan limits is how many accounts you can keep adding to: three, and you choose which. We never hold your own records back to keep you paying.",
-  },
-  {
-    q: "Why is it $30 when everything else costs more? Will you still be here next year?",
-    a: "Because there isn't much to pay for. It is one small program, and there's nobody else's data to look after. As for the second question, here's a fact rather than a promise: the whole product is free to run yourself, and every transaction you have can be exported and brought into your own copy. If we stop, your transactions don't have to.",
   },
   {
     q: "What is the difference between paying and running it yourself?",
@@ -377,27 +418,23 @@ export const faq: readonly { readonly q: string; readonly a: string }[] = [
      * is worse than no promise, so the split is stated rather than blurred.
      */
     q: "Do you keep a copy of what I spend?",
-    a: "If we run it for you, your records sit on our server. That is what running it for you means, and the privacy policy says exactly what's stored and who can get at it. Run it yourself and nobody has a copy, including us. Nothing about your spending is used to pick the ads. The product itself has no analytics either way, though on the free plan the ads bring Google's script with them.",
+    a: "If we run it for you, your records live on our computers. That is what running it for you means, and the privacy policy says exactly what's stored and who can get at it. Run it yourself and nobody has a copy, including us. Nothing about your spending is used to pick the ads. The product itself has no analytics either way, though on the free plan the ads bring Google's script with them.",
   },
   {
     /*
-     * Every step is here because the application does something a reader
-     * wouldn't guess. The export is transactions only, so budgets and
-     * recurrences stay behind. An import puts every row into the one account
-     * picked for it, hence one account at a time. An opening balance is
-     * posted with no transaction (`postOpeningBalance`), so no export carries
-     * it, and the answer before this one, which never said so, left every
-     * account off by where it started. An account page exports what its date
-     * bar shows, and the bar starts on This month (`presetFromParam`), so a
-     * reader who skips the All time step moves one month of each account.
-     * A transfer is in both accounts' files and arrives with neither account
-     * filled in; picked in the second file, it matches the first as a
-     * duplicate, and committing it anyway records it twice. The importer
-     * takes 10,000 rows and its own refusal says to go a date range at a
-     * time, which is that same bar set shorter. `tests/app-facts.test.ts`
-     * holds the answer to the last four.
+     * The procedure that used to be here is now
+     * `content/docs/moving-to-your-own-copy.md`, and
+     * `tests/app-facts.test.ts` reads it there. A pricing page has to settle
+     * whether somebody is locked in; it does not have to teach them a
+     * multi-step data migration before they have decided to sign up, and the
+     * eleven-sentence version that did was the longest answer on the page by
+     * a distance.
+     *
+     * What stays is the part that bears on the purchase: it is possible, it
+     * is not one button, and two things do not travel.
      */
     q: "Can I move from the version you run to my own copy later?",
-    a: "Yes, one account at a time. Only your transactions move, so you'd set up budgets and repeating payments again. First, make each account in your own copy. Give it the same currency, starting balance and start date it has here. The starting balance isn't in the file. Then open each account here, set the dates at the top to All time, export its transactions as a spreadsheet, and bring that file into the matching account. Everything in one file goes into the account you pick when you bring it in. A transfer between two of your accounts is in both files. The first time, pick both accounts for it. The second time, leave it out, since you already have it. If you pick its accounts there anyway, it's marked as one you already have. If an account has more than 10,000 transactions, pick a shorter range of dates there and move one range at a time, because that's the most one file can bring in.",
+    a: "Yes, and it's worth knowing up front that it isn't one button. Your transactions move, one account at a time, as spreadsheets you export here and bring in there. Budgets and repeating payments you set up again, and each account's starting balance is carried over by hand, because it isn't in the file. The guide to moving to your own copy has every step.",
+    link: { label: "Moving to your own copy", href: "/docs/moving-to-your-own-copy/" },
   },
 ];

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import pulled from "@/content/app-features.json";
 import accepted from "@/content/copy-source.json";
-import { agents, features, privacy, problems } from "@/content/home";
+import { agents, features, privacy, proofs } from "@/content/home";
 
 /**
  * Whether this site's words still answer the application's current
@@ -22,7 +22,7 @@ import { agents, features, privacy, problems } from "@/content/home";
  */
 
 const coveredIds = new Set([
-  ...problems.flatMap((p) => p.covers),
+  ...proofs.flatMap((p) => p.covers),
   ...features.flatMap((f) => f.covers),
   ...privacy.covers,
   ...agents.covers,

@@ -37,7 +37,7 @@ export function SiteStructuredData() {
           "@type": "WebSite",
           name: site.name,
           url: `${base}/`,
-          description: site.tagline,
+          description: site.description,
         }}
       />
       <Ld
@@ -47,7 +47,7 @@ export function SiteStructuredData() {
           name: site.name,
           applicationCategory: "FinanceApplication",
           operatingSystem: "Linux, macOS, Windows — via Docker",
-          description: site.tagline,
+          description: site.description,
           url: `${base}/`,
           license: "https://www.gnu.org/licenses/agpl-3.0.html",
           codeRepository: site.sourceUrl,

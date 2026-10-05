@@ -60,8 +60,27 @@ Break one of these and the site is wrong rather than untidy.
 - **A color outside `brand.css` cannot re-theme.** A literal looks right in
   light mode and broken in dark, which is the mode nobody checks.
 - **`announced` decides three things at once** — the link, the `noindex`, and
-  the sitemap. A section half-launched by somebody adding a link is the failure
-  the single flag prevents.
+  the sitemap. `/docs` is announced; `/blog` is built and is not. The three
+  reach their surfaces separately and all read the one flag in
+  `src/content/sections.ts`: `primaryNav` and `footer.links` in
+  `src/content/home.ts` spread `announcedSections()`, each route file picks
+  its `robots` metadata from `section(key).announced`, and `src/app/sitemap.ts`
+  walks the announced sections.
+
+  **Two of the three were true and the link was not**, until `/docs` was
+  announced and somebody checked: `announcedSections()` had one caller, the
+  sitemap, and both nav lists were written out by hand. So the rule described a
+  mechanism that was a habit, and announcing a section would have stopped its
+  `noindex`, entered it in the sitemap, and linked it from nowhere — a page
+  Google is invited to index and no reader can reach. That is the same
+  half-launch as a link added ahead of the flag, arriving from the other side.
+  `tests/sections.test.tsx` asserts all three in both directions now, through
+  the rendered header and footer rather than the list behind them, because a
+  derivation nothing renders is the same gap one step along. It also asserts
+  the derivation itself, because re-hardcoding the link satisfies every
+  behavioral check in that file and puts the defect straight back: `home.ts`
+  has to name `announcedSections()` and must not name a section's href.
+
 - **Crawling is allowed everywhere; indexing is controlled per page.**
   `Disallow` on an unannounced section is the reflex and is exactly wrong: a
   crawler that cannot fetch the page never sees the `noindex`.
@@ -88,19 +107,57 @@ Break one of these and the site is wrong rather than untidy.
   server logs. Neither was written as a lie — both were a long document
   summarized from memory. `content.md` 2.4, and `tests/legal.test.tsx` holds
   the two surfaces together.
-- **No third-party branding.** No vendor logo, badge or "powered by" mark, and
-  no script or image from a vendor's domain. The privacy policy naming the
-  hosting provider and the payment processor is the one exception, and it is
-  the opposite of branding. A host can inject its own badge into the response,
-  which no test here can see — `operations.md` 8 carries those as launch steps.
-- **Nothing on the homepage or the pricing page may imply a bank connection —
-  and nothing may promise there will never be one.** There is none today: no
-  bank login, no background refresh, nothing that can go stale without saying
-  so, so copy describing one would be false. But the page also spent a while
-  leading on "we never ask for your bank password", which is a promise about
-  a future this page does not decide, and unwinding it cost the hero, the
-  tagline, the social card, a comparison row and two FAQ answers.
-  `docs/standards/content.md` 1.5 carries both halves and the trigger to
+- **No third-party branding, and exactly one third-party script.** No vendor
+  logo, badge or "powered by" mark, and no image, font, widget, analytics tag
+  or consent vendor from anybody else's domain. The privacy policy naming the
+  hosting provider and the payment processor is the one exception to the
+  branding half, and it is the opposite of branding. A host can inject its own
+  badge into the response, which no test here can see — `operations.md` 8
+  carries those as launch steps.
+
+  **The one script is Google's AdSense loader**, `adsbygoogle.js` from
+  `pagead2.googlesyndication.com`, in `src/app/layout.tsx` on every page. This
+  rule used to forbid it outright, and that was written when nothing on this
+  origin needed a vendor script and the site's whole privacy claim was that it
+  made no request to anywhere but itself. An AdSense account changed what the
+  rule is about rather than whether it is worth keeping, so the decision is
+  recorded here instead of being broken quietly — `docs/adsense.md` §8 has the
+  argument and the measurements.
+
+  **What keeps it an exception rather than a door.** The snippet is the
+  account's own, unmodified, and nothing else may be added beside it. It was
+  run and watched rather than reasoned about: it reaches five hosts and leaves
+  one cookie, Google's advertising identifier `IDE` on `.doubleclick.net`, and
+  `netlify.toml`'s policy names those five and nothing more, which is why it
+  is far narrower than the application's blanket `https:`.
+  Widening that policy to admit a host nobody has observed is how this stops
+  being one exception. And a script that reaches another origin is a
+  disclosure: this site is no longer a set of files that talks to nobody, so
+  `src/content/legal.ts` has to say what it does, to the same standard the
+  policy holds the application to.
+
+  **Two checks, and neither one is the whole rule.**
+  `tests/branding.test.ts` reads built markup: it holds the visible marks, and
+  it grants the loader's exact address by name so moving it has to be
+  re-granted. `tests/adsense.test.ts` reads `netlify.toml`: it holds the five
+  measured hosts against a host lost and against an unmeasured one added, and
+  against a wildcard. Neither can see a request, so **a sixth host the vendor
+  starts reaching at runtime is caught by nothing here** — only by re-running
+  `docs/adsense.md` §8's recipe, which is why that document writes it out.
+
+- **Nothing on the homepage or the pricing page may imply a bank connection,
+  nothing may promise there will never be one, and both pages must say once
+  that there is not one today.** There is none: no bank login, no background
+  refresh, nothing that can go stale without saying so, so copy describing one
+  would be false. But the page also spent a while leading on "we never ask for
+  your bank password", which is a promise about a future this page does not
+  decide, and unwinding it cost the hero, the tagline, the social card, a
+  comparison row and two FAQ answers. The third half was added after both
+  earlier mistakes had been fixed and the page still said nothing either way:
+  every hosted competitor pulls transactions, so silence is read as a
+  connection, and the reader finds out on their first afternoon. The
+  disclosure goes after the value and inside the import copy, never in the
+  hero. `docs/standards/content.md` 1.4 carries all three and the trigger to
   revisit.
 - **Those two pages are written for somebody who has never used a personal
   finance product.** No accounting vocabulary, no operations vocabulary, and
@@ -109,7 +166,7 @@ Break one of these and the site is wrong rather than untidy.
   before and after it" and "AGPL-3.0, one machine and a PostgreSQL", and the
   search result read "Self-hosted double-entry bookkeeping" — both of the two
   words a general reader cannot parse, in the one string Google shows them.
-  `docs/standards/content.md` 1.4. The rest of the site is not held to this:
+  `docs/standards/content.md` 1.3. The rest of the site is not held to this:
   a deployment guide is read by somebody deploying.
 - **The application decides what the product does; this site decides how to
   say it.** `src/content/app-features.json` is its list, pulled verbatim and
@@ -125,7 +182,7 @@ Break one of these and the site is wrong rather than untidy.
   The site prices in dollars and the application's own screens say _Checking_;
   the copy said "current account", the docs said it on the page explaining
   what an account is, and `layout.tsx` declared `en_GB`.
-  `docs/standards/content.md` 1.6, checked by `tests/copy.test.ts`, which also
+  `docs/standards/content.md` 1.5, checked by `tests/copy.test.ts`, which also
   records that a blind contraction pass turned "See everything you have" into
   "you've".
 - **The copy is rewritten only where the product's description moved.**

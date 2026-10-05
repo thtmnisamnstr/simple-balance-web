@@ -22,14 +22,14 @@ Each item says what it is, why it is not done, and what done looks like.
 
 ## 2. Waiting on an account or an asset
 
-| #   | Item                                                         | What is needed                                                                                                                                                                                                                                                                                                                                                                             |
-| --- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 2.1 | **`public/ads.txt` is in, naming the publisher id.**         | **Done.** It arrived with the id in one commit, and `tests/export-shape.test.ts` now holds it to exactly the DIRECT record and the `ownerdomain` line. What is left is on AdSense's side: once it is live on `smpl.money`, choose the ads.txt snippet method where the site is connected and verify, then wait for the crawl, which `docs/adsense.md` §3 says takes a few days to a month. |
-| 2.2 | **AdSense approval.**                                        | The account exists and its publisher id is in `ads.txt`. Review takes days to weeks, and is the longest lead time in the project; `docs/adsense.md` §3 has the order, which puts real, announced content and the current privacy policy before the review request.                                                                                                                         |
-| 2.3 | **No author photo.** Bylines render initials.                | A square image in `public/authors/`, and `avatar` set in `src/content/authors.ts`. Initials are a deliberate fallback rather than a placeholder — the page is not broken without one.                                                                                                                                                                                                      |
-| 2.4 | **Netlify site and DNS.**                                    | Being handled by the owner. `netlify.toml` already carries the build, the gate, the headers and the `www` redirect; `operations.md` 9 has the DNS records and the two that cost a day if they are wrong.                                                                                                                                                                                   |
-| 2.6 | **Six settings that live in a dashboard**, not in this tree. | `operations.md` 8 lists all six with the reason for each. The "Powered by Netlify" badge — on by default for free projects created after 19 August 2026 — **has been turned off**; the rest are launch steps. `tests/branding.test.ts` holds only the half that is ours, because no test here can see a response this repository did not write.                                            |
-| 2.5 | **Announcing the blog and the docs.**                        | `announced: true` in `src/content/sections.ts`. One flag moves the header link, the `noindex` and the sitemap together, and `tests/sections.test.tsx` fails until its expectations move with it. Deliberately off: this is the owner's call, not a gap.                                                                                                                                    |
+| #   | Item                                                         | What is needed                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| --- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 2.1 | **`public/ads.txt` is in, naming the publisher id.**         | **Done.** It arrived with the id in one commit, and `tests/export-shape.test.ts` now holds it to exactly the DIRECT record and the `ownerdomain` line. What is left is on AdSense's side: once it is live on `smpl.money`, choose the ads.txt snippet method where the site is connected and verify, then wait for the crawl, which `docs/adsense.md` §3 says takes a few days to a month.                                                                                                                                                                                                                                                                                                 |
+| 2.2 | **AdSense approval.**                                        | The account exists and its publisher id is in `ads.txt`. Review takes days to weeks, and is the longest lead time in the project; `docs/adsense.md` §3 has the order, which puts real, announced content and the current privacy policy before the review request.                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| 2.3 | **No author photo.** Bylines render initials.                | A square image in `public/authors/`, and `avatar` set in `src/content/authors.ts`. Initials are a deliberate fallback rather than a placeholder — the page is not broken without one.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| 2.4 | **Netlify site and DNS.**                                    | Being handled by the owner. `netlify.toml` already carries the build, the gate, the headers and the `www` redirect; `operations.md` 9 has the DNS records and the two that cost a day if they are wrong.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| 2.6 | **Six settings that live in a dashboard**, not in this tree. | `operations.md` 8 lists all six with the reason for each. The "Powered by Netlify" badge — on by default for free projects created after 19 August 2026 — **has been turned off**; the rest are launch steps. `tests/branding.test.ts` holds only the half that is ours, because no test here can see a response this repository did not write.                                                                                                                                                                                                                                                                                                                                            |
+| 2.5 | **Announcing the blog and the docs.**                        | **Docs done; the blog deliberately not.** `announced: true` in `src/content/sections.ts` moves the header link, the `noindex` and the sitemap together — which was aspirational when this row was written and is true now. The links were hand-written literals and `announcedSections()` had one caller, the sitemap, so announcing a section indexed it and linked it from nowhere; `src/content/home.ts` now derives both lists from the flag. `tests/sections.test.tsx` holds all three in both directions plus the derivation. The blog stays off until there is a post to read: an empty blog in the header is worse than none, and that remains the owner's call rather than a gap. |
 
 ## 2a. How this site knows the product changed
 
@@ -59,23 +59,37 @@ page wrong. Fix the page, then refresh, in that order and the same commit.
 These are not omissions. They are here so nobody reopens them without reading
 why.
 
-- **No analytics.** This origin talks to nothing, and `connect-src 'self'` is
-  what makes the CSP's `'unsafe-inline'` tolerable (`operations.md` 3.2).
-  Netlify's own request logs already answer "how many people came". If a
-  counter is ever wanted, a self-hosted cookieless one keeps the property; a
-  third-party tag does not.
+- **No analytics.** Netlify's own request logs already answer "how many people
+  came", and a third-party tag is a second vendor on a page whose privacy
+  policy has to name every one. If a counter is ever wanted, a self-hosted
+  cookieless one costs no vendor and no disclosure.
+
+  **The argument this used to make is gone.** It was "this origin talks to
+  nothing, and `connect-src 'self'` is what makes the CSP's `'unsafe-inline'`
+  tolerable". The origin loads Google's ad script now, so `connect-src` names
+  two of Google's hosts and is not absolute; `operations.md` 3.2 carries the
+  replacement, which is that the list is closed and was measured. The decision
+  above survives it, which is why it is still here.
+
 - **No newsletter.** Three feeds already exist (`content.md` 5.9). A
   subscription form means a vendor, a CSP exception, a consent question and a
   list to look after, in exchange for a channel the reader already has.
 - **No separate comparison page.** The pricing table is the comparison, and a
   page comparing this to named competitors is work to keep honest and ages
   badly.
-- **No cookie banner on this site.** It sets no cookies. The _application's_
-  ads need a consent notice for visitors in the EEA, the UK and Switzerland,
-  and that is Google's own European regulations message, published from the
-  AdSense account before any ad setting goes on the application
-  (`docs/adsense.md` §3 step 7 and §5). It is set up in AdSense rather than
-  in either codebase, but it is this site's privacy policy that promises it.
+- **No cookie banner on this site, and that is now an open gap rather than a
+  decision.** It used to read "it sets no cookies", which was true of a site
+  that loaded nothing. Google's ad script loads here, and it sets an
+  advertising identifier on `.doubleclick.net` with nobody asked. A visitor in
+  the EEA, the UK or Switzerland has to be asked before that, for _this_
+  origin and not only for the application, and the notice that asks is
+  Google's own European regulations message, published from the AdSense
+  account (`docs/adsense.md` §3 step 7 and §5). It is a dashboard setting
+  rather than a commit in either codebase, so nothing here closes it. What
+  changed is the promise: the privacy policy used to say a visitor would be
+  asked, and now states the position instead, which is that none is published
+  and the cookie is set anyway. When the message goes up, that paragraph is
+  wrong in the other direction and has to move back.
 - **No documentation versioning**, and **no multi-level sidebar.**
   `content.md` 5.1 and 5.5. Both are large structural changes, and building
   either early means maintaining it before anything uses it. The trigger for

@@ -412,7 +412,7 @@ coming, and why would they wait for it. This names the thing.
 It used to read "Hosted version soon", which named the thing accurately and
 named it in the product's vocabulary rather than the reader's: hosting is a
 word for somebody who knows the alternative, and what the reader is actually
-waiting for is the ability to sign up. `content.md` 1.4 is the rule that moved
+waiting for is the ability to sign up. `content.md` 1.3 is the rule that moved
 it.
 
 **It is one string, not two.** `src/content/pricing.ts` imports
@@ -438,20 +438,39 @@ Reference slash Configuration".
 
 _Checked by:_ `tests/home-page.test.tsx`.
 
-### 6.5 No third-party branding, anywhere this repository controls
+### 6.5 No third-party branding, and exactly one third-party script
 
-**Binding.** No vendor logo, badge, "powered by" mark, or script and image
-loaded from a vendor's domain.
+**Binding.** No vendor logo, badge, "powered by" mark, image, font, widget,
+analytics tag or consent vendor from anybody else's domain.
 
 A marketing site is an argument about one product. A second brand in the
 corner is advertising the reader did not ask for, and on a page about
 somebody's money it is a second party to wonder about. It is also somebody
 else's decision about what this page says.
 
-**One exception, and it is the opposite of branding.** The privacy policy
-names the hosting provider and the payment processor, because a policy that
-hides who processes the data is not a policy. `tests/branding.test.ts` names
-those two pages and requires them to exist.
+**The one script is Google's AdSense loader**, `adsbygoogle.js` from
+`pagead2.googlesyndication.com`, in `src/app/layout.tsx` on every page. This
+rule forbade it outright until an AdSense account existed, and that wording
+was written when nothing on this origin needed a vendor script and the site's
+whole privacy claim was that it made no request to anywhere but itself. An
+account changes what the rule is about rather than whether it is worth
+keeping, so the decision is recorded here rather than broken quietly —
+`AGENTS.md` carries the same decision and `docs/adsense.md` §8 has the
+argument and the measurements.
+
+**Three things keep it an exception rather than a door.** The snippet is the
+account's own, unmodified, and nothing may be added beside it. The hosts it
+may reach are a closed list that was **observed** — five, in the directives
+each was needed in — so widening `netlify.toml`'s policy to admit a host
+nobody has watched is how this stops being one exception. And a script that
+reaches another origin is a **disclosure**: `src/content/legal.ts` has to say
+what it loads, what cookie it sets and how to be rid of it, to the same
+standard the policy holds the application to.
+
+**One exception to the branding half, and it is the opposite of branding.**
+The privacy policy names the hosting provider and the payment processor,
+because a policy that hides who processes the data is not a policy.
+`tests/branding.test.ts` names those two pages and requires them to exist.
 
 **A host can inject its own badge into the response**, which no test here can
 see. Netlify does exactly that on free projects created on or after 19 August
@@ -462,7 +481,13 @@ arrives from outside the repository needs somewhere to live that is not a
 test.
 
 _Checked by:_ `tests/branding.test.ts`, for the half that is ours: no vendor
-word in any page's visible markup, and no subresource from a vendor's domain.
+word in any page's visible markup, and no subresource from a vendor's domain
+except the one exact URL its `ALLOWED_SUBRESOURCES` grants by name, so moving
+the loader's address is a change this exception has to be re-granted for.
+It sees markup and not runtime, so the other four hosts are outside it:
+`tests/adsense.test.ts` holds the policy's five against widening in either
+direction, and a host the vendor adds at runtime is caught only by re-running
+`docs/adsense.md` §8's recipe.
 
 ## 7. Structure
 
@@ -519,6 +544,7 @@ on.
 | 6.1 The pending control             | `tests/home-page.test.tsx`                          |
 | 6.4 Link text                       | `tests/home-page.test.tsx`                          |
 | 6.5 No third-party branding         | `tests/branding.test.ts`                            |
+| 6.5 The one script, and its hosts   | `tests/adsense.test.ts`, and `docs/adsense.md` §8   |
 | 7.1–7.3 Structure                   | `tests/home-page.test.tsx`                          |
 | 2.1 Spacing scale                   | `human` — mechanizable, and the best candidate left |
 | 3.1 Type scale                      | `human` — sweep `font-size:` for a digit            |
