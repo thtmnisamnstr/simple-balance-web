@@ -127,7 +127,10 @@ a {
   text-underline-offset: 0.2em;
 }
 
-:where(a, button, [tabindex]):focus-visible {
+/* `input` is here for the docs search, the one field on the site. Left out,
+   it fell back to the browser's own blue ring, a color from neither theme,
+   while every link beside it had this one. */
+:where(a, button, input, [tabindex]):focus-visible {
   outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
   border-radius: var(--radius-sm);
@@ -187,11 +190,17 @@ svg {
   display: none;
 }
 
-.stack {
-  display: flex;
-  flex-direction: column;
-  gap: var(--s-4);
-  align-items: start;
+/* The frame waits for AdSense to take the unit. Where its script never runs,
+   because a blocker or a DNS filter stopped it, the <ins> is never marked
+   either way, so the rule above never fires and every page ended on an empty
+   band between two rules. The loader marks the unit
+   data-adsbygoogle-status="done" within moments of running, so a reader
+   whose ads load sees the frame arrive with the ad and nobody else sees it
+   at all. Only the frame: hiding the unit itself would leave the loader no
+   width to size a responsive ad from. */
+.ad-banner:not(:has(> ins.adsbygoogle[data-adsbygoogle-status])) {
+  padding-block: 0;
+  border-block-width: 0;
 }
 
 .eyebrow {
@@ -661,6 +670,17 @@ svg {
   margin-top: var(--s-3);
 }
 
+/* The text under a page's or a section's own heading. Headings and
+   paragraphs both zero their margins, so a lede sat flush against its title
+   on the homepage's sections, the pricing page, the blog and every docs page
+   and post. Only the 404 had a gap, from a flex column nothing else used. One
+   rule for every title, so the next page to put a lede under one gets the
+   gap without inventing it. */
+.section-title + :is(.lede, .prose),
+.entry-heading + .lede {
+  margin-top: var(--s-4);
+}
+
 .footer-cols {
   display: grid;
   gap: var(--s-5);
@@ -704,6 +724,11 @@ svg {
   margin: 0;
   display: grid;
   gap: var(--s-3);
+  /* Two figures side by side are stretched to the taller one's height, and a
+     grid's auto rows share that slack out: the shot's frame grew a band of
+     empty surface under the picture whenever its neighbor's caption ran a
+     line longer, and the two screens stopped lining up. */
+  align-content: start;
 }
 
 .shot-caption {
@@ -770,6 +795,13 @@ svg {
   padding-left: var(--s-5);
   display: grid;
   gap: var(--s-2);
+}
+
+/* A list item holding two paragraphs, or a paragraph and a code block. The
+   spacing rule above reaches direct children only, so the second paragraph
+   ran straight on from the first with nothing to say it was a new one. */
+.prose-body li > * + * {
+  margin-top: var(--s-2);
 }
 
 .prose-body blockquote {
@@ -1087,12 +1119,27 @@ svg {
   display: contents;
 }
 
+/* Except that it did: with the `<picture>` gone, its `<source>` became an
+   item of whatever grid holds the cover, empty but still owed the grid's
+   gap, so every cover sat one gap lower than the layout said. The browser
+   picks the file from the element, not from its box. */
+.cover > source {
+  display: none;
+}
+
 .entry-cover {
   width: 100%;
   height: auto;
   border-radius: var(--radius-lg);
   border: 1px solid var(--line);
   margin-top: var(--s-5);
+}
+
+/* The cover's own top margin is the gap below a post's byline. Leading the
+   featured card it stacked on the card's padding instead, and the card had
+   twice the space above its picture that it has beside it. */
+.entry-featured > .cover:first-child .entry-cover {
+  margin-top: 0;
 }
 
 .entry-featured {
@@ -1452,6 +1499,14 @@ svg {
    surface underneath has to switch with them. Painting this on the always-dark
    `--art-base` put github-light's dark text on a dark green card, which was
    legible in dark mode and nearly invisible in light. */
+/* The figure rehype-pretty-code wraps every block in. Nothing styled it, so it
+   kept the browser's own figure margin, 40px a side, and every code block
+   on the site sat inset from the column the tables and callouts around it
+   fill. The vertical margin is `.code-block`'s, below. */
+figure[data-rehype-pretty-code-figure] {
+  margin: 0;
+}
+
 .code-block {
   margin: var(--s-5) 0;
   border: 1px solid var(--line);

@@ -29,7 +29,7 @@ export const metadata: Metadata = {
 export default function NotFound() {
   return (
     <section className="section" aria-labelledby="nf-title">
-      <div className="page page-narrow stack">
+      <div className="page page-narrow">
         <p className="eyebrow">{notFound.eyebrow}</p>
         <h1 id="nf-title" className="section-title">
           {notFound.heading}

@@ -424,11 +424,31 @@ banned-words test could not see.
 
 ### Fixed
 
+**Every title has room under it.** The lede beneath a page's or a section's
+title sat flush against it everywhere but the 404, which was the one page that
+had laid itself out differently. One rule spaces them all now. The same review
+found four more things nobody had opened the page to see:
+
+- Every code block sat 40px inside the column the tables and callouts around
+  it fill, because the figure the highlighter wraps it in kept the browser's
+  own margin.
+- The two screens under the homepage's feature grid stopped lining up whenever
+  one caption ran a line longer, and the featured post's cover had twice the
+  space above it that the card has beside it.
+- A reader whose blocker stops the ad script saw every page end on an empty
+  band between two rules, because the unit is never marked unfilled when the
+  script never runs. The frame now waits for the script.
+- The docs search wore the browser's blue focus ring, the one control on the
+  site that didn't wear the theme's.
+
+Post covers now declare their size, so a post no longer pushes its first
+paragraph down the page when the picture above it arrives.
+
 **The getting-started page describes the cloud programs 0.2.0 actually
 ships.** It said the Oracle Cloud and AWS programs build one machine against a
 database you supply, and that a setting is an edit to a file on that machine.
 They build two by default, the second running PostgreSQL with no public
-address, and 0.2.0 moved every setting into the Pulumi stack and the cloud's
+address, the application now describes two profiles rather than three, and 0.2.0 moved every setting into the Pulumi stack and the cloud's
 own secret store, so a machine those programs build ignores the file the page
 told you to edit. The page says both now. The AdSense procedure had the same
 file at the center of step 9, and it now separates a machine rebuilt by the

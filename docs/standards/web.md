@@ -95,6 +95,22 @@ nudge and a `0 1px` inset, each below the smallest step on the scale and none
 of them argued for anywhere. They are the reason to build the sweep rather
 than the evidence that it is unnecessary.
 
+### 2.2 A title and the text under it are spaced once, for every title
+
+**House.** `--s-4` between a `.section-title` or an `.entry-heading` and the
+lede or paragraph that follows it, from one rule in `site.css`.
+
+Headings and paragraphs both zero their margins, so the gap has to come from
+somewhere, and for as long as that has been true it came from nowhere: the
+lede sat flush against its title on the homepage's sections, the pricing page,
+the blog and every docs page and post. The 404 alone had a gap, from a flex
+column nothing else used, which is the shape this rule is about — a section
+that looks right because it invented its own spacing, beside every other
+title on the site looking wrong because nobody did.
+
+_Checked by:_ `tests/a11y.test.ts`, "layout", which measures the gap on a
+rendered page of each kind.
+
 ## 3. Type
 
 ### 3.1 The scale is fluid, and every size is on it
@@ -258,6 +274,34 @@ actually extends the document, which is deliberately **not** the widest thing
 past the edge: the widest thing is usually something a scroller is holding
 correctly.
 
+### 4.4 Space at a box's edge is the box's own padding
+
+**House.** A card's first and last children carry no margin toward the card's
+edge, and nothing invisible takes a grid track.
+
+Both ways of breaking it were live in the featured post card, which had twice
+the space above its cover that it had beside it. The cover's top margin is the
+gap under a post's byline, and leading the card it stacked on the padding. And
+`.cover` is `display: contents`, so its `<source>` became an empty grid item
+the card still owed a gap to. `.cover > source` is `display: none` for that
+reason: the browser picks a file from the element, not from its box.
+
+_Checked by:_ `tests/a11y.test.ts`, "layout": the featured card's inset is the
+same above its cover as beside it.
+
+### 4.5 Two of the same thing side by side line up
+
+**House.** Figures in a row start and end level whatever their captions do.
+
+A grid item is stretched to its row's height, and a grid inside it shares the
+slack out across its own rows, so a figure whose neighbor's caption ran a line
+longer grew a band of empty surface under its picture. `.shot-figure` is
+`align-content: start`, and anything else laid out as a stretched grid with a
+picture in it wants the same.
+
+_Checked by:_ `tests/a11y.test.ts`, "layout", on the two screens under the
+homepage's feature grid.
+
 ## 5. Images
 
 ### 5.1 Screenshots are of the running application
@@ -327,7 +371,13 @@ Without them the page reflows as each image arrives, and on a page that is
 mostly screenshots that is the difference between a calm load and a jumping
 one.
 
-_Checked by:_ `tests/home-page.test.tsx`.
+**The covers went without them** after the screenshots had them, so a post
+opened by pushing its own first paragraph down the page once the picture
+above it arrived. `src/components/cover.tsx` declares the size
+`scripts/build-images.mjs` draws every cover at.
+
+_Checked by:_ `tests/home-page.test.tsx` for the screenshots, and
+`tests/blog-features.test.ts` for the covers, against the files themselves.
 
 ### 5.4 Alt text describes what the picture shows
 
@@ -383,8 +433,20 @@ The homepage terminal sample is the deliberate exception — it is a picture of 
 dark thing rather than a panel that follows the page, and it is hand-colored
 rather than highlighted.
 
-_Checked by:_ `tests/docs-features.test.ts` for both themes being emitted;
-whether the contrast is right is `human`, and it was found by looking.
+**A sample carries no comment lines.** Both themes color a comment below
+4.5:1 on these surfaces — 4.22 in light and 3.58 in dark — so a `#` line
+fails WCAG 1.4.3 on whatever page it lands on. Say it in the sentence around
+the block instead. `tests/a11y.test.ts` caught the first one the day it was
+written.
+
+**It fills the column the text does.** `rehype-pretty-code` wraps every block
+in a `<figure>`, which nothing styled, so every code block on the site kept
+the browser's own 40px a side and sat inset from the tables and callouts
+around it.
+
+_Checked by:_ `tests/docs-features.test.ts` for both themes being emitted, and
+`tests/a11y.test.ts`, "layout", for the width; whether the contrast is right
+is `human`, and it was found by looking.
 
 ## 6. Controls
 
@@ -493,6 +555,37 @@ configured ones, and `tests/ad-placement.test.ts` holds which pages carry the
 unit at all. None of the three sees a request at runtime, so a host the
 vendor adds there is caught only by re-running `docs/adsense.md` §8's recipe.
 
+### 6.6 An ad that never loads leaves nothing behind
+
+**House.** The banner's frame, its border and padding, appears only once the
+loader has taken the unit, and the whole banner goes when Google says it had
+nothing to fill.
+
+The second half was already true, and the first was not: a reader whose
+blocker or DNS filter stops the loader never gets the unit marked either way,
+so the rule that collapses an unfilled one never fires, and every page ended
+on an empty band between two rules. The loader marks the unit
+`data-adsbygoogle-status="done"` within moments of running, which was
+observed rather than read, so the frame waits for that. Only the frame: the
+unit itself stays laid out, because the loader sizes a responsive ad from the
+width it is given, and a hidden unit has none.
+
+_Checked by:_ `tests/a11y.test.ts`, "an ad that never loads", with the loader
+blocked.
+
+### 6.7 Focus looks the same on every control
+
+**Binding.** WCAG 2.4.7. One focus ring, `--focus-ring`, on every link,
+button, field and focusable element.
+
+The docs search is the site's one field, and the shared rule named links,
+buttons and `[tabindex]` but not `input`, so it wore the browser's own blue
+ring — a color from neither theme — while every link beside it wore the
+site's.
+
+_Checked by:_ `tests/a11y.test.ts`, "layout", which compares the field's ring
+to a link's in both themes.
+
 ## 7. Structure
 
 ### 7.1 One h1, and levels never skip
@@ -549,6 +642,12 @@ on.
 | 6.4 Link text                       | `tests/home-page.test.tsx`                          |
 | 6.5 No third-party branding         | `tests/branding.test.ts`                            |
 | 6.5 The one script, and its hosts   | `tests/adsense.test.ts`, and `docs/adsense.md` §8   |
+| 2.2 Title-to-text spacing           | `tests/a11y.test.ts`, "layout"                      |
+| 4.4, 4.5 Box edges, figures in rows | `tests/a11y.test.ts`, "layout"                      |
+| 5.3 Cover dimensions                | `tests/blog-features.test.ts`                       |
+| 5.6 Code blocks fill the column     | `tests/a11y.test.ts`, "layout"                      |
+| 6.6 An ad that never loads          | `tests/a11y.test.ts`                                |
+| 6.7 One focus ring                  | `tests/a11y.test.ts`, "layout"                      |
 | 7.1–7.3 Structure                   | `tests/home-page.test.tsx`                          |
 | 2.1 Spacing scale                   | `human` — mechanizable, and the best candidate left |
 | 3.1 Type scale                      | `human` — sweep `font-size:` for a digit            |
