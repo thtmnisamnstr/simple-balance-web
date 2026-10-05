@@ -142,17 +142,19 @@ export const privacy = {
          * `legal-review` is where this paragraph is re-checked whenever that
          * changes.
          *
-         * Non-personalized is stated as a fact rather than a promise, because
-         * it is forced in code (`ADSENSE_CONSENT_MANAGED` unset) rather than
-         * asked for: `docs/adsense.md` §5 is why — no certified consent
-         * platform is published from this account, and that is Google's
-         * condition for personalized ads specifically. ePrivacy consent is
-         * the separate rule this does not satisfy, covered in the next
-         * paragraph and the cookies section below.
+         * This said the ad was non-personalized, as a fact forced in code,
+         * while Advertising further down said the script on this website
+         * carried no such instruction and an ad here could be personalized:
+         * one page, both answers. The operator has since published Google's
+         * consent messages from the account, European and US-state, and set
+         * `ADSENSE_CONSENT_MANAGED` on both surfaces, so the code no longer
+         * forces non-personalized and the message decides. Said once, here,
+         * and pointed at Advertising for how.
          */
-        "That ad is non-personalized: it is not chosen using your browsing history or interests. " +
-          "Requesting one still contacts the hosts above and still sets the cookie described " +
-          "further down, whether or not the ad is filled.",
+        "That ad can be personalized, chosen partly from what Google knows of your browsing, " +
+          "unless you've said no. Where you are decides whether you're asked first, and " +
+          "Advertising says how. Requesting an ad still contacts the hosts above and still " +
+          "sets the cookie described further down, whether or not the ad is filled.",
         /*
          * What the request carries, and the one place this origin is better
          * than the application: `Referrer-Policy: strict-origin-when-cross-origin`
@@ -173,7 +175,7 @@ export const privacy = {
         // section straight through is not told about the script and left to
         // discover the cookie somewhere else.
         "That script sets one cookie today, and it's Google's advertising identifier. Cookies " +
-          "names it, says how long your browser keeps it and why nobody is asked about it " +
+          "names it, says how long your browser keeps it and where you're asked about it " +
           "first, and says what you can do.",
         "The site stores nothing of its own in your browser. It has no analytics and no " +
           "tracking pixel, and the light or dark theme you see follows the setting your browser " +
@@ -226,15 +228,14 @@ export const privacy = {
          * The basis for the website's own cookie, said rather than left to be
          * inferred from a list that describes the application. Under ePrivacy
          * a non-essential cookie needs consent before it is set, whatever
-         * lawful basis the processing after it would rest on, and no consent
-         * is being collected on this origin today. Naming a different basis
-         * for it would be picking the one that does not apply; saying nothing
-         * would leave the list reading as complete.
+         * lawful basis the processing after it would rest on. This said
+         * nothing on smpl.money asked for it; Google's European message is
+         * published for this origin now, so the basis is the consent it asks
+         * for, and the paragraph says where that is collected.
          */
-        "The website's advertising script is the one thing this policy describes with no " +
-          "basis in that list. What it would rest on is your consent, and nothing on " +
-          "smpl.money asks for it today. Cookies says so plainly, and says what you can do " +
-          "in the meantime.",
+        "In the EEA, the UK and Switzerland, Google's message asks for that consent before an " +
+          "advertising cookie is set, on this website as well as in the application, and " +
+          "Cookies says how to change your answer.",
       ],
     },
     {
@@ -257,11 +258,18 @@ export const privacy = {
         // other sites. Google's advertising cookies are its own and are read on
         // every site that carries its ads, so it may, and the sentence after
         // is about how an ad here is chosen, which is a different question.
+        /*
+         * "In the application, ads are requested as non-personalized by
+         * default" was true while the application forced the flag. It no
+         * longer does, on either surface: the operator set
+         * `ADSENSE_CONSENT_MANAGED`, so Google's consent message decides.
+         */
         "Google and its partners use cookies and similar technologies to serve ads, and through " +
           "the cookies it sets for advertising, Google may collect information about what you " +
-          "do over time and across other websites. **In the application, ads are requested as " +
-          "non-personalized by default**, which means they are based on the page and your " +
-          "rough location rather than on a profile of you.",
+          "do over time and across other websites. **On both the website and the application, " +
+          "an ad can be personalized**: chosen partly from a profile Google keeps of your " +
+          "browsing. An ad that isn't personalized is chosen from the page and your rough " +
+          "location instead. Neither kind is chosen from the figures in your ledger.",
         /*
          * What declining does, and it is not "no ads". This said "Declining
          * means no ads are served to you" while the pricing page said saying
@@ -293,29 +301,41 @@ export const privacy = {
          * notice nobody will see is worse than one that admits there is none:
          * the reader can act on the second.
          */
-        "**Non-personalized is not the same as cookie-free.** Even these ads set cookies, for " +
-          "frequency capping and fraud prevention, which is why consent is required in the " +
-          "EEA, the UK and Switzerland regardless of whether the ads are personalized. That " +
-          "consent is asked for through a notice Google delivers on the advertising account's " +
-          "instructions, rather than through anything in the code of either site, and no such " +
-          "notice is published today. Cookies says what that means for you and what you can do " +
-          "instead. If one is published and you decline, that doesn't remove the ads. It keeps " +
-          "them from being personalized and keeps Google from setting the advertising cookies " +
-          "that need your consent, though Google may still show what it calls a limited ad in " +
-          "the same place.",
         /*
-         * True of the application and false of this website, said as two
-         * sentences because one sentence covering both would have to be
-         * vague about which. The application sets no consent management on
-         * its tag, so every ad request it makes asks for a non-personalized
-         * ad; the snippet on smpl.money is the plain loader with no such
-         * parameter, so nothing here asks Google for one.
+         * And then the operator published both of Google's messages, a
+         * European one and a US-state one, for both origins. They are
+         * delivered by Google's script on the account's instructions, so
+         * nothing in either repository can show them, and a browser driven
+         * against a build served as smpl.money from California on
+         * 4 October 2026 still found `window.googlefc` undefined. That is
+         * recorded in `docs/adsense.md` §8 as a thing to re-measure from
+         * inside each region rather than settled here: this paragraph
+         * describes what the account is configured to do.
          */
-        "In the application, ads are only ever personalized if you have consented to that " +
-          "specifically, because every ad request it makes asks for a non-personalized ad " +
-          "unless a consent platform has said otherwise. **The script on this website carries " +
-          "no such instruction.** It's the plain AdSense loader, so where the law allows " +
-          "personalization without consent, an ad here can be personalized.",
+        "**Where you are decides how you're asked.** In the EEA, the UK and Switzerland, " +
+          "Google shows a message asking for your consent before any advertising cookie is set " +
+          "or any ad is personalized. In the US states whose privacy laws give you the right " +
+          "to opt out of the sale or sharing of your personal information, it shows a link to " +
+          "do that instead, and an ad there can be personalized until you use it. Anywhere " +
+          "else there's no message, an ad can be personalized, and the controls further down " +
+          "are how to stop it. The messages are published from the advertising account and " +
+          "shown by Google's script, not by code in either site.",
+        "**Non-personalized is not the same as cookie-free.** Even an ad that isn't " +
+          "personalized sets cookies, for frequency capping and fraud prevention, which is why " +
+          "consent is required in the EEA, the UK and Switzerland before any advertising " +
+          "cookie, not only before personalization. If you decline there, or opt out in the US, " +
+          "that doesn't remove the ads. It keeps them from being personalized, and in Europe " +
+          "it keeps Google from setting the advertising cookies that need your consent, though " +
+          "Google may still show what it calls a limited ad in the same place.",
+        /*
+         * This used to be two sentences because the two surfaces differed:
+         * the application forced non-personalized ads and the website did
+         * not. Both now leave it to Google's message, so one sentence says
+         * so rather than two saying the same thing in different words.
+         */
+        "The website and the application ask for ads the same way. Neither forces an ad to be " +
+          "non-personalized: both leave it to Google's message, by where you are, as set out " +
+          "above.",
         /*
          * Named because the `Permissions-Policy` header stopped denying it,
          * and a header and a policy disagreeing about what reaches Google is
@@ -359,10 +379,16 @@ export const privacy = {
           "out of third-party vendor cookies at youradchoices.com, which is the industry " +
           "opt-out run at aboutads.info, and at youronlinechoices.eu in Europe. Blocking " +
           "third-party cookies in your browser does the same thing for every site at once.",
+        /*
+         * "Google chooses where an ad goes" described Auto ads, which is
+         * off: one banner unit sits at the end of the content on every page
+         * but this policy, the terms and the 404, and
+         * `tests/ad-placement.test.ts` holds that list.
+         */
         "In the application, advertising never appears on the billing page or the sign-in " +
-          "screen. On this website the script is on every page, this one included, and Google " +
-          "chooses where an ad goes, so this page and the page that sells the paid plan are " +
-          "among the pages it may choose.",
+          "screen. On this website the script is on every page, this one included, and one ad " +
+          "space sits at the end of the content on every page except this policy, the terms " +
+          "and a page that doesn't exist. The page that sells the paid plan is among them.",
       ],
     },
     {
@@ -676,6 +702,21 @@ export const privacy = {
           "Google receives: from this website on every visit, and from the application to " +
           "show an ad to a free account. Premium takes the advertising out of the " +
           "application. It doesn't take the script off this website.",
+        /*
+         * Not a conclusion about whether we sell or share, which the check
+         * above refuses without restricted data processing named beside it,
+         * but what the law may call personalized advertising and the one
+         * control for it that the account now publishes. Google's US-state
+         * message is configured for both origins, so the link is Google's,
+         * and so is how it treats an opt-out.
+         */
+        "**Opting out of sale or sharing.** Under the California Consumer Privacy Act and " +
+          "similar laws in other states, letting Google's advertising cookies collect " +
+          "information to personalize ads can count as selling or sharing personal " +
+          "information, even though no money changes hands for it and nothing from your ledger " +
+          "is involved. If you live in one of those states, Google's message on both the " +
+          "website and the application carries a link to opt out, and using it keeps Google " +
+          "from personalizing ads for you there.",
         "Most of these you can exercise yourself and immediately: the product has CSV export of " +
           "your transactions for portability, editing for correction, and account deletion for " +
           "erasure. For anything else, write to the address below and we will answer within " +
@@ -736,32 +777,29 @@ export const privacy = {
           "other sites carrying its ads, for measurement and for targeting. Your browser " +
           "keeps it for about thirteen months. On a first visit a short-lived test_cookie " +
           "lands there instead, while Google checks that cookies work at all, and the next " +
-          "page replaces it with IDE. No ad has filled on this site yet, and the identifier " +
-          "is set anyway. If one ever fills, Google's advertising cookies __gads and __gpi " +
-          "follow it, and this page will say so.",
+          "page replaces it with IDE. No ad has filled on this site yet, and outside Europe the " +
+          "identifier is set anyway. If one ever fills, Google's advertising cookies __gads " +
+          "and __gpi follow it, and this page will say so.",
         /*
-         * The honest answer to "why is there no banner", which is no longer
-         * "because there is nothing to ask about". A notice would be published
-         * from the AdSense account rather than by this site's code, none is —
-         * `window.googlefc` is undefined on every page of this site, measured
-         * again on 4 October 2026 — and the cookie above lands on the first
-         * visit. Stating it
-         * and giving the reader something to do about it is the only version
-         * of this paragraph that is both true and useful; a vaguer one would
-         * be true and useless.
+         * This said nobody is asked first, because no message was published
+         * and `window.googlefc` was undefined on every page. The operator has
+         * since published Google's European and US-state messages for this
+         * origin, so who is asked is now a question of where the reader is,
+         * and each region is said as what happens there. Outside both, the
+         * cookie still arrives with no notice, and that stays said in so
+         * many words rather than left out of a paragraph about asking.
          */
-        "**Nobody is asked first, and in the EEA, the UK and Switzerland you should be.** " +
-          "An advertising identifier needs your consent before it's set, and the notice that " +
-          "asks for it is published from the advertising account rather than by this site's " +
-          "code. None is published for smpl.money today, so a cookie is set on your first visit " +
-          "with no notice and the identifier lands on the page after. That's the position as " +
-          "it stands, said here rather than left for " +
-          "you to find in your browser's developer tools. Until a notice is published, " +
-          "blocking third-party cookies in your browser keeps this one out, and clearing your " +
-          "cookies removes it. The opt-outs under Advertising work on what Google already " +
-          "has: Google's own ad settings at myadcenter.google.com, and the industry opt-outs " +
-          `at youradchoices.com and youronlinechoices.eu. Write to ${operator.contact} about ` +
-          "any of it.",
+        "**Who is asked first depends on where you are.** In the EEA, the UK and Switzerland, " +
+          "Google's message asks before this cookie or any other advertising cookie is set, " +
+          "and you can change your answer later from the message itself. In the US states " +
+          "whose privacy laws give you the right to opt out, nothing asks before the cookie is " +
+          "set, and the message offers a link to opt out of the sale or sharing of your " +
+          "information instead. Everywhere else, the cookie is set on your first visit with no " +
+          "notice. Wherever you are, blocking third-party cookies in your browser keeps it out, " +
+          "and clearing your cookies removes it. The opt-outs under Advertising work on what " +
+          "Google already has: Google's own ad settings at myadcenter.google.com, and the " +
+          `industry opt-outs at youradchoices.com and youronlinechoices.eu. Write to ` +
+          `${operator.contact} about any of it.`,
         // Better Auth's session cookie, and the short-lived ones it sets while
         // a sign-in or an agent's authorization is under way. The application
         // writes no cookie of its own beyond those.
@@ -785,32 +823,33 @@ export const privacy = {
         "**On the plan page, Stripe sets its own cookies.** That page, where you subscribe, is " +
           "the only one that loads Stripe's script, and Stripe sets cookies there to prevent " +
           "fraud. They are covered by Stripe's privacy policy.",
-        // The second of the two copies of the consent-platform promise. Both
-        // said a notice asks before an ad cookie is set, and `googlefc` is
-        // undefined on this site, so neither could be kept. They moved
-        // together on purpose: a whole-document check for the sentence is
-        // satisfied by either one, so fixing one and leaving the other is a
-        // green suite and a page that still lies in the section a reader
-        // opens looking for cookies.
+        // The second copy of what the website's paragraph says, for the
+        // application, and the two move together: a whole-document check is
+        // satisfied by either, so changing one and leaving the other is a
+        // green suite and a page that disagrees with itself in the section a
+        // reader opens looking for cookies.
         "**On the free plan, Google sets cookies for advertising**, and those are the ones " +
-          "that do require your consent. In the EEA, the UK and Switzerland that consent has " +
-          "to be asked for before any of them are set, through a notice published from the " +
-          "advertising account. None is published today, for the application any more than " +
-          "for this website, so this page doesn't tell you that you'll be asked. When one is " +
-          "published, this page will say so, and you'll be able to change or withdraw your " +
-          "answer from the notice itself.",
-        "If a notice is published and you decline, that doesn't remove the ads. It keeps them " +
-          "from being personalized and keeps Google from setting the advertising cookies that " +
-          "need your consent, though Google may still show a limited ad. It doesn't limit the " +
-          "product in any other way, and nothing about your account changes.",
+          "that do require your consent. In the EEA, the UK and Switzerland, the same message " +
+          "the website shows asks before any of them are set, and you can change or withdraw " +
+          "your answer from it. In the US states with the right to opt out, it offers the opt-out " +
+          "link instead, and elsewhere they're set without asking.",
+        "If you decline, that doesn't remove the ads. It keeps them from being personalized " +
+          "and keeps Google from setting the advertising cookies that need your consent, though " +
+          "Google may still show a limited ad. It doesn't limit the product in any other way, " +
+          "and nothing about your account changes.",
         // CalOPPA, Bus. & Prof. Code 22575(b)(5), asks how the operator
         // responds to the signal, and the answer is that nothing reads it:
         // the application's source has no `doNotTrack` and no `DNT` header.
         // What Google's own script does with it is Google's, so it is not
         // promised here either way.
-        "**Do Not Track.** Neither smpl.money nor the application responds to a browser's Do " +
-          "Not Track signal. Neither one reads it, and what Google's script makes of it is " +
-          "Google's to say rather than ours.",
+        // Global Privacy Control beside it, because the US-state message is
+        // an opt-out of sale or sharing and GPC is the browser signal for
+        // exactly that. Neither repository reads it, so the sentence says so
+        // rather than implying the message does on our behalf.
+        "**Do Not Track and Global Privacy Control.** Neither smpl.money nor the application " +
+          "responds to a browser's Do Not Track or Global Privacy Control signal. Neither one " +
+          "reads them, and what Google's script makes of them is Google's to say rather than " +
+          "ours.",
       ],
     },
     {

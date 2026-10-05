@@ -35,10 +35,14 @@ in source:
   data-full-width-responsive="true"
 ></ins>
 <script>
-  (adsbygoogle = window.adsbygoogle || []).requestNonPersonalizedAds = 1;
   (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
 ```
+
+That is the snippet as the live build renders it, with `ADSENSE_CONSENT_MANAGED`
+on. With it off, a `requestNonPersonalizedAds = 1` line goes before the push,
+which is what both origins rendered until the consent messages in §3 step 7
+were published.
 
 **Auto ads stays off.** It would be the only thing choosing the page and the
 format if nothing else did, and now something else does: a manual unit, whose
@@ -57,8 +61,10 @@ now. What follows each still has a section here:
   of traffic from one persistent unit asking on ten.
 - The privacy policy had to stop saying this site sets no cookies, because it
   now sets one (§4), and had to stop saying a visitor in the EEA or the UK is
-  asked first, because today nobody is (§5). It then had to stop saying no
-  advertising is displayed, because now some is.
+  asked first, because for a while nobody was (§5). It then had to stop
+  saying no advertising is displayed, because now some is, and then had to
+  say who is asked, region by region, once the consent messages were
+  published.
 - `AGENTS.md`'s rule against a script from a vendor's domain had to be
   rewritten to record the decision rather than be broken quietly. It now
   permits this one script and this one manual unit by name, and still forbids
@@ -177,26 +183,30 @@ never starts.
    filled by two deployments rather than two separate units, which is what
    "the same banner ad unit as in the app" means. The footer slot, if created,
    belongs to the application alone; this site declares no second unit.
-7. **Publish a European regulations message. This is the open gap, not a
-   future step.** In AdSense, open **Privacy and messaging**, create a
-   **European regulations** message for `smpl.money` (which covers
-   `app.smpl.money`), choose its wording, and publish it.
+7. **Publish a European regulations message and a US state regulations
+   message.** In AdSense, open **Privacy and messaging**, create both, for
+   `smpl.money` and `app.smpl.money`, choose their wording, and publish them.
+   The European one asks for consent before any advertising cookie; the US
+   one offers residents of the states whose laws give the right an opt-out of
+   the sale or sharing of their information.
 
-   **Nothing is published today, and that was measured rather than assumed.**
-   `window.googlefc` is `undefined` on every page of this site, which is how
-   you can tell Google's consent platform is not loading, and the ad script
-   sets a cookie on `.doubleclick.net` regardless (§8). So a visitor in the
-   EEA, the UK or Switzerland gets an ad vendor's cookie with no notice at
-   all.
+   **Both were published on 4 October 2026, by the operator's account, and
+   neither has been seen working here yet.** The same day, a build served as
+   `smpl.money` and driven from California, one of the states the US message
+   covers, found `window.googlefc` undefined on every page and no request for
+   a message at all (§8). The likeliest reason is that a site that serves no
+   ads yet is served no messages either, and that is a guess, so the first
+   measurement from inside each region is owed before the policy's
+   description of asking counts as observed.
 
-   The plan was for this message to be published before any ad script went
-   anywhere. It was not, and the script shipped first. What that costs is a
-   promise: the privacy policy and the pricing page may not tell a visitor
-   they are asked before an ad cookie is set, because on this origin they are
-   not. **The legal pages say the true thing instead**, which is the only
-   remedy this repository can apply on its own — the message itself is an
-   account setting, published from the AdSense dashboard, and no commit here
-   can publish it. §5 has the two rules it satisfies.
+   **Watch the content security policy when it does load.** Google's
+   messages are normally served from `fundingchoicesmessages.google.com`,
+   which is not one of the five hosts §8 measured, and `netlify.toml` admits
+   no host nobody has watched. A run that shows the message refused is the
+   observation that adds it, in the directives it was refused in, and not
+   before. The script shipped before any message existed, and the legal pages
+   said so for as long as that was true; §5 has the two rules a message
+   satisfies.
 
    **When it is published, come back and re-read the legal pages.** They are
    written for the state above, and they are wrong in the other direction once
@@ -308,11 +318,10 @@ never starts.
      application refuses to start, because serving Google's ads with no
      policy breaches their terms from the first impression. The application
      links it from the sidebar on every page.
-   - `ADSENSE_CONSENT_MANAGED` — **leave it unset**, which is `false`. That
-     forces non-personalized ads on every request, which is what the privacy
-     policy and the pricing page promise **of the application**. §5 says why
-     `true` would break both, and why the same assurance does not reach this
-     site.
+   - `ADSENSE_CONSENT_MANAGED=true`, once step 7's messages are published.
+     It stops forcing non-personalized ads and lets the message decide, by
+     region, which is what the privacy policy and the pricing page now say
+     of both origins. §5 says what that costs and why it was chosen.
 
    **Where these go on the Oracle Cloud and AWS single machines depends on
    which scripts the machine runs**, which is the choice made above.
@@ -347,17 +356,14 @@ never starts.
    because nginx decides the content security policy every page arrives
    with; the compose recipes derive it from `ADSENSE_CLIENT_ID`.
 
-   **`app.smpl.money` keeps `ADSENSE_CONSENT_MANAGED` unset, even with a
-   European regulations message published.** The application's own
-   `docs/deployment.md` and `docs/monetization.md` both say to set it only
-   if you want personalized ads, and this is the reason not to. The message
-   asks only
-   visitors in the EEA, the UK and Switzerland, so with `true` everybody
-   else, the United States included, would be shown personalized ads
-   without ever being asked. This site's privacy policy says the
-   application's ads are only ever personalized with specific consent, and
-   the pricing page's answer about ads says the same, so `true` would make
-   both false on the first ad. §5 has the rest.
+   **`app.smpl.money` sets `ADSENSE_CONSENT_MANAGED=true`, as this site
+   does.** The application's own `docs/deployment.md` and
+   `docs/monetization.md` both say to set it only if you want personalized
+   ads, and the operator does. What it costs is said in the privacy policy
+   rather than avoided: the European message asks only in the EEA, the UK
+   and Switzerland, the US message offers an opt-out rather than asking, and
+   everybody else is shown personalized ads without being asked. §5 has the
+   rest.
 
    Otherwise, the application's own reference for all of this is those two
    documents, in `https://github.com/thtmnisamnstr/simple-balance` at the
@@ -388,13 +394,13 @@ never starts.
     fails the build outright, in Netlify's own log, rather than shipping a
     page with one half missing and no indication why.
 
-    **`ADSENSE_CONSENT_MANAGED` is the one place this site's answer differs
-    from a literal copy of the application's**, and only because the
-    application's own docs are written for an operator who may have published
-    a European regulations message and this account, as of step 7, has not.
-    Leave it unset, which is `false`, until that message is live — §5 has the
-    two rules it does and does not satisfy, and the `legal-review` skill is
-    where the privacy policy is re-read once it is.
+    **Set `ADSENSE_CONSENT_MANAGED=true` here too**, the same as step 9.
+    The privacy policy says Google's message decides on both origins, so
+    `tests/adsense.test.ts` fails a build without it, by name, in Netlify's
+    own log, which is how a deploy preview first showed that the setting and
+    the policy disagreed. §5 has the two rules it does and does not satisfy,
+    and the `legal-review` skill is where the policy is re-read whenever it
+    changes.
 
 ## 4. The privacy policy
 
@@ -431,13 +437,16 @@ application, and each rounded in the flattering direction:
   be theater." Under a heading, "Cookies, and why this site has no banner",
   that the same change made wrong.
 - That a visitor in the EEA, the UK or Switzerland "will be asked before any
-  of them are set". Nobody is asked; §5 and §3 step 7 are why.
+  of them are set", written before any message was published. It may be said
+  again now that one is, and only of those three places; §5 and §3 step 7
+  are why.
 - "That script doesn't currently show you any advertising … so nothing is
   displayed", under a paragraph arguing that Auto ads being off meant no ad
-  could appear. A manual unit is what now stands where that argument stood;
-  the replacement says the ad is non-personalized rather than that there is
-  none, which is the distinction worth drawing out loud now that the second
-  one would be false.
+  could appear. A manual unit is what now stands where that argument stood.
+  Its replacement said the ad was non-personalized, as a fact, while a later
+  section of the same policy said an ad here could be personalized; both
+  went when the consent messages were published, and one sentence now says
+  the ad can be personalized and points at who is asked.
 
 **A marketing claim is never stronger than the privacy policy it links to**, and
 this is the inverse failure: the policy was stronger than the origin it
@@ -446,9 +455,10 @@ policy, and it outlived the fix by a commit: the policy stopped promising a
 consent notice while `src/content/pricing.ts` went on saying "in the UK, the
 EEA and Switzerland you get asked before any advertising cookie is set" — the
 strongest consent promise on the site, on the page selling the paid plan, one
-click from a policy denying it. It states the requirement now and says no
-notice is published. The check that missed it asked whether consent was
-_mentioned_; `tests/legal.test.tsx` now also asks that it not be _promised_.
+click from a policy denying it. Now that the messages are published it says
+who is asked, by region. The check that missed it asked whether consent was
+_mentioned_; `tests/legal.test.tsx` now holds every "asked before" on either
+surface to the region it is true in.
 §8 is what the replacement sentences are written from: the vendor, the five
 hosts, the cookie and what a visitor can do about it.
 
@@ -476,46 +486,34 @@ rule already and is inside it with the cookie that matters most rather than a
 probe.
 
 **A certified CMP is Google's condition for personalized ads, and only
-those.** With `ADSENSE_CONSENT_MANAGED` unset, both origins force
-`requestNonPersonalizedAds` on every request their unit makes, and Google
-serves those without a certified platform. **That assurance now reaches this
-site too** — it did not when the loader here was bare, with no ad unit and no
-parameter, and it does as of the unit in `src/components/ad-banner.tsx`, which
-sets the same flag the same way, before the same `push({})`, for the same
-reason: `docs/adsense.md`, this file, is the one place that reasoning is
-written, so a reader of `ad-banner.tsx` is pointed back here rather than
-finding the argument repeated.
+those.** With `ADSENSE_CONSENT_MANAGED` unset, a unit forces
+`requestNonPersonalizedAds` on every request, and Google serves those without
+a certified platform. Both origins did, this one through
+`src/components/ad-banner.tsx`, which sets the flag the same way the
+application does, before the same `push({})`. Both now set the setting, so
+neither forces the flag, and the published message is what stands between a
+visitor in Europe and a personalized ad.
 
 **Google's own European regulations message satisfies both** (§3 step 7). It
 is part of the AdSense account and is itself a certified platform, and the ad
 tag both origins already load is what delivers it — so there is no third
 vendor and no extra script. It is not free of consequence for the content
-security policy, though: the old claim that it needs "no exception to either
-origin's" policy was written when this origin loaded no ad script. Today the
-policy here admits the five hosts in §8, and the consent platform arrives over
-those same hosts, so **re-measure when it is published** rather than assuming
-the list still holds.
+security policy, though: Google normally serves it from
+`fundingchoicesmessages.google.com`, which this origin's policy does not
+admit, and no run here has seen it requested (§3 step 7). **Re-measure from
+inside the region** rather than assuming either way.
 
-**It is not published, so the promise is the thing that changed.** The privacy
-policy used to be what told a visitor they would be asked before any ad cookie
-is set. It is not asked and it is set, so the policy says what is actually
-true and points at Google's own controls instead. When the message goes up,
-that paragraph is wrong in the other direction and has to move back.
-
-**`ADSENSE_CONSENT_MANAGED` stays unset on `app.smpl.money` and on
-`smpl.money` alike**, whatever either deployment's own instructions recommend
-once the message is published (§3 steps 9 and 10 say where the application's
-depart). Setting it to `true` stops forcing non-personalized ads and lets each
-visitor's consent answer decide. But the European regulations message asks
-only visitors in those three places, so everybody else, the United States
-included, would be shown personalized ads without ever being asked. The
-privacy policy says the application's ads are only ever personalized with
-specific consent, and the pricing page's answer about ads says the same, and
-this document's own §4 now says the same about this site's unit. If
-personalization is ever wanted, rewrite all three first — `src/content/legal.ts`
-and `src/content/pricing.ts` here, and the application's own privacy policy —
-and change the setting after, on both origins at once rather than one at a
-time.
+**`ADSENSE_CONSENT_MANAGED` is set on `app.smpl.money` and on `smpl.money`
+alike, as of 4 October 2026**, with a European and a US state message
+published for both. The decision used to be the opposite, and the argument
+for it still holds as a description of the cost: the European message asks
+only visitors in those three places, the US message offers an opt-out rather
+than asking, and everybody else is shown personalized ads without ever being
+asked. The operator chose that, and the order this section always asked for
+was kept: `src/content/legal.ts` and `src/content/pricing.ts` were rewritten
+to say so in the same change that made `tests/adsense.test.ts` require the
+setting, on both origins at once. The application's own privacy policy is
+this site's, so there is no third document to move.
 
 ## 6. The file
 
@@ -684,13 +682,21 @@ theme follows `prefers-color-scheme` with no local storage — so the honest
 sentence is that the site stores nothing and Google's script stores an
 advertising identifier.
 
-### No consent platform
+### The consent messages, published and not yet seen
 
-`window.googlefc` is `undefined` on every page. That is the global Google's
-Funding Choices platform defines, so its absence is how you can tell no
-consent message is loading on this origin. An EEA or UK visitor gets `IDE`,
-an advertising identifier, with no notice. §3 step 7 is what closes that, and
-it is an account setting rather than a commit.
+`window.googlefc` is the global Google's consent messages define, so it is
+how you tell whether one loaded. The first run recorded here found it
+undefined on every page with no message published. The second, on
+4 October 2026, after the operator published a European and a US state
+message for both origins, served this branch's build as `smpl.money` with
+`ADSENSE_CONSENT_MANAGED=true` and drove it from California: still undefined
+on all six page shapes, no request for a message, no refusal from the
+content security policy, the same five hosts, and `test_cookie` then `IDE`
+on `.doubleclick.net` with every slot unfilled. From California the US
+message should have loaded, so either a site that serves no ads is served no
+messages, or the messages do not reach this origin yet. Measure from inside
+the EEA and a covered US state once ads fill, and check the console for
+`fundingchoicesmessages.google.com` being refused (§3 step 7).
 
 ### How it was measured, so it can be done again
 

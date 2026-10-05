@@ -73,14 +73,19 @@ them once:
 Avoiding the first is not avoiding the second. `docs/adsense.md` §5 and the
 policy's cookies section both carry this; check they still agree.
 
-**Neither is satisfied on `smpl.money` today**, and the right-hand column is
-what _would_ satisfy each rather than what does. No consent message is
-published from the AdSense account, so an EEA visitor gets Google's
-advertising identifier with nothing asked (the cookie walkthrough in §5 says
-what to expect in devtools). The policy says
-exactly that and promises no notice, which is the state to preserve: when a
-message is published the policy is wrong in the other direction, and this is
-the review that has to move it back.
+**Both are meant to be satisfied by one thing now**: Google's European
+regulations message, which the operator published from the AdSense account
+for both origins on 4 October 2026, beside a US state regulations message.
+Both surfaces set `ADSENSE_CONSENT_MANAGED`, so neither forces
+non-personalized ads, and the policy says who is asked, region by region:
+Europe before any advertising cookie, the US states through an opt-out link,
+and nobody elsewhere. **The state to check is whether that is still true.**
+On the day it was written, a build served as `smpl.money` from California
+found `window.googlefc` undefined and no message requested at all, so this
+review owes a measurement from inside each region (§5 step 1) before the
+policy's description of asking can be called observed. If the messages are
+ever unpublished, or a surface turns the setting off, the policy is wrong in
+the other direction and this is the review that has to move it back.
 
 ## 4. Email
 
@@ -154,10 +159,14 @@ the terms, and it may need opt-in at sign-up rather than opt-out.
      cookies work, and the next navigation replaces it with `IDE`, Google's
      advertising identifier, kept for about thirteen months. Stopping at the
      first page is how the policy came to describe a probe and miss the
-     identifier. `window.googlefc` is `undefined` on every page, which is how
-     you can tell no consent message loaded, so **nothing asked first** —
-     that is today's state and not a browser quirk. `docs/adsense.md` §8 is
-     the recipe for measuring it properly, over local HTTPS as `smpl.money`,
+     identifier. `window.googlefc` is the global Google's consent messages
+     define, so it is how you tell whether one loaded: from the EEA, the UK
+     or Switzerland it must be defined and the message must ask before
+     `test_cookie` or `IDE` appears; from a US state the policy names, it
+     must be defined and offer the opt-out link; anywhere else, undefined is
+     correct. On 4 October 2026 it was undefined from California, which the
+     policy does not allow, so check that first. `docs/adsense.md` §8 is the
+     recipe for measuring it properly, over local HTTPS as `smpl.money`,
      because a run on `localhost` is a measurement of a different page.
   2. **The application's sign-in screen, then the dashboard**, before
      `/settings/plan`. Expect the sign-in cookies once you are signed in, and

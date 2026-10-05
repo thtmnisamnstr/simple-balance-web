@@ -9,6 +9,30 @@ than a contract with readers.
 
 ### Changed
 
+**Ads on both the website and the application can now be personalized, and
+the privacy policy says who is asked first.** Google's European and US-state
+consent messages are published from the advertising account for both, and
+neither surface forces non-personalized ads any longer. In the EEA, the UK
+and Switzerland the message asks before any advertising cookie is set; in the
+US states with a right to opt out of the sale or sharing of personal
+information, it offers that opt-out instead; elsewhere nobody is asked, and
+the policy says so in those words. The policy also says now that this kind
+of advertising can count as selling or sharing under California's law and
+others like it, and that neither site reads Global Privacy Control.
+
+- The pricing page's answer about ads says the same, by region. It used to
+  say ads were only personalized if you agreed, which is now true only in
+  Europe.
+- The policy had been saying two opposite things about the website's ad, and
+  that one page was among the places Google might put an ad when only a
+  fixed space at the end of most pages exists. Both are fixed.
+- The site's own build refuses to ship with the setting off, because the
+  policy describes it on. The deploy preview is what showed the setting and
+  the policy disagreeing.
+- Not yet observed: from California, the message never loaded on a build
+  served as smpl.money. It should be checked from inside each region once ads
+  fill, before the policy's account of asking counts as measured.
+
 **The site describes 0.2.0 as released, and reads the application from
 `main`.** 0.2.0 merged and was released, and `:latest` now names the same
 image. The site had described it from the release branch while

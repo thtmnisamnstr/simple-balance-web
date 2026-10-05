@@ -27,10 +27,12 @@ jobs:
       # told this repository the real one, and these tests are about the
       # mechanics of rendering whatever slot is configured, not about which
       # unit it is. The real values for the live site are Netlify's own
-      # environment variables, never committed here.
+      # environment variables, never committed here. The consent flag is the
+      # live one, because the privacy policy describes it and
+      # `tests/adsense.test.ts` fails a build that disagrees.
       ADSENSE_CLIENT_ID: ca-pub-9953156598757474
       ADSENSE_BANNER_SLOT_ID: "1234567890"
-      ADSENSE_CONSENT_MANAGED: "false"
+      ADSENSE_CONSENT_MANAGED: "true"
     steps:
       - uses: actions/checkout@v5
 

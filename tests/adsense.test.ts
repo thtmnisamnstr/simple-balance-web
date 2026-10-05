@@ -244,28 +244,35 @@ describe.skipIf(!adsense && !process.env.CI)("the built pages", () => {
       if (!/^\s*<script>\(adsbygoogle = window\.adsbygoogle \|\| \[\]\)/.test(after)) {
         offenders.push(`${page.route} has no push script immediately after the unit`);
       }
-      if (!after.includes("requestNonPersonalizedAds = 1")) {
-        offenders.push(`${page.route} does not force non-personalized ads`);
+      // The flag follows the configuration: forced when no consent message
+      // decides, absent when one does. Which of the two the live build has
+      // to be is the next test's question, not this one's.
+      const forced = after.includes("requestNonPersonalizedAds = 1");
+      if (forced === adsense!.consentManaged) {
+        offenders.push(
+          `${page.route} ${forced ? "forces" : "does not force"} non-personalized ads, ` +
+            `with ADSENSE_CONSENT_MANAGED ${adsense!.consentManaged}`,
+        );
       }
     }
     expect(offenders).toEqual([]);
   });
 
   /*
-   * The privacy policy says the ad on smpl.money is non-personalized, as a
-   * fact, because this build forces it rather than asking. A build with
-   * `ADSENSE_CONSENT_MANAGED=true` stops forcing it, which is right only once
-   * a certified consent message is published from the account and the policy
-   * says so, and neither is true: `window.googlefc` is undefined on every
-   * page. So the setting fails the gate by name, here, rather than as one
-   * line in the rendering check above, because the thing to change first is
-   * the policy and `legal-review` is where that happens.
+   * The privacy policy says the ad on smpl.money can be personalized and
+   * that Google's consent message decides, by region. It said the opposite
+   * until the operator published Google's European and US-state messages
+   * and set `ADSENSE_CONSENT_MANAGED` on both surfaces. A build that forces
+   * non-personalized ads now contradicts the policy in the safe direction,
+   * but it contradicts it, and the policy is what a reader holds us to: so
+   * the setting fails the gate by name, and the thing to change first is
+   * the policy, through `legal-review`.
    */
-  it("is the non-personalized ad the privacy policy says it is", () => {
+  it("leaves personalization to Google's message, as the privacy policy says", () => {
     expect(
       adsense!.consentManaged,
-      "ADSENSE_CONSENT_MANAGED is true, and the privacy policy says the ad is non-personalized",
-    ).toBe(false);
+      "ADSENSE_CONSENT_MANAGED is not true, and the privacy policy says Google's consent message decides",
+    ).toBe(true);
   });
 });
 
