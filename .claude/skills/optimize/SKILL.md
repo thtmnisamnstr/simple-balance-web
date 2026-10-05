@@ -76,10 +76,10 @@ curl -fsSL "https://raw.githubusercontent.com/thtmnisamnstr/simple-balance/$REF/
   | grep -A 6 "font-family"
 ```
 
-**Not `main`.** The site is kept in step with whichever ref that script
-chooses, which until a release merges is the release branch, and a stack
-checked against `main` is checked against a stylesheet the site is not
-following. A `null` ref or a 404 is a failed check, not a match, and
+**Not a ref typed by hand.** The site is kept in step with whichever ref
+that script chooses: `main` once a release has merged, and the release
+branch while one is open. A stack checked against any other ref is checked
+against a stylesheet the site is not following. A `null` ref or a 404 is a failed check, not a match, and
 `sync-from-app` §0 says how to tell why.
 
 The sans stacks are byte-identical. The **monospace** stacks are not, on

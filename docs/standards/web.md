@@ -165,8 +165,9 @@ curl -fsSL "https://raw.githubusercontent.com/thtmnisamnstr/simple-balance/$REF/
   | grep -A 6 "font-family"
 ```
 
-The ref is the one `sync-from-app` §0 reads, rather than `main`, so the check
-looks at the stylesheet the site is being kept in step with. A `null` ref or
+The ref is the one `sync-from-app` §0 reads rather than one typed by hand —
+`main` since 0.2.0 merged — so the check looks at the stylesheet the site is
+being kept in step with. A `null` ref or
 a 404 is a check that failed, not a match, and `sync-from-app` §0 says how
 to find out why.
 
