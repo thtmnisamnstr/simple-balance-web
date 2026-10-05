@@ -245,9 +245,9 @@ export const proofs: readonly Proof[] = [
   {
     shot: {
       name: "transactions",
-      alt: "A list of transactions by date, each with who was paid, which account it came from, what kind of spending it was and how much. Most are in dollars, a train fare from a euro account is in euros, and a move from checking to savings appears as one line.",
+      alt: "A list of transactions, newest first, each with who was paid, which account it came from, what kind of spending it was and how much. Most are in dollars, and a grocery bill and a train fare from a euro account are in euros.",
       caption:
-        "Everything you've entered, in one list you can filter. Money you moved between two of your own accounts shows up once, not twice.",
+        "Everything you've entered, in one list you can search or narrow down to one account.",
     },
     covers: ["numbers-that-tie-out", "register"],
     claim: "Follow a total back to the payments behind it",
@@ -373,7 +373,7 @@ export const features: readonly Feature[] = [
 export const featureShots = [
   {
     name: "budgets",
-    alt: "The budgets screen: a form for setting one, with fields for the category, the amount and how it's decided, the currency, a start date and an optional savings goal, and a checkbox for carrying what's left into next month, above a table of standing budgets for dining out and groceries.",
+    alt: "The budgets screen: a form for setting one, with fields for the category, the amount and how it's decided, the currency, a start date, an optional savings goal and which budget gets funded first, and a checkbox for carrying what's left into next month. Below it, the list of standing budgets begins with $200 a month for dining out.",
     caption:
       "Setting a budget. The checkbox near the bottom is what carries the remainder forward.",
   },
@@ -539,11 +539,11 @@ export const footer: { readonly blurb: string; readonly links: readonly NavLink[
     { label: "Privacy", href: "/privacy/" },
     { label: "Terms", href: "/terms/" },
     { label: "Source code", href: site.sourceUrl },
-    { label: "License", href: `${site.sourceUrl}/blob/deployment-and-monetization/LICENSE` },
-    { label: "Changelog", href: `${site.sourceUrl}/blob/deployment-and-monetization/CHANGELOG.md` },
+    { label: "License", href: `${site.sourceUrl}/blob/main/LICENSE` },
+    { label: "Changelog", href: `${site.sourceUrl}/blob/main/CHANGELOG.md` },
     {
       label: "How to run it yourself",
-      href: `${site.sourceUrl}/blob/deployment-and-monetization/docs/deployment.md`,
+      href: `${site.sourceUrl}/blob/main/docs/deployment.md`,
     },
   ],
 };

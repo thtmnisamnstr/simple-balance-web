@@ -155,9 +155,10 @@ a 404 is a check that failed, not a match, and `sync-from-app` §0 says how
 to find out why.
 
 Verified byte for byte on 22 September 2026, on both `main` and
-`deployment-and-monetization`:
+`deployment-and-monetization`, and again on 4 October 2026 on `main` at the
+0.2.0 release:
 `Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`
-in both.
+every time.
 
 **The monospace stack deliberately does not match, and this is the record of
 why.** The application has exactly one mono rule — an 11px internal label —

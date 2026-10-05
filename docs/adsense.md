@@ -232,9 +232,10 @@ never starts.
    **Two things have to be true of the machine first**, and neither is one
    of the ad settings below, so check both before touching those:
    - **It runs a release that carries ads, 0.2.0 or later.** Billing and
-     ads arrive in 0.2.0. The Oracle Cloud and AWS programs deploy the
-     pinned release image, which is 0.1.6 until 0.2.0 is released and has
-     neither, so until then nothing below would do anything.
+     ads arrived in 0.2.0, and 0.1.6 has neither, so on a machine still
+     running it nothing below would do anything. The Oracle Cloud and AWS
+     programs deploy the pinned release image, which is 0.2.0 now, but a
+     machine keeps the image it was made with.
      `sudo docker ps --format '{{.Image}}'` on the machine names the image
      it is actually running.
 
@@ -246,7 +247,7 @@ never starts.
      compose file keeps the image it was written with. That machine takes
      0.2.0 the way any deployment does, by the release's own upgrade:
      `docs/upgrades.md` in the application, at the release's tag: its note
-     for 0.2.0, then its How to upgrade. Two parts of it matter on this
+     for 0.2.0, then its How to upgrade. Three parts of it matter on this
      machine:
      - **The backup goes through the unit.** Run
        `sudo systemctl start simple-balance-backup.service`, so the dump
@@ -254,7 +255,24 @@ never starts.
        script run bare writes to its own default on the boot disk. Check
        that `sudo journalctl -u simple-balance-backup.service -n 5` shows a
        line starting `simple-balance-backup: wrote`.
-     - **The whole compose file is replaced, not its `image:` line.** The
+     - **The settings move out of `env.local` and into the stack.** From
+       0.2.0 the programs keep a single machine's settings in the Pulumi
+       stack and the cloud's own secret store, and a machine built by them
+       does not read `env.local` at all. A machine built before still runs
+       the scripts it was built with, which do, so the note's move is four
+       steps: copy `env.local` into the stack with
+       `deploy/pulumi/settings-from-env.mjs`, `pulumi up`, take a backup and
+       replace the application instance with
+       `pulumi up --replace <the instance's URN>`, which keeps its data
+       volume, and delete `env.local` once the new machine is running. The
+       new machine boots from the release, image and compose file both, so
+       on this path the compose-file step below is already done. On Oracle
+       Cloud, somebody who is not a tenancy administrator needs the vault,
+       key, secret, policy and dynamic-group policies the programs' README
+       lists before that `pulumi up`.
+     - **Kept rather than replaced, the whole compose file is replaced, not
+       its `image:` line.** A machine upgraded in place goes on reading
+       `env.local`, and needs this instead. The
        note says that a deployment running its own copy of a compose file
        takes the release's, because an older copy silently drops
        `PRIVACY_POLICY_URL`, and without it the application refuses to start
@@ -264,8 +282,8 @@ never starts.
        Put the release's `deploy/compose/single/compose.yml` there, which
        already pins the 0.2.0 image, then run
        `sudo docker compose -f /opt/simple-balance/compose.yml pull` and
-       `sudo systemctl restart simple-balance`. Before any ad setting goes
-       into `env.local`,
+       `sudo systemctl restart simple-balance`. Before any ad setting is
+       set,
        `grep -nE 'PRIVACY_POLICY_URL|ADSENSE_CLIENT_ID|SB_BILLING_ENABLED' /opt/simple-balance/compose.yml`
        must name all three, and `docker ps` must name the 0.2.0 image.
 
@@ -296,18 +314,31 @@ never starts.
      `true` would break both, and why the same assurance does not reach this
      site.
 
-   On the Oracle Cloud and AWS single machines these go in
-   `/var/lib/simple-balance/env.local`, which is on the data volume and
-   survives a rebuild. Edit it, then run
-   `sudo systemctl restart simple-balance`. That is enough on a machine
-   whose unit has a systemd drop-in, which folds `env.local` into the
-   configuration on every start; `systemctl cat simple-balance` lists one
-   if it is there. **A machine made before the programs installed that
-   drop-in has none**, and a restart there brings the containers back
-   with the configuration they already had. On one of those, run
-   `sudo /usr/local/sbin/simple-balance-firstboot`, which rebuilds the
-   configuration from `env.local` and is safe to run again, and then
-   restart. Either way, §7's Privacy link is how you know it took. Every
+   **Where these go on the Oracle Cloud and AWS single machines depends on
+   which scripts the machine runs**, which is the choice made above.
+   - **A machine built by the 0.2.0 programs, or replaced by the settings
+     move above, takes them from the stack.** One command each, from the
+     stack's directory:
+     `pulumi config set --path 'simple-balance:env.ADSENSE_CLIENT_ID' ca-pub-…`
+     and the same for the others, then `pulumi up`. The machine checks every
+     five minutes, and
+     `sudo systemctl start simple-balance-settings` on it applies them now.
+     It does not read `env.local`, and a file left there is ignored with a
+     line in the log on every start, so an edit to it is the mistake that
+     looks like a fault in AdSense.
+   - **A machine upgraded in place still reads
+     `/var/lib/simple-balance/env.local`**, until it is replaced. Edit it,
+     then run `sudo systemctl restart simple-balance`. That is enough on a
+     machine whose unit has a systemd drop-in, which folds `env.local` into
+     the configuration on every start; `systemctl cat simple-balance` lists
+     one if it is there. **A machine made before the programs installed that
+     drop-in has none**, and a restart there brings the containers back
+     with the configuration they already had. On one of those, run
+     `sudo /usr/local/sbin/simple-balance-firstboot`, which rebuilds the
+     configuration from `env.local` and is safe to run again, and then
+     restart.
+
+   Either way, §7's Privacy link is how you know it took. Every
    compose recipe in the application passes `PRIVACY_POLICY_URL` through to
    the container, but a machine runs its own copy, the one its first boot
    wrote, which is why a machine that was already running replaces that
@@ -316,21 +347,17 @@ never starts.
    because nginx decides the content security policy every page arrives
    with; the compose recipes derive it from `ADSENSE_CLIENT_ID`.
 
-   **This step departs from the application's own docs on one setting, on
-   purpose.** The application's `docs/deployment.md` says to set
-   `ADSENSE_CONSENT_MANAGED` to `true` once a European regulations message
-   is published. Its `docs/monetization.md` says to set it only if you want
-   personalized ads, and then lists it as the third step of publishing the
-   message, which is exactly where step 7 leaves you.
-   **`app.smpl.money` keeps it unset anyway.** The message asks only
+   **`app.smpl.money` keeps `ADSENSE_CONSENT_MANAGED` unset, even with a
+   European regulations message published.** The application's own
+   `docs/deployment.md` and `docs/monetization.md` both say to set it only
+   if you want personalized ads, and this is the reason not to. The message
+   asks only
    visitors in the EEA, the UK and Switzerland, so with `true` everybody
    else, the United States included, would be shown personalized ads
    without ever being asked. This site's privacy policy says the
    application's ads are only ever personalized with specific consent, and
-   the pricing page's answer about ads says the same, so following the
-   application's docs here would make both false on the first ad. Their
-   advice fits an operator whose own policy allows that, and this one's does
-   not. §5 has the rest.
+   the pricing page's answer about ads says the same, so `true` would make
+   both false on the first ad. §5 has the rest.
 
    Otherwise, the application's own reference for all of this is those two
    documents, in `https://github.com/thtmnisamnstr/simple-balance` at the
@@ -543,7 +570,8 @@ needed.
 - **Check the application's sidebar has a Privacy link** to
   `https://smpl.money/privacy/`. It appears only when `PRIVACY_POLICY_URL`
   is set, so it is the visible sign that the setting reached the running
-  container rather than stopping at `env.local`.
+  container rather than stopping in the stack, or in `env.local` on a
+  machine upgraded in place.
 - **Check this site's banner reads back the real slot id**:
   `curl -s https://smpl.money/ | grep -o 'data-ad-slot="[^"]*"'` should print
   the one from step 6, not the placeholder `.github/workflows/verify.yml`

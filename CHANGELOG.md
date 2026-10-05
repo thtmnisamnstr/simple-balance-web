@@ -9,6 +9,31 @@ than a contract with readers.
 
 ### Changed
 
+**The site describes 0.2.0 as released, and reads the application from
+`main`.** 0.2.0 merged and was released, and `:latest` now names the same
+image. The site had described it from the release branch while
+it was open, and every page that said "until 0.2.0 ships" was true the day it
+was written and false the day the release went out.
+
+- Prices, plans and the feature list didn't move between the branch the site
+  was written from and the release. Only the version number did, so none of
+  the homepage or pricing copy needed rewriting.
+- The five screenshots the homepage shows are the release's own capture. The
+  sidebar now says "Personal finance" rather than "Personal accounting" and
+  links the privacy policy, and the reports page says "archived" where it said
+  "closed". The payee screenshot, which the homepage stopped showing when it
+  was rewritten, is gone rather than left to go stale.
+- Two descriptions stopped matching their pictures, and both describe what's in
+  the new picture now. The capture ran on the second day of the month, so the
+  transaction list shows one day's payments: there's no transfer between
+  accounts on screen any more, and the caption no longer points at one. The
+  budgets list is cropped after its first row.
+- Every link into the application's repository opens `main` rather than the
+  release branch.
+- The configuration and getting-started pages no longer say `:latest` runs
+  0.1.6, and the callouts on the billing and advertising settings say only that
+  an image older than 0.2.0 ignores them.
+
 **The homepage and the pricing page argue something different, because the
 old argument stopped being ours alone.** A competitive read in October 2026
 checked this site's claims against the eight products it competes with.
@@ -398,6 +423,24 @@ carried the old headline.
 banned-words test could not see.
 
 ### Fixed
+
+**The getting-started page describes the cloud programs 0.2.0 actually
+ships.** It said the Oracle Cloud and AWS programs build one machine against a
+database you supply, and that a setting is an edit to a file on that machine.
+They build two by default, the second running PostgreSQL with no public
+address, and 0.2.0 moved every setting into the Pulumi stack and the cloud's
+own secret store, so a machine those programs build ignores the file the page
+told you to edit. The page says both now. The AdSense procedure had the same
+file at the center of step 9, and it now separates a machine rebuilt by the
+0.2.0 programs from one upgraded in place, which still reads the file.
+
+**The configuration page names every setting it claims to.** It promised every
+environment variable the server reads and was missing the terms-of-use address
+0.2.0 added, and the fifth frontend setting a split deployment needs. Both
+privacy and terms addresses now have a section of their own, since one is
+required for ads and the other isn't about ads at all, and the Stripe key's row
+says which permissions a restricted key needs, including the one a test account
+rarely shows is missing.
 
 **Announcing a section now moves its link, which it never did.**
 `src/content/sections.ts` promised one flag decides three things — the link,

@@ -213,9 +213,10 @@ curl -fsSL "https://raw.githubusercontent.com/$APP/$REF/docs/product/screenshots
 both themes, then the narrow copies and `public/screenshots/CAPTURE.json`.
 
 **The ref is resolved, not assumed, and not by whoever runs the command.**
-Until 0.2.0 merges, `docs/product/` exists only on the release branch, and a
-fetch against `main` returns 404 rather than something stale — which is the
-right failure and an easy one to misread as "no screenshots".
+Until 0.2.0 merged, `docs/product/` existed only on the release branch, and a
+fetch against `main` returned 404 rather than something stale — which is the
+right failure and an easy one to misread as "no screenshots". A release that
+adds to the kit will do the same again.
 `scripts/check-app-sync.mjs` resolves the ref itself: `main` once `main`
 carries the kit, and the head of the open pull request into `main` that
 carries it until then. The weekly workflow sets no ref, and the `curl` above
