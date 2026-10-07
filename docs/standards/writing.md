@@ -43,6 +43,30 @@ target did not move by exactly that much.
 
 _Checked by:_ `tests/standards-citations.test.ts`.
 
+## What a skill's text survives
+
+**Binding.** No skill contains a dollar sign followed by a digit, or
+`$ARGUMENTS`. Claude Code replaces each one with the words the skill was
+invoked with, counting from zero, before anybody reads the skill.
+
+So a shell function in a skill that reads its argument as `$1` is not reading
+an argument. `sync-from-app` was invoked with a request whose second word was
+"application", and its `kit()` helper arrived fetching
+`docs/product/application` for every file it was asked for, which 404s, while
+its `checked()` helper read every field of the sync report as empty. Both
+looked like the failed check that §0 of that skill warns about, and neither
+was the application's fault.
+
+**Quoting does not help**, which is the obvious thing to try: the replacement
+is made on the text, not by a shell, and `"…/$1"` was inside double quotes.
+What works is never writing the form. A helper takes its argument with `for`,
+which names no parameter; text is cut with `node` rather than `awk`, whose
+whole-record field is the same form; and a price in a skill is written in
+words, because the form is a price as well.
+
+_Checked by:_ `tests/skills.test.ts`, which refuses the form in every skill
+and is proved against each of those shapes.
+
 ## Measured numbers
 
 **House.** A number in a guide is either recounted by a test or marked as

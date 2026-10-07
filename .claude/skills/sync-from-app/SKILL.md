@@ -1,6 +1,6 @@
 ---
 name: sync-from-app
-description: Pull the application's feature list, screenshots and product contract from the ref scripts/check-app-sync.mjs resolves (main once it carries the kit, the open release pull request's branch until then), check the brand tokens against its stylesheet, rewrite the features for a general reader, and update this site. Use when the app has shipped a change, before a launch, or when asked whether the site still matches the product.
+description: Pull the application's feature list, screenshots and product contract from the ref scripts/check-app-sync.mjs resolves (main once it carries the kit, the open release pull request's branch until then), check the brand tokens against its stylesheet, read the release's changelog for behavior the kit does not carry, rewrite the features for a general reader, and update this site. Use when the app has shipped a change, before a launch, or when asked whether the site still matches the product.
 ---
 
 # Bring the site up to date with the product
@@ -35,7 +35,7 @@ whoever ran it.
 ```sh
 APP=thtmnisamnstr/simple-balance
 node scripts/check-app-sync.mjs --json > /tmp/app-sync.json
-checked() { node -p "require('/tmp/app-sync.json').$1 ?? ''"; }
+checked() { for field; do node -p "require('/tmp/app-sync.json').$field ?? ''"; done; }
 for field in status ref why pullRequest commit note; do echo "$field: $(checked $field)"; done
 ```
 
@@ -79,8 +79,19 @@ REF=$(checked ref)
 SHA=$(checked commit)
 [ -n "$SHA" ] || SHA=$(gh api "repos/$APP/commits/$REF" -q .sha)
 echo "reading $APP@$REF at $SHA"
-kit() { curl -fsSL "https://raw.githubusercontent.com/$APP/$SHA/docs/product/$1"; }
+kit() { for file; do curl -fsSL "https://raw.githubusercontent.com/$APP/$SHA/docs/product/$file"; done; }
 ```
+
+**Both helpers take their argument with `for`, never with a positional
+parameter, and that is not style.** Claude Code replaces `$N`, a dollar sign
+and a digit, anywhere in a skill's text with the words the skill was invoked
+with, counting from zero, before anybody reads it, and that includes the one
+inside an `awk` program. Invoked with a request whose second word was
+"application", this skill arrived with `kit() { … /docs/product/application; }`
+and `.application ?? ''` in `checked()`, so every `kit` call fetched one path
+that 404s and every field read as empty, which §0 itself says is the failed
+check that looks like an empty result. `tests/skills.test.ts` refuses a
+positional parameter in any skill now.
 
 **Everything below reads that one commit.** `commit` is the head the script
 read when the ref is a pull request's; for `main` or an override it is empty,
@@ -116,13 +127,13 @@ changed" and "I could not reach it" must never look alike. A 2 is either the
 kit not being published anywhere yet or a failure to look, and §0 says how to
 tell them apart.
 
-**Six things are checked, and the script's verdict covers five of them**:
+**Seven things are checked, and the script's verdict covers five of them**:
 the contract, the features, the screenshots, where the snapshots say they
 came from, and which ref the site's links into the application name. The
-brand tokens are checked only here. Run every check below whatever the
-script said: a check that is skipped reports nothing, and nothing is what
-"in sync" looks like. The script names what moved; these show what it moved
-to.
+brand tokens, and what the release's changelog says it changed, are checked
+only here. Run every check below whatever the script said: a check that is
+skipped reports nothing, and nothing is what "in sync" looks like. The
+script names what moved; these show what it moved to.
 
 ### The contract and the features
 
@@ -228,6 +239,87 @@ and the ref resolving the same way as last week does not fix it. So this runs
 every time, and a link it names is §5's to fix whether or not the ref
 changed.
 
+### What the release changed that the kit does not carry
+
+**The kit carries prices, plans, the feature list and pictures. It does not
+carry behavior.** 0.2.1 moved the contract by its version number alone and
+the feature list not at all, and still left this site out of step in four
+ways: the pricing FAQ and both of the terms' downgrade paragraphs said a
+frozen account accepts no changes, when it can now be archived or deleted;
+Getting started and `docs/adsense.md` named 0.2.0 as the release the deploy
+programs pin; the import page said "drop" where the app now says "delete";
+and it listed the columns the importer suggests without the bank's
+reference, which a person can now pick. Every check above passed on all of
+it. The application's changelog said every one of them in a sentence.
+
+Whenever the script reports a new release, read what the release says it
+changed, **before §5 refreshes the snapshot**, because the snapshot's version
+is where the reading starts:
+
+```sh
+FROM=$(node -p "require('./src/content/app-facts.json').facts.derived.appVersion")
+TO=$(node -p "require('/tmp/facts.json').derived.appVersion")
+echo "reading the application's changelog from $FROM to $TO"
+since() {
+  node -e '
+const [from, heading = ""] = process.argv.slice(1);
+const text = require("node:fs").readFileSync(0, "utf8");
+const start = text.indexOf("\n## " + heading);
+if (start < 0) throw new Error("no section headed ## " + heading);
+const end = text.indexOf("\n## " + heading + from + (heading ? "\n" : " "));
+console.log(text.slice(start, end < 0 ? undefined : end));' "$FROM" "$@"
+}
+curl -fsSL "https://raw.githubusercontent.com/$APP/$SHA/CHANGELOG.md" | since
+curl -fsSL "https://raw.githubusercontent.com/$APP/$SHA/docs/upgrades.md" |
+  since "Before you upgrade to "
+```
+
+That prints every section after the one the site describes, an `Unreleased`
+one included when the ref is ahead of a release, and the upgrade note for each
+release since. Take each entry under **Changed**, and each **Fixed** entry a
+person would notice, and ask where this site states the old behavior:
+
+- **`src/content/pricing.ts`**, for plans, downgrades, billing and canceling.
+  The FAQ answers are where a plan's behavior is explained at length.
+- **`src/content/legal.ts`**, for the same, and for anything about sign-in,
+  cookies, mail, what is stored or who receives it. A hit there is
+  `legal-review`'s, and that skill's §6 says how to diff the release for it.
+- **`content/docs/`**, for every procedure, limit, label and setting. A page
+  changed here gets its `updated` date moved to the day.
+- **`docs/adsense.md`**, the operator's procedure for the hosted machine,
+  which names releases, settings and upgrade steps.
+- **The alt text**, which §4 already re-reads against the pictures.
+
+Two sweeps do the part a search can. The first finds every sentence that
+names the release the site used to describe. Each is either history ("from
+0.2.0 on" is still true) or a claim about the current release (now false),
+and `tests/app-facts.test.ts` holds only the sentences that name the release
+the deploy programs pin, so the rest is read here:
+
+```sh
+grep -rnF -- "$FROM" content src/content docs/adsense.md | grep -vE 'app-fea|app-fac|copy-source'
+```
+
+The second finds every bold phrase in the docs that the application's client
+does not contain. Most are emphasis rather than a label, and dismissing them
+takes a minute; a label the application renamed is the one that matters:
+
+```sh
+mkdir -p /tmp/app && curl -fsSL "https://codeload.github.com/$APP/tar.gz/$SHA" |
+  tar xz -C /tmp/app --strip-components=1
+grep -ohE '\*\*[A-Z][^*]{1,40}\*\*' content/docs/*.md | tr -d '*' | grep -vE '[.:]$' |
+  sort -u | while IFS= read -r label; do
+    grep -rqF -- "$label" /tmp/app/src/client || echo "not in the app: $label"
+  done
+```
+
+**Check a changelog sentence against the code before rewriting from it.** The
+changelog is written by the same hands as the code and is usually right, but
+the site's sentence has to be true of what shipped, so read the function the
+entry names at `$SHA`, in `/tmp/app`. 0.2.1's "a frozen account can be
+deleted" is true only of a frozen account with nothing on it, as it is of any
+account, and that is why the terms say "like any other".
+
 ### When to stop
 
 Only when all of these hold:
@@ -238,6 +330,9 @@ Only when all of these hold:
 - The token check prints `--art-ink` and nothing else.
 - Both snapshots name the same ref and commit, and `main` once `$REF` is.
 - `tests/app-links.test.ts` passes, so every link names that ref too.
+- The snapshot's version is the kit's, so there is no changelog to read; or
+  every entry since it has been read against the places listed above, and
+  the version grep names nothing that claims the old release is current.
 
 Then the product has not changed in any way a reader could see, and
 `tests/app-facts.test.ts` already proves this site agrees with its snapshot
@@ -245,7 +340,9 @@ on every build. The one other way a run ends is §0's, when no ref carries the
 kit, and the report says that rather than calling the site in sync.
 
 Otherwise the contract is §2, the features §3 and the screenshots §4, and §5
-records where they came from: after any of those, and on its own when
+records where they came from. A sentence the changelog made false is fixed
+where it lives, in the same pull, and one in the terms or the privacy policy
+is `legal-review`'s as well: after any of those, and on its own when
 provenance was all the script reported. A link naming another ref is §5 too,
 on its own if need be: point it at the ref §0 resolved, which is the one §5
 records in both snapshots (`docs/standards/content.md` 2.5). A moved token is
@@ -456,7 +553,7 @@ being written out here:
 
 ```sh
 shots() { grep -oE 'name: "[a-z-]+"' src/content/home.ts | cut -d'"' -f2 | sort -u; }
-shots   # six today: budgets dashboard import payees reports transactions
+shots   # five today: budgets dashboard import reports transactions
 for name in $(shots); do
   for theme in light dark; do
     curl -fsSL "https://raw.githubusercontent.com/$APP/$SHA/docs/product/screenshots/$name-$theme.webp" \
@@ -586,7 +683,10 @@ Say in the report: the ref and commit you pulled from, and when the ref came
 from a pull request, which one (an `APP_REF` override says so instead);
 whether the contract moved; which features were added, dropped or reworded;
 which screenshots were refreshed; whether a brand token moved; the source
-both snapshots now record, and which links were moved to it; and anything in
-the application's list you deliberately left off the site.
+both snapshots now record, and which links were moved to it; which changelog
+entries changed a sentence here, and where; and anything in the application's
+list you deliberately left off the site.
 
-Then **`merge-prep`**.
+Then **`legal-review`** when the release touched plans, billing, sign-in,
+cookies, mail or what is stored, or when a sentence in the terms or the
+policy moved, and **`merge-prep`** after it.

@@ -241,24 +241,28 @@ never starts.
 
    **Two things have to be true of the machine first**, and neither is one
    of the ad settings below, so check both before touching those:
-   - **It runs a release that carries ads, 0.2.0 or later.** Billing and
-     ads arrived in 0.2.0, and 0.1.6 has neither, so on a machine still
-     running it nothing below would do anything. The Oracle Cloud and AWS
-     programs deploy the pinned release image, which is 0.2.0 now, but a
-     machine keeps the image it was made with.
+   - **It runs 0.2.1 or later.** Billing and ads arrived in 0.2.0, and
+     0.1.6 has neither, so on a machine still running it nothing below would
+     do anything. And 0.2.0 is not enough either: its sign-in and session
+     answers handed the session cookie's value back in JSON, readable by any
+     script on the page, and a page showing ads allows scripts from any HTTPS
+     origin. 0.2.1's answers no longer carry it. The Oracle Cloud and AWS programs
+     deploy the pinned release image, which is 0.2.1 now, but a machine keeps
+     the image it was made with.
      `sudo docker ps --format '{{.Image}}'` on the machine names the image
      it is actually running.
 
-     How the machine gets onto 0.2.0 depends on when it was made. One
-     created from the 0.2.0 release starts on it, because the programs
+     How the machine gets onto 0.2.1 depends on when it was made. One
+     created from the 0.2.1 release starts on it, because the programs
      write the pinned tag into its compose file at first boot. **On a
      machine that is already running, `pulumi up` changes nothing on it**:
      neither program runs first boot again or replaces the instance, so the
      compose file keeps the image it was written with. That machine takes
-     0.2.0 the way any deployment does, by the release's own upgrade:
+     0.2.1 the way any deployment does, by the release's own upgrade:
      `docs/upgrades.md` in the application, at the release's tag: its note
-     for 0.2.0, then its How to upgrade. Three parts of it matter on this
-     machine:
+     for every release after the one the machine runs, then its How to
+     upgrade. From 0.1.6, 0.2.0's note is the one with work in it, and three
+     parts of it matter on this machine:
      - **The backup goes through the unit.** Run
        `sudo systemctl start simple-balance-backup.service`, so the dump
        lands in `/var/lib/simple-balance/backups` on the data volume; the
@@ -290,12 +294,12 @@ never starts.
        this machine's own copy, the one its first boot wrote, and one
        written from an earlier commit can leave `PRIVACY_POLICY_URL` out.
        Put the release's `deploy/compose/single/compose.yml` there, which
-       already pins the 0.2.0 image, then run
+       already pins the release's own image, then run
        `sudo docker compose -f /opt/simple-balance/compose.yml pull` and
        `sudo systemctl restart simple-balance`. Before any ad setting is
        set,
        `grep -nE 'PRIVACY_POLICY_URL|ADSENSE_CLIENT_ID|SB_BILLING_ENABLED' /opt/simple-balance/compose.yml`
-       must name all three, and `docker ps` must name the 0.2.0 image.
+       must name all three, and `docker ps` must name the 0.2.1 image.
 
    - **It is selling Premium**, which is `SB_BILLING_ENABLED=true` with
      Stripe configured. Ads appear only where a limited plan is in force:
@@ -325,8 +329,8 @@ never starts.
 
    **Where these go on the Oracle Cloud and AWS single machines depends on
    which scripts the machine runs**, which is the choice made above.
-   - **A machine built by the 0.2.0 programs, or replaced by the settings
-     move above, takes them from the stack.** One command each, from the
+   - **A machine built by the programs from 0.2.0 on, or replaced by the
+     settings move above, takes them from the stack.** One command each, from the
      stack's directory:
      `pulumi config set --path 'simple-balance:env.ADSENSE_CLIENT_ID' ca-pub-…`
      and the same for the others, then `pulumi up`. The machine checks every

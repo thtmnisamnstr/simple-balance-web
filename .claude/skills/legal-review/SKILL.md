@@ -226,6 +226,41 @@ deployment somebody else runs. If the application changed, most of what you
 are checking is over there — run **`sync-from-app`** first or alongside; the
 checks in its §1 say whether anything moved.
 
+**When the application has released, §1's diff of this repository is the
+smaller half.** The policy and the terms describe the application too, and a
+release changes them without a line moving here. Diff the two release tags,
+only in the files that decide what is collected, who receives it, and what a
+plan does:
+
+```sh
+APP=thtmnisamnstr/simple-balance FROM=v0.2.0 TO=v0.2.1   # the tags either side
+for tag in "$FROM" "$TO"; do
+  mkdir -p "/tmp/app-$tag" && curl -fsSL "https://codeload.github.com/$APP/tar.gz/$tag" |
+    tar xz -C "/tmp/app-$tag" --strip-components=1
+done
+for f in src/server/auth.ts src/server/auth-policy.ts src/server/http-security.ts \
+  src/server/config.ts src/server/mail.ts src/server/stripe.ts src/server/db/schema.ts \
+  src/server/services/billing.ts src/server/services/account-deletion.ts \
+  src/server/services/accounts.ts src/client/pages/PlanPage.tsx \
+  deploy/pulumi/single-common/index.ts public/robots.txt; do
+  diff -q "/tmp/app-$FROM/$f" "/tmp/app-$TO/$f" >/dev/null 2>&1 || echo "changed: $f"
+done
+```
+
+Each one is the source of a sentence here: the sign-in scopes and the session
+(`auth.ts`), the hosts the page may reach (`http-security.ts`), the ad and
+policy settings (`config.ts`), what each email carries (`mail.ts`), what Stripe
+is sent and whether its script loads on every page (`stripe.ts`,
+`PlanPage.tsx`), what is stored (`schema.ts`), what a plan and a downgrade do
+(`billing.ts`, `accounts.ts`), what deleting an account deletes, and how many
+backups are kept (`single-common/index.ts`). Read the diff of each one that
+changed, and read the release's changelog beside it: **0.2.1 changed no
+processor, cookie or email, and still made the terms false**, because both
+of their downgrade paragraphs said a frozen account accepts no changes and
+`accounts.ts` had stopped refusing an archive or a delete. That was a
+sentence in the changelog's first section, and nothing in this repository
+moved.
+
 ## 7. Finish
 
 Update `src/content/legal.ts`, bump `legalUpdated`, and add an assertion to

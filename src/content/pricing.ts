@@ -8,11 +8,12 @@ import { hero } from "@/content/home";
  * accounts are **in use at once, never how many somebody keeps**. Three
  * functions beside it hold that. `frozenAccountIds` works out which accounts
  * past the three are frozen (readable, counted in every total, closed to every
- * write). Until the person chooses it keeps up to three of the oldest still
- * marked active: every account for somebody who never chose, so the three
- * oldest, but after a choice and a paid spell the ones chosen plus any opened
- * or reopened since, which is why the FAQ says "your three oldest" only about
- * somebody who has never chosen.
+ * change to what they hold, and still free to be archived or deleted). Until
+ * the person chooses it keeps up to three of the oldest still marked active:
+ * every account for somebody who never chose, so the three oldest, but after a
+ * choice and a paid spell the ones chosen plus any opened or reopened since,
+ * which is why the FAQ says "your three oldest" only about somebody who has
+ * never chosen.
  * `activeAccountChange` lets that choice be made once and afterwards only fill
  * a place that has come free; and `accountAllowance` refuses a fourth account,
  * opened or brought back from the archive, while three are in use.
@@ -346,7 +347,14 @@ export const faq: readonly FaqItem[] = [
     // Shorter than it was by about a third, and every one of those clauses is
     // still here. What went was the restatement: the answer said three times,
     // in different words, that nothing is deleted.
-    a: "You keep every one of them, and you choose three to keep using. The others are frozen: still there, still complete, still counted in every balance and report you look at. You just can't add to them or change them. The part worth knowing before you pick is that it isn't a switch you can flip back and forth. The choice is made once, so an account you are using stays usable until you close it or delete it, and only then can a frozen one take its place. Until you choose, up to three stay usable. If you've never chosen, those are your three oldest, and you can pick any three, not just those. Upgrading brings all of them back at once. If you subscribe again, your choice still stands when that plan ends, unless you opened or reopened accounts while subscribed. Then you choose again, from all of them, and until you do, the three that stay usable are the oldest of the ones you chose and the new ones.",
+    //
+    // "You just can't add to them or change them" stopped being true in 0.2.1,
+    // when `setAccountArchived` and `deleteAccount` dropped their freeze check:
+    // somebody who downgrades with thirty accounts can now put away the ones
+    // they no longer use without upgrading first. Said as closing, this page's
+    // word for archiving, and not as deleting, which only an account with
+    // nothing on it allows.
+    a: "You keep every one of them, and you choose three to keep using. The others are frozen: still there, still complete, still counted in every balance and report you look at. You can't add to them or change what's in them, but you can still close the ones you no longer use. The part worth knowing before you pick is that it isn't a switch you can flip back and forth. The choice is made once, so an account you are using stays usable until you close it or delete it, and only then can a frozen one take its place. Until you choose, up to three stay usable. If you've never chosen, those are your three oldest, and you can pick any three, not just those. Upgrading brings all of them back at once. If you subscribe again, your choice still stands when that plan ends, unless you opened or reopened accounts while subscribed. Then you choose again, from all of them, and until you do, the three that stay usable are the oldest of the ones you chose and the new ones.",
   },
   {
     q: "If I close an account, does it still count?",

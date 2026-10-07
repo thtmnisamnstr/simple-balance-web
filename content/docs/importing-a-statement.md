@@ -3,7 +3,7 @@ title: Importing a statement
 description: Point the importer at a CSV your bank exported, tell it how the dates and amounts are written, and review what it proposes before anything counts.
 section: Using it
 order: 1
-updated: 2026-09-22
+updated: 2026-10-06
 ---
 
 The importer reads a CSV, works out its shape, asks you the two things a file
@@ -31,6 +31,11 @@ is read here.
   description and notes columns from the header row, and you can change any of
   them. The amount can be one signed column, or separate debit and credit
   columns.
+- **The bank's reference**, if the file has one: the column your bank uses to
+  identify each transaction. It's suggested from the header like the others,
+  and it's what stops the same statement from being imported twice, so if the
+  column it picked repeats from row to row, set **Bank reference** to
+  **Not mapped**.
 - **Payees and categories you already have.** A name in the file matches yours
   whatever its capitalization or spacing. A category name that's new is created
   when you stage the file, and one you'd archived comes back.
@@ -79,7 +84,7 @@ can leave a category behind for every description in the file. Run a
 ## Duplicates
 
 A row that resembles one already in the ledger is flagged and shown beside the
-entry it resembles, so you can compare them and drop whichever is the spare.
+entry it resembles, so you can compare them and delete whichever is the spare.
 
 Importing the same statement twice is the common case, and it produces one
 ledger rather than two.

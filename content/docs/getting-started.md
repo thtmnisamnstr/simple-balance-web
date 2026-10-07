@@ -3,7 +3,7 @@ title: Getting started
 description: Try Simple Balance on your own machine with Docker and PostgreSQL, create the first account with its setup code, and see what running it for real takes.
 section: Install
 order: 1
-updated: 2026-10-04
+updated: 2026-10-06
 ---
 
 Simple Balance runs as a container against a PostgreSQL database. The version
@@ -117,7 +117,7 @@ pulumi up
 
 The second line names a secret and no value, so Pulumi asks for it, which
 keeps it out of your shell history. The programs deploy the pinned release
-image, which is 0.2.0. A machine that's already running moves to a new release
+image, which is 0.2.1. A machine that's already running moves to a new release
 on the machine itself, as the programs' README describes, not from another
 `pulumi up`.
 

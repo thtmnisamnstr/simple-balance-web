@@ -244,3 +244,47 @@ describe("the skills a document names", () => {
     }
   });
 });
+
+/**
+ * A dollar sign and a digit, or `$ARGUMENTS`, anywhere in a skill.
+ *
+ * Claude Code replaces each of these with the words the skill was invoked
+ * with, counting from zero, before the text reaches whoever runs it. So a
+ * shell function reading `$1` is a substitution site rather than an argument:
+ * `sync-from-app` was invoked with a request whose second word was
+ * "application", and its `kit()` helper arrived fetching
+ * `docs/product/application`, which 404s, for every file it was asked for.
+ * `awk`'s `$0` is the same trap, and so is a price, which is why "$3 a month"
+ * is matched below rather than excused.
+ */
+const FILLED_IN = /\$(\{?\d|ARGUMENTS\b)/;
+
+describe("a skill's text, as the person running it receives it", () => {
+  it("leaves nothing for Claude Code to fill in", () => {
+    const offenders = [...skills].flatMap((name) =>
+      readFileSync(`${SKILLS_DIR}/${name}/SKILL.md`, "utf8")
+        .split("\n")
+        .flatMap((line, index) =>
+          FILLED_IN.test(line) ? [`${name}/SKILL.md:${index + 1} ${line.trim()}`] : [],
+        ),
+    );
+    expect(offenders).toEqual([]);
+  });
+
+  it("matches every form that is filled in, and no variable with a name", () => {
+    const filled = [
+      'kit() { curl -fsSL "…/docs/product/$1"; }',
+      "awk '/^## / { print $0 }'",
+      'echo "${2}"',
+      "pass $ARGUMENTS through",
+      "Premium is $3 a month",
+    ];
+    for (const line of filled) {
+      expect(line, line).toMatch(FILLED_IN);
+    }
+    const kept = ['for file; do curl "…/$file"; done', 'echo "$APP@$SHA"', 'node -e "…" "$@"'];
+    for (const line of kept) {
+      expect(line, line).not.toMatch(FILLED_IN);
+    }
+  });
+});
