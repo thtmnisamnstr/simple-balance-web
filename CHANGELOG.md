@@ -472,6 +472,29 @@ banned-words test could not see.
 
 ### Fixed
 
+**Pulling a release now reads what the release changed, not only its
+product kit.** The kit carries prices, plans, the feature list and the
+pictures. 0.2.1 moved none of them except the pictures and still left this
+site out of step in four places, with every check passing.
+
+- The sync procedure reads every section of the application's changelog since
+  the release the site describes, checks each entry against the pricing page,
+  the terms and the policy, the docs and the advertising procedure, and
+  searches for the old version number and for bold labels the app no longer
+  has.
+- A sentence naming the release the deploy programs pin is now checked
+  against the snapshot on every build, so the next release can't leave one
+  behind.
+- The legal review compares the two releases' code in the places that decide
+  what is collected, who receives it and what a plan does.
+- The sync procedure's two download helpers were broken whenever it was
+  started with a request in words: the tool running it replaces a dollar sign
+  and a digit with words from the request, so every file it fetched was the
+  same wrong path. They're rewritten, and no procedure may contain that form
+  any more.
+- The pre-merge procedure no longer names which model to credit in a commit,
+  because the one it named had stopped being the one doing the work.
+
 **The live site's own build can pass its gate again.** The check that the
 banner reaches every page held it to the placeholder slot the CI build uses,
 so a build carrying the real one failed, and Netlify's deploy is that build

@@ -136,11 +136,15 @@ hard-wrapped prose owing four things: why the defect survived review, what was
 checked and how, findings rejected and why, and corrections to the previous
 message.
 
-Trailer, in this casing:
+Trailer, in this casing, naming the model that actually did the work:
 
 ```text
-Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>
+Co-Authored-By: Claude <model> <noreply@anthropic.com>
 ```
+
+The casing is the rule; the model is a fact about the commit. This block named
+one model while the commits it was copied into were signed by another, so a
+literal here is a false attribution waiting for the next model.
 
 Then:
 

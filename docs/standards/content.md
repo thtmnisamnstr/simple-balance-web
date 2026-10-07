@@ -197,6 +197,15 @@ _Checked by:_ `human`. Nothing here can read the application — it is a
 different repository — so this is the rule that most needs a person, and the
 `merge-prep` skill asks for it by name.
 
+**The kit does not carry behavior, so a release can falsify a sentence and
+leave every check green.** 0.2.1 changed the contract by its version number
+alone and the feature list not at all, and still made the pricing FAQ and
+both of the terms' downgrade paragraphs false, by letting a frozen account be
+archived or deleted. The application's changelog said so in its first
+section. `sync-from-app` §1 reads that changelog from the release the
+snapshot names to the one it is pulling, and checks each entry against the
+places this site describes behavior.
+
 ### 2.2 Invented figures say so
 
 **Binding.** See `web.md` 5.5. The screenshots show a seeded ledger and the
@@ -281,6 +290,29 @@ even though github.com is on the list. A `tree/` link may name the ref's root,
 `tree/<ref>` or `tree/<ref>/`, and a `blob/` link may not, because a blob is a
 file. An empty segment from a doubled slash is refused, `<ref>//` included,
 and so are `.` and `..`, a segment ending in a period, and more than one `#`.
+
+### 2.6 A sentence naming the current release names the snapshot's
+
+**Binding.** Wherever a page says which release the application's deploy
+programs pin, the version it names is `facts.derived.appVersion` in
+`src/content/app-facts.json`. Getting started says it to somebody about to run
+`pulumi up`, and `docs/adsense.md` says it to the operator reading `docker ps`
+before an ad setting goes on.
+
+A version written in prose is the one fact a pull moves that no kit file
+carries. Both pages went on naming 0.2.0 after 0.2.1 had been pulled, and
+every other check passed, because the kit holds numbers and pictures and the
+sentence holds the number. A version that is history stays: "the server reads
+these settings from 0.2.0 on" is as true after 0.2.1 as before it, which is
+why this is held to the phrasings that mean _now_ rather than to every version
+a page contains.
+
+_Checked by:_ `tests/app-facts.test.ts`, which finds every "pinned release
+image, which is …" and "must name the … image" under `content/docs/` and in
+`docs/adsense.md`, refuses fewer than it found the day it was written, and
+holds each to the snapshot. A new sentence about the current release in some
+other phrasing is `human`, and `sync-from-app` §1's version grep is where it
+is found.
 
 ## 3. Structure
 

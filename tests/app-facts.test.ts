@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import snapshot from "@/content/app-facts.json";
@@ -374,5 +374,50 @@ describe("the FAQ", () => {
     expect(answer, "a large account moves a range of dates at a time").toMatch(
       /10,000 transactions[^.]*(?:range of dates|date range)/,
     );
+  });
+});
+
+/**
+ * The release the deploy programs pin, wherever a page names it.
+ *
+ * `content.md` 2.6. The application's Pulumi programs and Compose file pin the
+ * image of the release they ship in, and two pages here say which that is:
+ * Getting started, to somebody about to run `pulumi up`, and the AdSense
+ * procedure, to the operator reading `docker ps` before an ad setting goes on.
+ * Both went on naming 0.2.0 after 0.2.1 was pulled, because no kit file
+ * carries a sentence and every other check passed. The snapshot's version is
+ * the one fact the pull moves for certain, so it is what these are held to.
+ *
+ * Only the sentences that mean "the current release". "From 0.2.0 on" is
+ * history and stays true, so the patterns name the two phrasings that are
+ * claims about now rather than every version string a page contains.
+ */
+describe("the release this site says the deploy programs pin", () => {
+  const CURRENT = [
+    /\bpinned release image, which is (\d+\.\d+\.\d+)\b/g,
+    /\bmust name the (\d+\.\d+\.\d+) image\b/g,
+  ];
+  const pages = [
+    ...readdirSync("content/docs")
+      .filter((name) => name.endsWith(".md"))
+      .map((name) => `content/docs/${name}`),
+    "docs/adsense.md",
+  ];
+  const named = pages.flatMap((path) => {
+    const text = readFileSync(path, "utf8").replace(/\s+/g, " ");
+    return CURRENT.flatMap((pattern) =>
+      [...text.matchAll(pattern)].map(([, version]) => ({ path, version })),
+    );
+  });
+
+  it("finds the sentences, so a rewording cannot silence it", () => {
+    // Getting started once and the AdSense procedure twice.
+    expect(named.length, "no page names the pinned release any more").toBeGreaterThanOrEqual(3);
+  });
+
+  it("is the release the snapshot was taken from", () => {
+    for (const { path, version } of named) {
+      expect(version, `${path} says the programs pin ${version}`).toBe(facts.derived.appVersion);
+    }
   });
 });

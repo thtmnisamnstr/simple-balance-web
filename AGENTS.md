@@ -293,10 +293,12 @@ Eight skills in `.claude/skills/` hold the procedures that repeat:
 - `write-content` — write a post or a documentation page, with the frontmatter
   contract and the traps that fail a build.
 - `sync-from-app` — pull the application's contract, feature list and
-  screenshots, check the brand tokens, rewrite the features for a general
-  reader, and update the site. Most runs end at the checks in §1.
+  screenshots, check the brand tokens, read the release's changelog for the
+  behavior none of those carry, rewrite the features for a general reader,
+  and update the site. Most runs end at the checks in §1.
 - `legal-review` — bring the privacy policy and terms back to true when
-  something changes what data is handled or who handles it.
+  something changes what data is handled or who handles it, an application
+  release included.
 - `optimize` — page weight, images, fonts, metadata and findability, beyond
   what the budget gates.
 
