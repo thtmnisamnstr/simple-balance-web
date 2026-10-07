@@ -1,4 +1,4 @@
-import { hero } from "@/content/home";
+import { hero, site } from "@/content/home";
 
 /**
  * The two plans, as the application actually enforces them.
@@ -60,7 +60,7 @@ export type Tier = {
   readonly summary: string;
   /** What this tier is for, in the reader's terms. */
   readonly who: string;
-  readonly cta: { readonly label: string; readonly href?: string; readonly pending?: boolean };
+  readonly cta: { readonly label: string; readonly href: string };
   readonly featured?: boolean;
 };
 
@@ -96,15 +96,14 @@ export const pricing = {
     "Your transactions leave with you, as a spreadsheet, whenever you want them.",
   ],
   /*
-   * "Running it yourself works today, and always will" is what this said. The
-   * license makes continued independent use about as durable as software gets,
-   * and "always" is still a word a marketing page does not get to use about
-   * the future. The present tense says the part that is checkable.
+   * This closed on "The version we run for you isn't open yet. Running it
+   * yourself works today", and the first half stopped being true the day the
+   * application went live. The second went with it: it was only ever there
+   * as the alternative to waiting, and the third column says it better.
    */
   note:
     "Prices are in US dollars. A year costs $30, or pay $3 a month and switch between the two " +
-    "whenever you like. The version we run for you isn't open yet. Running it yourself works " +
-    "today.",
+    "whenever you like.",
   /** The flag over the recommended tier. */
   featuredFlag: "Unlimited accounts, no ads",
   compareTitle: "Only four lines change.",
@@ -178,7 +177,7 @@ export const tiers: readonly Tier[] = [
     // One string, shared with the header's control, because a header saying
     // one thing and a pricing button saying another describes two different
     // states. It used to be a second literal that happened to match.
-    cta: { label: hero.primaryLabel, pending: true },
+    cta: { label: hero.primaryLabel, href: site.appUrl },
   },
   {
     key: "premium",
@@ -187,7 +186,10 @@ export const tiers: readonly Tier[] = [
     priceNote: "a month, or $30 a year",
     summary: "As many accounts as you need, and no ads.",
     who: "Anyone with more than three accounts, or anyone who would rather not see ads next to their balances.",
-    cta: { label: hero.primaryLabel, pending: true },
+    // The same control as Free's, and true on this card too: everybody starts
+    // free, and Premium is chosen afterwards from the application's own plan
+    // page, which is where the reassurances above send somebody to cancel it.
+    cta: { label: hero.primaryLabel, href: site.appUrl },
     featured: true,
   },
   {

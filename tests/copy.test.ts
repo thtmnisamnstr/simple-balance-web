@@ -177,31 +177,33 @@ describe("the homepage copy", () => {
     expect(titleCased).toEqual([]);
   });
 
-  it("does not offer a link to the app while the app is not deployed", () => {
-    // The whole reason the control is a label rather than a link. One to
-    // anywhere in the copy would 404 for every reader.
+  it("writes the application's address once", () => {
+    // Every sign-up control reads `site.appUrl`. A second copy of the address
+    // in the copy is a link that can drift from the others, and it used to be
+    // worse: while the application was not deployed, one would have 404'd.
     const linking = all.filter(
       ([path, text]) => path !== "content.site.appUrl" && text.includes("app.smpl.money"),
     );
     expect(linking).toEqual([]);
   });
 
-  it("says what is coming, not merely that something is", () => {
-    // "Coming soon" answered neither question a reader has: what, and why
-    // wait. `web.md` 6.2. This asserts the shape rather than the exact
-    // words, so rewording stays free and going back to two empty words
-    // does not.
+  it("says what signing up costs, in a label that fits a button", () => {
+    // The question a sign-up button raises is what it costs, and the free
+    // plan is the answer. `web.md` 6.2. This asserts the shape rather than
+    // the exact words, so rewording stays free and dropping the price does
+    // not.
     const label = content.hero.primaryLabel;
-    expect(label.length, `"${label}" is too short to name anything`).toBeGreaterThan(12);
-    expect(label.toLowerCase()).not.toBe("coming soon");
+    expect(label).toMatch(/\bfree\b/i);
     expect(label.length, `"${label}" will not fit a button`).toBeLessThanOrEqual(24);
   });
 
-  it("uses the same pending label everywhere", () => {
+  it("uses the same sign-up label everywhere", () => {
     // A header saying one thing and a pricing button saying another
-    // describes two different states.
+    // describes two different doors to one place.
     const labels = new Set(
-      all.filter(([, text]) => /\bsoon\b/i.test(text) && text.length <= 24).map(([, text]) => text),
+      all
+        .filter(([, text]) => /\bsign[- ]?ups?\b/i.test(text) && text.length <= 24)
+        .map(([, text]) => text),
     );
     expect([...labels]).toEqual([content.hero.primaryLabel]);
   });

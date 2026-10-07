@@ -4,7 +4,7 @@
 that could be built has been built. What remains is in three groups, and none
 of it can be closed from inside this repository:
 
-1. **Waiting on the application being deployed.**
+1. **Waiting on the application.**
 2. **Waiting on an account or an asset only the owner has.**
 3. **Decided not to build**, with the argument, so nobody reopens it blind.
 
@@ -14,11 +14,11 @@ Each item says what it is, why it is not done, and what done looks like.
 
 ## 1. Waiting on the application
 
-| #   | Item                                                                                  | What done looks like                                                                                                                                                                                                                                       |
-| --- | ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1.1 | **Four "Sign-ups open soon" controls** — the header, the hero, and both pricing CTAs. | They become links to `app.smpl.money`. `web.md` 6.1 is the rule; `tests/home-page.test.tsx` and `tests/pricing.test.tsx` both assert the current state, so **they fail on purpose** when you change it. Updating them in the same commit is the checklist. |
-| 1.2 | **No screenshot of the plan and billing tab.**                                        | Once the app is deployed with Stripe configured, **the application** captures it into its own kit and `sync-from-app` §4 pulls it here. Nothing in this repository can take it.                                                                            |
-| 1.3 | **Screenshots show a seeded ledger.**                                                 | They are real captures of the real application, taken by the application's own `product-kit` against a committed seed, and correctly disclosed. Run `sync-from-app` to pull fresh ones whenever the app's look changes.                                    |
+| #   | Item                                           | What done looks like                                                                                                                                                                                                                                          |
+| --- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.1 | **Four sign-up controls.**                     | **Done.** The application went live at `app.smpl.money` on 7 October 2026, and the header, the hero and both pricing cards became links to it reading "Sign up free", in one commit with the tests that had asserted the pending state. `web.md` 6.1 and 6.2. |
+| 1.2 | **No screenshot of the plan and billing tab.** | The app is deployed; **the application** captures this tab into its own kit once its capture runs with Stripe configured, and `sync-from-app` §4 pulls it here. Nothing in this repository can take it.                                                       |
+| 1.3 | **Screenshots show a seeded ledger.**          | They are real captures of the real application, taken by the application's own `product-kit` against a committed seed, and correctly disclosed. Run `sync-from-app` to pull fresh ones whenever the app's look changes.                                       |
 
 ## 2. Waiting on an account or an asset
 

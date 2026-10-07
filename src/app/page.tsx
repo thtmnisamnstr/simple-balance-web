@@ -49,8 +49,10 @@ export default function HomePage() {
             <h1 id="hero-title">{hero.title}</h1>
             <p className="hero-lede">{hero.lede}</p>
             <div className="hero-actions">
-              <span className="button button-pending">{hero.primaryLabel}</span>
-              <a className="button button-primary" href={site.sourceUrl}>
+              <a className="button button-primary" href={site.appUrl}>
+                {hero.primaryLabel}
+              </a>
+              <a className="button button-secondary" href={site.sourceUrl}>
                 {hero.secondaryLabel}
               </a>
             </div>

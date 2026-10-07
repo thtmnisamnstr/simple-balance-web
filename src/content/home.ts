@@ -128,7 +128,11 @@ export type NavLink = { readonly label: string; readonly href: string };
 export const site = {
   name: "Simple Balance",
   domain: "smpl.money",
-  appUrl: "https://app.smpl.money",
+  /**
+   * Where signing up happens, and the one place this site writes it. Every
+   * sign-up control reads it, so the four of them cannot drift apart.
+   */
+  appUrl: "https://app.smpl.money/",
   sourceUrl: "https://github.com/thtmnisamnstr/simple-balance",
   /**
    * One address, deliberately.
@@ -203,14 +207,15 @@ export const hero = {
     "total looks wrong, you can open it and follow it back to the payments that made it, which " +
     "is usually how you find the payment that got counted twice.",
   /**
-   * The app is not deployed yet, so this states the situation rather than
-   * linking somewhere that 404s (`docs/standards/web.md` 6.1).
+   * The sign-up control: a link to `site.appUrl`, in the header, the hero and
+   * both paid-plan cards on the pricing page.
    *
-   * It names what is coming in the reader's word for it. "Hosted version" is
-   * the accurate phrase and asks a general reader to know what hosting is;
-   * what they are actually waiting for is the ability to sign up.
+   * It names the price because that is the question a sign-up button raises.
+   * It read "Sign-ups open soon" while the application was not deployed, as a
+   * `<span>` rather than a link that would 404 (`docs/standards/web.md` 6.1),
+   * and became a link in the same commit the application went live.
    */
-  primaryLabel: "Sign-ups open soon",
+  primaryLabel: "Sign up free",
   /**
    * Not "Get the source". A general reader does not know what that offers
    * them, and a repository is a dead end for anybody who is not going to run
@@ -218,9 +223,13 @@ export const hero = {
    * person does not have to find out by following it.
    */
   secondaryLabel: "See how to run it yourself",
+  /*
+   * This said "The version we run for you isn't open yet" until it was. What
+   * is left is the second path, for the reader the first button is not for.
+   */
   note:
-    "The version we run for you isn't open yet. If you already run your own software, you can " +
-    "install the whole product today, free and with nothing left out.",
+    "No card to start. If you already run your own software, you can install the whole " +
+    "product yourself instead, free and with nothing left out.",
 } as const;
 
 /**

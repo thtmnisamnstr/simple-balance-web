@@ -3,12 +3,12 @@ title: Getting started
 description: Try Simple Balance on your own machine with Docker and PostgreSQL, create the first account with its setup code, and see what running it for real takes.
 section: Install
 order: 1
-updated: 2026-10-06
+updated: 2026-10-07
 ---
 
-Simple Balance runs as a container against a PostgreSQL database. The version
-we run for you isn't open yet, so for now "installing it" and "getting an
-account" are the same step. This page is for running your own copy.
+Simple Balance runs as a container against a PostgreSQL database. This page is
+for running your own copy. If you'd rather we ran it for you, there's nothing
+to install: [sign up at app.smpl.money](https://app.smpl.money/) instead.
 
 ## What you need
 

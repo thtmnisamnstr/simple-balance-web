@@ -9,6 +9,20 @@ than a contract with readers.
 
 ### Changed
 
+**You can sign up.** The application is live at app.smpl.money, and the
+four controls that read "Sign-ups open soon" — in the header, under the
+homepage's headline, and on both plans on the pricing page — are links to it
+reading "Sign up free". Premium's card goes to the same place, because
+everybody starts free and chooses Premium from the plan page inside the app.
+
+- The homepage's sign-up button is the green one now, and "See how to run it
+  yourself" sits beside it as the second choice.
+- The homepage, the pricing page and the setup guide each said the version we
+  run for you wasn't open yet. None of them does. The setup guide points
+  anybody who'd rather not install anything to app.smpl.money instead.
+- The description search engines read says the product runs in a web browser,
+  where it said only Docker.
+
 **The site describes 0.2.1.** The application's 0.2.1 release changed no
 price, plan or listed feature, so none of the homepage or pricing copy was
 rewritten for it. Everything below came from reading what the release says it

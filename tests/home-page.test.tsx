@@ -51,23 +51,32 @@ describe("the homepage", () => {
     expect(unnamed.map((s) => s.className)).toEqual([]);
   });
 
-  it("renders the pending control as text, not a control", () => {
-    // The app is not deployed. A <button> would imply something on this page
-    // can enable it and a link would 404, so the label is a plain span.
-    // `docs/standards/web.md` 6.4. When the app ships, this test changes in
-    // the same commit that makes it a link — which is the point of asserting
-    // it rather than leaving it to a reviewer to notice.
-    render(<SiteHeader />);
-    const pending = screen.getAllByText(hero.primaryLabel);
-    expect(pending.length).toBeGreaterThan(0);
-    for (const node of pending) {
-      expect(node.tagName).toBe("SPAN");
-      expect(node.closest("a")).toBeNull();
-      expect(node.closest("button")).toBeNull();
+  it("links every sign-up control to the application", () => {
+    // It was a <span> reading "Sign-ups open soon" while the application was
+    // not deployed, and this test asserted that, so that making it a link was
+    // a change with a failing test attached. Now it holds the other side: the
+    // label is never left behind as text that looks like a button and does
+    // nothing. `docs/standards/web.md` 6.1.
+    const { container } = render(
+      <>
+        <SiteHeader />
+        <HomePage />
+      </>,
+    );
+    const labelled = screen.getAllByText(hero.primaryLabel);
+    expect(labelled).toHaveLength(2);
+    for (const node of labelled) {
+      expect(node.tagName).toBe("A");
+      expect(node.getAttribute("href")).toBe(site.appUrl);
     }
+
+    // And the other direction: nothing reaches the application under a
+    // second label, which would be two names for one door.
+    const toApp = [...container.querySelectorAll(`a[href="${site.appUrl}"]`)];
+    expect(toApp.map((a) => a.textContent)).toEqual([hero.primaryLabel, hero.primaryLabel]);
   });
 
-  it("links nowhere that does not exist yet", () => {
+  it("links nowhere empty", () => {
     const { container } = render(
       <>
         <SiteHeader />
@@ -77,7 +86,6 @@ describe("the homepage", () => {
     );
     const hrefs = [...container.querySelectorAll("a")].map((a) => a.getAttribute("href") ?? "");
 
-    expect(hrefs.filter((href) => href.includes(site.appUrl))).toEqual([]);
     expect(hrefs.filter((href) => href === "" || href === "#")).toEqual([]);
   });
 
