@@ -18,7 +18,7 @@
  */
 
 /** Bumped whenever either document changes materially. Rendered on both. */
-export const legalUpdated = "2026-10-04";
+export const legalUpdated = "2026-10-06";
 
 const operator = {
   /** Who is responsible for the hosted deployment, in the legal sense. */
@@ -917,15 +917,23 @@ export const terms = {
          * second lapse after a subscription that opened and restored nothing
          * asks nothing, and the earlier choice stands. The next section says
          * when it is open.
+         *
+         * "But accept no changes" was true until 0.2.1, when
+         * `setAccountArchived` and `deleteAccount` dropped the freeze check:
+         * putting a frozen account away gives up a place it never held, so the
+         * limit is untouched. What it still refuses is any change to what it
+         * holds. "Like any other" because deleting is still refused for an
+         * account with anything on it, frozen or not.
          */
         "The free plan lets you use up to three financial accounts at a time and shows " +
           "advertising. Accounts beyond that are frozen: they stay readable and keep counting " +
-          "toward your totals, but accept no changes. One can be used again if you pick it in " +
-          "the one-time choice a downgrade may put to you, if you give it a place that has come " +
-          "free by archiving or deleting an account you're using, or if you subscribe. The " +
-          "Premium plan is $30 per year or $3 per month, lets you use every account you have " +
-          "and removes the advertising. Prices are in US dollars, and no sales tax, VAT or " +
-          "other tax is added to them today.",
+          "toward your totals, but their entries and details accept no changes, though a " +
+          "frozen account can still be archived or deleted like any other. One can be used " +
+          "again if you pick it in the one-time choice a downgrade may put to you, if you give " +
+          "it a place that has come free by archiving or deleting an account you're using, or " +
+          "if you subscribe. The Premium plan is $30 per year or $3 per month, lets you use " +
+          "every account you have and removes the advertising. Prices are in US dollars, and " +
+          "no sales tax, VAT or other tax is added to them today.",
         /*
          * What the application does, not what a tax authority may one day
          * ask. `createStripeSubscription` sets no `automatic_tax` and adds no
@@ -1000,13 +1008,14 @@ export const terms = {
           "after a subscription in which you opened or restored accounts, you choose any three " +
           "to keep using; if three or fewer are, nothing is asked and they stay in use. Any " +
           "others are frozen: readable in full, still counted in your totals, and closed to " +
-          "changes. Until you choose, the oldest three of the accounts in use stay usable: on a " +
-          "first downgrade, your three oldest accounts; after an earlier choice, the oldest " +
-          "three among the accounts still chosen and any you've opened or restored since, so an " +
-          "account that was frozen when you subscribed again isn't one of them. That choice is " +
-          "made once. After that, an account you're using stays active until you archive or " +
-          "delete it, and only then can a frozen account take its place; subscribing again " +
-          "makes all of them usable at once.",
+          "changes in their entries and details, though you can still archive or delete one " +
+          "like any other account. Until you choose, the oldest three of the accounts in use " +
+          "stay usable: on a first downgrade, your three oldest accounts; after an earlier " +
+          "choice, the oldest three among the accounts still chosen and any you've opened or " +
+          "restored since, so an account that was frozen when you subscribed again isn't one " +
+          "of them. That choice is made once. After that, an account you're using stays " +
+          "active until you archive or delete it, and only then can a frozen account take its " +
+          "place; subscribing again makes all of them usable at once.",
         "If you are in the UK or the EEA you have a statutory right to cancel within 14 days of " +
           "first subscribing and receive a refund. Beyond that, payments are generally " +
           "non-refundable, but if something has gone wrong, write to us. We would rather sort " +

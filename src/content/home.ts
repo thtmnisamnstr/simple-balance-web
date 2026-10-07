@@ -245,7 +245,7 @@ export const proofs: readonly Proof[] = [
   {
     shot: {
       name: "transactions",
-      alt: "A list of transactions, newest first, each with who was paid, which account it came from, what kind of spending it was and how much. Most are in dollars, and a grocery bill and a train fare from a euro account are in euros.",
+      alt: "A list of transactions, newest first, each with who it was with, which account it was in, its category and its amount, all in dollars. Most are spending on groceries, a lunch, cinema tickets and a transit pass. One is a $750 freelance payment coming in, and one is $600 moved from checking to savings, which shows both accounts and no category.",
       caption:
         "Everything you've entered, in one list you can search or narrow down to one account.",
     },
@@ -373,7 +373,7 @@ export const features: readonly Feature[] = [
 export const featureShots = [
   {
     name: "budgets",
-    alt: "The budgets screen: a form for setting one, with fields for the category, the amount and how it's decided, the currency, a start date, an optional savings goal and which budget gets funded first, and a checkbox for carrying what's left into next month. Below it, the list of standing budgets begins with $200 a month for dining out.",
+    alt: "The budgets screen: a form for setting one, with fields for the category, the amount and how it's decided, the currency, a start date and an optional end date, an optional savings goal and which budget gets funded first, and a checkbox for carrying what's left into next month. Below it, the list of standing budgets begins with $200 a month for dining out.",
     caption:
       "Setting a budget. The checkbox near the bottom is what carries the remainder forward.",
   },

@@ -375,7 +375,7 @@ describe("the reader is American", () => {
    * was.
    *
    * The euro is deliberately not here: the product holds more than one
-   * currency and its screenshots show a euro payment, so a sentence about a
+   * currency and its screenshots show a euro account, so a sentence about a
    * second currency is describing the product. What this catches is a British
    * writer's default unit.
    *

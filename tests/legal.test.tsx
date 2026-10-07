@@ -909,6 +909,40 @@ describe("the terms", () => {
     expect(plans).toMatch(/one-time choice a downgrade (may|can) put to you/);
   });
 
+  it("lets a frozen account be put away, on every surface that says what freezing refuses", () => {
+    /*
+     * 0.2.1 took the freeze check out of `setAccountArchived` and
+     * `deleteAccount`: a frozen account still takes no change to what it
+     * holds, and may be archived or deleted, because it held no place and so
+     * frees none. Both of these terms paragraphs and the pricing FAQ had said
+     * it accepts no changes at all, a restriction the product stopped
+     * imposing, told to exactly the reader who has just downgraded with
+     * accounts to clear away. So every sentence, in a passage about frozen
+     * accounts, that says what one refuses also says it can still be put
+     * away: archived, in the terms' word, or closed, in the FAQ's.
+     */
+    const pricingPage = [pricing, pricingMeta, tiers, comparison, faq].flatMap(stringsIn);
+    const passages = [...terms.sections.flatMap((s) => s.paragraphs), ...pricingPage].filter(
+      (passage) => /\bfrozen\b/i.test(passage),
+    );
+    const refusals = passages
+      .flatMap((passage) => passage.toLowerCase().split(/(?<=[.!?])\s+/))
+      .filter((sentence) =>
+        /\b(accepts? no changes?|closed to (every )?changes?|can(no|')t (add to|change))\b/.test(
+          sentence,
+        ),
+      );
+    expect(
+      refusals.length,
+      "found no sentence saying what a frozen account refuses",
+    ).toBeGreaterThanOrEqual(3);
+    for (const sentence of refusals) {
+      expect(sentence, "a frozen account is said to refuse being put away").toMatch(
+        /\b(archived?|close)\b/,
+      );
+    }
+  });
+
   it("promises the choice of three only where the product opens one", () => {
     /*
      * `activeChoicePending` holds only while more live accounts are marked in

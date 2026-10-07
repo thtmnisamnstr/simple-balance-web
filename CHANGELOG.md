@@ -9,6 +9,30 @@ than a contract with readers.
 
 ### Changed
 
+**The site describes 0.2.1.** The application's 0.2.1 release changed no
+price, plan or listed feature, so none of the homepage or pricing copy was
+rewritten for it. Everything below came from reading what the release says it
+changed and checking each part against its code.
+
+- After a downgrade, accounts past the free plan's three are frozen, and the
+  pricing page and the terms both said a frozen account accepts no changes.
+  Since 0.2.1 one can still be closed or deleted, so somebody with a pile of
+  old accounts can clear them out without upgrading first, and both now say
+  so. What a frozen account holds still can't change. The terms carry a new
+  date; nobody is emailed about it, because the change only widens what a
+  person may do, and sign-ups for the hosted version aren't open.
+- The five screenshots on the homepage are the release's capture. Two
+  descriptions stopped matching their pictures and describe the new ones now:
+  the transaction list shows a deposit and a transfer and no euro payment,
+  and the budget form has gained an end date.
+- The setup guide named 0.2.0 as the release the deploy programs install. It's
+  0.2.1. The import guide covers the bank's reference column, which a person
+  can now choose, and says "delete" where the app stopped saying "drop".
+- The advertising setup procedure asks for 0.2.1 before ads go on, where it
+  asked for 0.2.0. 0.2.0's sign-in answers handed the session's identifier
+  back to any script on the page, and a page showing ads lets scripts in from
+  anywhere.
+
 **Ads on both the website and the application can now be personalized, and
 the privacy policy says who is asked first.** Google's European and US-state
 consent messages are published from the advertising account for both, and
