@@ -345,17 +345,6 @@ svg {
   background: var(--fill-subtle);
 }
 
-/* The sign-in control while the app is not yet deployed. It is a <span>, not a
-   disabled <button>: there is no action to perform and nothing to enable
-   later on this page, so rendering a control that cannot be pressed would be
-   a promise the markup does not keep. `docs/standards/web.md` 6.4. */
-.button-pending {
-  background: var(--green-soft);
-  color: var(--green-dark);
-  border-color: var(--green-line);
-  cursor: default;
-}
-
 /* ---------- hero ---------- */
 
 .hero {
@@ -600,7 +589,7 @@ svg {
   /*
    * The header is one row until it cannot be.
    *
-   * The brand, two links and the pending label come to 453px against a 390px
+   * The brand, two links and the sign-up control came to 453px against a 390px
    * viewport, and a flex row that cannot wrap does not clip — it pushes, so
    * the *page* scrolls sideways. That fails WCAG 2.1 AA reflow (1.4.10) at
    * 320px and it is the failure nobody sees on a desktop, because the row

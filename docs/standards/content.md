@@ -215,10 +215,17 @@ _Checked by:_ `tests/home-page.test.tsx`.
 
 ### 2.3 Nothing links to what does not exist
 
-**Binding.** No link to `app.smpl.money` while the app is not deployed, and no
-empty or `#` hrefs.
+**Binding.** No empty or `#` hrefs, and no link to an address that does not
+answer.
 
-_Checked by:_ `tests/copy.test.ts` and `tests/home-page.test.tsx`.
+This used to say "no link to `app.smpl.money` while the app is not deployed",
+which held from the first commit until the application went live on 7 October 2026. The sign-up control links there now (`web.md` 6.1), and the address is
+written once, as `site.appUrl`, so it cannot drift between the four places it
+is used.
+
+_Checked by:_ `tests/home-page.test.tsx` for empty hrefs and `tests/copy.test.ts`
+for the address being written once. Whether an address answers is `human`:
+nothing here makes a network call (`AGENTS.md`).
 
 ### 2.4 The marketing pages and the privacy policy say the same thing
 

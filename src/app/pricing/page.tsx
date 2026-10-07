@@ -95,19 +95,12 @@ export default function PricingPage() {
                 </p>
                 <p className="tier-summary">{tier.summary}</p>
                 <p className="tier-who">{tier.who}</p>
-                {tier.cta.href ? (
-                  <a
-                    className={tier.featured ? "button button-primary" : "button button-secondary"}
-                    href={tier.cta.href}
-                  >
-                    {tier.cta.label}
-                  </a>
-                ) : (
-                  // The application is not deployed, so this states the
-                  // situation rather than pretending to be pressable.
-                  // `web.md` 6.1.
-                  <span className="button button-pending">{tier.cta.label}</span>
-                )}
+                <a
+                  className={tier.featured ? "button button-primary" : "button button-secondary"}
+                  href={tier.cta.href}
+                >
+                  {tier.cta.label}
+                </a>
               </article>
             ))}
           </div>

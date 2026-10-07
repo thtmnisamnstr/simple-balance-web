@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
 import PricingPage from "@/app/pricing/page";
+import { hero, site } from "@/content/home";
 import { comparison, faq, MAX_FREE_ACCOUNTS, tiers } from "@/content/pricing";
 
 /**
@@ -47,14 +48,19 @@ describe("the plans", () => {
     expect(tiers.filter((t) => t.featured)).toHaveLength(1);
   });
 
-  it("gives self-hosting a real link and the paid tiers a pending label", () => {
-    // The app is not deployed, so neither paid CTA may link anywhere.
-    // `web.md` 6.1 — and this fails when the app ships, which is the point.
-    expect(tiers.find((t) => t.key === "self")?.cta.href).toBeTruthy();
+  it("sends both plans to the application and self-hosting to the source", () => {
+    // Both plans' controls read "Sign-ups open soon" and linked nowhere until
+    // the application went live, and this test held that. Premium goes to the
+    // same place as Free because everybody starts free and upgrades from the
+    // application's plan page; there is no separate door to it.
+    expect(tiers.find((t) => t.key === "self")?.cta.href).toBe(site.sourceUrl);
     for (const tier of tiers.filter((t) => t.key !== "self")) {
-      expect(tier.cta.pending).toBe(true);
-      expect(tier.cta.href).toBeUndefined();
+      expect(tier.cta).toEqual({ label: hero.primaryLabel, href: site.appUrl });
     }
+
+    render(<PricingPage />);
+    const toApp = screen.getAllByRole("link", { name: hero.primaryLabel });
+    expect(toApp.map((a) => a.getAttribute("href"))).toEqual([site.appUrl, site.appUrl]);
   });
 
   it("never claims a feature is held back from the free plan", () => {

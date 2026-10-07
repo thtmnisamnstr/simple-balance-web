@@ -4,11 +4,10 @@ import { LogoMark } from "@/components/icons";
 /**
  * The header.
  *
- * The sign-in control is a `<span>` carrying the pending label, not a disabled
- * `<button>` or a link to app.smpl.money. The app is not deployed, so a link
- * would 404 and a disabled button would imply something on this page could
- * enable it. A phrase that states the situation is the honest control.
- * `docs/standards/web.md` 6.1.
+ * The sign-up control is a link to the application, carrying the same label
+ * as the hero's and the pricing cards'. It was a `<span>` reading "Sign-ups
+ * open soon" until the application went live, because a link would have
+ * 404'd. `docs/standards/web.md` 6.1.
  */
 export function SiteHeader() {
   return (
@@ -30,7 +29,9 @@ export function SiteHeader() {
           <a className="header-link" href={headerSourceLink.href}>
             {headerSourceLink.label}
           </a>
-          <span className="button button-pending">{hero.primaryLabel}</span>
+          <a className="button button-primary" href={site.appUrl}>
+            {hero.primaryLabel}
+          </a>
         </nav>
       </div>
     </header>

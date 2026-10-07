@@ -46,7 +46,9 @@ export function SiteStructuredData() {
           "@type": "SoftwareApplication",
           name: site.name,
           applicationCategory: "FinanceApplication",
-          operatingSystem: "Linux, macOS, Windows — via Docker",
+          // A browser first, since the application went live at app.smpl.money;
+          // this read only "via Docker" while running it yourself was the one way.
+          operatingSystem: "Any web browser; or Linux, macOS, Windows via Docker",
           description: site.description,
           url: `${base}/`,
           license: "https://www.gnu.org/licenses/agpl-3.0.html",

@@ -192,7 +192,7 @@ by moving the app to this one, since it is the superset.
 
 It is **one declaration**, `--mono` in `site.css`, not three. It was written
 out three times, and three copies of a value are three chances for it to
-disagree with itself — the same argument as the pending label in 6.2 and the
+disagree with itself — the same argument as the sign-up label in 6.2 and the
 header height in 4.3.
 
 ## 4. Layout
@@ -239,7 +239,7 @@ Three separate causes were live when this was written, and **not one of them
 looked like an overflow in the source**:
 
 - **A flex row that cannot wrap does not clip — it pushes.** The header's
-  brand, two links and pending label came to 453px against a 390px viewport.
+  brand, two links and sign-up label came to 453px against a 390px viewport.
   It wraps below `34rem` now. The alternatives all cost a control: hiding the
   brand word leaves a link with no accessible name, and dropping "Source"
   removes the only way a reader on a phone reaches the code.
@@ -453,39 +453,49 @@ is `human`, and it was found by looking.
 
 ### 6.1 A control that cannot act is not a control
 
-**Binding.** The sign-in affordance is a `<span>`, not a control. What it says
-is 6.2's problem; that it is not a button is this one's.
+**Binding.** The sign-up control is a link to `site.appUrl`, in the header,
+the hero and both plan cards on the pricing page, and nothing that looks like
+a button is left on a page as text that does nothing.
 
-A `<button disabled>` implies something on this page could enable it. A link to
-`app.smpl.money` would 404 for every reader. A phrase that states the situation
-is the honest control, and when the app ships this becomes a link in the same
-commit that makes it true.
+It was a `<span>` reading "Sign-ups open soon" until 7 October 2026, when the
+application went live. A `<button disabled>` would have implied something on
+the page could enable it, and a link to `app.smpl.money` would have 404'd for
+every reader, so a phrase that stated the situation was the honest control.
+It became a link in the same commit that made it true, which is what this
+rule asked for.
 
-_Checked by:_ `tests/home-page.test.tsx`, which asserts the label is neither a
-link nor a button — so making it one is a deliberate change with a failing test
-attached.
+**The rule outlives the launch.** If the application is ever down for long
+enough to matter, or a section of the site points at something not built
+yet, the answer is the same: say what is happening in text, and do not leave
+a control that leads nowhere.
 
-### 6.2 A control that is waiting says what it is waiting for
+_Checked by:_ `tests/home-page.test.tsx`, which asserts every instance of the
+label is a link to the application and that nothing reaches the application
+under another label, and `tests/pricing.test.tsx` for the two plan cards.
 
-**House.** The pending control reads **"Sign-ups open soon"**, not "Coming
-soon".
+### 6.2 A sign-up control says what it costs
 
-Two words that name nothing answer neither question a reader has — what is
-coming, and why would they wait for it. This names the thing.
+**House.** The control reads **"Sign up free"**.
 
-It used to read "Hosted version soon", which named the thing accurately and
-named it in the product's vocabulary rather than the reader's: hosting is a
-word for somebody who knows the alternative, and what the reader is actually
-waiting for is the ability to sign up. `content.md` 1.3 is the rule that moved
-it.
+A sign-up button raises one question, which is what it is about to cost, and
+the free plan is the answer, so the label gives it. Premium's card carries the
+same label because it is the same door: everybody starts free, and Premium is
+chosen afterwards from the application's own plan page.
 
-**It is one string, not two.** `src/content/pricing.ts` imports
+While the application was not deployed it read "Sign-ups open soon", and
+before that "Hosted version soon", which named the thing accurately in the
+product's vocabulary rather than the reader's. `content.md` 1.3 is the rule
+that moved it.
+
+**It is one string, not four.** `src/content/pricing.ts` imports
 `hero.primaryLabel` rather than repeating it, because a header saying one
-thing and a pricing button saying another describes two different states — and
-two literals that happen to match today are two literals.
+thing and a pricing button saying another describes two different doors to
+one place — and two literals that happen to match today are two literals. The
+address is one value too, `site.appUrl`.
 
-_Checked by:_ `tests/home-page.test.tsx` and `tests/pricing.test.tsx` for the
-control being text rather than a control; the wording is `human`.
+_Checked by:_ `tests/copy.test.ts` for the label naming the price, fitting a
+button and being the only sign-up label, and for the address being written
+once; the exact wording is `human`.
 
 ### 6.3 A breadcrumb's current page is not a link
 
@@ -629,36 +639,37 @@ on.
 
 ## 9. What is checked, and what is not
 
-| Rule                                | Held by                                             |
-| ----------------------------------- | --------------------------------------------------- |
-| 1.1 Color from the contract         | `tests/brand-tokens.test.ts`                        |
-| 1.2 Two theme blocks                | `tests/brand-tokens.test.ts`                        |
-| 1.3 Named same-in-both tokens       | `tests/brand-tokens.test.ts`                        |
-| 1.4 Tokens all declared             | `tests/brand-tokens.test.ts`                        |
-| 4.3 No sideways scroll              | `tests/a11y.test.ts`, at 320px and 390px            |
-| 5.2 Both themes, both widths        | `tests/home-page.test.tsx`                          |
-| 5.2 Covers in both themes           | `tests/blog-features.test.ts`                       |
-| 5.3–5.5 Images                      | `tests/home-page.test.tsx`                          |
-| 6.1 The pending control             | `tests/home-page.test.tsx`                          |
-| 6.4 Link text                       | `tests/home-page.test.tsx`                          |
-| 6.5 No third-party branding         | `tests/branding.test.ts`                            |
-| 6.5 The one script, and its hosts   | `tests/adsense.test.ts`, and `docs/adsense.md` §8   |
-| 2.2 Title-to-text spacing           | `tests/a11y.test.ts`, "layout"                      |
-| 4.4, 4.5 Box edges, figures in rows | `tests/a11y.test.ts`, "layout"                      |
-| 5.3 Cover dimensions                | `tests/blog-features.test.ts`                       |
-| 5.6 Code blocks fill the column     | `tests/a11y.test.ts`, "layout"                      |
-| 6.6 An ad that never loads          | `tests/a11y.test.ts`                                |
-| 6.7 One focus ring                  | `tests/a11y.test.ts`, "layout"                      |
-| 7.1–7.3 Structure                   | `tests/home-page.test.tsx`                          |
-| 2.1 Spacing scale                   | `human` — mechanizable, and the best candidate left |
-| 3.1 Type scale                      | `human` — sweep `font-size:` for a digit            |
-| 3.2 Font stack                      | `human` — against the app's stylesheet, over HTTP   |
-| 4.2 Every class styles something    | `tests/dead-css.test.ts`, both directions           |
-| 4.1, 4.2 Layout and class ownership | `human`                                             |
-| 5.1 Screenshot provenance           | `human`                                             |
-| 6.2, 6.3 Control and crumb wording  | `human`                                             |
-| 7.4 Skip link                       | `human`                                             |
-| 8.1 Reduced motion                  | `human`                                             |
+| Rule                                | Held by                                              |
+| ----------------------------------- | ---------------------------------------------------- |
+| 1.1 Color from the contract         | `tests/brand-tokens.test.ts`                         |
+| 1.2 Two theme blocks                | `tests/brand-tokens.test.ts`                         |
+| 1.3 Named same-in-both tokens       | `tests/brand-tokens.test.ts`                         |
+| 1.4 Tokens all declared             | `tests/brand-tokens.test.ts`                         |
+| 4.3 No sideways scroll              | `tests/a11y.test.ts`, at 320px and 390px             |
+| 5.2 Both themes, both widths        | `tests/home-page.test.tsx`                           |
+| 5.2 Covers in both themes           | `tests/blog-features.test.ts`                        |
+| 5.3–5.5 Images                      | `tests/home-page.test.tsx`                           |
+| 6.1 The sign-up control             | `tests/home-page.test.tsx`, `tests/pricing.test.tsx` |
+| 6.4 Link text                       | `tests/home-page.test.tsx`                           |
+| 6.5 No third-party branding         | `tests/branding.test.ts`                             |
+| 6.5 The one script, and its hosts   | `tests/adsense.test.ts`, and `docs/adsense.md` §8    |
+| 2.2 Title-to-text spacing           | `tests/a11y.test.ts`, "layout"                       |
+| 4.4, 4.5 Box edges, figures in rows | `tests/a11y.test.ts`, "layout"                       |
+| 5.3 Cover dimensions                | `tests/blog-features.test.ts`                        |
+| 5.6 Code blocks fill the column     | `tests/a11y.test.ts`, "layout"                       |
+| 6.6 An ad that never loads          | `tests/a11y.test.ts`                                 |
+| 6.7 One focus ring                  | `tests/a11y.test.ts`, "layout"                       |
+| 7.1–7.3 Structure                   | `tests/home-page.test.tsx`                           |
+| 2.1 Spacing scale                   | `human` — mechanizable, and the best candidate left  |
+| 3.1 Type scale                      | `human` — sweep `font-size:` for a digit             |
+| 3.2 Font stack                      | `human` — against the app's stylesheet, over HTTP    |
+| 4.2 Every class styles something    | `tests/dead-css.test.ts`, both directions            |
+| 4.1, 4.2 Layout and class ownership | `human`                                              |
+| 5.1 Screenshot provenance           | `human`                                              |
+| 6.2 The sign-up label               | `tests/copy.test.ts`; the exact words are `human`    |
+| 6.3 Crumb wording                   | `human`                                              |
+| 7.4 Skip link                       | `human`                                              |
+| 8.1 Reduced motion                  | `human`                                              |
 
 Nothing here can check rhythm, balance, or whether a section is in a sensible
 place. jsdom has no layout engine, so every visual judgment is a person
