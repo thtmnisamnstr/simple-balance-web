@@ -1404,6 +1404,31 @@ svg {
   color: var(--green);
 }
 
+/* ---------- learn ---------- */
+
+/* The series box's surface, because it is the same kind of thing: an aside
+   about where to go next, set apart from the article without shouting. */
+.learn-cta {
+  margin-top: var(--s-8);
+  padding: var(--s-5);
+  border: 1px solid var(--green-line);
+  background: var(--green-wash);
+  border-radius: var(--radius-lg);
+}
+
+.learn-cta-title {
+  margin: 0 0 var(--s-2);
+  font-size: var(--step-1);
+  color: var(--ink);
+}
+
+.learn-cta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  margin: var(--s-4) 0 0;
+}
+
 /* ---------- share ---------- */
 
 .share {

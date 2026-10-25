@@ -5,7 +5,7 @@ Two sets, and neither restates the other.
 - **[`web.md`](web.md)** — the design. Tokens, rhythm, type, color, images,
   states and the keyboard. What the page looks like and why.
 - **[`content.md`](content.md)** — the words, and the content pipeline behind
-  `/blog` and `/docs`. Voice, claims, frontmatter, and what a writer may rely
+  `/blog`, `/docs` and `/learn`. Voice, claims, frontmatter, and what a writer may rely
   on.
 - **[`operations.md`](operations.md)** — the build and the deployment. Netlify,
   the static export, DNS, and the one file whose absence costs money.

@@ -84,6 +84,35 @@ export function PostStructuredData({ post }: { readonly post: Entry }) {
   );
 }
 
+/**
+ * A learn article. `Article` rather than `BlogPosting`, because it is not
+ * news and the date is when it was written rather than what it is about, and
+ * rather than `TechArticle`, because it is written for somebody who has never
+ * read one.
+ */
+export function ArticleStructuredData({ entry }: { readonly entry: Entry }) {
+  const meta = entry.frontmatter;
+  return (
+    <Ld
+      data={{
+        "@context": "https://schema.org",
+        "@type": "Article",
+        headline: meta.title,
+        description: meta.description,
+        url: `${base}/learn/${entry.slug}/`,
+        datePublished: meta.date,
+        ...(meta.updated ? { dateModified: meta.updated } : {}),
+        author: (meta.authors ?? []).map((key) => ({
+          "@type": "Person",
+          name: authors[key].name,
+          ...(authors[key].url ? { url: authors[key].url } : {}),
+        })),
+        publisher: { "@type": "Organization", name: site.name, url: `${base}/` },
+      }}
+    />
+  );
+}
+
 export function DocStructuredData({ entry }: { readonly entry: Entry }) {
   return (
     <Ld

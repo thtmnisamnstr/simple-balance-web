@@ -1,9 +1,9 @@
 /**
  * Which parts of the site are announced, and which merely exist.
  *
- * `/docs` is announced: linked, indexed, and in the sitemap. `/blog` is built,
- * routable and styled, and nothing links to it. That is the state this site
- * ships in. The blog's machinery is finished so that publishing the first post
+ * `/learn` and `/docs` are announced: linked, indexed, and in the sitemap.
+ * `/blog` is built, routable and styled, and nothing links to it. That is the
+ * state this site ships in. The blog's machinery is finished so that publishing the first post
  * is writing a Markdown file rather than building a blog, and it stays
  * unannounced because what goes in it has not been decided yet.
  *
@@ -26,7 +26,7 @@
  * `tests/sections.test.tsx` now asserts all three in both directions rather
  * than asserting the absences alone.
  */
-export type SectionKey = "blog" | "docs";
+export type SectionKey = "blog" | "docs" | "learn";
 
 export type Section = {
   readonly key: SectionKey;
@@ -40,6 +40,27 @@ export type Section = {
 };
 
 export const sections: readonly Section[] = [
+  /*
+   * First, so it leads the header. The docs are for somebody running the
+   * product and the learn articles are for somebody deciding whether to keep
+   * track of their money at all, which is the reader the homepage is written
+   * for (`docs/standards/content.md` 1.3) and the one most likely to be
+   * looking at the header.
+   */
+  {
+    key: "learn",
+    href: "/learn/",
+    label: "Learn",
+    title: "Money basics",
+    description:
+      "Plain guides to tracking your spending, budgeting and saving. Each one says why it " +
+      "matters, how to do it with any tool, and how to do it in Simple Balance.",
+    announced: true,
+    empty: {
+      title: "No guides published yet",
+      body: "There's nothing here to read, so there's nothing you're missing.",
+    },
+  },
   {
     key: "docs",
     href: "/docs/",
@@ -97,12 +118,12 @@ export function section(key: SectionKey): Section {
 }
 
 /**
- * Sections a reader is told about. `/docs` today, and not `/blog`.
+ * Sections a reader is told about. `/learn` and `/docs` today, and not `/blog`.
  *
  * Three callers, which is the whole of the coupling: `src/app/sitemap.ts` for
  * the sitemap, and `primaryNav` and `footer.links` in `src/content/home.ts`
  * for the two links. The `noindex` reads the flag directly, per section, in
- * the eight route files that own a page.
+ * the ten route files that own a page.
  */
 export function announcedSections(): readonly Section[] {
   return sections.filter((s) => s.announced);

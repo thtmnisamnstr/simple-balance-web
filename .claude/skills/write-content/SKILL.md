@@ -1,9 +1,9 @@
 ---
 name: write-content
-description: Write or edit a blog post or a documentation page, with the right frontmatter, and publish it correctly. Use when asked to write a post, add a doc, draft an article, or publish something to the blog or docs.
+description: Write or edit a blog post, a documentation page or a learn article, with the right frontmatter, and publish it correctly. Use when asked to write a post, add a doc, write a guide or a learn article, draft an article, or publish something to the blog, the docs or /learn.
 ---
 
-# Write a post or a doc
+# Write a post, a doc or a learn article
 
 The pipeline is finished; writing is adding a Markdown file.
 `docs/standards/content.md` 5 is the contract and this is the procedure.
@@ -14,8 +14,13 @@ The pipeline is finished; writing is adding a Markdown file.
   Ordered by date, carries a byline, appears in the feeds.
 - **`content/docs/`** — something that should be true whenever it is read.
   Ordered by hand, carries no byline, appears in search.
+- **`content/learn/`** — a guide to an everyday money job, for somebody who
+  has never kept track of their money. Ordered by hand like the docs, carries
+  a byline like a post, and appears in neither the feeds nor the search.
 
-If it would need "as of September 2026" to stay honest, it is a post.
+If it would need "as of September 2026" to stay honest, it is a post. If it
+explains how to run or configure the product, it is a doc. If it would be
+worth reading to somebody who never uses the product, it is a learn article.
 
 ## The voice
 
@@ -62,6 +67,10 @@ draft: false # true builds in dev and is absent from production
 
 Docs take `section` and `order` instead of `date` and `authors`. Group order
 lives in `content/docs/_sections.json`; a section missing from it sorts last.
+
+Learn articles take all four: `date` and `authors` for the byline and the
+structured data, which the build refuses without, and `section` and `order`
+for where they sit in `content/learn/_sections.json`'s reading order.
 A page with no `order` sorts after every page that has one, so adding
 `order: 2` to one page does not mean renumbering its neighbors.
 
@@ -83,12 +92,37 @@ Available inside Markdown, beyond GitHub's own syntax:
 |                                                                |                                                              |
 | -------------------------------------------------------------- | ------------------------------------------------------------ |
 | `<Callout kind="note\|tip\|warning\|danger" title="…">`        | An aside. The kind shows a word as well as a color.          |
-| `<Shot name="dashboard" alt="…" width={1600} height={1000} />` | A screenshot, theme-aware, from `public/screenshots/`.       |
+| `<Shot name="dashboard" alt="…" width="1600" height="1000" />` | A screenshot, theme-aware, from `public/screenshots/`.       |
 | `<Figure src="…" alt="…" caption="…" />`                       | An image whose caption is connected to it.                   |
 | `<CodeTabs><CodeTab label="npm">…</CodeTab></CodeTabs>`        | Alternatives, both rendered. Not tabs — see `code-tabs.tsx`. |
 
 Fenced code gets syntax highlighting and a copy button automatically; there is
 no component to reach for.
+
+### A learn article
+
+`docs/standards/content.md` 5.14 is the contract, and `tests/learn.test.ts`
+fails without its shape. Three `##` headings, in this order:
+
+1. one beginning **"Why"** — why the job matters, to somebody who has never
+   done it;
+2. one beginning **"How"** — how to do it with a notebook, a spreadsheet or
+   anything else;
+3. the last, ending **"in Simple Balance"** — how to do it here.
+
+Other headings may sit around them ("What it is" first, "How much" between).
+Write for the reader `content.md` 1.3 describes, and gloss an accounting word
+where it first appears. **Every button you name in the third part is checked
+against the application**, at the release `src/content/app-facts.json` names:
+its `docs/how-to.md` names the buttons, and its `src/client/pages/` holds the
+labels. Read them over the network, as `AGENTS.md` says, never from a checkout
+beside this one. Say what the product cannot do where the method asks for it.
+
+A `<Shot>` in any Markdown page is followed, on the next line, by
+`_The money in this picture is made up. It's the real product, filled with example spending._`
+and names a screenshot that is in `public/screenshots/` in both themes. A
+number in an attribute is written as a string, `width="1600"`, because the
+renderer drops `{1600}` along with every other expression.
 
 ## 4. Check it
 
@@ -108,8 +142,8 @@ Read the rendered page, not the Markdown. Then:
 
 ## 5. Publishing
 
-The docs are **announced**. The blog is **not** — built, reachable, linked from
-nowhere (`content.md` 7.1). Adding a file to an unannounced section does not
+The learn articles and the docs are **announced**. The blog is **not** —
+built, reachable, linked from nowhere (`content.md` 7.1). Adding a file to an unannounced section does not
 publish it to anybody.
 
 Announcing a section is flipping `announced` in `src/content/sections.ts`,

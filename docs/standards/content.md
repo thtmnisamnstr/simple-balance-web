@@ -1,6 +1,6 @@
 # Content
 
-The words on this site, and the pipeline behind `/blog` and `/docs`.
+The words on this site, and the pipeline behind `/blog`, `/docs` and `/learn`.
 
 ## 1. Voice
 
@@ -398,8 +398,9 @@ _Checked by:_ `tests/copy.test.ts` and `tests/home-page.test.tsx`.
 
 ## 5. The content pipeline
 
-`/blog` and `/docs` are Markdown files under `content/`, read at build time by
-`src/content/collections/index.ts` and rendered by this site's own layouts.
+`/blog`, `/docs` and `/learn` are Markdown files under `content/`, read at
+build time by `src/content/collections/index.ts` and rendered by this site's
+own layouts.
 
 ### 5.1 No docs framework, and when to revisit
 
@@ -464,7 +465,9 @@ _Checked by:_ `tests/content.test.ts`.
 ### 5.5 Sidebar order is one file
 
 **House.** `content/docs/_sections.json` names the group order; each page's
-`order` places it within its group.
+`order` places it within its group. The learn articles are ordered the same
+way by their own `content/learn/_sections.json`, which is a reading order for
+somebody starting from nothing rather than a filing system.
 
 Groups need an order that is not alphabetical — "Install" belongs above
 "Reference" — and there is nowhere in per-page frontmatter to say so without
@@ -475,7 +478,7 @@ A page with no `order` sorts after every page that has one, rather than
 alphabetically among them. That is what makes adding `order: 2` to one page do
 the obvious thing without renumbering its neighbors.
 
-_Checked by:_ `tests/content.test.ts`.
+_Checked by:_ `tests/content.test.ts`, for both collections.
 
 ### 5.6 A draft is absent from production
 
@@ -587,9 +590,10 @@ _Checked by:_ `tests/blog-features.test.ts`.
 
 ### 5.13 Structured data describes what is visible
 
-**Binding.** `BlogPosting`, `TechArticle`, `BreadcrumbList`, `WebSite` and
-`SoftwareApplication`, and every field must be true of something a reader can
-see on the page.
+**Binding.** `BlogPosting`, `TechArticle`, `Article`, `BreadcrumbList`,
+`WebSite` and `SoftwareApplication`, and every field must be true of something
+a reader can see on the page. A learn article is an `Article`: not news, so
+not a `BlogPosting`, and not written for somebody who reads a `TechArticle`.
 
 Google's structured-data policy treats markup describing invisible content as
 spam, and it is also simply lying. So there is no `aggregateRating`, no
@@ -598,7 +602,74 @@ invented `wordCount`, and no author whose name is not in the byline.
 The JSON is emitted with `<` escaped, because a literal `</script>` inside a
 string ends the element early and turns the rest of the payload into markup.
 
-_Checked by:_ `tests/docs-features.test.ts`.
+_Checked by:_ `tests/docs-features.test.ts`, and `tests/learn.test.ts` for the
+`Article` and its author.
+
+### 5.14 A learn article says why, then how, then how in Simple Balance
+
+**Binding.** Every article under `content/learn/` explains why the job
+matters, how to do it with any tool, and, last, how to do it in Simple Balance.
+The headings carry it: a `##` beginning "Why", a later one beginning "How",
+and a final one ending "in Simple Balance".
+
+The order is the argument. A reader who arrives from a search for "what is a
+sinking fund" wants the answer, and an article that opens on the product is an
+advertisement they leave. One that never reaches the product is a detour this
+site paid for. Answering first and showing the product last is what makes the
+last section credible: by the time it says "Simple Balance does this with a
+budget that carries", the reader knows why they would want one.
+
+**Written for the reader 1.3 describes**, even though 1.3 binds only the
+homepage and pricing. These articles are found by the people least likely to
+know what a ledger is, so an accounting word is glossed where it first
+appears ("Accountants call it reconciling") rather than assumed.
+
+**Every product step is a button on the shipped screen.** The application's
+own `docs/how-to.md` says every button it names is the button on the screen,
+and the articles were checked against that file and against the client source
+at the release the snapshot names, not against memory or this site's docs. A
+label that is close is wrong: the report is **Categories**, not "spending by
+category", and the Transactions page searches and sorts but has no amount
+filter, which an early draft promised. Where the product falls short of what
+the method asks for, the article says so: no automatic detection of
+subscriptions, no market prices for a net worth, no 50/30/20 button, no
+automatic pull from a bank (1.4 applies here as it does on the homepage).
+
+**A screenshot says its money is made up, on the line under it**, because 5.5
+of `web.md` binds every page, and a Markdown page has nowhere else to say it.
+
+**Why these topics.** Twelve articles chosen in October 2026 from a read of
+what people search for and what consumer-education lists lead with,
+intersected with what the product can do. Search volumes were Google's US
+monthly figures as published on 24 October 2026, rounded, and are a ranking
+rather than a forecast: "how to make a budget" about 165,000, "50/30/20 rule"
+about 40,000, net worth questions about 18,000, "zero based budget" about
+15,000, "emergency fund" about 12,000, "sinking funds" about 8,000, "track
+expenses" about 8,000, "envelope budgeting" a few thousand, and balancing an
+account, subscriptions, credit cards and irregular income each in the low
+thousands. The CFPB's _Your Money, Your Goals_ toolkit and the
+r/personalfinance plan both start with tracking and a budget, which is why
+"Start here" holds those two.
+
+Left out on purpose, because the product cannot do them well and an article
+that ends "and Simple Balance can't help" is the detour above: investing and
+retirement accounts, credit scores, taxes, debt snowball against avalanche (a
+question about which debt to pay first, which nothing here answers), "best
+budgeting app" (its searchers want automatic bank sync), and money-saving tips
+(the product shows spending; it does not lower prices).
+
+Next, in rough order, when there is time to write them: how much to save each
+month, how to stop living paycheck to paycheck, a list of budget categories
+with examples, and budgeting without linking a bank account, which fits the
+product exactly and has to be written to 1.4 rather than around it.
+
+_Checked by:_ `tests/learn.test.ts`, for the three headings in order, the
+byline and date, every link to another article or a docs page resolving, and
+every screenshot existing in both themes, sized in the spelling the renderer
+keeps, with the disclosure under it. The
+register and whether each product step is still true are `human`, and
+`sync-from-app` §1's changelog read is where a release that moves a button is
+found.
 
 ## 6. Pricing and legal copy
 
@@ -851,9 +922,11 @@ a reworded description, a promotion from C to A, and a new feature.
 section is linked, whether its pages are indexed, and whether it enters the
 sitemap.
 
-Today `/docs` is announced and `/blog` is not. The documentation is linked from
-the header and the footer, indexed, and in the sitemap; the blog is built,
-styled and reachable by URL, and nothing points at it. The split is the shipped
+Today `/learn` and `/docs` are announced and `/blog` is not. The learn articles
+and the documentation are linked from the header and the footer, indexed, and
+in the sitemap; the blog is built, styled and reachable by URL, and nothing
+points at it. The learn articles lead the header because they are written for
+the reader the homepage is written for. The split is the shipped
 state and is deliberate on both sides: the blog's machinery is finished so that
 publishing the first post is writing a Markdown file rather than building a
 blog, and it stays unannounced because what goes in it has not been decided —

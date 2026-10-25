@@ -1,4 +1,4 @@
-import { docsBySection } from "@/content/collections";
+import { bySection } from "@/content/collections";
 import { section } from "@/content/sections";
 import { DocsSearch } from "@/components/client/docs-search";
 
@@ -17,7 +17,7 @@ const docs = section("docs");
  * JavaScript, no focus trap and no escape handler.
  */
 export function DocsSidebar({ current }: { readonly current?: string }) {
-  const groups = docsBySection();
+  const groups = bySection("docs");
 
   return (
     <div className="docs-nav-wrap">

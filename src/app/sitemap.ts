@@ -6,7 +6,7 @@ import {
   postsByAuthor,
   tagSlug,
 } from "@/content/collections";
-import { announcedSections } from "@/content/sections";
+import { announcedSections, type SectionKey } from "@/content/sections";
 import { authors } from "@/content/authors";
 import { site } from "@/content/home";
 
@@ -77,10 +77,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
  * listing it would ask a crawler to index a duplicate this site has explicitly
  * disclaimed. Pages two and up are their own content and are listed.
  *
- * Docs returns nothing: it has one index and a flat set of pages, and a
- * section that grows these later gets them by adding a case here.
+ * Docs and learn return nothing: each has one index and a flat set of pages,
+ * and a section that grows these later gets them by adding a case here.
  */
-function secondaryIndexes(key: "blog" | "docs"): readonly string[] {
+function secondaryIndexes(key: SectionKey): readonly string[] {
   if (key !== "blog") return [];
   const out: string[] = ["/blog/archive/"];
   for (const { tag } of blogTags()) out.push(`/blog/tags/${tagSlug(tag)}/`);

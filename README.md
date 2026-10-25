@@ -1,8 +1,8 @@
 # smpl.money
 
 The marketing site for [Simple Balance](https://github.com/thtmnisamnstr/simple-balance),
-a self-hosted double-entry ledger. The homepage, pricing and the documentation
-are announced; the blog is built and deliberately is not.
+a self-hosted double-entry ledger. The homepage, pricing, the learn articles
+and the documentation are announced; the blog is built and deliberately is not.
 
 ## Running it
 
@@ -70,11 +70,11 @@ and a contents list that tracks your position.
 
 The `write-content` skill in `.claude/skills/` is the procedure.
 
-## The docs are announced; the blog is not
+## The learn articles and the docs are announced; the blog is not
 
 One flag per section in `src/content/sections.ts` controls the link, the
-`noindex` and the sitemap together, and publishing is flipping it. The docs are
-flipped. The blog is built, styled and reachable, and nothing links to it,
+`noindex` and the sitemap together, and publishing is flipping it. The learn
+articles and the docs are flipped. The blog is built, styled and reachable, and nothing links to it,
 because an empty blog advertised in the header is worse than no blog.
 
 The header and footer links are _derived_ from that flag rather than listed
@@ -95,9 +95,9 @@ and it is the one mistake here that costs money silently.
 
 ## Pages
 
-`/` the homepage, `/pricing` the two plans and self-hosting, `/docs` the
-documentation, `/privacy` and `/terms`. `/blog` is built and announced
-nowhere.
+`/` the homepage, `/pricing` the two plans and self-hosting, `/learn` guides
+to everyday money jobs, `/docs` the documentation, `/privacy` and `/terms`.
+`/blog` is built and announced nowhere.
 
 ## Outstanding work
 

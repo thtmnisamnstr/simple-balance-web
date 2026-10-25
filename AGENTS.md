@@ -34,7 +34,9 @@ checked out here was a picture nobody could reproduce.
   the two repositories. `sync-from-app` §1 diffs its token values against the
   application's, and `--art-ink` is the one line that diff should report.
 - Copy lives in `src/content/`, not in markup, so it can be read by a test.
-- Long-form content is Markdown under `content/`, read at build time.
+- Long-form content is Markdown under `content/`, read at build time: the
+  blog, the docs, and the learn articles, which are guides to everyday money
+  jobs for a reader who has never kept track of their money.
 
 ## Non-negotiable invariants
 
@@ -60,7 +62,8 @@ Break one of these and the site is wrong rather than untidy.
 - **A color outside `brand.css` cannot re-theme.** A literal looks right in
   light mode and broken in dark, which is the mode nobody checks.
 - **`announced` decides three things at once** — the link, the `noindex`, and
-  the sitemap. `/docs` is announced; `/blog` is built and is not. The three
+  the sitemap. `/learn` and `/docs` are announced; `/blog` is built and is
+  not. The three
   reach their surfaces separately and all read the one flag in
   `src/content/sections.ts`: `primaryNav` and `footer.links` in
   `src/content/home.ts` spread `announcedSections()`, each route file picks
@@ -227,7 +230,16 @@ Break one of these and the site is wrong rather than untidy.
   can check that, because the application is a different repository. It is the
   rule that most needs a person.
 - **Screenshots are captured from a real running instance**, never mocked up,
-  and the page discloses that the ledger in them is seeded demo data.
+  and the page discloses that the ledger in them is seeded demo data. A
+  screenshot inside a learn article or a doc says so in the line right under
+  it, and names a file that exists in both themes — `tests/learn.test.ts`.
+- **A learn article says why, then how, then how in Simple Balance.** Each one
+  explains why the job matters, how to do it with any tool, and only last how
+  to do it in this product, which is what keeps the section from being an
+  advertisement or a detour. Every product step in it is a button on the
+  shipped application's screen, checked against the application's source at
+  the snapshot's release, because these are the pages most likely to be read
+  by somebody who then tries it. `docs/standards/content.md` 5.14.
 - **A client component is an island and earns its place.** Three exist, all
   under `src/components/client/`, each because the behavior is impossible on
   the server. The page must be correct before any of them hydrates.

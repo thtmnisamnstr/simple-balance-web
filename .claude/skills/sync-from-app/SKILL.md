@@ -548,11 +548,14 @@ kit screenshots.json | node -p "JSON.parse(require('fs').readFileSync(0)).screen
 ```
 
 Pull the ones the site uses into `public/screenshots/`. **The list comes from
-`src/content/home.ts`**, the `name` of every shot it renders, rather than
-being written out here:
+`src/content/home.ts` and the Markdown under `content/`**, the `name` of every
+shot either renders, rather than being written out here:
 
 ```sh
-shots() { grep -oE 'name: "[a-z-]+"' src/content/home.ts | cut -d'"' -f2 | sort -u; }
+shots() {
+  { grep -oE 'name: "[a-z-]+"' src/content/home.ts
+    grep -rhoE '^ *name="[a-z-]+"' content; } | cut -d'"' -f2 | sort -u
+}
 shots   # five today: budgets dashboard import reports transactions
 for name in $(shots); do
   for theme in light dark; do
@@ -564,7 +567,10 @@ done
 
 A hand-written list is how `payees` was left out of this loop while the page
 showed it, so a refresh would have updated five screens and left the sixth to
-go stale with nothing to notice. The pattern is lowercase on purpose, which
+go stale with nothing to notice. The learn articles show four of the five
+through `<Shot name="…">`, and a list read from the homepage alone would
+delete a picture an article still shows the day the homepage stopped using
+it; `tests/learn.test.ts` fails on that, but only after the deletion. The pattern is lowercase on purpose, which
 is what keeps the product's own `name: "Simple Balance"` out of it; a name
 that is not a screen in the kit fails `curl -f` loudly rather than being
 skipped. A file in `public/screenshots/` whose name `home.ts` no longer uses

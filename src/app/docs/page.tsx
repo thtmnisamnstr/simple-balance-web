@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { feedAlternates } from "@/lib/feed";
 import { openGraph } from "@/app/open-graph";
 import { site } from "@/content/home";
-import { docsBySection, isEmpty } from "@/content/collections";
+import { bySection, isEmpty, slugify } from "@/content/collections";
 import { section } from "@/content/sections";
 import { EmptyState } from "@/components/empty-state";
 import { DocsSidebar } from "@/components/docs-sidebar";
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 };
 
 export default function DocsIndex() {
-  const groups = docsBySection();
+  const groups = bySection("docs");
 
   return (
     <div className="section docs-layout page">
@@ -44,8 +44,8 @@ export default function DocsIndex() {
           <EmptyState title={docs.empty.title} body={docs.empty.body} />
         ) : (
           groups.map((group) => (
-            <section key={group.section} aria-labelledby={`g-${group.section}`}>
-              <h2 id={`g-${group.section}`} className="doc-group-title">
+            <section key={group.section} aria-labelledby={`g-${slugify(group.section)}`}>
+              <h2 id={`g-${slugify(group.section)}`} className="doc-group-title">
                 {group.section}
               </h2>
               <ul className="entry-list">

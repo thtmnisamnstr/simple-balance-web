@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { allEntries, docsBySection } from "@/content/collections";
+import { allEntries, bySection } from "@/content/collections";
 
 /** Search, breadcrumbs, the edit link, and the structured data, from the build. */
 
@@ -94,12 +94,14 @@ describe("a blog post", () => {
   });
 });
 
-describe("the docs grouping", () => {
+describe.each(["docs", "learn"] as const)("the %s grouping", (collection) => {
   it("puts every page in a section that _sections.json orders", () => {
     const order = (
-      JSON.parse(readFileSync("content/docs/_sections.json", "utf8")) as { order: string[] }
+      JSON.parse(readFileSync(`content/${collection}/_sections.json`, "utf8")) as {
+        order: string[];
+      }
     ).order;
-    for (const group of docsBySection()) {
+    for (const group of bySection(collection)) {
       expect(order, `"${group.section}" is not in _sections.json`).toContain(group.section);
     }
   });

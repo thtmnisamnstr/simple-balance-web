@@ -279,7 +279,16 @@ describe.skipIf(SKIPPED)("layout", () => {
    * homepage's sections, pricing, the blog and the docs — while the 404 alone
    * had a gap, from a flex column nothing else used.
    */
-  for (const path of ["/", "/pricing/", "/blog/", "/docs/", "/docs/backups/", "/404.html"]) {
+  for (const path of [
+    "/",
+    "/pricing/",
+    "/blog/",
+    "/docs/",
+    "/docs/backups/",
+    "/learn/",
+    "/learn/make-a-budget/",
+    "/404.html",
+  ]) {
     it(`leaves room between a title and the text under it: ${path}`, async () => {
       const gaps = await measure(path, () =>
         [

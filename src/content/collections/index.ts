@@ -4,7 +4,7 @@ import matter from "gray-matter";
 import { isAuthorKey, type AuthorKey } from "@/content/authors";
 
 /**
- * The content pipeline for `/blog` and `/docs`.
+ * The content pipeline for `/blog`, `/docs` and `/learn`.
  *
  * Both are Markdown on disk, read at build time and rendered by this site's
  * own layouts. No CMS and no docs framework, and that is a decision rather
@@ -25,7 +25,17 @@ import { isAuthorKey, type AuthorKey } from "@/content/authors";
  * exists because `generateStaticParams` named it.
  */
 
-export type Collection = "blog" | "docs";
+export type Collection = "blog" | "docs" | "learn";
+
+/**
+ * The collections ordered by hand into groups rather than by date.
+ *
+ * `/docs` and `/learn` share the ordering machinery and nothing else: a docs
+ * page is reference for somebody running the product, a learn article is a
+ * guide for somebody who has never kept track of their money, and each has
+ * its own `_sections.json` naming its own groups.
+ */
+export type Shelved = "docs" | "learn";
 
 /**
  * The frontmatter a file may carry.
@@ -41,12 +51,12 @@ type Frontmatter = {
   readonly title: string;
   readonly description: string;
 
-  /** Blog: required. Docs: ignored. A calendar day, not an instant. */
+  /** Blog and learn: required. Docs: ignored. A calendar day, not an instant. */
   readonly date?: string;
   /** When the content last changed materially. Shown on docs, and on posts that have one. */
   readonly updated?: string;
 
-  /** Blog. Keys into `src/content/authors.ts`; the first is the primary byline. */
+  /** Blog and learn. Keys into `src/content/authors.ts`; the first is the primary byline. */
   readonly authors?: readonly AuthorKey[];
   readonly tags?: readonly string[];
 
@@ -65,7 +75,7 @@ type Frontmatter = {
   readonly image?: string;
   readonly imageAlt?: string;
 
-  /** Docs. The sidebar group, and the position within it. */
+  /** Docs and learn. The group, and the position within it. */
   readonly section?: string;
   readonly order?: number;
 
@@ -153,6 +163,16 @@ function parse(collection: Collection, file: string): Entry {
   if (collection === "blog" && !date) {
     throw new Error(`${where} is missing "date" — a post without one cannot be ordered`);
   }
+  // A learn article is ordered by hand, so the date orders nothing. It is
+  // required anyway because it is what the byline and the article's
+  // structured data say it was published on, and an article about money
+  // with no date and no author is one a reader has no reason to trust.
+  if (collection === "learn" && !date) {
+    throw new Error(`${where} is missing "date" — the byline and its structured data need one`);
+  }
+  if (collection === "learn" && !(data.authors as unknown[] | undefined)?.length) {
+    throw new Error(`${where} names no author — a learn article carries a byline`);
+  }
 
   const authorKeys: AuthorKey[] = [];
   for (const raw of (data.authors ?? []) as unknown[]) {
@@ -215,19 +235,21 @@ export function allEntries(collection: Collection): readonly Entry[] {
       return byDate !== 0 ? byDate : a.slug.localeCompare(b.slug);
     });
   }
-  return entries.toSorted(compareDocs);
+  return entries.toSorted((a, b) => compareShelved(collection, a, b));
 }
 
 /**
- * Docs order: the section's position, then the page's `order`, then its title.
+ * Docs and learn order: the section's position, then the page's `order`, then
+ * its title.
  *
  * A page with no `order` sorts after every page that has one rather than
  * alphabetically among them, which is what makes adding `order: 2` to one
  * page do the obvious thing without renumbering its neighbors.
  */
-function compareDocs(a: Entry, b: Entry): number {
-  const bySection = sectionRank(a.frontmatter.section) - sectionRank(b.frontmatter.section);
-  if (bySection !== 0) return bySection;
+function compareShelved(collection: Shelved, a: Entry, b: Entry): number {
+  const byGroup =
+    sectionRank(collection, a.frontmatter.section) - sectionRank(collection, b.frontmatter.section);
+  if (byGroup !== 0) return byGroup;
   const byOrder =
     (a.frontmatter.order ?? Number.MAX_SAFE_INTEGER) -
     (b.frontmatter.order ?? Number.MAX_SAFE_INTEGER);
@@ -236,7 +258,7 @@ function compareDocs(a: Entry, b: Entry): number {
 }
 
 /**
- * Section order, from `content/docs/_sections.json`.
+ * Section order, from `content/<collection>/_sections.json`.
  *
  * Sidebar groups need an order that is not alphabetical — "Install" belongs
  * above "Reference" — and there is nowhere in a per-page frontmatter to say
@@ -244,20 +266,23 @@ function compareDocs(a: Entry, b: Entry): number {
  * disagree. One file names the order; a section missing from it sorts last,
  * so adding a group is not a two-file change.
  */
-let sectionOrderCache: readonly string[] | undefined;
-function sectionOrder(): readonly string[] {
-  if (sectionOrderCache) return sectionOrderCache;
+const sectionOrderCache = new Map<Shelved, readonly string[]>();
+function sectionOrder(collection: Shelved): readonly string[] {
+  const cached = sectionOrderCache.get(collection);
+  if (cached) return cached;
+  let order: readonly string[];
   try {
-    const raw = readFileSync(join(ROOT, "docs", "_sections.json"), "utf8");
-    sectionOrderCache = (JSON.parse(raw) as { order?: string[] }).order ?? [];
+    const raw = readFileSync(join(ROOT, collection, "_sections.json"), "utf8");
+    order = (JSON.parse(raw) as { order?: string[] }).order ?? [];
   } catch {
-    sectionOrderCache = [];
+    order = [];
   }
-  return sectionOrderCache;
+  sectionOrderCache.set(collection, order);
+  return order;
 }
 
-function sectionRank(name: string | undefined): number {
-  const index = sectionOrder().indexOf(name ?? "Guide");
+function sectionRank(collection: Shelved, name: string | undefined): number {
+  const index = sectionOrder(collection).indexOf(name ?? "Guide");
   return index === -1 ? Number.MAX_SAFE_INTEGER : index;
 }
 
@@ -265,10 +290,12 @@ export function entryBySlug(collection: Collection, slug: string): Entry | undef
   return allEntries(collection).find((entry) => entry.slug === slug);
 }
 
-/** Docs grouped for the sidebar, in the order `_sections.json` gives. */
-export function docsBySection(): readonly { section: string; entries: readonly Entry[] }[] {
+/** Docs or learn grouped for the sidebar and the index, in the order `_sections.json` gives. */
+export function bySection(
+  collection: Shelved,
+): readonly { section: string; entries: readonly Entry[] }[] {
   const groups = new Map<string, Entry[]>();
-  for (const entry of allEntries("docs")) {
+  for (const entry of allEntries(collection)) {
     const name = entry.frontmatter.section ?? "Guide";
     const bucket = groups.get(name);
     if (bucket) bucket.push(entry);
@@ -278,11 +305,14 @@ export function docsBySection(): readonly { section: string; entries: readonly E
 }
 
 /** The page before and after this one, in sidebar order. */
-export function docsNeighbors(slug: string): {
+export function neighbors(
+  collection: Shelved,
+  slug: string,
+): {
   previous: Entry | undefined;
   next: Entry | undefined;
 } {
-  const all = allEntries("docs");
+  const all = allEntries(collection);
   const index = all.findIndex((entry) => entry.slug === slug);
   if (index === -1) return { previous: undefined, next: undefined };
   return { previous: all[index - 1], next: all[index + 1] };

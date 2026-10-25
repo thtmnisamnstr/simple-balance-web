@@ -486,6 +486,14 @@ banned-words test could not see.
 
 ### Fixed
 
+- The writing guide's example for putting a screenshot in a docs page or an
+  article would have shipped it without its size, so the page jumped as it
+  loaded. Nothing had used it yet. The guide shows the spelling that works
+  now, and a check refuses the other.
+- The "Using it" group on the documentation index had no name for a screen
+  reader. Its label pointed at an id with a space in it, which reads as two
+  ids that don't exist. It's named properly now.
+
 **Pulling a release now reads what the release changed, not only its
 product kit.** The kit carries prices, plans, the feature list and the
 pictures. 0.2.1 moved none of them except the pictures and still left this
@@ -1053,6 +1061,24 @@ list the sixth.
 devDependency now.
 
 ### Added
+
+**A Learn section, at /learn.** Twelve plain guides to the everyday jobs of
+looking after money: tracking your spending, making a budget, the 50/30/20
+rule, zero-based and envelope budgeting, sinking funds, budgeting on
+irregular pay, balancing a checking account, budgeting with a credit card,
+finding your subscriptions, net worth, and how big an emergency fund should
+be. Each one says why the job matters, how to do it with any tool, and then
+how to do it in Simple Balance, using the buttons as they're named on the
+screen. The topics were picked from what people search for and what the
+product can genuinely help with; the ones it can't, like investing and credit
+scores, were left out on purpose.
+
+- "Learn" is the first link in the header and the footer, and the articles are
+  in the sitemap for search engines.
+- Every article ends with a short box saying the free plan does everything
+  the guides describe, with the sign-up and pricing links.
+- Four articles show a screenshot of the real product, each with a line saying
+  the money in it is made up.
 
 **The documentation is announced.** `/docs` is in the header and the footer,
 its eight pages no longer send `noindex`, and they're in the sitemap with a

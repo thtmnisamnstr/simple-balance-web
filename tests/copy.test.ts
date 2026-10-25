@@ -6,6 +6,7 @@ import * as pricingContent from "@/content/pricing";
 import * as legalContent from "@/content/legal";
 import * as notFoundContent from "@/content/not-found";
 import * as sectionsContent from "@/content/sections";
+import * as learnContent from "@/content/learn";
 import { formatDate } from "@/lib/format";
 import { openGraph } from "@/app/open-graph";
 import NotFound, { metadata as notFoundMetadata } from "@/app/not-found";
@@ -390,7 +391,8 @@ describe("the reader is American", () => {
 
   /**
    * Every string a reader sees: the two marketing pages, the legal pages, the
-   * 404, and the blog's and docs' own headings and empty states.
+   * 404, the sections' own headings and empty states, and the box closing
+   * every learn article.
    */
   const readerFacing = [
     ...strings(content),
@@ -398,6 +400,7 @@ describe("the reader is American", () => {
     ...strings(legalContent, "legal"),
     ...strings(notFoundContent, "not-found"),
     ...strings(sectionsContent, "sections"),
+    ...strings(learnContent, "learn"),
   ];
 
   function inCopy(pattern: RegExp): readonly string[] {
