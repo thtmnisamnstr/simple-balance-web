@@ -1,61 +1,69 @@
 ---
 title: What are sinking funds?
-description: Car insurance in June, the holidays in December. The bills you can see coming still break a budget. A sinking fund saves for each one a little at a time.
+description: A sinking fund is money you set aside a little each month for a bill you know is coming, like car insurance in June or gifts in December.
 date: 2026-10-24
-authors: [gavin]
+updated: 2026-10-25
 section: Budgeting
-order: 4
+order: 3
 ---
 
-A sinking fund is money you set aside every month for a bill you know is
-coming but don't pay every month. Instead of finding $600 for car insurance
-in June, you put away $100 a month from January.
+A sinking fund is money you set aside each month for a bill you know is coming
+but don't pay every month. Instead of finding $600 for car insurance in June,
+you put away $100 a month starting in January.
 
 ## What it is
 
-The term comes from business, where a sinking fund is money a company puts
-aside to pay off a debt by a set date. In a household budget it means the same
-shape of thing: **a known amount, needed by a known date, saved in equal
-pieces**.
+The name comes from business. When a company borrows money by selling bonds, a
+sinking fund is how it pays them back a little at a time instead of all at
+once. [FINRA explains bonds](https://www.finra.org/investors/investing/investment-products/bonds)
+if you're curious. In a household budget, a sinking fund is the same idea:
+**a known amount, needed by a known date, saved in equal pieces**.
 
-It's different from an emergency fund. An emergency fund is for things you
-can't predict, like losing a job or a car accident. A sinking fund is for
-things you can: the holidays happen every December.
+<Diagram name="sinking-funds-car-insurance" />
 
-Common ones:
+It's different from an [emergency fund](/learn/emergency-fund/). An emergency
+fund covers things you can't predict, like losing a job or getting in a car
+accident. A sinking fund covers things you can. The holidays come every
+December.
 
-- Car insurance, registration and maintenance
-- Holidays and birthdays
+Common sinking funds include:
+
+- Car insurance, registration and upkeep
+- Holiday and birthday gifts
 - A vacation
-- Annual subscriptions and memberships
+- Yearly subscriptions and memberships
 - Back-to-school costs
-- Medical costs up to your insurance deductible
-- Replacing a phone or a laptop
+- Medical bills up to your insurance deductible
+- A new phone or laptop
 - Vet bills
 
 ## Why it matters
 
-**Irregular bills are what break budgets.** A monthly budget looks fine for
-eleven months and then the car insurance arrives. Without a sinking fund that
-bill goes on a credit card, and the budget is behind before the next month
-starts.
+Bills that don't come every month are easy to forget. A monthly budget can look
+fine for eleven months, and then the car insurance bill shows up. Without a
+sinking fund, that bill often goes on a credit card, and you start the next
+month behind.
 
-**Small amounts are easier than big ones.** $75 a month is a line in a budget.
-$900 in December is a crisis.
+Small amounts are easier to handle than big ones. Setting aside $75 a month is
+one more line in your budget. Finding $900 in December is a scramble.
 
-**Spending it isn't a failure.** When the bill comes and the money's there,
-paying it is the plan working, not the budget breaking.
+And when the bill comes, you're ready. Paying it from money you saved for it
+means your plan worked.
 
 ## How to do it
 
 ### 1. List the bills for the next twelve months
 
-Go through last year's statements for anything that came once or twice:
-insurance, renewals, gifts, trips. It's usually a longer list than you expect.
+Look through last year's statements for anything you paid once or twice:
+insurance, renewals, gifts, trips. The list may be longer than you expect.
 
 ### 2. Work out the monthly amount
 
-Divide each amount by the months until it's due.
+Divide each bill by the number of months until it's due. For bills that come
+once a year, [Utah State University Extension](https://extension.usu.edu/finance/faq/budget-for-non-monthly-expenses)
+and Oregon's
+[Division of Financial Regulation](https://dfr.oregon.gov/financial/manage/pages/budget.aspx)
+suggest the same thing: divide by 12 and set that much aside every month.
 
 | Bill          | Amount | Due in    | Each month |
 | ------------- | ------ | --------- | ---------- |
@@ -63,45 +71,84 @@ Divide each amount by the months until it's due.
 | Holidays      | $900   | 10 months | $90        |
 | Vet checkup   | $240   | 12 months | $20        |
 
-A fund you start late costs more each month, which is the argument for
-starting all of them now.
+<Diagram name="sinking-funds-pieces" />
+
+The later you start a fund, the more you have to save each month. That's a
+good reason to start all of them now.
 
 ### 3. Set the money aside
 
-Either move it into a separate savings account, or keep it in checking and
-keep a list of how much of the balance belongs to each fund. Both work. What
-matters is that the money isn't counted as available to spend.
+You can move it into a separate savings account. Or you can leave it in
+checking and keep a list of how much belongs to each fund. Either way works,
+as long as you don't count that money as free to spend.
 
 ### 4. Pay the bill from the fund
 
-When the bill arrives, the money's waiting. Pay it, and start the fund again
-for next time.
+When the bill comes, the money is waiting. Pay it, then start saving again for
+next time.
 
 ## How to do it in Simple Balance
 
-A budget in Simple Balance can save toward a date by itself.
+A budget in Simple Balance can save toward a date on its own.
 
-**Set the goal.** On **Budgets**, under **Set a budget**, choose the category
-the bill will be paid from, such as Car insurance. Fill **Saving up for** with
-the amount and **Needed by** with the date.
+### Set the goal
 
-**There's no amount to type.** Each month the budget works out what's still
-needed, divided by the months left before the date. It adjusts as the fund
-fills and stops asking once it's full. **Carry what is left over into the
-next month** is turned on for you, because a fund that didn't keep what it
-saved wouldn't be saving.
+On [**Budgets**](/docs/budgets/), under **Set a budget**, choose the category
+you'll pay the bill from, like Car insurance. Type the bill's amount in **Saving
+up for**. A **Needed by** box then appears: type the due date there, not in
+**Ends after**.
 
-**Pay the bill in the same category.** When the insurance comes due, record it
-in the Car insurance category. The money the budget set aside covers it, the
-way the envelope would.
+<Shot
+  name="budgets"
+  alt="The budgets screen: a form for setting one, with fields for the category, the amount and how it's decided, the currency, a start date and an optional end date, an optional savings goal and which budget gets funded first, and a checkbox for carrying what's left into next month. Below it, the list of standing budgets begins with $200 a month for dining out."
+  width="1600"
+  height="1000"
+/>
 
-**Know where the money sits.** The fund is money in your accounts that's been
-claimed for a job. The **Budgets** page shows what's **left to assign** after
-every fund and envelope has taken its share, which is the honest answer to
-"how much can I spend?". If you keep the savings in a separate account, leave
-**The budget is about the money in this account** on for that account so the
-fund's money is still counted.
+_The money in this picture is made up. It's the real product, filled with
+example spending._
 
-**One fund per bill.** A fund belongs to the category it's saving for, so the
-holidays, the insurance and the vacation each get their own budget and each
-works out its own monthly amount.
+### Let it work out the amount
+
+You don't type a monthly amount. Each month, the budget figures out what's still
+needed and divides it by the months left before the due date. The amount changes
+as the fund fills up, and it stops asking once the fund is full. **Carry what is
+left over into the next month** is turned on for you, since a fund has to keep
+what it saves.
+[Saving goals, automatic amounts and the forecast](/docs/planning-ahead/#how-much-each-month-asks-for)
+in the docs shows exactly how each month's amount is worked out.
+
+### Pay the bill from the same category
+
+When the insurance bill comes, record it in the Car insurance category. The
+money the budget set aside covers it.
+
+### Know where the money is
+
+A fund is money in your accounts that's set aside for one job. The **Budgets**
+page shows what's **left to assign** after every fund and envelope has taken
+its share, which tells you how much is really free to spend. If you keep the
+fund in a separate savings account, leave **The budget is about the money in
+this account** turned on for that account, so its money still counts.
+
+<Shot
+  name="transactions"
+  alt="A list of transactions, newest first, each with who it was with, which account it was in, its category and its amount, all in dollars. Most are spending on groceries, a lunch, cinema tickets and a transit pass. One is a $750 freelance payment coming in, and one is $600 moved from checking to savings, which shows both accounts and no category."
+  width="1600"
+  height="1000"
+/>
+
+_The money in this picture is made up. It's the real product, filled with
+example spending._
+
+### One fund for each bill
+
+Each fund belongs to the category it's saving for. Holiday gifts, insurance and
+a vacation each get their own budget, and each works out its own monthly
+amount.
+
+## Sources
+
+- FINRA. [Bonds](https://www.finra.org/investors/investing/investment-products/bonds).
+- Melanie Dabb, Utah State University Extension. [How do I budget for non-monthly expenses?](https://extension.usu.edu/finance/faq/budget-for-non-monthly-expenses). October 13, 2020.
+- Oregon Division of Financial Regulation. [Creating a personal budget](https://dfr.oregon.gov/financial/manage/pages/budget.aspx).

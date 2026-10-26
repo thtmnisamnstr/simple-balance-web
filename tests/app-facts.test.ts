@@ -11,7 +11,8 @@ import {
   pricingMeta,
   tiers,
 } from "@/content/pricing";
-import { site } from "@/content/home";
+import { plans, site } from "@/content/home";
+import { learnCta } from "@/content/learn";
 import { terms } from "@/content/legal";
 
 /**
@@ -101,6 +102,21 @@ describe("what this site claims about plans", () => {
     expect(ads?.free).toBe("Yes");
     expect(ads?.premium).toBe("None");
   });
+
+  it("says the free plan's limit wherever it says the free plan does everything", () => {
+    // The learn guides' closing box, on every guide, said it with no limit,
+    // under a net worth guide that asks for every account. In words, as the
+    // homepage writes it, so the number is held to the snapshot here.
+    expect(free.accountLimit).toBe(3);
+    const limit = "for three accounts you can use at once";
+    for (const [where, text] of [
+      ["the learn guides' closing box", learnCta.body],
+      ["the homepage's plans panel", plans.body],
+      ["the pricing page's lede", pricing.lede],
+    ] as const) {
+      expect(text, where).toContain(limit);
+    }
+  });
 });
 
 /**
@@ -159,13 +175,14 @@ describe("what this site claims about price", () => {
 
   /*
    * The card above is one place a price is written. The rest are prose: the
-   * note under the cards, a FAQ question, the search snippet and link
-   * preview, the terms, and the picture a shared link shows, whose price is a
-   * literal in the script that draws it. This test used to be called "agrees
-   * with the terms page", never imported the terms, and checked no figure at
-   * all, so when the price moved from $2 and $20 the card was the only place
-   * checked against the application, and a literal in `tests/legal.test.tsx`
-   * held the terms to whatever it had been told rather than to the contract.
+   * note under the cards, a FAQ question, the search result's title and
+   * snippet and the link preview's, the terms, and the picture a shared link
+   * shows, whose price is a literal in the script that draws it. This test
+   * used to be called "agrees with the terms page", never imported the
+   * terms, and checked no figure at all, so when the price moved from $2 and
+   * $20 the card was the only place checked against the application, and a
+   * literal in `tests/legal.test.tsx` held the terms to whatever it had been
+   * told rather than to the contract.
    *
    * So every dollar figure in all of them has to be a price the application
    * declares, or $0 for the plan that costs nothing. A stale number anywhere
@@ -179,8 +196,11 @@ describe("what this site claims about price", () => {
       [`faq[${index}].q`, item.q] as const,
       [`faq[${index}].a`, item.a] as const,
     ]),
-    ["pricingMeta.description", pricingMeta.description],
-    ["pricingMeta.socialDescription", pricingMeta.socialDescription],
+    // Every string in the object rather than the two descriptions by name:
+    // the title carries the yearly price, in the one line a result listing
+    // shows, and naming fields left it out while `src/content/pricing.ts`
+    // said this swept them all.
+    ...Object.entries(pricingMeta).map(([key, text]) => [`pricingMeta.${key}`, text] as const),
     ["terms", termsText],
     ["social card (scripts/build-images.mjs)", socialCard],
   ];
@@ -340,7 +360,8 @@ describe("the FAQ", () => {
    */
   it("tells somebody moving to their own copy what the files will not do for them", () => {
     /*
-     * The procedure moved to `content/docs/moving-to-your-own-copy.md`, so
+     * The procedure moved to `content/docs/moving-between-cloud-and-self-hosted.md`
+     * (it was `moving-to-your-own-copy.md` until it covered both directions), so
      * this reads the guide rather than the FAQ answer. A pricing page settles
      * whether somebody is locked in; it does not teach a data migration
      * before they have signed up. What must not move is this check: the four
@@ -354,9 +375,9 @@ describe("the FAQ", () => {
     const move = faq.find((f) => f.q.toLowerCase().includes("own copy"));
     expect(move, "the FAQ answers the question about moving").toBeDefined();
     expect(move!.a.toLowerCase(), "the FAQ points at the guide").toContain(
-      "moving to your own copy",
+      "moving between the cloud app and your own copy",
     );
-    const guide = join(process.cwd(), "content/docs/moving-to-your-own-copy.md");
+    const guide = join(process.cwd(), "content/docs/moving-between-cloud-and-self-hosted.md");
     expect(existsSync(guide), `${guide} is missing; the FAQ points at it`).toBe(true);
     const answer = readFileSync(guide, "utf8").toLowerCase();
     expect(answer, "each account is made with the same starting balance").toMatch(
@@ -381,10 +402,12 @@ describe("the FAQ", () => {
  * The release the deploy programs pin, wherever a page names it.
  *
  * `content.md` 2.6. The application's Pulumi programs and Compose file pin the
- * image of the release they ship in, and two pages here say which that is:
- * Getting started, to somebody about to run `pulumi up`, and the AdSense
- * procedure, to the operator reading `docker ps` before an ad setting goes on.
- * Both went on naming 0.2.0 after 0.2.1 was pulled, because no kit file
+ * image of the release they ship in, and the two deployment guides say which
+ * that is, to somebody about to run `pulumi up` or start Compose, and clone
+ * the release by its tag, which is the same claim in a command. The AdSense
+ * procedure said it too, to the operator reading `docker ps`, until the site's
+ * ads went; it is still read, so a release named there again is held. Getting
+ * started and that procedure went on naming 0.2.0 after 0.2.1 was pulled, because no kit file
  * carries a sentence and every other check passed. The snapshot's version is
  * the one fact the pull moves for certain, so it is what these are held to.
  *
@@ -396,6 +419,7 @@ describe("the release this site says the deploy programs pin", () => {
   const CURRENT = [
     /\bpinned release image, which is (\d+\.\d+\.\d+)\b/g,
     /\bmust name the (\d+\.\d+\.\d+) image\b/g,
+    /--branch v(\d+\.\d+\.\d+)\b/g,
   ];
   const pages = [
     ...readdirSync("content/docs")
@@ -411,8 +435,10 @@ describe("the release this site says the deploy programs pin", () => {
   });
 
   it("finds the sentences, so a rewording cannot silence it", () => {
-    // Getting started once and the AdSense procedure twice.
-    expect(named.length, "no page names the pinned release any more").toBeGreaterThanOrEqual(3);
+    // Each deployment guide twice, its sentence and its clone. The AdSense
+    // procedure named the release twice until the site's ads went and it was
+    // cut down to `ads.txt`.
+    expect(named.length, "no page names the pinned release any more").toBeGreaterThanOrEqual(4);
   });
 
   it("is the release the snapshot was taken from", () => {

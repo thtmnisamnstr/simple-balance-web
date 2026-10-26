@@ -1,109 +1,132 @@
 ---
 title: How to make a budget
-description: A budget is a plan for your money, made before the month starts. Here's how to make your first one from real numbers, and how to keep it going past March.
+description: Start from what you take home, list your fixed bills, and set a number for each category from what you really spent. Then check your budget every week.
 date: 2026-10-24
-authors: [gavin]
+updated: 2026-10-26
 section: Start here
-order: 2
+order: 3
 ---
 
 A budget is a plan for what your money will do this month, made before the
-month happens to you. It isn't a punishment and it isn't a spreadsheet you
-fill in once. It's a short list of numbers you check against what really
-happened, and change when they turn out to be wrong.
+month starts. You write down a few numbers, check them against what really
+happens, and fix the ones that turn out wrong. It doesn't have to be strict,
+and you don't fill it in once and forget it.
 
 ## Why it matters
 
-**You decide once, instead of at every checkout.** Without a plan, every
-purchase is a fresh decision made in the moment, usually by the version of you
-that's tired or hungry. A budget moves the decision to a calmer time.
+With a budget, you decide once instead of at every checkout. Without one,
+each purchase is a new choice made on the spot, often when you're tired or
+hungry. A budget lets you make those choices ahead of time, when you're calm.
 
-**It makes the trade-offs visible.** Money spent on one thing can't be spent on
-another. A budget puts that in front of you as numbers: $100 more for eating
-out means $100 less somewhere else, and you get to choose where.
+It also shows you the trade-offs. Money spent on one thing can't be spent on
+something else. If you want $100 more for eating out, it has to come from
+somewhere, and a budget lets you pick where.
 
-**It catches problems early.** Finding out in the second week that groceries
-are running hot leaves time to adjust. Finding out when the card bill arrives
-doesn't.
+You catch problems early, too. If you notice in the second week that groceries
+are running high, you still have time to adjust. If you only find out when the
+card bill comes, the month is already over.
 
-**Saving stops being whatever's left.** If saving is a line in the budget, it
-happens. If it's what remains at the end of the month, there's usually nothing
-left.
+And saving stops being whatever's left over. When saving is a line in your
+budget, it happens. When it's whatever remains at the end of the month, there's
+often nothing left.
 
 ## How to do it
 
+These steps cover the same ground as the Consumer Financial Protection
+Bureau's
+[guide to making a budget](https://www.consumerfinance.gov/archive/blog/budgeting-how-to-create-a-budget-and-stick-with-it/):
+what comes in, what goes out, and when your bills are due. Its
+[budget worksheet](https://files.consumerfinance.gov/f/documents/cfpb_well-being_monthly-budget.pdf)
+is a handy place to write it all down.
+
 ### 1. Start from what you take home
 
-Use the amount that actually lands in your account after tax and anything
-your employer takes out, not your salary. If your pay changes from month to
-month, start from a low month rather than an average one.
+Use the amount that lands in your account after taxes and anything else your
+employer takes out, not your salary. If your pay changes from month to month,
+plan around a low month instead of an average one.
 [How to budget with irregular income](/learn/budget-with-irregular-income/)
-covers that case.
+covers that in more detail.
 
 ### 2. Write down the fixed bills
 
-Rent or mortgage, utilities, insurance, your phone, minimum payments on any
-debt, and the subscriptions you're keeping. These are the same, or nearly the
-same, every month.
+These are the bills that stay about the same every month: rent or mortgage,
+utilities, insurance, your phone, the minimum payment on any debt, and the
+subscriptions you're keeping.
 
-### 3. Look at what the flexible things really cost
+### 3. Look at what everything else really costs
 
-Groceries, eating out, gas, shopping, fun. Don't guess: use the last two or
-three months of statements, which is what
+Groceries, eating out, gas, shopping and fun change from month to month. Don't
+guess at them. Use the last two or three months of statements, which is what
 [tracking your spending](/learn/track-your-spending/) gives you. A budget
-built on a guess is the one people give up on, because reality breaks it in
-the first week.
+built on guesses tends to fall apart in the first week.
 
 ### 4. Set a number for each category
 
-Start each one at roughly what you actually spend. Then change a few on
-purpose, the ones you want to bring down or the goals you want to fund. Moving
-three numbers is a plan; moving fifteen at once is a wish.
+Start each one at about what you spend now. Then change a few on purpose: the
+ones you want to bring down, and any goals you want to save for. It's easier
+to stick with two or three changes than with fifteen.
 
 ### 5. Plan for the months that aren't typical
 
-Car insurance twice a year, holidays, birthdays, a new set of tires. They're
-easy to leave out because they don't happen this month, and they're the most
-common reason a budget breaks. Set a little aside for each every month; that's
-what [sinking funds](/learn/sinking-funds/) are.
+Car insurance twice a year, holidays, birthdays, new tires. These are easy to
+leave out because they don't happen every month, and then they show up all at
+once. [Utah State University Extension](https://extension.usu.edu/finance/faq/budget-for-non-monthly-expenses)
+suggests adding up a year of these bills, dividing by 12, and setting that
+much aside each month. That's what [sinking funds](/learn/sinking-funds/) are
+for.
 
 ### 6. Check in every week
 
-Ten minutes a week is enough. Look at what's been spent so far against each
-number. When a category runs over, either take the difference from another
-one or accept the overspend and move on. **Adjust the numbers, not your
-honesty.** A budget only works if the spending it's compared against is the
-real spending.
+Ten minutes a week is enough. Compare what you've spent so far with each
+number. When a category runs over, take the difference from another category,
+or accept it and move on. Change the numbers when you need to, but keep the
+spending you record honest. A budget only works if it's checked against what
+you really spent.
 
-### 7. Expect the first three months to be wrong
+<Diagram name="make-a-budget-move" />
 
-Your first budget is a guess with better information. By the third month the
-numbers have been corrected by what really happened, and that's when it starts
-to feel like it's working.
+### 7. Expect the first few months to be off
+
+Your first budget is still partly a guess. By the third month, real spending
+has corrected most of the numbers, and the budget starts to feel like it fits.
 
 <Callout kind="tip" title="Pick a method later, if at all">
-There are named systems for budgeting:
-[the 50/30/20 rule](/learn/50-30-20-rule/),
+There are named ways to budget, such as
 [zero-based budgeting](/learn/zero-based-budgeting/) and
-[envelopes](/learn/envelope-budgeting/). Each is a different answer to how
-strict to be. You don't need one to start; a number per category is already
-a budget.
+[envelopes](/learn/envelope-budgeting/). Each one is a different answer to how
+strict to be. You don't need one to start. A number for each category is
+already a budget.
 </Callout>
 
 ## How to do it in Simple Balance
 
-In Simple Balance a budget compares what you planned for a category with what
-your transactions say you spent. Nothing about a budget changes your balances,
-so deleting one changes no balance and no report.
+In Simple Balance, a budget compares what you planned to spend in a category
+with what you actually spent. A budget never changes your balances, so
+deleting one changes nothing else.
 
-**Get some real spending in first.** Import a month or two of statements, or
-enter them, so you're budgeting from numbers rather than guesses.
-[How to track your spending](/learn/track-your-spending/) walks through it.
+### Start with real spending
 
-**Set a budget.** Open **Budgets**. Under **Set a budget**, choose a category,
+Bring in a month or two of statements first, or type them in, so your budget
+starts from real numbers. [How to track your spending](/learn/track-your-spending/)
+shows how. Then [**Overview**](/docs/the-overview/) shows your spending by
+category, so you can see what each one really costs.
+
+<Shot
+  name="dashboard"
+  alt="The Simple Balance overview for one month: a dollar total with balance, deposits, withdrawals and net cash flow across the top, then a checking account, a savings account and a credit card with their balances, beside spending by category as bars from rent down to subscriptions."
+  width="1600"
+  height="1000"
+/>
+
+_The money in this picture is made up. It's the real product, filled with
+example spending._
+
+### Set a budget
+
+Open [**Budgets**](/docs/budgets/). Under **Set a budget**, choose a category,
 type the monthly amount, pick the date it starts, and press **Set budget**.
-One budget covers every month from that date until you end it, so there's
-nothing to set again next month.
+That one budget covers every month from then on until you end it, so there's
+nothing to set up again next month.
 
 <Shot
   name="budgets"
@@ -115,22 +138,38 @@ nothing to set again next month.
 _The money in this picture is made up. It's the real product, filled with
 example spending._
 
-**Read the row.** **Budget** is the limit, **Spent** is what your
-transactions add up to, and **Remaining** is the difference. A refund lowers
-**Spent**, because it's spending undone. A month still running is marked **So
-far**, since being under budget halfway through a month isn't the same as
-finishing under it.
+### Read your budget
 
-**Let one month be different.** December's grocery bill isn't November's.
-Press the calendar button at the end of a budget's row to set an amount for
-that month alone, and clear it to go back to the usual one.
+Each budget gets a row. **Budget** is your limit, **Spent** is what you've
+spent, and **Remaining** is the difference. A refund lowers **Spent**, since
+it gives back money you'd spent. A month that isn't over yet is marked **So
+far**, because being under budget halfway through the month doesn't mean
+you'll finish under.
 
-**See where the rest went.** Spending in categories you haven't budgeted is
-shown too, because the question a budget raises is where everything else went.
-A category you budgeted and didn't spend on still shows, at zero.
+<Diagram name="make-a-budget-row" />
 
-**A starter recipe.** Set budgets on your five biggest spending categories at
-roughly what they cost. Check **Carry what is left over into the next month**
-on the two you most want to control, so what you don't spend stays put. Add a
-savings goal for the next big bill you know is coming. Then come back once a
-week. [Budgets](/docs/budgets/) in the documentation has the details.
+Spending in categories you haven't budgeted shows up too, so you can see where
+the rest of your money went. A category you budgeted but didn't spend anything
+in still shows, at zero.
+
+### Let one month be different
+
+December's grocery bill isn't the same as November's. Press the calendar
+button at the end of a budget's row to set an amount for just that month.
+Clear it later to go back to the usual amount.
+
+### A simple first month
+
+Set budgets on your five biggest spending categories at about what they cost
+now. On the two you most want to control, check **Carry what is left over into
+the next month**, so money you don't spend stays put for later. For the next
+big bill you know is coming, set a budget and fill in **Saving up for** and
+**Needed by**. Then
+come back once a week. The [Budgets](/docs/budgets/) page in the
+documentation has more detail.
+
+## Sources
+
+- Courtney-Rose Dantus, Consumer Financial Protection Bureau. [Budgeting: How to create a budget and stick with it](https://www.consumerfinance.gov/archive/blog/budgeting-how-to-create-a-budget-and-stick-with-it/). June 5, 2019.
+- Consumer Financial Protection Bureau. [Monthly budget worksheet](https://files.consumerfinance.gov/f/documents/cfpb_well-being_monthly-budget.pdf).
+- Melanie Dabb, Utah State University Extension. [How do I budget for non-monthly expenses?](https://extension.usu.edu/finance/faq/budget-for-non-monthly-expenses). October 13, 2020.

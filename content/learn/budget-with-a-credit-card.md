@@ -1,94 +1,120 @@
 ---
 title: How to budget with a credit card
-description: A card purchase is spending the day you make it, even though the money leaves later. How to budget so the bill is never a surprise, and why paying it in full matters.
+description: A card purchase is spending the day you make it, though the money leaves later. How to budget so the bill is never a surprise, and why to pay it in full.
 date: 2026-10-24
-authors: [gavin]
+updated: 2026-10-25
 section: Keeping it accurate
 order: 2
 ---
 
-A credit card splits one event into two. You buy groceries on the 3rd, and the
-money leaves your checking account weeks later when you pay the bill. Budgeting
-with a card means deciding which of those two moments is the spending. The
-answer is the first one.
+A credit card turns one purchase into two moments. You buy groceries on the
+3rd, and the money leaves your checking account weeks later when you pay the
+bill. To budget with a card, count the spending at the first moment, the day
+you buy something.
 
 ## Why it matters
 
-**Card spending doesn't feel like spending.** Nothing leaves your account at
-the register, so it's easy to spend money you've already spent once this
-month.
+Card spending doesn't feel like spending. Nothing leaves your bank account at
+the register, so it's easy to spend the same money twice in one month.
 
-**The bill arrives after the month is over.** By the time you see the total,
-it's too late to adjust the month it came from.
+The bill shows up after the month is over. By the time you see the total, it's
+too late to change how you spent that month.
 
-**Carrying a balance is expensive.** Interest on a card balance is usually
-much higher than on other borrowing. Paying the statement balance in full by
-the due date normally means you pay no interest on purchases at all.
+Carrying a balance is expensive. In August 2026, card accounts that were
+charged interest paid about 22% a year on average, according to the
+[Federal Reserve](https://www.federalreserve.gov/releases/g19/20261007/). A two-year personal loan averaged about 12%, and a
+five-year new car loan about 7.5%. If you pay your full statement balance by
+the due date, you usually
+[pay no interest on purchases at all](https://www.consumerfinance.gov/ask-cfpb/what-is-a-grace-period-for-a-credit-card-en-47/).
 
-**It's easy to count the same groceries twice.** If you count the purchase
+<Diagram name="budget-with-a-credit-card-interest" />
+
+It's also easy to count the same groceries twice. If you count the purchase
 and then the card payment as spending, every total you look at is too high.
 
-## A few words on the bill
+## Three numbers on your bill
 
-Card statements use three numbers that sound alike:
+Card statements show three numbers that sound alike:
 
 - **Statement balance**: what you owed on the day the statement closed.
-- **Current balance**: what you owe today, including everything since the
-  statement closed.
-- **Minimum payment**: the least you can pay without a late fee. Paying only
-  this means interest on the rest.
+- **Current balance**: what you owe today, including anything you've bought
+  since the statement closed.
+- **Minimum payment**: the least you can pay without a late fee. If you only
+  pay this, you'll be charged interest on the rest.
 
-Paying the **statement balance** in full by the due date is what keeps the
-interest-free period that most cards give on purchases. That period isn't
-required by law and usually doesn't cover cash advances, so
-[the Consumer Financial Protection Bureau's guide](https://www.consumerfinance.gov/consumer-tools/credit-cards/answers/key-terms/)
-is worth a read for your card's details.
+Paying the **statement balance** in full by the due date keeps your grace
+period. That's the time between the end of the billing cycle and the due date,
+when many cards charge no interest on purchases. Card companies
+[don't have to offer one](https://www.consumerfinance.gov/consumer-tools/credit-cards/answers/key-terms/), though, and it usually doesn't cover cash
+advances. The Consumer Financial Protection Bureau says cash advances
+[start charging interest right away](https://www.consumerfinance.gov/ask-cfpb/what-is-a-grace-period-for-a-credit-card-en-47/). Check your card's terms to be
+sure.
+
+<Diagram name="budget-with-a-credit-card-timeline" />
 
 ## How to do it
 
 ### 1. Count a purchase when you make it
 
-Groceries on the card are groceries spending, the day you buy them, in the
-groceries category. That's the moment the decision was made.
+Groceries bought on the card are grocery spending, on the day you buy them.
+That's when you made the choice to spend.
 
 ### 2. Keep the cash for it
 
 When you spend $80 on the card, $80 of your checking balance now belongs to
-the card company. Think of it as moved, even though it hasn't left yet. If
-your budget says there's money left for groceries, the money has to really be
-there when the bill comes.
+the card company. Think of it as gone, even though it hasn't left yet. If your
+budget says you have grocery money left, that money has to really be there
+when the bill comes.
 
 ### 3. Don't count the payment as spending
 
-Paying the card from checking is moving money between your own accounts. The
-spending already happened. Count it again and you've doubled it.
+Paying the card from checking just moves money between your own accounts. The
+spending already happened when you used the card. If you count the payment
+too, you've counted it twice.
 
 ### 4. Pay the statement balance in full
 
-Set up an automatic payment for the full statement balance, not the minimum,
-if your card lets you.
+If your card lets you, set up an automatic payment for the full statement
+balance, not the minimum.
 
-### 5. If you're already carrying a balance
+### 5. If you already carry a balance
 
-Stop adding to it first: put new spending on a debit card for a while. Then
-budget a fixed payment above the minimum every month, and track the balance
-going down. Seeing it fall is most of the motivation.
+First, stop adding to it. Use a debit card for new spending for a while. Then
+budget a set payment above the minimum each month, and keep an eye on the
+balance as it goes down. Watching it shrink makes it easier to keep going.
 
 ## How to do it in Simple Balance
 
-**Add the card as an account.** On **Accounts**, press **New account**, choose
-**Credit card**, and enter what you owe as a plain number with **Starting
-balance type** left on **Amount owed**. The account opens below zero, because
-that's money you owe rather than money you hold.
+### Add the card as an account
 
-**Record purchases on the card.** Each purchase is a **Withdrawal** from the
-card account, with its category. It counts as spending in that category on
-the day you made it.
+On [**Accounts**](/docs/accounts/#credit-cards-and-loans), press **New account**
+and choose **Credit card**. Type what you owe as a plain number, and leave
+**Starting balance type** on **Amount owed**. The account starts below zero,
+because that's money you owe, not money you have.
 
-**Record the payment as a transfer.** Paying the card from checking is a
-**Transfer** from checking to the card. A transfer carries no category and
-never appears in spending, so nothing is counted twice. If you pay on the same
-day each month, save it on **Recurring** so it's proposed when it's due.
+<Shot
+  name="accounts"
+  alt="The accounts page: a search box and sort controls, then accounts grouped by type. Under Checking, a euro account at €1,621.10 and Everyday Checking at $7,663.45. Under Savings, Savings at $20,200.00. Under Credit card, a card named Travel Card."
+  width="1600"
+  height="1000"
+/>
+
+_The money in this picture is made up. It's the real product, filled with
+example spending._
+
+### Record purchases on the card
+
+Each purchase is a **Withdrawal** from the card account, with a category. It
+counts as spending in that category on the day you made it.
+
+### Record the payment as a transfer
+
+Paying the card from checking is a **Transfer** from checking to the card. A
+transfer has no category and never shows up as spending, so nothing gets counted
+twice. If you pay on the same day each month, save it on
+[**Recurring**](/docs/recurring-transactions/), and it'll be ready for you when
+it's due. In the transaction list, a transfer shows both accounts and no
+category, like the $600 one here.
 
 <Shot
   name="transactions"
@@ -100,21 +126,46 @@ day each month, save it on **Recurring** so it's proposed when it's due.
 _The money in this picture is made up. It's the real product, filled with
 example spending._
 
-**Make interest visible.** If the card charges interest or a fee, record it as
-a withdrawal from the card with a category such as Interest and fees. It's
-real spending, and seeing it as its own line is the best argument for paying
-in full.
+### Make interest easy to see
 
-**Budgets count the card.** In a budget that carries, card spending empties
-the envelope the day you swipe, even though no cash moved, and **left to
-assign** counts what you owe on the card. That keeps the budget from thinking
-there's more to spend than there is.
+If your card charges interest or a fee, record it as a withdrawal from the
+card with its own category, like Interest and fees. It's real spending.
+Seeing it on its own line each month is a good reason to pay in full.
 
-**Two reports, two answers.** **Reports** has both **Income and expenses** and
-**Cash flow**, and with a card they won't agree. A purchase is an expense the
-day you swipe, and the cash leaves when you pay the bill. Both are right; they
-answer different questions.
+### How budgets count the card
 
-**Find the statement balance.** Open the card account and press **Show
-register**. The balance on the statement's closing date is what the statement
-should say.
+In a budget that carries over, card spending empties the envelope the day you
+swipe, even though no cash has moved yet. **Left to assign** counts what you
+owe on the card, too. That keeps your budget from thinking you have more to
+spend than you do.
+
+On [**Budgets**](/docs/budgets/), a budget carries over when you check **Carry
+what is left over into the next month**.
+
+<Shot
+  name="budgets"
+  alt="The budgets screen: a form for setting one, with fields for the category, the amount and how it's decided, the currency, a start date and an optional end date, an optional savings goal and which budget gets funded first, and a checkbox for carrying what's left into next month. Below it, the list of standing budgets begins with $200 a month for dining out."
+  width="1600"
+  height="1000"
+/>
+
+_The money in this picture is made up. It's the real product, filled with
+example spending._
+
+### Why two reports disagree
+
+[**Reports**](/docs/reports/) has both an **Income and expenses** report and a
+**Cash flow** report, and with a card they won't match. A purchase counts as an
+expense the day you swipe, but the cash leaves when you pay the bill. Both are
+right. They just answer different questions.
+
+### Find your statement balance
+
+Open the card account and press **Show register**. The balance on the
+statement's closing date should match what your statement says.
+
+## Sources
+
+- Board of Governors of the Federal Reserve System. [Consumer Credit, G.19](https://www.federalreserve.gov/releases/g19/20261007/). Release of October 7, 2026, with rates for August 2026.
+- Consumer Financial Protection Bureau. [What is a grace period for a credit card?](https://www.consumerfinance.gov/ask-cfpb/what-is-a-grace-period-for-a-credit-card-en-47/). Reviewed September 23, 2024.
+- Consumer Financial Protection Bureau. [Key terms](https://www.consumerfinance.gov/consumer-tools/credit-cards/answers/key-terms/), from its credit card answers.

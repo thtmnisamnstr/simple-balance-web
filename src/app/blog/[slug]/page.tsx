@@ -22,8 +22,9 @@ import { SeriesNav } from "@/components/series-nav";
 import { RelatedPosts } from "@/components/related-posts";
 import { PostPager } from "@/components/post-pager";
 import { ShareLinks } from "@/components/share-links";
-import { BreadcrumbStructuredData, PostStructuredData } from "@/components/structured-data";
-import { AdBanner } from "@/components/ad-banner";
+import { PostStructuredData } from "@/components/structured-data";
+import { typeset } from "@/lib/typeset";
+import { sectionRobots } from "@/lib/indexing";
 
 const blog = section("blog");
 
@@ -52,7 +53,7 @@ export async function generateMetadata({
   return {
     title: meta.title,
     description: meta.description,
-    robots: blog.announced ? undefined : { index: false, follow: false },
+    robots: sectionRobots("blog"),
     alternates: feedAlternates(canonical),
     openGraph: openGraph({
       type: "article",
@@ -83,18 +84,17 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
   const trail = [
     { name: "Home", href: "/" },
     { name: blog.label, href: blog.href },
-    { name: meta.title, href: `/blog/${slug}/` },
+    { name: typeset(meta.title), href: `/blog/${slug}/` },
   ];
 
   return (
     <article className="section">
       <div className="page page-narrow">
         <PostStructuredData post={post} />
-        <BreadcrumbStructuredData trail={trail} />
         <Breadcrumbs trail={trail} />
 
-        <h1 className="entry-heading">{meta.title}</h1>
-        <p className="lede">{meta.description}</p>
+        <h1 className="entry-heading">{typeset(meta.title)}</h1>
+        <p className="lede">{typeset(meta.description)}</p>
 
         <Byline
           keys={meta.authors ?? []}
@@ -112,8 +112,6 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
         {contents.length >= 4 ? <Contents items={contents} /> : null}
 
         <Prose body={post.body} />
-
-        <AdBanner />
 
         <TagList tags={meta.tags ?? []} />
         <ShareLinks title={meta.title} path={`/blog/${slug}/`} />

@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { existsSync } from "node:fs";
-import { site } from "@/content/home";
+import { createHash } from "node:crypto";
+import { existsSync, readFileSync } from "node:fs";
+import { allEntries } from "@/content/collections";
+import { pricing } from "@/content/pricing";
+import { section } from "@/content/sections";
+import { hero, site } from "@/content/home";
+import appFacts from "@/content/app-facts.json";
 import { repoFile } from "./support/source";
 
 /**
@@ -170,7 +175,7 @@ describe("the published shape", () => {
 
   it("tells a rule that can reach /ads.txt from one that cannot", () => {
     // Fixtures, so the predicate is tested directly rather than through
-    // whatever `netlify.toml` says today. `code/testing.md` 2.6.
+    // whatever `netlify.toml` says today. `code/testing.md` 2.7.
     const dangerous = [
       ["/*", "200"],
       ["/*", "301"],
@@ -260,15 +265,147 @@ describe("the published shape", () => {
     // what still makes the 'unsafe-inline' that Next.js forces on
     // `script-src` tolerable.
     //
-    // `connect-src` is no longer absolute: the page loads an advertising
-    // script that calls two of Google's hosts. Asserting it here as a
-    // substring would pass over any widening at all, which is the shape of
-    // green test this file exists to avoid — `tests/adsense.test.ts` parses
-    // the policy into directives instead and holds every source in it.
     expect(netlify).toContain("form-action 'none'");
     // The CSP's own clickjacking defense, which supersedes X-Frame-Options in
     // current browsers. Asserting the header and not this left the modern
     // half of the pair untested.
     expect(netlify).toContain("frame-ancestors 'none'");
+  });
+
+  it("serves the Markdown copies and llms.txt as text, and keeps them out of the index", () => {
+    // `content.md` 5.15: the HTML is the page to index and cite, so the
+    // copies of it say `noindex`, and say what they are rather than leaving
+    // Netlify to guess at `.md`. The path pattern is checked too, because a
+    // looser one (`/*`, `/docs/*`) would put noindex on the HTML pages.
+    const block = (path: string) =>
+      new RegExp(`for = "${path.replaceAll("*", "\\*")}"\\s*\\[headers\\.values\\]([^[]*)`).exec(
+        netlify,
+      )?.[1] ?? "";
+    const markdown = block("/*/*/index.md");
+    expect(markdown).toContain('Content-Type = "text/markdown; charset=utf-8"');
+    expect(markdown).toContain('X-Robots-Tag = "noindex"');
+    const llms = block("/llms.txt");
+    expect(llms).toContain('Content-Type = "text/plain; charset=utf-8"');
+    expect(llms).toContain('X-Robots-Tag = "noindex"');
+    const noindexPaths = [...netlify.matchAll(/for = "([^"]+)"\s*\[headers\.values\]([^[]*)/g)]
+      // The header line, not the word: the blocks' comments say "noindex"
+      // too, and matching them put every commented block on the list.
+      .filter(([, , values]) => /X-Robots-Tag\s*=\s*"[^"]*noindex/.test(values!))
+      .map(([, path]) => path);
+    expect(noindexPaths.toSorted()).toEqual(["/*/*/index.md", "/llms.txt"]);
+  });
+
+  it("lets the page reach nothing but its own origin", () => {
+    // The policy named five of Google's hosts while the site carried AdSense.
+    // The ads now run in the application alone, so every source here is a
+    // keyword or `data:`, and a host of any kind is a third party arriving.
+    // Parsed into sources rather than matched as a substring, because a
+    // substring check passes over any widening at all.
+    const policy = /Content-Security-Policy = "([^"]+)"/.exec(netlify)?.[1];
+    expect(policy, "no Content-Security-Policy line").toBeDefined();
+    const sources = policy!
+      .split(";")
+      .flatMap((directive) => directive.trim().split(/\s+/).slice(1));
+    const allowed = new Set(["'self'", "'none'", "'unsafe-inline'", "data:"]);
+    expect(sources.filter((source) => !allowed.has(source))).toEqual([]);
+    expect(policy).toContain("default-src 'self'");
+  });
+});
+
+describe("the page cards", () => {
+  /*
+   * Every learn guide, docs page and the three pages above them preview as
+   * themselves (`scripts/build-images.mjs`). Read from the built pages, so a
+   * route that stops passing `images` falls back to the homepage's card and
+   * fails here, and held to the record the script writes, so a page renamed
+   * without re-running it fails rather than previewing under its old name.
+   */
+  const { cards } = JSON.parse(readFileSync("scripts/build-images.sources.json", "utf8")) as {
+    cards: Record<string, string>;
+  };
+  const pages = [
+    { html: "out/pricing/index.html", file: "pricing", title: pricing.title },
+    ...(["learn", "docs"] as const).flatMap((key) => {
+      const hub = section(key);
+      return [
+        {
+          html: `out/${key}/index.html`,
+          file: key,
+          // Capitalized after the kicker comes off: the docs card read
+          // "using the budget app, and self-hosting it", a headline that
+          // looked as if its first words had been cut.
+          title: (hub.metaTitle ?? hub.title)
+            .replace(`${hub.label}: `, "")
+            .replace(/^\p{Ll}/u, (first) => first.toUpperCase()),
+        },
+        ...allEntries(key).map((entry) => ({
+          html: `out/${key}/${entry.slug}/index.html`,
+          file: `${key}/${entry.slug}`,
+          title: entry.frontmatter.title,
+        })),
+      ];
+    }),
+  ];
+
+  it("are what each page's og:image names, at 1200 by 630", () => {
+    for (const { html, file } of pages) {
+      const image = /<meta property="og:image" content="([^"]+)"/.exec(
+        readFileSync(html, "utf8"),
+      )?.[1];
+      expect(image, html).toBe(`https://${site.domain}/og/${file}.png`);
+      const png = readFileSync(`out/og/${file}.png`);
+      // The IHDR chunk: width and height, big-endian, at bytes 16 and 20.
+      expect([png.readUInt32BE(16), png.readUInt32BE(20)], file).toEqual([1200, 630]);
+    }
+  });
+
+  it("were drawn from each page's current title, and none is left over", () => {
+    for (const { file, title } of pages) expect(cards[`og/${file}.png`], file).toBe(title);
+    expect(Object.keys(cards).toSorted()).toEqual(
+      pages.map(({ file }) => `og/${file}.png`).toSorted(),
+    );
+  });
+});
+
+describe("the homepage card", () => {
+  /*
+   * `public/og.png` is what the homepage, the legal pages and every route
+   * without a card of its own preview as. The script reads the hero, the
+   * tagline and the yearly price, which keeps a card drawn today current and
+   * says nothing about the one committed: the homepage was rewritten four
+   * times while the card went on advertising a tagline that appeared nowhere.
+   * So the script records what it drew, with the hash of the file it drew it
+   * into, and this holds the record to the sources and to the file.
+   */
+  const record = (
+    JSON.parse(readFileSync("scripts/build-images.sources.json", "utf8")) as {
+      site?: {
+        file: string;
+        headline: readonly string[];
+        tagline: string;
+        price: string;
+        sha256: string;
+      };
+    }
+  ).site;
+
+  const recorded = () => expect(record, "no site entry: run npm run build:images").toBeDefined();
+
+  it("is recorded, and the record describes the file committed", () => {
+    recorded();
+    expect(record!.file).toBe("og.png");
+    const committed = createHash("sha256").update(readFileSync("public/og.png")).digest("hex");
+    expect(record!.sha256, "public/og.png is not the card the record describes").toBe(committed);
+  });
+
+  it("was drawn from the current hero, tagline and yearly price", () => {
+    recorded();
+    expect(record!.headline.join(" "), "the card's headline is not the hero's").toBe(hero.title);
+    expect(record!.tagline, "the card's tagline is not the site's").toBe(site.titleTagline);
+    // Every amount on the line, so a second, stale price beside the right one
+    // fails too.
+    const yearly = `$${Number(appFacts.facts.declared.prices.yearly)}`;
+    expect(record!.price.match(/\$\d+(?:\.\d+)?/g), record!.price).toEqual([yearly]);
+    expect(record!.price, "the card's price is not a yearly one").toContain(`${yearly} a year`);
   });
 });

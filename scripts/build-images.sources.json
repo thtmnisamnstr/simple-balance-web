@@ -2,6 +2,22 @@
   "writtenBy": "scripts/build-images.mjs",
   "width": 1200,
   "copies": {
+    "accounts-dark.webp": {
+      "original": "b2768df6dc254eed7b2ac9f386494b151ec80425a1e978ea852c4d732db928a8",
+      "copy": "496b6036ead7f42019c0b2f46d91a3eae5091651762a0b592e7d6cbe456ec434"
+    },
+    "accounts-light.webp": {
+      "original": "b4491e9fe4203f806a433881c2677f6cc8b4ee7161e1db62b6aa0cf1fc0c460e",
+      "copy": "6d0912b5e74cffce775c348685785160343c7de4649d56de3a468ac5a2d8786a"
+    },
+    "activity-dark.webp": {
+      "original": "b06e7d694e9cc05ac0e1f6adc566e58acdebbb5b27b3cfd5395af213e27adb17",
+      "copy": "64cc19fa922081ecae374d125382da827d772ba7299059efbb4f60d6d83396d6"
+    },
+    "activity-light.webp": {
+      "original": "c2cb975c9f98ec49f8bf81ae6afb424bb2fa83ea94a4864143135a0ebee3c047",
+      "copy": "0f1e45ccd4b9c847f4a0d5313727aa6347b303038a8438ab80c52c1cf648a643"
+    },
     "budgets-dark.webp": {
       "original": "b495c201535f5f4dc998ba348467ab73f5ccc1af1766718619a1138639060f8d",
       "copy": "47d69af78eb49e2fb4767fcfcd24721dcf4cb3abab423916c62744c4b3a70cf4"
@@ -9,6 +25,14 @@
     "budgets-light.webp": {
       "original": "14f64ded202c7a26fb99bdcb2ce21b2a24369d4ddb0504d7b6e7cb17f072fde7",
       "copy": "87919645f796f4562dfe705d997d1540b9d37459df39a0589c7a6f5664fb65e9"
+    },
+    "categories-dark.webp": {
+      "original": "57025c09ce80b5e7674e41d08607c6807985b91e8c5a7bea51e4dad39ab4bf0a",
+      "copy": "1e4f7d6218af30825ac6baccb71f694bc8cd4d3a71a8b9ace3ae18a40f5f7ae9"
+    },
+    "categories-light.webp": {
+      "original": "89504f376f0076174b4c99b8be3e2a3273d2d53a8f861fa8d7419857ce5c0e3d",
+      "copy": "ab13fa20b05288638959607d614327f9f36d058aae71589b96dd6a2ab175d951"
     },
     "dashboard-dark.webp": {
       "original": "44d2de0e7e8af7884c5ce24ed5d59da0ff23bc5abdf22d586007b91c8eaa0788",
@@ -26,6 +50,22 @@
       "original": "71fe16f84e34345bf7b661a02d0adb343367a8c4739efaf61eb142343277004d",
       "copy": "197bb06b4d1da101055befc3ca5a09cefcc1119ce8a0b9e1e4f2ca54c5bd8662"
     },
+    "payees-dark.webp": {
+      "original": "39a878f48db802ab6f587bd25ce0f8c3b217c38cdd4db92b2fac95042d33bf1e",
+      "copy": "89c82dd09bd8bad9846c68b964b1d08948dd9191b4a74d1923db04bfd3491cbe"
+    },
+    "payees-light.webp": {
+      "original": "fb5288255dbc2aea5bee40965099515afdc69c4b2a88d4fefb6b743ccc107edf",
+      "copy": "7bc7b695fa5b835fc9a4d9756c414d5fb1766f75ddc3d0041d975f76481f1405"
+    },
+    "recurrences-dark.webp": {
+      "original": "730a93d2d11fc3105774acfc116e43350b744e179b09784f0e50ebeb17d64161",
+      "copy": "a35d9781b51bec06699da69ff729e7e6c5c71e3bf99ed40f1d37dadd55339523"
+    },
+    "recurrences-light.webp": {
+      "original": "5ade1c82617f66bd423dcbb9ffb535e05bab9c7a0c597adcf12e27986a4f3297",
+      "copy": "e3ff259b82b841ed5ce418abb12b7d293b0caebeda221ae0489cfa7c50ddd251"
+    },
     "reports-dark.webp": {
       "original": "fb7a02b0644ab79ab5c3529586ad188a5b858e2f2e7a2c915fda8bddabcef15d",
       "copy": "36026454fff4953dcccbe8d56fb782610b29706f46209ac9c120352b45bc12ff"
@@ -33,6 +73,22 @@
     "reports-light.webp": {
       "original": "63a8ad632f994a674fc45dfde0f7403244a08b554cd4c50310ecf026c802edb7",
       "copy": "018c035c86e436b3a04c86adeff7f5060f97896344f535bf79afd0f61197e277"
+    },
+    "staged-dark.webp": {
+      "original": "5518d1aa9fd7c9307e901c3d4a4f137b192030292add039f98fe3c54913a2c00",
+      "copy": "874756d0d96bd21cff3b962676e838bae8cf962d52efdd80e55c588e6ca353fb"
+    },
+    "staged-light.webp": {
+      "original": "dbef2376239fd5365aee9282ca202078c07f9dd2c95e929c1583b04dfa1176f5",
+      "copy": "dda247cfbbee54c51fc363615b423f234c6ed7d62b0ec404e915c85ce026c9ad"
+    },
+    "templates-dark.webp": {
+      "original": "8a06b62be305fd3b9c97ce14146bb9abc00135bc5269429a10c070fb6c519a51",
+      "copy": "26a6be00918161ecc39f948aad501552064f1237f90194b645215a13e609172a"
+    },
+    "templates-light.webp": {
+      "original": "c384d2a994545d118f12bda6ff4117eb3f6a5eefa07ef0f3f479f42234d3fbb8",
+      "copy": "420a033920e9b21521e70d604cdcfcc416b7082bc471c10a3a749b920fa38baf"
     },
     "transactions-dark.webp": {
       "original": "0bb0354922460b13123588032c73aae2fe8b8cae2fca43bf13af48e59bd87982",
@@ -42,5 +98,56 @@
       "original": "89f7f2e82816b1e092c4994b267dbffac975939cf008de094a5a78cd7a18d7e0",
       "copy": "507ac0b8ea69cf6456160c6da7e7c62a316271e8ab076d781ad8ef7d8d153f27"
     }
+  },
+  "site": {
+    "file": "og.png",
+    "headline": ["Your money should add up."],
+    "tagline": "Free budget app and spending tracker",
+    "price": "Free, or $30 a year",
+    "sha256": "3a4ccec98cd2f88f9b13211d80bac4a7261f349ec9510407f858a7869e16ff66"
+  },
+  "cards": {
+    "og/pricing.png": "Every plan is the whole product.",
+    "og/learn.png": "Budgeting and money basics, in plain guides",
+    "og/docs.png": "Using the budget app, and self-hosting it",
+    "og/learn/balance-your-checking-account.png": "How to balance your checking account",
+    "og/learn/budget-categories.png": "A list of budget categories, with examples",
+    "og/learn/budget-with-a-credit-card.png": "How to budget with a credit card",
+    "og/learn/budget-with-irregular-income.png": "How to budget with irregular income",
+    "og/learn/emergency-fund.png": "How much should you have in an emergency fund?",
+    "og/learn/envelope-budgeting.png": "What is envelope budgeting?",
+    "og/learn/find-your-subscriptions.png": "How to find and keep track of your subscriptions",
+    "og/learn/make-a-budget.png": "How to make a budget",
+    "og/learn/net-worth.png": "What is net worth, and how do you calculate it?",
+    "og/learn/sinking-funds.png": "What are sinking funds?",
+    "og/learn/track-your-spending.png": "How to track your spending",
+    "og/learn/zero-based-budgeting.png": "What is zero-based budgeting?",
+    "og/docs/accounts-and-transactions.png": "How deposits, withdrawals and transfers work",
+    "og/docs/accounts.png": "Accounts",
+    "og/docs/activity-history.png": "Activity history",
+    "og/docs/agents-and-mcp.png": "Connecting an AI assistant (MCP)",
+    "og/docs/backups.png": "Backing up and restoring a self-hosted copy",
+    "og/docs/budgets.png": "Budgets",
+    "og/docs/categories-and-payees.png": "Categories and payees",
+    "og/docs/changing-many-transactions.png": "Changing many transactions at once",
+    "og/docs/configuration.png": "Configuration",
+    "og/docs/deploying-to-oracle-cloud-or-aws.png": "Deploying to Oracle Cloud or AWS",
+    "og/docs/deploying-with-docker-compose.png": "Deploying with Docker Compose",
+    "og/docs/finding-your-way-around.png": "Finding your way around",
+    "og/docs/getting-started.png": "Getting started",
+    "og/docs/importing-a-statement.png": "Importing a statement",
+    "og/docs/limits.png": "Limits",
+    "og/docs/moving-between-cloud-and-self-hosted.png": "Moving between the cloud app and your own copy",
+    "og/docs/multiple-currencies.png": "More than one currency",
+    "og/docs/planning-ahead.png": "Saving goals, automatic amounts and the forecast",
+    "og/docs/preferences.png": "Theme, timezone and currency",
+    "og/docs/recurring-transactions.png": "Recurring transactions",
+    "og/docs/reports.png": "Reports",
+    "og/docs/self-hosting.png": "Self-hosting: running your own copy",
+    "og/docs/staged-transactions.png": "Staged transactions and duplicates",
+    "og/docs/templates.png": "Transaction templates",
+    "og/docs/the-overview.png": "The overview",
+    "og/docs/transactions.png": "Adding and editing transactions",
+    "og/docs/your-account-and-plan.png": "Your account and plan"
   }
 }

@@ -1,4 +1,10 @@
 {
-  "//": "Sidebar group order. A section not named here sorts last, so adding a group is a one-file change. Page order within a group comes from each page's `order`.",
-  "order": ["Install", "Using it", "Reference", "Operations"]
+  "//": "Sidebar group order. Every group is named here or the grouping test fails, and a new one also needs its words in `docsIndex.groups` (src/content/sections.ts) and its picture in `groupArt` (src/components/docs-art/pictures.tsx). Page order within a group comes from each page's `order`.",
+  "order": [
+    "Get started",
+    "Using Simple Balance",
+    "Budgets and reports",
+    "Your account",
+    "Self-hosting"
+  ]
 }

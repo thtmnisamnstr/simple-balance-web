@@ -64,6 +64,12 @@ export type Tier = {
   readonly featured?: boolean;
 };
 
+/**
+ * The day the pricing page's words last changed, for its `lastmod`, set by
+ * hand with the copy as `homeUpdated` is in `src/content/home.ts`.
+ */
+export const pricingUpdated = "2026-10-25";
+
 export const MAX_FREE_ACCOUNTS = 3;
 
 export const pricing = {
@@ -106,7 +112,14 @@ export const pricing = {
     "whenever you like.",
   /** The flag over the recommended tier. */
   featuredFlag: "Unlimited accounts, no ads",
-  compareTitle: "Only four lines change.",
+  /*
+   * "Only four lines change." was the heading here: true of the table, and
+   * odd as a sentence, because "lines" is the table talking about itself.
+   * The heading now names what the table is for, and the lede under it says
+   * which four rows differ. "Options" rather than "plans", because the third
+   * column is running it yourself, which this page says has no plan.
+   */
+  compareTitle: "How the three options differ.",
   /**
    * The lede over the table, which now describes a table that agrees with it.
    * It promised that only three lines differed while the table showed sixteen
@@ -150,10 +163,13 @@ export const pricingMeta = {
   title: "Pricing: free, or $30 a year",
   /** The link preview's headline, which names the third option a search result has no room for. */
   socialTitle: "Pricing: free, Premium, or run it yourself",
+  /*
+   * Under 160 characters, which a result listing shows whole: it ran to 202,
+   * and the cut fell on the third option.
+   */
   description:
-    "Every feature is in every plan. Free covers three accounts in use at once, with ads. " +
-    "Premium is $3 a month or $30 a year for as many as you like, with no ads. Run it yourself " +
-    "and there's no plan at all.",
+    "Every feature in every plan. Free for three accounts in use, with ads; Premium is $3 a " +
+    "month or $30 a year, unlimited and ad-free. Or run it yourself.",
   socialDescription:
     "Free for three accounts in use at once, $30 a year for as many as you like, or run it " +
     "yourself for nothing.",
@@ -318,19 +334,22 @@ export type FaqItem = {
 
 export const faq: readonly FaqItem[] = [
   {
-    q: "How does my spending get in?",
     /*
-     * The no-connection disclosure, in the second-to-last sentence rather
-     * than the first. A reader needs to know this before they sign up and
-     * after they know what the product is for, and `content.md` 1.4 is the
-     * rule: describe the mechanism, state its present limits, promise nothing
-     * about the future.
+     * Asked the way people ask it, of a search box or an assistant. It was
+     * "How does my spending get in?", which answered the same question under
+     * words nobody types, so an answer engine looking for the bank question
+     * found an answer whose first sentence named neither the product nor
+     * what "it" was. `content.md` 1.4 still holds: the present, its limits,
+     * and no promise about the future, inside the import copy.
      */
-    a: "You bring it in yourself, because there's no automatic pull from your bank today. Your bank lets you download a file of what you spent, the kind that opens in a spreadsheet. Drag it in and Simple Balance figures out which column is which, files the names it knows, and flags anything that looks like a payment you already have before it counts. You can also type entries in by hand, or have an AI assistant queue them up for you to approve.",
+    q: "Does Simple Balance connect to my bank?",
+    a: "Not automatically, today. Your bank lets you download a file of what you spent, the kind that opens in a spreadsheet. Drag it in and Simple Balance figures out which column is which, files the names it knows, and flags anything that looks like a payment you already have before it counts. You can also type entries in by hand, or have an AI assistant queue them up for you to approve.",
   },
   {
-    q: "What do I actually get for free?",
-    a: "Everything the product does, for up to three accounts you can use at once, with ads on the page. It isn't a trial and nothing is stripped out, and we don't ask for a card. Premium lets you use as many accounts as you like, and takes the ads away.",
+    // Asked the way people ask it, and answered "Yes" first, so the
+    // sentence an answer engine lifts carries the limit with it.
+    q: "Is Simple Balance really free?",
+    a: "Yes. The free plan has everything Simple Balance does, for up to three accounts you can use at once, with ads on the page. It isn't a trial and nothing is stripped out, and we don't ask for a card. Premium lets you use as many accounts as you like, and takes the ads away, for $3 a month or $30 a year.",
   },
   {
     q: "What if I already have more than three accounts?",
@@ -397,8 +416,13 @@ export const faq: readonly FaqItem[] = [
      * *stronger* than the policy it links to. "They are only personalized if
      * you specifically agreed" went for that reason — outside Europe they
      * can be, without anybody agreeing.
+     *
+     * It ended "and the cookie this website itself sets", which was Google's
+     * advertising identifier while smpl.money carried AdSense. The ads are
+     * the application's alone now and this site sets no cookie, so the
+     * pointer names only what the policy still covers.
      */
-    a: "Ordinary Google ads, never on the billing page or the sign-in screen. They aren't picked from what you spend, but they can be personalized from what Google knows of your browsing. In the UK, the EEA and Switzerland, Google's message asks for your consent before any advertising cookie is set; in US states with privacy laws, it offers a link to opt out instead. Saying no doesn't remove the ads. It keeps them from being personalized. The privacy policy covers the rest, including what does reach Google and the cookie this website itself sets.",
+    a: "Ordinary Google ads, never on the billing page or the sign-in screen. They aren't picked from what you spend, but they can be personalized from what Google knows of your browsing. In the UK, the EEA and Switzerland, Google's message asks for your consent before any advertising cookie is set; in US states with privacy laws, it offers a link to opt out instead. Saying no doesn't remove the ads. It keeps them from being personalized. The privacy policy covers the rest, including what does reach Google.",
   },
   {
     q: "How do I cancel, and will you keep charging me?",
@@ -410,7 +434,11 @@ export const faq: readonly FaqItem[] = [
   },
   {
     q: "What is the difference between paying and running it yourself?",
-    a: "Where it runs, and who keeps it. The product is the same either way. Running it yourself has no plan, no limit and no ads, because there's nobody to bill you. It really is for people who already run their own software. If that isn't you, wait for the version we run.",
+    /*
+     * It ended "If that isn't you, wait for the version we run", written
+     * while the cloud app wasn't open and left behind when it was.
+     */
+    a: "Where it runs, and who keeps it. The product is the same either way. Running it yourself has no plan, no limit and no ads, because there's nobody to bill you. It really is for people who already run their own software. If that isn't you, use our cloud app: there's nothing to install.",
   },
   {
     q: "Do I need to know accounting?",
@@ -424,12 +452,12 @@ export const faq: readonly FaqItem[] = [
      * is worse than no promise, so the split is stated rather than blurred.
      */
     q: "Do you keep a copy of what I spend?",
-    a: "If we run it for you, your records live on our computers. That is what running it for you means, and the privacy policy says exactly what's stored and who can get at it. Run it yourself and nobody has a copy, including us. Nothing about your spending is used to pick the ads. The product itself has no analytics either way, though on the free plan the ads bring Google's script with them.",
+    a: "If you use our cloud app, your records live on computers we rent for it. That's what a cloud app is, and the privacy policy says exactly what's stored, where, and who can get at it. Self-host it, on a computer you control, and we never see your records. Nothing about your spending is used to pick the ads. The product itself has no analytics either way, though on the free plan the ads bring Google's script with them.",
   },
   {
     /*
      * The procedure that used to be here is now
-     * `content/docs/moving-to-your-own-copy.md`, and
+     * `content/docs/moving-between-cloud-and-self-hosted.md`, and
      * `tests/app-facts.test.ts` reads it there. A pricing page has to settle
      * whether somebody is locked in; it does not have to teach them a
      * multi-step data migration before they have decided to sign up, and the
@@ -439,8 +467,16 @@ export const faq: readonly FaqItem[] = [
      * What stays is the part that bears on the purchase: it is possible, it
      * is not one button, and two things do not travel.
      */
-    q: "Can I move from the version you run to my own copy later?",
-    a: "Yes, and it's worth knowing up front that it isn't one button. Your transactions move, one account at a time, as spreadsheets you export here and bring in there. Budgets and repeating payments you set up again, and each account's starting balance is carried over by hand, because it isn't in the file. The guide to moving to your own copy has every step.",
-    link: { label: "Moving to your own copy", href: "/docs/moving-to-your-own-copy/" },
+    /*
+     * Both directions, because the guide covers both now: somebody trying
+     * the cloud app and later hosting it, and somebody who hosted it and
+     * would rather not any more, are the same procedure run the other way.
+     */
+    q: "Can I move between the cloud app and my own copy later?",
+    a: "Yes, either way, and it's worth knowing up front that it isn't one button. Your transactions move, one account at a time, as spreadsheets you export from one and bring into the other. Budgets and repeating payments you set up again, and each account's starting balance is carried over by hand, because it isn't in the file. The guide to moving between the cloud app and your own copy has every step.",
+    link: {
+      label: "Moving between the cloud app and your own copy",
+      href: "/docs/moving-between-cloud-and-self-hosted/",
+    },
   },
 ];

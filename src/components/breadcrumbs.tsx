@@ -1,4 +1,4 @@
-import type { Crumb } from "@/components/structured-data";
+import { BreadcrumbStructuredData, type Crumb } from "@/components/structured-data";
 
 /**
  * Where this page sits.
@@ -11,24 +11,33 @@ import type { Crumb } from "@/components/structured-data";
  * The separator is a CSS pseudo-element rather than a character in the markup,
  * so a screen reader reads "Docs, Install, Getting started" and not "Docs
  * slash Install slash Getting started".
+ *
+ * **It carries its own `BreadcrumbList`.** Pages emitted the structured data
+ * separately, and the learn and docs indexes, the legal pages and four blog
+ * listings showed a trail and told a search engine nothing about it. Drawing
+ * the trail and describing it in one place means a page can't have one
+ * without the other.
  */
 export function Breadcrumbs({ trail }: { readonly trail: readonly Crumb[] }) {
   return (
-    <nav className="breadcrumbs" aria-label="Breadcrumb">
-      <ol>
-        {trail.map((crumb, index) => {
-          const last = index === trail.length - 1;
-          return (
-            <li key={crumb.href}>
-              {last ? (
-                <span aria-current="page">{crumb.name}</span>
-              ) : (
-                <a href={crumb.href}>{crumb.name}</a>
-              )}
-            </li>
-          );
-        })}
-      </ol>
-    </nav>
+    <>
+      <BreadcrumbStructuredData trail={trail} />
+      <nav className="breadcrumbs" aria-label="Breadcrumb">
+        <ol>
+          {trail.map((crumb, index) => {
+            const last = index === trail.length - 1;
+            return (
+              <li key={crumb.href}>
+                {last ? (
+                  <span aria-current="page">{crumb.name}</span>
+                ) : (
+                  <a href={crumb.href}>{crumb.name}</a>
+                )}
+              </li>
+            );
+          })}
+        </ol>
+      </nav>
+    </>
   );
 }

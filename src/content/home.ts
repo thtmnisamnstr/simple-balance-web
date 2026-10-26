@@ -33,7 +33,19 @@
  * has looked at it. So the page leads on being able to explain a number, and
  * everything else is arranged behind that.
  *
- * **The assistant is fourth now, not third and not in the headline.** It has
+ * **What a reader came to do comes straight after the hero.** The proof
+ * section answers "why this one", which is the second question a stranger
+ * has. The first is "will it help with the thing I'm here for", and the
+ * October 2026 search read behind the learn articles (`content.md` 5.14) says
+ * what that thing usually is: making a budget, seeing where the money goes,
+ * bills that come once a year, a credit card, a forgotten subscription,
+ * whether they're getting ahead. So `jobs` names six of those in the reader's
+ * words, says in one sentence what this product does for each, and links the
+ * plain guide that teaches the job with any tool. It is relevance, not a
+ * claim of difference, which is why it can sit above the proof without
+ * breaking the rule that "know where your money went" never opens the page.
+ *
+ * **The assistant is after the features, not third and not in the headline.** It has
  * been last (wrong, it is worth more than a footnote), first (wrong, it
  * answers a question nobody arrived with) and third (defensible only while it
  * was distinctive). It is a reason to stay rather than a reason a stranger
@@ -125,12 +137,22 @@ import { announcedSections } from "@/content/sections";
  */
 export type NavLink = { readonly label: string; readonly href: string };
 
+/**
+ * The day the homepage's words last changed, for its `lastmod` in the sitemap
+ * (`src/app/sitemap.ts`). Set by hand in the same change as the copy, because
+ * nothing else knows when a sentence moved; `tests/sitemap.test.ts` refuses a
+ * date in the future or one older than the snapshot the copy describes.
+ */
+export const homeUpdated = "2026-10-25";
+
 export const site = {
   name: "Simple Balance",
   domain: "smpl.money",
   /**
    * Where signing up happens, and the one place this site writes it. Every
-   * sign-up control reads it, so the four of them cannot drift apart.
+   * sign-up control reads it (the header, the hero, the closing panel, both
+   * plans on the pricing page and the end of every learn article), so they
+   * cannot drift apart.
    */
   appUrl: "https://app.smpl.money/",
   sourceUrl: "https://github.com/thtmnisamnstr/simple-balance",
@@ -165,7 +187,16 @@ export const site = {
    * truncates near sixty characters and `Simple Balance — ` costs seventeen,
    * so what goes here has forty-three to work with.
    */
-  titleTagline: "Personal finance that's simple",
+  /*
+   * It was "Personal finance that's simple", which names no kind of product
+   * anybody searches for. "Budget app" is searched about ninety thousand
+   * times a month in the US, "free budget app" twenty-seven thousand and
+   * "spending tracker" three thousand (Google Ads data, 25 October 2026), and
+   * the page never said any of them. This is the tab and the search result's
+   * title, so it says what the product is, in those words; "free" is true of
+   * every feature (`content.md` 1.3 allows all three words).
+   */
+  titleTagline: "Free budget app and spending tracker",
   /**
    * The search snippet, and the one string written for somebody who has not
    * arrived yet.
@@ -175,9 +206,14 @@ export const site = {
    * third of it, every word about the assistant, was never shown to anybody
    * deciding whether to click.
    */
+  /*
+   * Leads with the category the tagline names, then the three things the
+   * page argues, inside the 160 characters a listing shows. Nothing in it
+   * implies a bank connection (`content.md` 1.4).
+   */
   description:
-    "Keep your accounts, spending, budgets and repeating payments on one page, and follow any " +
-    "total back to the payments behind it. Free for three accounts in use.",
+    "A free budget app and spending tracker: your accounts on one page, budgets that carry " +
+    "over, and totals you can follow back to the payments behind them.",
 } as const;
 
 export const heroShot = {
@@ -201,14 +237,28 @@ export const hero = {
    * two sentences here, for a social card with a `<text>` element per line,
    * and now draws one or two.
    */
+  /*
+   * The category, said once above the headline, in the words a searcher and
+   * an answer engine both use. The headline stays the argument.
+   */
+  eyebrow: "Budget app and spending tracker",
   title: "Your money should add up.",
+  /*
+   * It led on "keeps your accounts, your spending and your budgets on one
+   * page", which is the inventory rather than the use, and the line eight
+   * competitors share. Now the three jobs the search read ranks highest come
+   * first, in the reader's words, and the one thing nobody else says
+   * (following a total back) closes it. "Getting ahead" rather than "net
+   * worth", which 1.3 keeps off this page.
+   */
   lede:
-    "Simple Balance keeps your accounts, your spending and your budgets on one page. When a " +
-    "total looks wrong, you can open it and follow it back to the payments that made it, which " +
-    "is usually how you find the payment that got counted twice.",
+    "See where your money goes, make a budget you'll keep, and know whether you're getting " +
+    "ahead, with every account on one page. When a total looks wrong, open it and follow it " +
+    "back to the payments behind it.",
   /**
-   * The sign-up control: a link to `site.appUrl`, in the header, the hero and
-   * both paid-plan cards on the pricing page.
+   * The sign-up control: a link to `site.appUrl`, in the header, the hero,
+   * the closing panel, both plan cards on the pricing page and the end of
+   * every learn article.
    *
    * It names the price because that is the question a sign-up button raises.
    * It read "Sign-ups open soon" while the application was not deployed, as a
@@ -230,7 +280,138 @@ export const hero = {
   note:
     "No card to start. If you already run your own software, you can install the whole " +
     "product yourself instead, free and with nothing left out.",
+  /*
+   * Three checkmarked pills sat under the note for a while, each one of the
+   * page's differences as a label: "Every feature on the free plan", "Any
+   * total opens to the payments behind it", "Every transaction exports, any
+   * time". The owner read them as clutter whose purpose was unclear, which
+   * is the verdict that matters: a claim nobody can tell is a claim does no
+   * work. Each is still argued where it belongs, under Plans, the proof
+   * section and Privacy.
+   */
 } as const;
+
+/**
+ * The control on every drawing that loops (`LoopStop`). WCAG 2.2.2 asks for a
+ * way to stop anything that moves by itself for longer than five seconds,
+ * and the owner asked for these to loop, so each one carries this.
+ */
+export const motion = {
+  stop: "Stop the animation",
+} as const;
+
+/**
+ * The words in the hero's drawing: three payments arriving in an account and
+ * the balance they come to.
+ *
+ * The sum is real arithmetic, not decoration. $3,000.00 to start, plus the
+ * paycheck, less rent and groceries, is $4,163.60, and a drawing about money
+ * adding up that did not add up would be the one joke this page can't make.
+ * `tests/home-page.test.tsx` does the sum.
+ */
+export const heroArt = {
+  account: "Checking",
+  start: { label: "Started at", amount: "$3,000.00" },
+  payments: [
+    { label: "Paycheck", amount: "+$2,450.00" },
+    { label: "Rent", amount: "-$1,200.00" },
+    { label: "Groceries", amount: "-$86.40" },
+  ],
+  total: "$4,163.60",
+  check: "Adds up",
+} as const;
+
+/**
+ * One thing a reader came to do, the guide that teaches it, and what this
+ * product does about it.
+ */
+export type Job = {
+  /** The learn article that teaches the job with any tool. Its picture is the card's. */
+  readonly guide: string;
+  /** As `Proof["covers"]`. Empty where the job is a way of using the product
+   *  rather than a feature of it, such as treating a card payment as a transfer. */
+  readonly covers: readonly string[];
+  /** The job, in the reader's words. It is also the link to the guide. */
+  readonly title: string;
+  /** What Simple Balance does for it, in one or two sentences. */
+  readonly body: string;
+};
+
+/**
+ * The section of jobs, and the reason it exists is in this file's opening
+ * comment. "Pick the job you came to do" rather than "the jobs people search
+ * for most", because a ranking is a claim and two of these six are in the
+ * low thousands of searches a month; the list is what the guides cover and
+ * the product does well, not a leaderboard.
+ */
+export const jobsSection = {
+  eyebrow: "What it's for",
+  title: "Start with what you want to know about your money.",
+  /*
+   * Opens on what the product is, in one sentence an answer engine can
+   * quote: the homepage said it nowhere outside the title and an eyebrow,
+   * and "What is Simple Balance?" found only a label. Here rather than in the
+   * hero, which stays the argument (`content.md` 5.16), and in the words
+   * `content.md` 1.6 gives the two ways to use it.
+   */
+  lede:
+    "Simple Balance is a free budget app and spending tracker. Use our cloud app in your " +
+    "browser, or self-host it, on a computer you control. Pick the job you came to do: each " +
+    "one has a plain guide that works with any tool, and ends with how to do it here.",
+  /** Before the guide's own title, under each card. */
+  guideLabel: "The guide:",
+} as const;
+
+export const jobs: readonly Job[] = [
+  {
+    guide: "track-your-spending",
+    covers: ["categories"],
+    title: "See where your money actually goes",
+    body:
+      "Bring in your statements and give each payment a category. Overview then shows what " +
+      "every category cost you, biggest first.",
+  },
+  {
+    guide: "make-a-budget",
+    covers: ["budgets"],
+    title: "Make a budget you'll keep",
+    body:
+      "Set an amount for each category and watch what's left as the month goes. What you don't " +
+      "spend can carry into next month, so a careful month isn't wasted.",
+  },
+  {
+    guide: "sinking-funds",
+    covers: ["recurring"],
+    title: "Get ready for the bills you can see coming",
+    body:
+      "Car insurance in June, gifts in December. A budget can save toward a date a little each " +
+      "month, and a bill that repeats turns up when it's due, waiting for you to okay it.",
+  },
+  {
+    guide: "find-your-subscriptions",
+    covers: ["payees"],
+    title: "Find the subscriptions you forgot",
+    body:
+      "Everyone you've paid is on one list, with everything you've paid them. That's where a " +
+      "renewal you forgot about shows up.",
+  },
+  {
+    guide: "budget-with-a-credit-card",
+    covers: [],
+    title: "Use a credit card without the surprise",
+    body:
+      "A card purchase counts the day you make it. Paying the card off is a transfer between two " +
+      "of your own accounts, so the same groceries never count twice.",
+  },
+  {
+    guide: "net-worth",
+    covers: ["all-accounts-one-page"],
+    title: "Know whether you're getting ahead",
+    body:
+      "Add up what you own, take away what you owe, across every account, and watch that one " +
+      "number month by month in Reports.",
+  },
+] as const;
 
 /**
  * The first section's own heading: the pain, stated once.
@@ -298,6 +479,22 @@ export const proofs: readonly Proof[] = [
     ],
   },
 ] as const;
+
+/**
+ * The words in the drawing beside the correction card, which has no
+ * screenshot because what it promises is something absent from a screen.
+ *
+ * A payment typed as $42.00 that should have been $4.20, and the history that
+ * stays with it once it's fixed. The figures are invented and the drawing is
+ * a drawing: it shows the idea, and the card's own words carry the claim.
+ */
+export const correctionArt = {
+  payee: "Corner Cafe",
+  category: "Eating out",
+  was: "$42.00",
+  now: "$4.20",
+  history: "Was $42.00 until Oct 3",
+} as const;
 
 /**
  * The everyday section's own heading. Here rather than in the JSX, for the
@@ -418,15 +615,34 @@ export const agents = {
   eyebrow: "If you use an AI assistant",
   title: "Ask a question instead of hunting for the answer.",
   body:
-    "Connect an AI assistant and it reads the same records you do. Ask it when you last paid " +
+    "Connect an AI assistant to Simple Balance and it reads the same records you do. Ask it when you last paid " +
     "the electric bill, or what a store has cost you this year. You decide how far it goes: " +
     "reading only, or allowed to queue things up for you to approve, or allowed to make the " +
     "change itself. Settings lists what each assistant can do, and cuts an assistant off when " +
     "you want it gone.",
+  /** Who is speaking, on each side of the exchange. */
+  you: "You",
+  assistant: "Assistant",
+  /**
+   * What an assistant's own app shows while it works and once it's done. The
+   * exchange is drawn as a chat with a model, which takes a moment and says
+   * what it did, rather than as an answer that appears the instant you ask.
+   */
+  thinking: "Thinking",
+  thought: "Thought for 4 seconds",
+  /**
+   * The tools it calls, by their names on Simple Balance's MCP server, in the
+   * order a model would need them: the payees first, to learn who the
+   * electric company is, then that payee's transactions. Both are read-only
+   * tools in the application's `src/server/mcp.ts` at 0.2.1; a tool renamed
+   * there makes this picture describe something the product can't do.
+   */
+  connector: "Simple Balance",
+  tools: ["list_payees", "list_transactions"],
   sample: [
     { kind: "prompt", text: "What day did I pay the electric bill last month?" },
-    { kind: "out", text: "  August 12, to Meridian Power, out of checking." },
-    { kind: "out", text: "  The one before that was July 14." },
+    { kind: "out", text: "August 12, to Meridian Power, out of checking." },
+    { kind: "out", text: "The one before that was July 14." },
   ],
 } as const;
 
@@ -457,9 +673,24 @@ export const privacy = {
   covers: ["own-your-data"],
   eyebrow: "Your records",
   title: "Your records stay yours.",
+  /*
+   * "Self-host it" and "our cloud app" are the owner's words for the two ways
+   * to run it, replacing "run it on your own computer" and "if we run it for
+   * you". `content.md` 1.3 keeps "self-host" off this page unless the
+   * sentence says what it means on the spot, which "on a computer you
+   * control" does.
+   *
+   * "Nobody else has a copy" was the promise, and it was wider than the
+   * policy: a copy hosted on Oracle Cloud or AWS, which the docs walk people
+   * through, sits on their disks. What the policy does support is that we
+   * never see it. The address stays out, because `site.appUrl` is the one
+   * place this module writes it (`tests/copy.test.ts`); "our cloud app" is
+   * the name the docs use beside it.
+   */
   body:
-    "Run it on your own computer and nobody else has a copy. If we run it for you, your records " +
-    "live with us, and our privacy policy spells out exactly what we keep and who can reach it.",
+    "Self-host it, on a computer you control, and we never see your records. If you use our " +
+    "cloud app, your records live with us, and our privacy policy spells out exactly what we " +
+    "keep and who can reach it.",
   points: [
     "Pull every transaction out as a spreadsheet any time you want. We never hold your records back to keep you paying.",
     "No analytics in the product itself. On the free plan the ads bring Google's script with them. Premium and your own copy have neither.",
@@ -484,7 +715,12 @@ export const privacy = {
  */
 export const plans = {
   eyebrow: "Plans",
-  title: "The whole product is free.",
+  /*
+   * "The whole product is free." read as strange for a heading: true, and
+   * leaving the reader to work out what the catch is. This says the catch,
+   * which is the honest version of the same claim.
+   */
+  title: "Start free. Pay only for more accounts or no ads.",
   body:
     "Free gives you everything Simple Balance does, for three accounts you can use at once, " +
     "with ads on the page. Premium is $3 a month or $30 a year, and takes away both the limit " +

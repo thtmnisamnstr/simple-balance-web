@@ -5,10 +5,11 @@ import { site } from "@/content/home";
 import { notFound } from "next/navigation";
 import { postsByAuthor } from "@/content/collections";
 import { authors, initialsOf, isAuthorKey } from "@/content/authors";
-import { section } from "@/content/sections";
-import { PostCard } from "@/components/post-card";
+import { blogIndex, section } from "@/content/sections";
+import { PostGrid } from "@/components/post-card";
 import { Breadcrumbs } from "@/components/breadcrumbs";
-import { AdBanner } from "@/components/ad-banner";
+import { BlogBanner, BlogBrowse } from "@/components/blog-header";
+import { sectionRobots } from "@/lib/indexing";
 
 const blog = section("blog");
 
@@ -39,7 +40,7 @@ export async function generateMetadata({
   return {
     title,
     description,
-    robots: blog.announced ? undefined : { index: false, follow: false },
+    robots: sectionRobots("blog"),
     alternates: feedAlternates(path),
     openGraph: openGraph({ title: `${title} — ${site.name}`, description, url: path }),
   };
@@ -54,7 +55,7 @@ export default async function AuthorPage({ params }: { params: Promise<{ author:
 
   return (
     <section className="section" aria-labelledby="author-title">
-      <div className="page page-narrow">
+      <div className="page">
         <Breadcrumbs
           trail={[
             { name: "Home", href: "/" },
@@ -63,40 +64,40 @@ export default async function AuthorPage({ params }: { params: Promise<{ author:
           ]}
         />
 
-        <div className="author-header">
-          {person.avatar ? (
-            <img
-              className="avatar avatar-large"
-              src={person.avatar}
-              alt=""
-              width={72}
-              height={72}
-            />
-          ) : (
-            <span className="avatar avatar-large avatar-initials" aria-hidden="true">
-              {initialsOf(person.name)}
-            </span>
-          )}
-          <div>
-            <h1 id="author-title" className="section-title">
-              {person.name}
-            </h1>
-            {person.title ? <p className="byline-title">{person.title}</p> : null}
+        <BlogBanner
+          id="author-title"
+          eyebrow={blogIndex.author.eyebrow}
+          title={person.name}
+          lede={person.title}
+          kind="author"
+          media={
+            person.avatar ? (
+              <img
+                className="avatar avatar-large"
+                src={person.avatar}
+                alt=""
+                width={72}
+                height={72}
+              />
+            ) : (
+              <span className="avatar avatar-large avatar-initials" aria-hidden="true">
+                {initialsOf(person.name)}
+              </span>
+            )
+          }
+        >
+          <p className="blog-banner-facts">
+            {blogIndex.author.count(posts.length)}
             {person.url ? (
-              <p className="entry-meta">
-                <a href={person.url}>More about {person.name}</a>
-              </p>
+              <>
+                <span aria-hidden="true"> · </span>
+                <a href={person.url}>{blogIndex.author.more(person.name)}</a>
+              </>
             ) : null}
-          </div>
-        </div>
-
-        <ul className="entry-list">
-          {posts.map((post) => (
-            <PostCard key={post.slug} post={post} />
-          ))}
-        </ul>
-
-        <AdBanner />
+          </p>
+        </BlogBanner>
+        <BlogBrowse />
+        <PostGrid posts={posts} level={2} />
       </div>
     </section>
   );

@@ -47,6 +47,16 @@
   status = 301
   force = true
 
+# A moved page, not a fallback. The guide was "Moving to your own copy" while
+# it covered one direction, and was renamed when it took in the other; the
+# pricing page linked the old address, and so may anybody who saved it. The
+# path is fixed, so it can never answer /ads.txt, which is what
+# `tests/export-shape.test.ts` holds every rule here to.
+[[redirects]]
+  from = "/docs/moving-to-your-own-copy/*"
+  to = "/docs/moving-between-cloud-and-self-hosted/"
+  status = 301
+
 [[headers]]
   for = "/*"
   [headers.values]
@@ -54,62 +64,44 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     X-Frame-Options = "DENY"
     Strict-Transport-Security = "max-age=31536000; includeSubDomains"
-    # `browsing-topics` is deliberately NOT denied, and this is a decision
-    # rather than an omission.
+    # `browsing-topics=()` because nothing on this origin is an ad. It is how
+    # an ad network asks the browser what a visitor is interested in, and the
+    # site carried AdSense until the ads moved to the application alone; it
+    # was left allowed then so the inventory earned what it could. With no ad
+    # here, allowing it would be an answer to a question nobody on this origin
+    # asks. app.smpl.money's own headers are the application's to decide.
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), browsing-topics=()"
+    # Every source is this origin. `script-src` carries 'unsafe-inline'
+    # because Next.js emits its hydration payload as inline <script> tags and
+    # a static export has no request in which to mint a nonce. Removing it
+    # means either build-time hashing of Next's bootstrap or dropping Next for
+    # this page; `docs/standards/operations.md` records both.
     #
-    # The header used to carry `interest-cohort=()`, which named FLoC — a
-    # proposal Chrome withdrew in 2022 and no shipping browser implements. It
-    # denied nothing and read as a stance. `browsing-topics` is its live
-    # successor and the same objection in substance: it is how an ad network
-    # asks the browser what a visitor is interested in. Denying it was measured
-    # and works — same five hosts, no violation, the ad request still goes out
-    # — so what it costs is relevance rather than fill.
-    #
-    # It is left allowed because this site's advertising is how it is paid for,
-    # and refusing the signal lowers what the inventory earns. The privacy
-    # policy says so plainly rather than the header quietly implying otherwise;
-    # a policy and a header disagreeing about what reaches Google is the
-    # failure this repository already writes down.
-    #
-    # The application's own default is the opposite, ads forced
-    # non-personalized unless an operator says a consent message decides, and
-    # this operator now does on both surfaces: `ADSENSE_CONSENT_MANAGED` is on
-    # here and there, with Google's European and US-state messages published,
-    # and the privacy policy says so (`docs/adsense.md` §5).
-    #
-    # The auction and measurement features (`join-ad-interest-group`,
-    # `run-ad-auction`, `attribution-reporting`, `private-aggregation`) are
-    # likewise left alone — they are what an ad is sold through, so denying
-    # them would cost fill rather than refuse a signal.
-    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=()"
-    # `script-src` carries 'unsafe-inline' because Next.js emits its hydration
-    # payload as inline <script> tags and a static export has no request in
-    # which to mint a nonce. Removing it means either build-time hashing of
-    # Next's bootstrap or dropping Next for this page;
-    # `docs/standards/operations.md` records both.
-    #
-    # **The five vendor hosts are observed, not documented.** A build carrying
-    # the AdSense snippet was served over local HTTPS as smpl.money and driven
-    # in Chromium across every page, and these are the hosts it reached, in the
-    # directives it needed them in. The application's own ads policy uses a
-    # blanket `https:` because it had no account to watch; this one does, and
-    # a named host is the difference between a policy that permits Google and
-    # one that permits anybody. `src/content/ads.ts` carries the same five with
-    # what each serves, and `tests/adsense.test.ts` fails if this line loses
-    # one or grows a wildcard.
-    #
-    # **The measurement was taken with the ad slot unfilled**, which is what
-    # Auto ads returns on this origin today. A filled ad draws its creative
-    # inside the `googleads.g.doubleclick.net` frame, where this policy does
-    # not reach, so the five should hold — but the first page that fills is
-    # the one to watch a console on before trusting that.
-    #
-    # Two absences are deliberate. `frame-src` names no 'self', because a
-    # directive that is present replaces `default-src` for frames and nothing
-    # same-origin is framed. `worker-src` and `child-src` are absent, so they
-    # fall back to `default-src 'self'` — the measurement says nothing needs
-    # them, and widening on a hunch is what the measurement exists to avoid.
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://pagead2.googlesyndication.com https://ep2.adtrafficquality.google; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://pagead2.googlesyndication.com https://ep1.adtrafficquality.google; font-src 'self'; connect-src 'self' https://pagead2.googlesyndication.com https://ep1.adtrafficquality.google; frame-src https://googleads.g.doubleclick.net https://ep2.adtrafficquality.google https://www.google.com; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; object-src 'none'; upgrade-insecure-requests"
+    # It named five of Google's hosts while the site loaded AdSense, each one
+    # measured rather than guessed. They went with the ads, and
+    # `tests/export-shape.test.ts` now fails for any host in this policy at
+    # all, which is the policy-level half of "no third-party script".
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; object-src 'none'; upgrade-insecure-requests"
+
+# The plain-Markdown copies of the docs and the learn guides, and /llms.txt
+# that lists them (`content.md` 5.15). Both are `noindex`: they are the same
+# words as the HTML pages, for readers that aren't browsers, and the HTML is
+# what a search engine should index and an answer engine cite. A path `*`
+# here stands for one segment, so `/*/*/index.md` is `/docs/<slug>/index.md`
+# and `/learn/<slug>/index.md` and nothing shallower; no HTML page ends in
+# `index.md`, so the noindex can't reach one. The content type is said rather
+# than left to Netlify's guess for an extension it may not know.
+[[headers]]
+  for = "/*/*/index.md"
+  [headers.values]
+    Content-Type = "text/markdown; charset=utf-8"
+    X-Robots-Tag = "noindex"
+
+[[headers]]
+  for = "/llms.txt"
+  [headers.values]
+    Content-Type = "text/plain; charset=utf-8"
+    X-Robots-Tag = "noindex"
 
 [[headers]]
   for = "/ads.txt"

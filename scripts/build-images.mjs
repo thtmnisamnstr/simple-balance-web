@@ -1,15 +1,15 @@
 /**
- * Render the site's generated images: the social card, and a cover per post.
+ * Render the site's generated images — the social card, a card per page, a
+ * cover per post and a narrow copy of each screenshot — and their record.
  *
  * A link to this site pasted into Slack, Bluesky, LinkedIn or a message shows
  * whatever `og:image` points at. With none, it shows a blank card — which for
  * a marketing page is the one place a picture is guaranteed to be seen.
  *
- * Drawn as SVG and rasterized with sharp, at build time, committed as a file.
+ * Drawn as SVG and rasterized with sharp, at build time, committed as files.
  * The alternative is Next's `ImageResponse`, which renders per request and so
- * is a server — the thing `output: "export"` exists to avoid. A static card is
- * also the right shape here: it says what the product is, and it does not
- * change per page.
+ * is a server — the thing `output: "export"` exists to avoid. It never
+ * deletes, so the image of a page or a screenshot that is gone goes by hand.
  *
  *   npm run build:images
  *
@@ -19,6 +19,8 @@ import sharp from "sharp";
 import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import matter from "gray-matter";
+import { format, resolveConfig } from "prettier";
+import { sections } from "../src/content/sections.ts";
 
 const W = 1200;
 const H = 630;
@@ -97,6 +99,20 @@ if (HEADLINE.length < 1 || HEADLINE.length > 2) {
 const HEADLINE_Y = HEADLINE.length === 2 ? [316, 396] : [356];
 const TAGLINE = pick("titleTagline");
 
+/*
+ * The card's price line, from the application's contract. It was the literal
+ * "Free, or $30 a year", the one price on the site no test could see, because
+ * `tests/app-facts.test.ts` sweeps markup and this is a picture.
+ *
+ * Reading the sources only keeps a card drawn today current. The headline,
+ * the tagline and this line are recorded under `site` in `SOURCES` with the
+ * hash of the file they were drawn into, and `tests/export-shape.test.ts`
+ * holds them to `home.ts` and the contract, so a homepage rewritten or a price
+ * moved without re-running this fails the way a stale page card does.
+ */
+const { prices } = JSON.parse(readFileSync("src/content/app-facts.json", "utf8")).facts.declared;
+const PRICE_LINE = `Free, or $${Number(prices.yearly)} a year`;
+
 const brand = readFileSync("src/styles/brand.css", "utf8");
 const darkAt = brand.indexOf("@media (prefers-color-scheme: dark)");
 if (darkAt < 0) throw new Error("brand.css has no dark block");
@@ -160,7 +176,7 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" 
   <text x="84" y="574" font-family="Inter, ui-sans-serif, system-ui, sans-serif"
         font-size="26" fill="${MUTED}">smpl.money</text>
   <text x="1116" y="574" text-anchor="end" font-family="Inter, ui-sans-serif, system-ui, sans-serif"
-        font-size="26" fill="${MUTED}">Free, or $30 a year</text>
+        font-size="26" fill="${MUTED}">${PRICE_LINE}</text>
 </svg>`;
 
 /*
@@ -275,8 +291,8 @@ function coverSvg(title, kicker, theme) {
  * green, and a phone goes on showing the old screen at 1200px while a desktop
  * shows the new one at 1600. `SOURCES` holds the hash of every original and
  * of the copy made from it, and `tests/home-page.test.tsx` fails when either
- * stops matching the files. It is written whole on every run, so it only
- * ever describes this run, and it sits outside `public/` because it is a
+ * stops matching the files. It is written whole on every run, after the page
+ * cards below, so it only ever describes this run, and it sits outside `public/` because it is a
  * record for this repository rather than something to publish.
  * ------------------------------------------------------------------ */
 const NARROW = 1200;
@@ -293,13 +309,142 @@ for (const file of readdirSync("public/screenshots").toSorted()) {
   copies[file] = { original: sha256(original), copy: sha256(derived) };
   narrowBytes += derived.length;
 }
-writeFileSync(
-  SOURCES,
-  `${JSON.stringify({ writtenBy: "scripts/build-images.mjs", width: NARROW, copies }, null, 2)}\n`,
-);
 console.log(
   `wrote ${Object.keys(copies).length} screenshots at ${NARROW}px ` +
-    `(${Math.round(narrowBytes / 1024)} KB total), and ${SOURCES}.`,
+    `(${Math.round(narrowBytes / 1024)} KB total).`,
+);
+
+/* ------------------------------------------------------------------ *
+ * A card per page that a person shares or a search result shows.
+ *
+ * Every page used to preview as the homepage's card, so a link to "How to
+ * budget with a credit card" pasted into a message showed "Your money should
+ * add up", and Google, which picks a result's thumbnail from `og:image`,
+ * was offered the same picture for every guide. It advises against exactly
+ * that: one generic image across pages, and text-heavy ones.
+ *
+ * Typographic, in the light palette, for the reason the site card is:
+ * whatever renders it has no theme to respect. It says where it is from, what
+ * the page is called and its address, and nothing a reader would have to
+ * check. Each card is recorded under `cards` in `SOURCES` with the title it
+ * was drawn from, and `tests/export-shape.test.ts` fails when a page has no
+ * card or its card names an old title, which is how a renamed page would go
+ * on previewing under its old name with every other check green.
+ * ------------------------------------------------------------------ */
+function cardSvg({ kicker, title, path }) {
+  const lines = wrap(title, 27);
+  if (lines.length > 3) throw new Error(`a card title runs past three lines: ${title}`);
+  const size = lines.length > 2 ? 60 : 68;
+  const step = size + 14;
+  const top = 360 - ((lines.length - 1) * step) / 2;
+  const body = lines
+    .map(
+      (line, index) =>
+        `<text x="84" y="${top + index * step}" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="${size}" font-weight="600" letter-spacing="-1.5" fill="${INK}">${escapeXml(line)}</text>`,
+    )
+    .join("\n  ");
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+  <defs>
+    <linearGradient id="mark" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="${FROM}"/>
+      <stop offset="1" stop-color="${TO}"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.18" cy="0" r="0.9">
+      <stop offset="0" stop-color="${WASH}" stop-opacity="0.75"/>
+      <stop offset="1" stop-color="${GROUND}" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="${W}" height="${H}" fill="${GROUND}"/>
+  <rect width="${W}" height="${H}" fill="url(#glow)"/>
+  <g transform="translate(84 76)">
+    <rect width="56" height="56" rx="17" fill="url(#mark)"/>
+    <g transform="translate(12.5 12.5) scale(1.29)" fill="none" stroke="${ON_ACCENT}"
+       stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/>
+      <path d="M12 18V6"/>
+    </g>
+    <text x="76" y="39" font-family="Inter, ui-sans-serif, system-ui, sans-serif"
+          font-size="30" font-weight="600" fill="${INK}">Simple Balance</text>
+  </g>
+  <text x="84" y="${top - size - 26}" font-family="Inter, ui-sans-serif, system-ui, sans-serif"
+        font-size="24" font-weight="600" letter-spacing="3" fill="${FROM}">${escapeXml(kicker.toUpperCase())}</text>
+  ${body}
+  <rect x="84" y="528" width="1032" height="1" fill="${LINE}"/>
+  <text x="84" y="574" font-family="Inter, ui-sans-serif, system-ui, sans-serif"
+        font-size="26" fill="${MUTED}">${escapeXml(`smpl.money${path}`)}</text>
+</svg>`;
+}
+
+const section = (key) => sections.find((entry) => entry.key === key);
+const pricingSource = readFileSync("src/content/pricing.ts", "utf8");
+const pricingTitle = pricingSource.match(/\n {2}title: "([^"]+)"/)?.[1];
+if (!pricingTitle) throw new Error("src/content/pricing.ts has no pricing title");
+const cardPages = [
+  { file: "pricing", kicker: "Pricing", title: pricingTitle, path: "/pricing/" },
+  ...["learn", "docs"].map((key) => ({
+    file: key,
+    kicker: section(key).label,
+    // "Docs: using the budget app" under a "DOCS" kicker says it twice. What
+    // follows the colon starts lowercase, and left so the card's headline
+    // read as a sentence with its first words cut off, so it's capitalized.
+    title: (section(key).metaTitle ?? section(key).title)
+      .replace(`${section(key).label}: `, "")
+      .replace(/^\p{Ll}/u, (first) => first.toUpperCase()),
+    path: section(key).href,
+  })),
+];
+for (const key of ["learn", "docs"]) {
+  for (const file of readdirSync(`content/${key}`).toSorted()) {
+    if (!file.endsWith(".md")) continue;
+    const { data } = matter(readFileSync(`content/${key}/${file}`, "utf8"));
+    const slug = file.replace(/\.md$/, "");
+    cardPages.push({
+      file: `${key}/${slug}`,
+      kicker: `${section(key).label} · ${data.section}`,
+      title: String(data.title),
+      path: `/${key}/${slug}/`,
+    });
+  }
+}
+mkdirSync("public/og/learn", { recursive: true });
+mkdirSync("public/og/docs", { recursive: true });
+const cards = {};
+let cardBytes = 0;
+for (const page of cardPages) {
+  const image = await sharp(Buffer.from(cardSvg(page)))
+    .png({ palette: true, quality: 90, compressionLevel: 9, effort: 10 })
+    .toBuffer();
+  writeFileSync(`public/og/${page.file}.png`, image);
+  cards[`og/${page.file}.png`] = page.title;
+  cardBytes += image.length;
+}
+const siteCard = {
+  file: "og.png",
+  headline: HEADLINE,
+  tagline: TAGLINE,
+  price: PRICE_LINE,
+  sha256: sha256(png),
+};
+/*
+ * Written the way `npm run format:check` reads it. `JSON.stringify` puts each
+ * item of an array on a line of its own and Prettier puts a short one on one
+ * line, so the first record to carry an array, the headline, failed the gate
+ * straight out of this script, and every run would have failed it again.
+ */
+writeFileSync(
+  SOURCES,
+  await format(
+    JSON.stringify(
+      { writtenBy: "scripts/build-images.mjs", width: NARROW, copies, site: siteCard, cards },
+      null,
+      2,
+    ),
+    { ...(await resolveConfig(SOURCES)), filepath: SOURCES },
+  ),
+);
+console.log(
+  `wrote ${cardPages.length} page cards (${Math.round(cardBytes / 1024)} KB total), and ${SOURCES}.`,
 );
 
 mkdirSync("public/covers", { recursive: true });

@@ -13,7 +13,8 @@
  * reaches its surface differently and all three read this one value.
  * `primaryNav` and `footer.links` in `src/content/home.ts` spread
  * `announcedSections()`, the section's own route files choose their `robots`
- * metadata from `section(key).announced`, and `src/app/sitemap.ts` walks the
+ * metadata with `sectionRobots(key)` from `src/lib/indexing.ts`, which reads
+ * `section(key).announced`, and `src/app/sitemap.ts` walks the
  * announced sections and the entries under each.
  *
  * **Two of those three were true and the link was not**, until `/docs` was
@@ -33,6 +34,12 @@ export type Section = {
   readonly href: string;
   readonly label: string;
   readonly title: string;
+  /**
+   * The index's title in a tab and a search result, where it differs from the
+   * heading on the page. "Money basics" is a fine heading under the site's
+   * header and says nothing to somebody comparing ten results.
+   */
+  readonly metaTitle?: string;
   readonly description: string;
   readonly announced: boolean;
   /** Shown where the collection is empty. */
@@ -41,8 +48,8 @@ export type Section = {
 
 export const sections: readonly Section[] = [
   /*
-   * First, so it leads the header. The docs are for somebody running the
-   * product and the learn articles are for somebody deciding whether to keep
+   * First, so it leads the header. The docs are for somebody using or running
+   * the product and the learn articles are for somebody deciding whether to keep
    * track of their money at all, which is the reader the homepage is written
    * for (`docs/standards/content.md` 1.3) and the one most likely to be
    * looking at the header.
@@ -52,6 +59,7 @@ export const sections: readonly Section[] = [
     href: "/learn/",
     label: "Learn",
     title: "Money basics",
+    metaTitle: "Budgeting and money basics, in plain guides",
     description:
       "Plain guides to tracking your spending, budgeting and saving. Each one says why it " +
       "matters, how to do it with any tool, and how to do it in Simple Balance.",
@@ -66,9 +74,10 @@ export const sections: readonly Section[] = [
     href: "/docs/",
     label: "Docs",
     title: "Documentation",
+    metaTitle: "Docs: using the budget app, and self-hosting it",
     description:
-      "How to run Simple Balance: installing it, importing your first statement, and what each " +
-      "part of the ledger does.",
+      "How to use Simple Balance: signing up, bringing in your first statement, what each part " +
+      "of the app does, and running your own copy.",
     announced: true,
     empty: {
       title: "No pages published yet",
@@ -97,6 +106,68 @@ export const sections: readonly Section[] = [
     },
   },
 ];
+
+/**
+ * The documentation index's own words: where to start, what each group of
+ * pages is for, and the steps of the one page a newcomer opens first.
+ *
+ * Here rather than in `src/app/docs/page.tsx` because `tests/copy.test.ts`
+ * reads every string this module exports, and it cannot read JSX. A page's
+ * title and summary are not here: they are the page's own frontmatter, so the
+ * index and the page cannot describe it two ways.
+ *
+ * `groups` is keyed by the names `content/docs/_sections.json` orders, and
+ * `starts` and `steps` by slug and heading id. `tests/docs-features.test.ts`
+ * holds all three to what exists, so a renamed page or heading fails there
+ * rather than leaving a starting point that leads nowhere.
+ */
+export const docsIndex = {
+  count: (pages: number, groups: number) => `${pages} pages in ${groups} sections`,
+  pages: (pages: number) => (pages === 1 ? "1 page" : `${pages} pages`),
+  startsLabel: "Where to start",
+  starts: [
+    { slug: "getting-started", kicker: "New here?" },
+    { slug: "importing-a-statement", kicker: "Have a statement from your bank?" },
+    { slug: "self-hosting", kicker: "Want to run it yourself?" },
+  ],
+  stepsLabel: "Steps in this guide",
+  steps: {
+    "getting-started": [
+      "sign-up",
+      "add-your-first-account",
+      "bring-in-your-spending",
+      "see-where-it-went",
+    ],
+  } as Readonly<Record<string, readonly string[]>>,
+  groups: {
+    "Get started": {
+      blurb:
+        "Your first visit to app.smpl.money, one step at a time, from signing up to seeing where your money went.",
+    },
+    "Using Simple Balance": {
+      blurb:
+        "Your accounts and transactions day to day: bringing in statements, sorting them, and the payments that repeat.",
+    },
+    "Budgets and reports": {
+      blurb:
+        "Plan what each month is for, save toward the bills you can see coming, and see where the money went.",
+    },
+    "Your account": {
+      blurb:
+        "How things look, what's been changed and when, connecting an AI assistant, your plan, and the limits you can meet.",
+    },
+    /*
+     * Last on purpose, and labeled for who it's for. Most readers use the
+     * version at app.smpl.money and never need these pages, and a reader who
+     * wandered in should be able to tell from the heading that they can leave.
+     */
+    "Self-hosting": {
+      audience: "For people who run their own copy",
+      blurb:
+        "Simple Balance also runs on machines you control. Try it on your own computer, run it for real on a server, keep it backed up, and move your transactions between your copy and the cloud app.",
+    },
+  } as Readonly<Record<string, { readonly blurb: string; readonly audience?: string }>>,
+} as const;
 
 /**
  * Where a documentation page can be edited.
@@ -128,6 +199,53 @@ export function section(key: SectionKey): Section {
 export function announcedSections(): readonly Section[] {
   return sections.filter((s) => s.announced);
 }
+
+/**
+ * The blog's own words: its front page, and the header over every other page
+ * that lists posts.
+ *
+ * Here rather than in the route files for the reason `content.md` 3.1 gives:
+ * `tests/copy.test.ts` reads this module, and it cannot read JSX. The
+ * numbers are functions so a count of one says "post" without each page
+ * spelling the plural out again.
+ */
+const plural = (count: number, word: string) => `${count} ${word}${count === 1 ? "" : "s"}`;
+
+export const blogIndex = {
+  eyebrow: "Simple Balance",
+  count: (posts: number, newest: string) => `${plural(posts, "post")}, the newest from ${newest}`,
+  feedsLabel: "Get new posts in a feed reader",
+  browseLabel: "Browse the blog",
+  topicsLabel: "Topics",
+  archiveLabel: "Archive",
+  featured: "Featured",
+  newest: "Newest",
+  more: "More posts",
+  part: (index: number, of: number) => `Part ${index} of ${of}`,
+  series: {
+    title: "Series",
+    blurb: "Posts written to be read in order, starting with part one.",
+    parts: (count: number) => plural(count, "part"),
+  },
+  tag: {
+    eyebrow: "Topic",
+    count: (posts: number) => plural(posts, "post"),
+  },
+  author: {
+    eyebrow: "Author",
+    count: (posts: number) => plural(posts, "post"),
+    more: (name: string) => `More about ${name}`,
+  },
+  archive: {
+    title: "Archive",
+    description: "Every post, by year.",
+    count: (posts: number, since: string) => `${plural(posts, "post")} since ${since}`,
+  },
+  older: {
+    title: "Older posts",
+    position: (page: number, pages: number) => `Page ${page} of ${pages}`,
+  },
+} as const;
 
 /**
  * What a tag is about, where saying so adds something.

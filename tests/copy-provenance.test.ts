@@ -39,10 +39,10 @@ describe("the copy's provenance", () => {
   it("records which pull the copy was accepted against", () => {
     expect(accepted.acceptedFor).toMatch(/^[0-9a-f]{40}$/);
     // The pull the snapshot now holds, not the one before it. `sync-from-app`
-    // accepts the copy in §3 and moves the snapshot's commit in §5, so an
-    // accept that is not run again after §5 records the previous pull, and the
+    // accepts the copy in §3 and moves the snapshot's commit in §7, so an
+    // accept that is not run again after §7 records the previous pull, and the
     // record says the copy was checked against a list it was not.
-    expect(accepted.acceptedFor, "run `npm run copy:accept` after the pull's §5").toBe(
+    expect(accepted.acceptedFor, "run `npm run copy:accept` after the pull's §7").toBe(
       pulled.source.commit,
     );
   });

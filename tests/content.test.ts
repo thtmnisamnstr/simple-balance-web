@@ -2,7 +2,6 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import {
   allEntries,
-  blogIndex,
   blogTags,
   bySection,
   neighbors,
@@ -61,14 +60,6 @@ describe("the content collections", () => {
     }
   });
 
-  it("separates featured posts from the rest without losing any", () => {
-    const { featured, rest } = blogIndex();
-    expect(featured.length + rest.length).toBe(allEntries("blog").length);
-    // A post cannot be in both halves.
-    const overlap = featured.filter((f) => rest.some((r) => r.slug === f.slug));
-    expect(overlap).toEqual([]);
-  });
-
   it("counts tags across posts", () => {
     const tags = blogTags();
     for (const { tag, count } of tags) {
@@ -92,8 +83,8 @@ describe.each(["docs", "learn"] as const)("the %s ordering", (collection) => {
   });
 
   it("sorts groups by _sections.json, not alphabetically", () => {
-    // The whole reason that file exists: "Install" belongs above "Reference",
-    // and alphabetically it is below it.
+    // The whole reason that file exists: "Using Simple Balance" belongs
+    // above "Self-hosting", and alphabetically it is below it.
     const order = (
       JSON.parse(readFileSync(`content/${collection}/_sections.json`, "utf8")) as {
         order: string[];

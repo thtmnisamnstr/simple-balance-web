@@ -15,7 +15,7 @@
  * `alt` is required and has to describe what the picture *shows*, not what
  * page it is. "Screenshot of the reports page" tells a reader who cannot see
  * it nothing they did not already have from the heading above it.
- * `docs/standards/web.md` 7.3.
+ * `docs/standards/web.md` 5.4.
  */
 export type ShotProps = {
   /** Base name under `public/screenshots`, without the theme or extension. */
@@ -28,15 +28,24 @@ export type ShotProps = {
   /**
    * How wide this shot renders, so the browser can pick a file.
    *
-   * Two layouts and therefore two values, because `sizes` that does not match
-   * the CSS is worse than none: the browser trusts it, picks from it, and
-   * gets the wrong file with no way for anyone to notice.
+   * One value per layout, because `sizes` that does not match the CSS is
+   * worse than none: the browser trusts it, picks from it, and gets the wrong
+   * file with no way for anyone to notice. Each value is the CSS's own
+   * arithmetic, the page's 1140px less its gutters, the frame around a shot
+   * and a column's share, and `tests/a11y.test.ts` holds each to the
+   * rendered page across eleven widths.
    *
-   * `full` is a shot that spans the page — 1024 CSS pixels at 1280.
-   * `half` is one of a pair, or the hero beside its text — about 530.
-   * Below `62rem` both collapse to one column and fill the page.
+   * `full` spans the page, as the hero's does: 1092 from 1140 up.
+   * `half` sits beside the claim it proves, in a column from `62rem`: 548.
+   * `pair` is one of the two screens under the feature grid: 528.
+   * `prose` is one inside an article or a doc, as wide as the text: 746.
+   *
+   * All of them said "92% of the window below `62rem`", and the pair is side
+   * by side from 912px, because its grid fits two 26rem columns wherever
+   * there's room rather than at a breakpoint. So a 2x screen between the two
+   * fetched the 1600px files for pictures 414px wide.
    */
-  readonly span?: "full" | "half";
+  readonly span?: "full" | "half" | "pair" | "prose";
 };
 
 /**
@@ -44,14 +53,17 @@ export type ShotProps = {
  *
  * Two candidates rather than a ladder. The originals are 1600px, which a
  * desktop genuinely uses; 1200 is what stops a 3x phone being handed four and
- * a half times the pixels it can show. A third rung would be twelve more
- * files to buy a saving nothing on this page is waiting for.
+ * a half times the pixels it can show. A third rung would be another file
+ * for every screenshot, to buy a saving nothing on this page is waiting for.
  */
 const NARROW = 1200;
 
 const SIZES = {
-  full: `(max-width: 62rem) 92vw, ${1024}px`,
-  half: `(max-width: 62rem) 92vw, ${560}px`,
+  full: "(max-width: 1140px) calc(100vw - 2rem), 1092px",
+  half: "(max-width: 62rem) calc(100vw - 3.75rem), (max-width: 1140px) calc(57.5vw - 6.75rem), 548px",
+  // 56.99, not 57: at 57rem exactly the two already sit side by side.
+  pair: "(max-width: 56.99rem) calc(100vw - 2rem), (max-width: 1140px) calc(50vw - 2.5rem), 528px",
+  prose: "(max-width: 48rem) calc(100vw - 2rem), 746px",
 } as const;
 
 /** `dashboard-light` -> both candidates, widest last. */
@@ -83,5 +95,37 @@ export function Shot({ name, alt, width, height, priority = false, span = "full"
         className="shot-img"
       />
     </picture>
+  );
+}
+
+const OPEN_LABEL = "Open this screenshot full size";
+
+/**
+ * A screenshot inside an article or a doc, which opens full size.
+ *
+ * On a phone a 1600px capture is drawn about 360px wide, the application's
+ * own words in it are three pixels tall, and the guides point at details in
+ * them: "the $600 one here", a checkbox by name. A reader there can now tap
+ * the picture and pinch the file itself.
+ *
+ * Two links, one per theme, because the page has no script to choose and a
+ * reader in dark mode tapping a dark picture should not be handed the light
+ * file. The one for the other scheme is `display: none`, so a keyboard or a
+ * screen reader meets exactly one. The link is laid over the picture rather
+ * than wrapped around it, because `<picture>` may hold only its sources and
+ * its image, and an `<a>` around it would be a second picture element's worth
+ * of markup to keep in step with this one.
+ */
+export function ProseShot(props: Omit<ShotProps, "span" | "priority">) {
+  return (
+    <div className="shot-open">
+      <Shot {...props} span="prose" />
+      <a className="shot-open-link shot-open-light" href={`/screenshots/${props.name}-light.webp`}>
+        <span className="visually-hidden">{OPEN_LABEL}</span>
+      </a>
+      <a className="shot-open-link shot-open-dark" href={`/screenshots/${props.name}-dark.webp`}>
+        <span className="visually-hidden">{OPEN_LABEL}</span>
+      </a>
+    </div>
   );
 }

@@ -7,6 +7,8 @@ import * as legalContent from "@/content/legal";
 import * as notFoundContent from "@/content/not-found";
 import * as sectionsContent from "@/content/sections";
 import * as learnContent from "@/content/learn";
+import * as learnArtContent from "@/content/learn-art";
+import * as llmsContent from "@/content/llms";
 import { formatDate } from "@/lib/format";
 import { openGraph } from "@/app/open-graph";
 import NotFound, { metadata as notFoundMetadata } from "@/app/not-found";
@@ -48,8 +50,13 @@ const all = strings(content);
  * line gives a line number, which is what makes a failure actionable, and
  * it cannot see a phrase Markdown has wrapped: a blog post carried "your
  * own current\naccount", which a reader sees as "current account" and a
- * per-line check never matches. So the whole file is swept again with its
+ * per-line check never matches. So each paragraph is swept again with its
  * whitespace collapsed, at the cost of a line number on that one.
+ *
+ * **A paragraph, not the whole file.** Collapsing the file joined a heading
+ * to the paragraph under it, and "### Turn on carrying" above "On
+ * **Budgets**, …" read as "carrying On", which no reader ever sees: a blank
+ * line is where a sentence ends. `code/testing.md` 2.5.
  *
  * `view` rewrites each file before either pass reads it, and has to leave
  * every line where it was so the line numbers still point at the source.
@@ -65,7 +72,10 @@ function inMarkdown(
       const hit = pattern.exec(line);
       if (hit) offenders.push(`${file.path}:${index + 1} ${hit[0]}`);
     }
-    const wrapped = pattern.exec(code.replaceAll(/\s+/g, " "));
+    const wrapped = code
+      .split(/\n[^\S\n]*\n/)
+      .map((paragraph) => pattern.exec(paragraph.replaceAll(/\s+/g, " ")))
+      .find((hit) => hit !== null);
     if (wrapped && !offenders.some((o) => o.startsWith(file.path))) {
       offenders.push(`${file.path} (wrapped across lines) ${wrapped[0]}`);
     }
@@ -221,11 +231,10 @@ describe("the homepage copy", () => {
   });
 
   it("has no doubled spaces or stray whitespace", () => {
-    // The terminal sample is preformatted: its leading spaces are the
-    // indentation of a command's output and are the one place in the content
-    // module where repeated whitespace is the content.
+    // The assistant's sample had an exemption here while it was a terminal,
+    // whose output lines were indented. It is a chat now, and every string in
+    // the module is held to the same rule.
     const offenders = all
-      .filter(([path]) => !path.startsWith("content.agents.sample"))
       .filter(([, text]) => /\s\s/.test(text) || text !== text.trim())
       .map(([path]) => path);
     expect(offenders).toEqual([]);
@@ -263,7 +272,10 @@ describe("the claim this site must never make", () => {
    * narrowed rather than obeyed, so this matches only the affirmative
    * constructions, where the product is the thing doing the fetching.
    *
-   * It covers the pricing page as well as the homepage, because 1.5 does.
+   * It covers the pricing page as well as the homepage, because 1.5 does,
+   * and the words `/llms.txt` opens on, which nothing else read. Not the
+   * docs: their "doesn't connect to your bank" is the denial, and the first
+   * pattern would refuse it.
    */
   const IMPLIES_A_CONNECTION = [
     // `link(s|ed|ing)?`, not `linked?` — the latter is "linke" with an
@@ -278,7 +290,11 @@ describe("the claim this site must never make", () => {
     /\bset\s+it\s+and\s+forget\s+it\b/i,
   ];
 
-  const everything = [...strings(content), ...strings(pricingContent, "pricing")];
+  const everything = [
+    ...strings(content),
+    ...strings(pricingContent, "pricing"),
+    ...strings(llmsContent, "llms"),
+  ];
 
   it("has both pages' copy to check", () => {
     expect(everything.length).toBeGreaterThan(80);
@@ -391,8 +407,8 @@ describe("the reader is American", () => {
 
   /**
    * Every string a reader sees: the two marketing pages, the legal pages, the
-   * 404, the sections' own headings and empty states, and the box closing
-   * every learn article.
+   * 404, the sections' own headings and empty states, the box closing
+   * every learn article, and every word the learn articles' pictures show.
    */
   const readerFacing = [
     ...strings(content),
@@ -401,6 +417,7 @@ describe("the reader is American", () => {
     ...strings(notFoundContent, "not-found"),
     ...strings(sectionsContent, "sections"),
     ...strings(learnContent, "learn"),
+    ...strings(learnArtContent, "learn-art"),
   ];
 
   function inCopy(pattern: RegExp): readonly string[] {
@@ -438,7 +455,7 @@ describe("the reader is American", () => {
 
   it("catches the words it is for, and only those", () => {
     // Fixtures, so the patterns are tested directly rather than through
-    // whatever the page happens to say today. `code/testing.md` 2.6.
+    // whatever the page happens to say today. `code/testing.md` 2.7.
     const british = [
       "Set a limit and tick the box.",
       "The tickbox carries the remainder forward.",
@@ -520,7 +537,9 @@ describe("the reader is American", () => {
     // The page's own block is what used to drop it, so an article-shaped
     // block is the case worth asserting.
     expect(openGraph({ ...page, type: "article" }).locale).toBe("en_US");
-    expect(readFileSync("src/app/layout.tsx", "utf8")).toContain('<html lang="en-US">');
+    // The tag's other attribute, `suppressHydrationWarning`, is for browser
+    // extensions and says nothing about the language, so only `lang` is held.
+    expect(readFileSync("src/app/layout.tsx", "utf8")).toMatch(/<html lang="en-US"[\s>]/);
   });
 
   it("tells a feed reader the same", async () => {
@@ -585,7 +604,7 @@ describe("the reader is American", () => {
      * freely and should — they are prose for somebody reading closely, not
      * copy for somebody skimming. The legal pages and the 404 are copy, and
      * so is every post and docs page under `content/`, which `content.md`
-     * 1.6 names and this used to leave unread.
+     * 1.5 names and this used to leave unread.
      *
      * The Markdown is read for the character and then for what the pipeline
      * makes into one. Reading only the character passed "One more thing --
@@ -603,7 +622,7 @@ describe("the reader is American", () => {
     /*
      * Fixtures, compiled with the site's own remark plugins, so the pattern
      * above is held to the renderer rather than to a reading of its source.
-     * `code/testing.md` 2.6. A change to `prose.tsx`, such as
+     * `code/testing.md` 2.7. A change to `prose.tsx`, such as
      * `dashes: "oldschool"`, fails here instead of leaving the check
      * describing a pipeline that has gone.
      */

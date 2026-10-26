@@ -5,26 +5,33 @@ Two sets, and neither restates the other.
 - **[`web.md`](web.md)** — the design. Tokens, rhythm, type, color, images,
   states and the keyboard. What the page looks like and why.
 - **[`content.md`](content.md)** — the words, and the content pipeline behind
-  `/blog`, `/docs` and `/learn`. Voice, claims, frontmatter, and what a writer may rely
-  on.
+  `/blog`, `/docs` and `/learn`. Voice, claims, frontmatter, and what a writer
+  may rely on.
 - **[`operations.md`](operations.md)** — the build and the deployment. Netlify,
   the static export, DNS, and the one file whose absence costs money.
 - **[`code/`](code/index.md)** — the source. TypeScript strictness, components,
-  tests, comments, and the linter and formatter settings.
+  tests, comments, Next's surprises, and the linter and formatter settings.
 
 Two documents sit outside the standards and are the first things to read when
 picking this up:
 
 - **[`../roadmap.md`](../roadmap.md)** — everything known to be outstanding,
   each item with why it is not done and what done looks like.
-- **[`../adsense.md`](../adsense.md)** — how ads reach the application, why
-  this site's `ads.txt` authorizes them, and the one mistake that costs revenue
-  with no symptom.
+- **[`../adsense.md`](../adsense.md)** — what this site still owns of the
+  application's advertising: why its `ads.txt` authorizes the ads on
+  `app.smpl.money` and has to stay now that none run here, and the one mistake
+  that costs revenue with no symptom.
 
-Eight skills in `../../.claude/skills/` turn the recurring work into
-procedures: syncing from the application, preparing a branch for merge,
-updating dependencies, writing content, keeping the guides true, reviewing
-the design, reviewing the legal pages, and optimizing what ships.
+Eleven skills in `../../.claude/skills/` turn the recurring work into
+procedures: `sync-from-app` brings the site to a new application release,
+the docs included; `merge-prep` prepares a branch for merge; `write-content`
+writes a post, a docs page or a learn guide; `draw-and-animate` makes a
+picture and its motion; and `update-dependencies`, `legal-review`,
+`design-review`, `seo-review`, `aeo-review`, `optimize` and `guides-update`
+each bring one part of the site back to true. `merge-prep` runs those last
+seven itself, in that order, because each can change what the ones after it
+look at, so before a merge it is the only one to ask for. The README's "Which
+skill to run" says which to reach for when.
 
 `../../AGENTS.md` sits above all of them and holds the invariants — the rules
 that, broken, make this site wrong rather than untidy. Where a guide and
@@ -40,9 +47,21 @@ it.
   behind it — WCAG, a wire format, a vendor's terms, or `AGENTS.md`.
 - **House.** A settled preference. A violation is untidiness, not a defect.
 - **Contested.** Recorded rather than resolved, with both sides.
+- **Guidance.** How the work is usually done well here: a recipe, a
+  vocabulary or a shape to copy, with its reason. Departing from it is a
+  judgment, not a defect. It still argues, still names the alternative, and
+  still closes with what checks it, which is usually `human`.
 
 And every rule says **what the obvious alternative was and why it is wrong**.
 That sentence is what makes a rule survive somebody who disagrees with it.
+
+**Guidance is the newest label, and it exists so the guides can teach without
+tightening.** With only the first three, a recipe had to be written as a
+rule, and a recipe written as House reads as something a reviewer enforces
+line by line. The owner asked for plenty of guidance on what to do without
+the guides becoming more restrictive, and the label is how both are true. A
+paragraph inside a Binding or House section can carry it too, by name, when
+the section's rule is fixed and the way of meeting it is not.
 
 `*Checked by:*` names a test, or says `human` and explains why no test can
 decide it. "Not checked" with no reason is not an acceptable state for a rule;

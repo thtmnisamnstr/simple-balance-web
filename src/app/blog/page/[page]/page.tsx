@@ -4,11 +4,13 @@ import { openGraph } from "@/app/open-graph";
 import { site } from "@/content/home";
 import { notFound } from "next/navigation";
 import { allEntries, paginate, POSTS_PER_PAGE } from "@/content/collections";
-import { section } from "@/content/sections";
-import { PostCard } from "@/components/post-card";
+import { blogIndex, section } from "@/content/sections";
+import { PostGrid } from "@/components/post-card";
 import { Pagination } from "@/components/pagination";
 import { Breadcrumbs } from "@/components/breadcrumbs";
-import { AdBanner } from "@/components/ad-banner";
+import { BlogBanner, BlogBrowse } from "@/components/blog-header";
+import { BlogFront } from "@/components/blog-front";
+import { sectionRobots } from "@/lib/indexing";
 
 const blog = section("blog");
 
@@ -43,7 +45,7 @@ export async function generateMetadata({
   return {
     title,
     description: blog.description,
-    robots: blog.announced ? undefined : { index: false, follow: false },
+    robots: sectionRobots("blog"),
     alternates: feedAlternates(canonical),
     openGraph: openGraph({
       title: `${title} — ${site.name}`,
@@ -61,9 +63,14 @@ export default async function BlogPage({ params }: { params: Promise<{ page: str
   const result = paginate(allEntries("blog"), number);
   if (result.page !== number) notFound();
 
+  // Page one is the front page at a second address, and its canonical says
+  // so, so it shows the front page. A plainer list here was a second design
+  // of one page that only a reader who typed the URL would ever see.
+  if (number === 1) return <BlogFront />;
+
   return (
     <section className="section" aria-labelledby="blog-title">
-      <div className="page page-narrow">
+      <div className="page">
         <Breadcrumbs
           trail={[
             { name: "Home", href: "/" },
@@ -71,21 +78,16 @@ export default async function BlogPage({ params }: { params: Promise<{ page: str
             { name: `Page ${number}`, href: `/blog/page/${number}/` },
           ]}
         />
-        <h1 id="blog-title" className="section-title">
-          {blog.title}
-        </h1>
-        <ul className="entry-list">
-          {result.items.map((post) => (
-            <PostCard key={post.slug} post={post} />
-          ))}
-        </ul>
+        <BlogBanner id="blog-title" eyebrow={blog.label} title={blogIndex.older.title} kind="older">
+          <p className="blog-banner-facts">{blogIndex.older.position(result.page, result.pages)}</p>
+        </BlogBanner>
+        <BlogBrowse />
+        <PostGrid posts={result.items} level={2} />
         <Pagination
           page={result.page}
           pages={result.pages}
           hrefFor={(n) => (n === 1 ? blog.href : `/blog/page/${n}/`)}
         />
-
-        <AdBanner />
       </div>
     </section>
   );

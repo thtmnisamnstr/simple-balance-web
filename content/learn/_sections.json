@@ -1,4 +1,4 @@
 {
-  "//": "Group order on /learn/. A group not named here sorts last, so adding one is a one-file change. Article order within a group comes from each file's `order`. The order is a reading order for somebody starting from nothing: see where the money goes, plan it, keep it honest, then the bigger picture.",
+  "//": "Group order on /learn/. Every group is named here or the grouping test fails, and a new one also needs its words in `learnIndex.groups` (src/content/learn.ts). Article order within a group comes from each file's `order`. The order is a reading order for somebody starting from nothing: see where the money goes, plan it, keep it honest, then the bigger picture.",
   "order": ["Start here", "Budgeting", "Keeping it accurate", "The bigger picture"]
 }

@@ -2,9 +2,8 @@ import { createReadStream, existsSync, readdirSync, statSync } from "node:fs";
 import { createServer, type Server } from "node:http";
 import { extname, join, normalize } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { chromium, type Browser } from "playwright";
+import { chromium, type Browser, type Page } from "playwright";
 import AxeBuilder from "@axe-core/playwright";
-import { adsense } from "@/content/ads";
 
 /**
  * Accessibility, against the built pages in a real browser.
@@ -246,15 +245,113 @@ function ring(): string {
   return `${style.outlineStyle} ${style.outlineWidth} ${style.outlineColor}`;
 }
 
-/** Open a built page with the ad loader blocked, and read something off it. */
+/** One Tab stop: what it is, its ring, and whether it sits on the art panel. */
+interface Stop {
+  readonly name: string;
+  readonly ring: string;
+  readonly color: string;
+  readonly onPanel: boolean;
+}
+
+/**
+ * Every stop the Tab key reaches on the page, in order, until focus leaves
+ * the document or comes back round to the skip link. One press at a time,
+ * because each stop is wherever the last press left focus.
+ */
+async function tabStops(page: Page, stops: readonly Stop[] = []): Promise<readonly Stop[]> {
+  if (stops.length >= 120) return stops;
+  await page.keyboard.press("Tab");
+  const read = await page.evaluate(() => {
+    const element = document.activeElement;
+    if (!element || element === document.body) return null;
+    const style = getComputedStyle(element);
+    return {
+      name: `${element.tagName.toLowerCase()} "${(element.textContent ?? "").trim().slice(0, 30)}"`,
+      ring: `${style.outlineStyle} ${style.outlineWidth} ${style.outlineColor}`,
+      color: style.outlineColor,
+      onPanel: element.closest(".art-panel, .home-hero") !== null,
+      first: element === document.querySelector(".skip-link"),
+    };
+  });
+  if (!read || (read.first && stops.length > 0)) return stops;
+  const { first: _first, ...stop } = read;
+  return tabStops(page, [...stops, stop]);
+}
+
+/** WCAG's relative luminance of a color written `rgb(…)` or `#rrggbb`. */
+function luminance(color: string): number {
+  const channels = color.startsWith("#")
+    ? [1, 3, 5].map((at) => Number.parseInt(color.slice(at, at + 2), 16))
+    : color
+        .match(/\d+(?:\.\d+)?/g)!
+        .slice(0, 3)
+        .map(Number);
+  const [r, g, b] = channels.map((channel) => {
+    const value = channel / 255;
+    return value <= 0.03928 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+  });
+  return 0.2126 * r! + 0.7152 * g! + 0.0722 * b!;
+}
+
+/** WCAG's contrast ratio between two colors. */
+function contrast(one: string, two: string): number {
+  const [light, dark] = [luminance(one), luminance(two)].toSorted((a, b) => b - a);
+  return (light! + 0.05) / (dark! + 0.05);
+}
+
+/** Whether the docs sidebar is open in the markup, and whether it shows. */
+function readSidebar() {
+  const link = document.querySelector(".docs-nav a[aria-current='page']")!;
+  return {
+    open: document.querySelector(".docs-nav-details")!.hasAttribute("open"),
+    // Not its height: a closed `<details>` hides with `content-visibility`,
+    // and a script asking for a size gets one anyway.
+    shown: link.checkVisibility(),
+  };
+}
+
+/**
+ * Each screenshot's rendered width beside the width its `sizes` names here,
+ * measured by the browser rather than by arithmetic in this file, so units
+ * and `calc()` are read the way the browser picking the file reads them.
+ */
+function readShotSizes() {
+  return [...document.querySelectorAll<HTMLImageElement>("img.shot-img")].map((image) => {
+    // Top-level commas only: a `min()` or a `clamp()` holds its own.
+    const entries: string[] = [];
+    let depth = 0;
+    let start = 0;
+    for (let index = 0; index < image.sizes.length; index += 1) {
+      const char = image.sizes[index];
+      if (char === "(") depth += 1;
+      else if (char === ")") depth -= 1;
+      else if (char === "," && depth === 0) {
+        entries.push(image.sizes.slice(start, index).trim());
+        start = index + 1;
+      }
+    }
+    entries.push(image.sizes.slice(start).trim());
+    const length = entries
+      .map((entry) => /^(\([^)]*\))\s+(.+)$/.exec(entry) ?? ["", "", entry])
+      .find(([, condition]) => !condition || matchMedia(condition).matches)?.[2];
+    // A length the browser can't read leaves the probe zero wide, which
+    // fails the comparison rather than passing it.
+    const probe = document.createElement("div");
+    probe.style.cssText = `position: absolute; width: ${length}`;
+    document.body.append(probe);
+    const said = probe.getBoundingClientRect().width;
+    probe.remove();
+    return {
+      src: image.getAttribute("src")!,
+      rendered: image.getBoundingClientRect().width,
+      said,
+    };
+  });
+}
+
 async function measure<T>(path: string, read: () => T, width = 1280): Promise<T> {
   const context = await browser.newContext({ viewport: { width, height: 900 } });
   const page = await context.newPage();
-  // The ad loader changes heights while it decides, and nothing here is
-  // about the ad but the one test that blocks it on purpose.
-  await page.route(/googlesyndication|doubleclick|adtrafficquality|www\.google\.com/, (r) =>
-    r.abort(),
-  );
   await page.goto(`http://localhost:${PORT}${path}`);
   await page.waitForLoadState("networkidle").catch(() => {});
   const result = await page.evaluate(read);
@@ -337,6 +434,45 @@ describe.skipIf(SKIPPED)("layout", () => {
   }, 30_000);
 
   /*
+   * `sizes` is the width the browser picks a screenshot's file by, before it
+   * has laid anything out, so one the CSS disagrees with is trusted and wrong
+   * with nothing to see. The two screens under the feature grid sit side by
+   * side from 912px, earlier than the 62rem every `sizes` assumed, so a 2x
+   * screen there fetched the 1600px files for pictures 414px wide; the hero
+   * shot became as wide as the page and still said 1024; and a docs or
+   * learn picture said 92% of the window where the text column stops at 746.
+   *
+   * Never more than 5% under, which is a blurry picture, and never more than
+   * a fifth over, which is bytes. The most over is the docs sidebar
+   * narrowing the column between 62rem and about 69rem, which one `prose`
+   * value can't follow, at about 16%.
+   */
+  it("tells the browser how wide each screenshot renders", async () => {
+    const views = [360, 390, 600, 768, 800, 900, 960, 1000, 1100, 1280, 1440].flatMap((width) =>
+      ["/", "/docs/accounts/", "/learn/balance-your-checking-account/"].map((path) => ({
+        path,
+        width,
+      })),
+    );
+    const shots = await Promise.all(
+      views.map(({ path, width }) => measure(path, readShotSizes, width)),
+    );
+    const measured = views.flatMap((view, index) =>
+      shots[index]!.map((shot) => ({ ...view, ...shot, ratio: shot.said / shot.rendered })),
+    );
+    expect(measured.length, "no screenshot measured, so this checks nothing").toBeGreaterThan(60);
+    expect(
+      measured
+        .filter(({ ratio }) => ratio < 0.95 || ratio > 1.2)
+        .map(
+          ({ path, width, src, rendered, said }) =>
+            `${path} at ${width}px: ${src} renders ${Math.round(rendered)}, ` +
+            `its sizes says ${Math.round(said)}`,
+        ),
+    ).toEqual([]);
+  }, 60_000);
+
+  /*
    * The docs search is the one field on the site, and the shared focus rule
    * named links, buttons and `[tabindex]` but not `input`, so it fell back to
    * the browser's own blue ring while every link beside it wore the theme's.
@@ -359,43 +495,311 @@ describe.skipIf(SKIPPED)("layout", () => {
   }
 
   /*
+   * The same gap twice more: the pricing questions are `<summary>`s, and a
+   * table that scrolls inside its box on a phone is a stop the browser makes
+   * by itself, and neither was on the shared rule's list of elements, so
+   * both wore the browser's blue ring. Every stop, at 390, where the table
+   * scrolls.
+   */
+  for (const scheme of ["light", "dark"] as const) {
+    it(`rings every stop on the pricing page the way it rings a link (${scheme})`, async () => {
+      const context = await browser.newContext({
+        colorScheme: scheme,
+        viewport: { width: 390, height: 900 },
+      });
+      const page = await context.newPage();
+      await page.goto(`http://localhost:${PORT}/pricing/`);
+      await page.waitForLoadState("networkidle").catch(() => {});
+      const stops = await tabStops(page);
+      await context.close();
+      const link = stops.find((stop) => stop.name.startsWith("a "))!.ring;
+      expect(link).toMatch(/^solid /);
+      expect(stops.length, "too few stops to say anything").toBeGreaterThan(20);
+      expect(stops.filter((stop) => stop.ring !== link).map((stop) => stop.name)).toEqual([]);
+    }, 60_000);
+  }
+
+  /*
+   * The art panel is dark in both themes, and its controls wore the page's
+   * ring: green that measures 7:1 on the panel in dark and 2.4:1 in light,
+   * under the 3:1 a focus indicator needs. axe's contrast rule doesn't read
+   * outlines, so the audit above passed it on every page.
+   */
+  it("draws the ring on the art panel at 3:1 against it, in light", async () => {
+    const context = await browser.newContext({ colorScheme: "light" });
+    const onPanel = (
+      await Promise.all(
+        ["/", "/learn/", "/docs/", "/blog/"].map(async (path) => {
+          const page = await context.newPage();
+          await page.goto(`http://localhost:${PORT}${path}`);
+          await page.waitForLoadState("networkidle").catch(() => {});
+          const base = await page.evaluate(() =>
+            getComputedStyle(document.documentElement).getPropertyValue("--art-base").trim(),
+          );
+          return (await tabStops(page))
+            .filter((stop) => stop.onPanel)
+            .map((stop) => ({ path, name: stop.name, ratio: contrast(stop.color, base) }));
+        }),
+      )
+    ).flat();
+    await context.close();
+    expect(new Set(onPanel.map((stop) => stop.path)).size, "a page lost its panel control").toBe(4);
+    expect(onPanel.filter((stop) => stop.ratio < 3)).toEqual([]);
+  }, 120_000);
+
+  /*
    * The cover's top margin is the gap under a post's byline, and leading the
    * featured card it stacked on the card's padding: twice the space above the
-   * picture that the card has beside it.
+   * picture that the card has beside it. The lead story has the same cover
+   * beside words that run taller than it, and centered in that row it sat
+   * lower than its inset again, so the lead is held to it too.
    */
-  it("starts the featured card's cover at the card's own padding", async () => {
+  it("starts the lead story's cover at the card's own padding", async () => {
     const inset = await measure("/blog/", () => {
-      const card = document.querySelector(".entry-featured")!.getBoundingClientRect();
-      const cover = document.querySelector(".entry-featured .entry-cover")!.getBoundingClientRect();
+      const card = document.querySelector(".blog-lead")!.getBoundingClientRect();
+      const cover = document.querySelector(".blog-lead .entry-cover")!.getBoundingClientRect();
       return { top: Math.round(cover.top - card.top), side: Math.round(cover.left - card.left) };
     });
     expect(inset.top).toBe(inset.side);
   }, 30_000);
-});
 
-/*
- * A reader whose blocker or DNS filter stops the ad loader. The unit is then
- * never marked filled or unfilled, so the rule that collapses an unfilled one
- * never fires, and every page ended on an empty band between two rules.
- * Skipped where nothing is configured, as `tests/adsense.test.ts` is, and
- * never in CI, which builds with the ids set.
- */
-describe.skipIf(SKIPPED || (!adsense && !process.env.CI))("an ad that never loads", () => {
-  it("leaves no frame where the ad would have been", async () => {
-    const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
-    const page = await context.newPage();
-    await page.route(/googlesyndication|doubleclick|adtrafficquality|www\.google\.com/, (r) =>
-      r.abort(),
-    );
-    await page.goto(`http://localhost:${PORT}/blog/archive/`);
-    await page.waitForLoadState("networkidle").catch(() => {});
-    const heights = await page.evaluate(() =>
-      [...document.querySelectorAll(".ad-banner")].map(
-        (banner) => banner.getBoundingClientRect().height,
+  /*
+   * The docs sidebar is a `<details>` closed in the markup and shown by CSS
+   * on a wide screen. It was rendered open, so on a phone every docs page
+   * opened on twenty-seven links. jsdom can't see either half: both are
+   * layout, one at each width.
+   */
+  it("shows the docs sidebar on a wide screen and folds it on a phone", async () => {
+    expect(await measure("/docs/templates/", readSidebar, 1280)).toEqual({
+      open: false,
+      shown: true,
+    });
+    expect(await measure("/docs/templates/", readSidebar, 390)).toEqual({
+      open: false,
+      shown: false,
+    });
+  }, 30_000);
+
+  /*
+   * The legal pages put each heading and its paragraphs in a `<section>`,
+   * and the prose's spacing reached direct children only, so the heading
+   * sat flush on its text and a paragraph break read as a line wrap: the
+   * same pair the docs space by `--s-4` on every page.
+   */
+  for (const path of ["/privacy/", "/terms/"]) {
+    it(`spaces a section's heading and paragraphs as the prose does: ${path}`, async () => {
+      const gaps = await measure(path, () =>
+        [...document.querySelectorAll(".prose-body > section > :not(:first-child)")].map(
+          (element) =>
+            Math.round(
+              element.getBoundingClientRect().top -
+                element.previousElementSibling!.getBoundingClientRect().bottom,
+            ),
+        ),
+      );
+      expect(gaps.length, `no section with text in it on ${path}`).toBeGreaterThan(5);
+      expect([...new Set(gaps)]).toEqual([16]);
+    }, 30_000);
+  }
+
+  /*
+   * A list in the prose kept the browser's own 1em under it, because the
+   * spacing rule sets only a top margin: 17.44px under a list at 1280
+   * against 16 under everything else.
+   */
+  it("leaves the scale's gap under a list, not the browser's", async () => {
+    const paths = ["/docs/categories-and-payees/", "/learn/budget-categories/"];
+    const pages = await Promise.all(
+      paths.map((path) =>
+        measure(path, () =>
+          [...document.querySelectorAll(".prose-body > :is(ul, ol) + p")].map(
+            (text) =>
+              Math.round(
+                (text.getBoundingClientRect().top -
+                  text.previousElementSibling!.getBoundingClientRect().bottom) *
+                  100,
+              ) / 100,
+          ),
+        ),
       ),
     );
-    await context.close();
-    expect(heights, "the archive carries the banner").toHaveLength(1);
-    expect(heights[0]).toBe(0);
+    for (const [index, gaps] of pages.entries()) {
+      expect(gaps.length, `no list followed by a paragraph on ${paths[index]}`).toBeGreaterThan(0);
+      expect([...new Set(gaps)], paths[index]).toEqual([16]);
+    }
   }, 30_000);
+
+  /*
+   * Two of the same thing side by side, stretched to the taller one's
+   * height: a stretched grid shares its slack between its rows, so a
+   * one-line title sank 14px from its label beside a two-line one, in the
+   * docs pager on every page whose neighbors wrap differently and in the
+   * docs index's three starting points.
+   */
+  it("starts the docs pager's two titles level on every page", async () => {
+    const docs = PAGES.filter((path) => /^\/docs\/[^/]+\/$/.test(path));
+    const offsets = await Promise.all(
+      docs.map((path) =>
+        measure(path, () =>
+          [...document.querySelectorAll(".doc-pager-link")].map((link) =>
+            Math.round(
+              link.querySelector(".doc-pager-title")!.getBoundingClientRect().top -
+                link.getBoundingClientRect().top,
+            ),
+          ),
+        ),
+      ),
+    );
+    expect(docs.length).toBeGreaterThan(20);
+    const uneven = docs.filter((_, index) => new Set(offsets[index]).size > 1);
+    expect(uneven).toEqual([]);
+  }, 120_000);
+
+  it("keeps each docs starting point's kicker on its title", async () => {
+    const gaps = await measure("/docs/", () =>
+      [...document.querySelectorAll(".docs-start")].map((start) =>
+        Math.round(
+          start.querySelector(".docs-start-title")!.getBoundingClientRect().top -
+            start.querySelector(".docs-start-kicker")!.getBoundingClientRect().bottom,
+        ),
+      ),
+    );
+    expect(gaps).toHaveLength(3);
+    expect(new Set(gaps).size, `kicker-to-title gaps ${gaps.join(", ")}`).toBe(1);
+  }, 30_000);
+
+  /*
+   * The comparison table's row headers were grids, which aren't table cells,
+   * so one stopped stretching with its row: where a price wrapped and the
+   * feature's name didn't, the name's divider was drawn 21px above the rest
+   * of the row's, at 390.
+   */
+  it("ends each comparison row's header level with its row, on a phone", async () => {
+    const steps = await measure(
+      "/pricing/",
+      () =>
+        [...document.querySelectorAll(".compare tbody tr")].map((row) =>
+          Math.round(
+            row.getBoundingClientRect().bottom -
+              row.querySelector("th")!.getBoundingClientRect().bottom,
+          ),
+        ),
+      390,
+    );
+    expect(steps.length).toBeGreaterThan(0);
+    expect(steps.filter((step) => step !== 0)).toEqual([]);
+  }, 30_000);
+
+  /*
+   * An unpainted copy of Premium's flag keeps the three headings level
+   * side by side, and once the cards stacked it kept taking room at the top
+   * of a card with nothing beside it: 56px above Free's heading, 33px at
+   * every other edge.
+   */
+  it("gives a stacked plan card the same inset at its top as at its bottom", async () => {
+    const insets = await measure(
+      "/pricing/",
+      () =>
+        [...document.querySelectorAll(".tier")].map((tier) => {
+          const box = tier.getBoundingClientRect();
+          const shown = [...tier.children].filter((child) =>
+            child.checkVisibility({ visibilityProperty: true }),
+          );
+          return [
+            Math.round(shown[0]!.getBoundingClientRect().top - box.top),
+            Math.round(box.bottom - shown.at(-1)!.getBoundingClientRect().bottom),
+          ];
+        }),
+      390,
+    );
+    expect(insets).toHaveLength(3);
+    for (const [top, bottom] of insets) expect(top).toBe(bottom);
+  }, 30_000);
+
+  /*
+   * The heading over the list under the comparison table wore the section
+   * title's class, and its 12px gap under an eyebrow, so it sat tight under
+   * the table and twice as far above the list it introduces.
+   */
+  it("spaces the heading under the comparison table toward what it heads", async () => {
+    const { above, below } = await measure("/pricing/", () => {
+      const heading = document.querySelector(".table-wrap + h3")!;
+      const box = heading.getBoundingClientRect();
+      return {
+        above: Math.round(box.top - heading.previousElementSibling!.getBoundingClientRect().bottom),
+        below: Math.round(heading.nextElementSibling!.getBoundingClientRect().top - box.bottom),
+      };
+    });
+    expect(above).toBeGreaterThan(below);
+  }, 30_000);
+
+  /*
+   * The privacy band's list carried the checklist's margin for sitting
+   * under a lede, so beside the words it started 24px below them, level
+   * with nothing.
+   */
+  it("starts the privacy band's list level with the words beside it", async () => {
+    const offset = await measure("/", () => {
+      const list = document.querySelector(".home-privacy-list")!;
+      return Math.round(
+        list.getBoundingClientRect().top -
+          list.parentElement!.firstElementChild!.getBoundingClientRect().top,
+      );
+    });
+    expect(offset).toBe(0);
+  }, 30_000);
+
+  /*
+   * A page shorter than the window ended above its bottom edge, and the
+   * page's ground showed under the footer as a band of another shade, 381px
+   * of it under the 404 on a 1200px-tall screen.
+   */
+  it("ends a short page in its footer, not in a band of the page under it", async () => {
+    const context = await browser.newContext({ viewport: { width: 1280, height: 1200 } });
+    const page = await context.newPage();
+    await page.goto(`http://localhost:${PORT}/404.html`);
+    const read = await page.evaluate(() => {
+      const footer = document.querySelector(".site-footer")!;
+      return {
+        below: innerHeight - footer.getBoundingClientRect().bottom,
+        canvas: getComputedStyle(document.documentElement).backgroundColor,
+        footer: getComputedStyle(footer).backgroundColor,
+      };
+    });
+    await context.close();
+    expect(read.below <= 0 || read.canvas === read.footer, JSON.stringify(read)).toBe(true);
+  }, 30_000);
+
+  /*
+   * A learn picture's small labels were hidden by the window's width, so the
+   * same picture at the same size kept them at 7.8px in a phone's hero, 8px
+   * on the Keep reading cards at 1280 and 5px on a tablet's cards, while the
+   * phone's index hid them.
+   */
+  it("shows a picture's small labels only where they're large enough to read", async () => {
+    const views = [1280, 600, 390].flatMap((width) =>
+      ["/learn/", "/learn/balance-your-checking-account/"].map((path) => ({ path, width })),
+    );
+    const sizes = await Promise.all(
+      views.map(({ path, width }) =>
+        measure(
+          path,
+          () =>
+            [...document.querySelectorAll<SVGTextElement>(".art-text-muted")]
+              .filter((label) => label.checkVisibility())
+              .map(
+                (label) =>
+                  Number.parseFloat(getComputedStyle(label).fontSize) *
+                  label.ownerSVGElement!.getScreenCTM()!.a,
+              ),
+          width,
+        ),
+      ),
+    );
+    const shown = views.flatMap((view, index) =>
+      sizes[index]!.map((size) => ({ ...view, size: Math.round(size * 10) / 10 })),
+    );
+    expect(shown.length, "no label shown anywhere, so this checks nothing").toBeGreaterThan(0);
+    expect(shown.filter((label) => label.size < 10)).toEqual([]);
+  }, 60_000);
 });

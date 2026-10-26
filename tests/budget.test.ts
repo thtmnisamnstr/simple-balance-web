@@ -51,7 +51,7 @@ describe("what the site ships", () => {
      * That is the price of the framework rather than of anything written
      * here, and it is the honest cost of choosing Next for portability:
      * `docs/standards/operations.md` 1.1 records the trade and
-     * `docs/roadmap.md` 8 records that the lever, if page weight ever
+     * `docs/roadmap.md` 3 records that the lever, if page weight ever
      * matters, is the framework and not the code.
      *
      * The budget is therefore set just above that floor. It catches a fourth
@@ -90,7 +90,11 @@ describe("what the site ships", () => {
   });
 
   it("ships no stray development files", () => {
-    const strays = files.filter((f) => /\.(ts|tsx|md|mdx)$/.test(f));
+    // A docs page's or a guide's `index.md` is published on purpose
+    // (`content.md` 5.15), and only at that one depth and name.
+    const strays = files.filter(
+      (f) => /\.(ts|tsx|md|mdx)$/.test(f) && !/^out\/(docs|learn)\/[^/]+\/index\.md$/.test(f),
+    );
     expect(strays).toEqual([]);
   });
 });

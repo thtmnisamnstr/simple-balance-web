@@ -143,6 +143,11 @@ describe("what this site announces", () => {
     const robots = repoFile("out/robots.txt");
     expect(robots).toContain("Allow: /");
     expect(robots).not.toContain("Disallow");
+    // One group, for every crawler, AI crawlers included, by decision
+    // (`src/app/robots.ts`): a named group would replace `*` for that bot.
+    expect(robots.match(/^User-Agent:/gim)).toHaveLength(1);
+    expect(robots).toMatch(/^User-Agent: \*$/im);
+    expect(robots).toContain("Sitemap: https://smpl.money/sitemap.xml");
   });
 });
 

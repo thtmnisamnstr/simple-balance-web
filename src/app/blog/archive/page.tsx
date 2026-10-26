@@ -2,23 +2,26 @@ import type { Metadata } from "next";
 import { feedAlternates } from "@/lib/feed";
 import { openGraph } from "@/app/open-graph";
 import { site } from "@/content/home";
-import { postsByYear } from "@/content/collections";
-import { section } from "@/content/sections";
+import { allEntries, postsByYear } from "@/content/collections";
+import { blogIndex, section } from "@/content/sections";
 import { formatDate } from "@/lib/format";
+import { typeset } from "@/lib/typeset";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { EmptyState } from "@/components/empty-state";
-import { AdBanner } from "@/components/ad-banner";
+import { BlogBanner, BlogBrowse } from "@/components/blog-header";
+import { sectionRobots } from "@/lib/indexing";
 
 const blog = section("blog");
+const { archive } = blogIndex;
 
 export const metadata: Metadata = {
-  title: "Archive",
-  description: "Every post, by year.",
-  robots: blog.announced ? undefined : { index: false, follow: false },
+  title: archive.title,
+  description: archive.description,
+  robots: sectionRobots("blog"),
   alternates: feedAlternates("/blog/archive/"),
   openGraph: openGraph({
-    title: `Archive — ${site.name}`,
-    description: "Every post, by year.",
+    title: `${archive.title} — ${site.name}`,
+    description: archive.description,
     url: "/blog/archive/",
   }),
 };
@@ -29,47 +32,66 @@ export const metadata: Metadata = {
  * The index is for reading and is paginated; this is for finding, and so it
  * shows titles and dates and nothing else. A blog without one makes its third
  * page of results the only way to reach a two-year-old post.
+ *
+ * Drawn as a timeline, a rail down the side with a mark at every post, so
+ * the gaps between posts are as visible as the posts. No covers: a picture
+ * per row would make the list a second front page and the one thing it is
+ * for, scanning titles, slower.
  */
 export default function ArchivePage() {
   const years = postsByYear();
+  const posts = allEntries("blog");
 
   return (
     <section className="section" aria-labelledby="archive-title">
-      <div className="page page-narrow">
+      <div className="page">
         <Breadcrumbs
           trail={[
             { name: "Home", href: "/" },
             { name: blog.label, href: blog.href },
-            { name: "Archive", href: "/blog/archive/" },
+            { name: archive.title, href: "/blog/archive/" },
           ]}
         />
-        <h1 id="archive-title" className="section-title">
-          Archive
-        </h1>
+        <BlogBanner
+          id="archive-title"
+          eyebrow={blog.label}
+          title={archive.title}
+          lede={archive.description}
+          kind="archive"
+        >
+          {years.length > 0 ? (
+            <p className="blog-banner-facts">
+              {archive.count(posts.length, years.at(-1)?.year ?? "")}
+            </p>
+          ) : null}
+        </BlogBanner>
 
         {years.length === 0 ? (
           <EmptyState title={blog.empty.title} body={blog.empty.body} />
         ) : (
-          years.map((group) => (
-            <section key={group.year} aria-labelledby={`y-${group.year}`}>
-              <h2 id={`y-${group.year}`} className="doc-group-title">
-                {group.year}
-              </h2>
-              <ul className="archive-list">
-                {group.posts.map((post) => (
-                  <li key={post.slug}>
-                    <time className="archive-date" dateTime={post.frontmatter.date}>
-                      {formatDate(post.frontmatter.date)}
-                    </time>
-                    <a href={`/blog/${post.slug}/`}>{post.frontmatter.title}</a>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          ))
+          <>
+            <BlogBrowse current="archive" />
+            {years.map((group) => (
+              <section key={group.year} className="blog-year" aria-labelledby={`y-${group.year}`}>
+                <h2 id={`y-${group.year}`} className="blog-year-title">
+                  {group.year}
+                </h2>
+                <ol className="blog-timeline">
+                  {group.posts.map((post) => (
+                    <li key={post.slug} className="blog-timeline-item">
+                      <time className="blog-timeline-date" dateTime={post.frontmatter.date}>
+                        {formatDate(post.frontmatter.date)}
+                      </time>
+                      <a className="blog-timeline-title" href={`/blog/${post.slug}/`}>
+                        {typeset(post.frontmatter.title)}
+                      </a>
+                    </li>
+                  ))}
+                </ol>
+              </section>
+            ))}
+          </>
         )}
-
-        <AdBanner />
       </div>
     </section>
   );

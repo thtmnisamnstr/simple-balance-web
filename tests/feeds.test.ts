@@ -4,6 +4,7 @@ import { DOMParser } from "@xmldom/xmldom";
 import { describe, expect, it } from "vitest";
 import { allEntries } from "@/content/collections";
 import { FEED_ITEMS, feedPosts } from "@/lib/feed";
+import { section as sectionFlag } from "@/content/sections";
 
 /**
  * The three feeds, read from the built output.
@@ -14,6 +15,22 @@ import { FEED_ITEMS, feedPosts } from "@/lib/feed";
  * unescaped ampersand in a post title is the classic break and a substring
  * check sails straight past it.
  */
+
+const FEED_TYPES: Record<string, string> = {
+  "/blog/feed.xml": "application/rss+xml",
+  "/blog/atom.xml": "application/atom+xml",
+  "/blog/feed.json": "application/feed+json",
+};
+
+/** Whether a built page's head links all three of the blog's feeds. */
+function advertises(page: string): boolean {
+  const html = readFileSync(page, "utf8");
+  // The `<link>` in the head, which Next writes absolute against
+  // `metadataBase`; a visible link to a feed in a page's body isn't this.
+  return Object.entries(FEED_TYPES).every(([feed, type]) =>
+    html.includes(`rel="alternate" type="${type}" href="https://smpl.money${feed}"`),
+  );
+}
 
 /** Every page the build emitted, discovered rather than listed. */
 function emittedPages(dir: string): readonly string[] {
@@ -97,30 +114,33 @@ describe("the feeds", () => {
     expect(rss).not.toMatch(/&(?!amp;|lt;|gt;|quot;|apos;|#)/);
   });
 
-  it("is advertised on every page, not just the one this used to check", () => {
+  it("is advertised on every blog page, and elsewhere only once the blog is announced", () => {
     /*
      * It checked `out/index.html` and stopped, which was the one page where
      * the root layout's `alternates` survived. Next *replaces* that field
      * rather than merging it, so all ten routes declaring their own canonical
      * were dropping feed autodiscovery — including `/blog/`, the URL a reader
-     * is most likely handed, and the only page where a feed reader would
-     * think to look.
+     * is most likely handed. This checks the population, per
+     * `code/testing.md` 2.1.
      *
-     * Checking one page could not see that. This checks the population, per
-     * `code/testing.md` 2.1, and it is what makes `feedAlternates` load-
-     * bearing rather than merely tidy.
+     * Then it held every page to advertising the feeds, the unannounced
+     * blog's included, which was three links into a section the `announced`
+     * flag says nothing may link to yet. So the blog's own pages advertise
+     * them always, and every other page exactly when the blog is announced.
      */
     const pages = emittedPages("out");
     expect(pages.length, "no pages found in out/").toBeGreaterThan(12);
-
-    const missing = pages.filter((page) => {
-      const html = readFileSync(page, "utf8");
-      return (
-        !html.includes("/blog/feed.xml") ||
-        !html.includes("/blog/atom.xml") ||
-        !html.includes("/blog/feed.json")
-      );
-    });
-    expect(missing, "these pages advertise no feed").toEqual([]);
+    const blogPages = pages.filter((page) => page.startsWith("out/blog/"));
+    const others = pages.filter((page) => !page.startsWith("out/blog/"));
+    expect(blogPages.length).toBeGreaterThan(0);
+    expect(
+      blogPages.filter((page) => !advertises(page)),
+      "blog pages without the feeds",
+    ).toEqual([]);
+    const announced = sectionFlag("blog").announced;
+    expect(
+      others.filter((page) => advertises(page) !== announced),
+      announced ? "pages missing the feeds" : "pages linking an unannounced blog's feeds",
+    ).toEqual([]);
   });
 });

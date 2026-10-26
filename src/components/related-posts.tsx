@@ -1,30 +1,22 @@
 import type { Entry } from "@/content/collections";
-import { formatDate } from "@/lib/format";
+import { PostGrid } from "@/components/post-card";
 
-/** Posts a reader of this one might want next. Ranked in the content layer. */
+/**
+ * Posts a reader of this one might want next. Ranked in the content layer.
+ *
+ * The front page's cards rather than a list of titles of its own, so a post
+ * that a reader met as a card on the index is the same card here. The grid
+ * counts its columns from the column it is given, which under a post is two.
+ */
 export function RelatedPosts({ posts }: { readonly posts: readonly Entry[] }) {
   if (posts.length === 0) return null;
 
   return (
     <aside className="related" aria-labelledby="related-title">
-      <h2 id="related-title" className="doc-group-title">
+      <h2 id="related-title" className="blog-part-title">
         Related
       </h2>
-      <ul className="entry-list">
-        {posts.map((post) => (
-          <li key={post.slug}>
-            <article className="entry">
-              <h3 className="entry-title">
-                <a href={`/blog/${post.slug}/`}>{post.frontmatter.title}</a>
-              </h3>
-              <p className="entry-meta">
-                <time dateTime={post.frontmatter.date}>{formatDate(post.frontmatter.date)}</time>
-              </p>
-              <p className="entry-summary">{post.frontmatter.description}</p>
-            </article>
-          </li>
-        ))}
-      </ul>
+      <PostGrid posts={posts} />
     </aside>
   );
 }

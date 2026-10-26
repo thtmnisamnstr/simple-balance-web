@@ -8,7 +8,9 @@ import {
 } from "@/content/collections";
 import { announcedSections, type SectionKey } from "@/content/sections";
 import { authors } from "@/content/authors";
-import { site } from "@/content/home";
+import { homeUpdated, site } from "@/content/home";
+import { pricingUpdated } from "@/content/pricing";
+import { legalUpdated } from "@/content/legal";
 
 const base = `https://${site.domain}`;
 
@@ -26,15 +28,49 @@ export default function sitemap(): MetadataRoute.Sitemap {
    * compares this against the routes the build actually emitted, so a new
    * page missing from here fails rather than quietly never being indexed.
    */
+  /*
+   * Every URL carries a `lastmod`, because Google reads it only from a sitemap
+   * that is consistently accurate, and this one gave a date to the guides and
+   * docs and none to the six pages above them. Each is the date the page's
+   * own words last changed: the homepage's and pricing's from their copy
+   * modules, the legal pages' from `legalUpdated`, a section's index from
+   * its newest page. Never the build time, which changes on every deploy and
+   * would teach a crawler the dates mean nothing.
+   */
   const entries: MetadataRoute.Sitemap = [
-    { url: `${base}/`, changeFrequency: "monthly", priority: 1 },
-    { url: `${base}/pricing/`, changeFrequency: "monthly", priority: 0.9 },
-    { url: `${base}/privacy/`, changeFrequency: "yearly", priority: 0.3 },
-    { url: `${base}/terms/`, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${base}/`, lastModified: day(homeUpdated), changeFrequency: "monthly", priority: 1 },
+    {
+      url: `${base}/pricing/`,
+      lastModified: day(pricingUpdated),
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
+      url: `${base}/privacy/`,
+      lastModified: day(legalUpdated),
+      changeFrequency: "yearly",
+      priority: 0.3,
+    },
+    {
+      url: `${base}/terms/`,
+      lastModified: day(legalUpdated),
+      changeFrequency: "yearly",
+      priority: 0.3,
+    },
   ];
 
   for (const announced of announcedSections()) {
-    entries.push({ url: `${base}${announced.href}`, changeFrequency: "weekly", priority: 0.8 });
+    const newest = allEntries(announced.key)
+      .map((entry) => entry.frontmatter.updated ?? entry.frontmatter.date ?? "")
+      .filter(Boolean)
+      .toSorted()
+      .at(-1);
+    entries.push({
+      url: `${base}${announced.href}`,
+      ...(newest ? { lastModified: day(newest) } : {}),
+      changeFrequency: "weekly",
+      priority: 0.8,
+    });
     for (const secondary of secondaryIndexes(announced.key)) {
       entries.push({ url: `${base}${secondary}`, changeFrequency: "weekly", priority: 0.4 });
     }
@@ -55,6 +91,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }
 
   return entries;
+}
+
+/** A calendar day as the instant it began, in UTC, as every other date here is. */
+function day(iso: string): Date {
+  return new Date(`${iso}T00:00:00Z`);
 }
 
 /**

@@ -18,7 +18,7 @@
  */
 
 /** Bumped whenever either document changes materially. Rendered on both. */
-export const legalUpdated = "2026-10-06";
+export const legalUpdated = "2026-10-25";
 
 const operator = {
   /** Who is responsible for the hosted deployment, in the legal sense. */
@@ -32,7 +32,7 @@ export const privacy = {
   title: "Privacy policy",
   description:
     "What Simple Balance collects, why, who else sees it, and how to get it back or have it " +
-    "deleted, for smpl.money and for the hosted application at app.smpl.money.",
+    "deleted, for smpl.money and the hosted app at app.smpl.money.",
   intro: [
     "This policy covers two things run by the same person: the website at smpl.money, and the " +
       "hosted application at app.smpl.money. It does not cover a copy of Simple Balance that " +
@@ -55,22 +55,23 @@ export const privacy = {
     {
       heading: "The short version",
       paragraphs: [
-        // "The website collects nothing. There is no analytics, no tracking
-        // pixel, and no cookie." True of a site that loaded nothing, and false
-        // from the day smpl.money started serving Google's advertising script:
-        // five Google hosts are contacted and a cookie lands in the reader's
-        // browser. What survives is the half that is still true, said as
-        // narrowly as it is true, because retreating to "we may use cookies"
-        // would lose the part worth knowing along with the false part.
-        //
         // First in the summary, and not buried after the application's
         // providers, because this is the one thing on this page that is
         // happening to the person reading it right now (`content.md` 2.4).
-        "**This website loads Google's advertising script on every page**, this one included. " +
-          "The site itself keeps nothing about you: no analytics, no tracking pixel, and " +
-          "nothing of its own saved in your browser. Google's script is another matter, and " +
-          "the hosts it reaches, the cookie it sets and how to opt out are under What the " +
-          "website loads.",
+        //
+        // A list a reader can check in their own browser rather than "the
+        // website collects nothing", which said the same thing and hid the
+        // host's logs. Every item is held by a header: `netlify.toml`'s
+        // content security policy names no origin but this one, and
+        // `tests/legal.test.tsx` fails if it ever does while this says so.
+        //
+        // It said "this website loads Google's advertising script on every
+        // page" while smpl.money carried AdSense; the ads moved to the
+        // application alone, and the script went with them.
+        "**This website keeps nothing about you and loads nothing from any other origin.** It " +
+          "has no analytics, no tracking pixel, no third-party script and no cookie at all, and " +
+          "nothing of its own is saved in your browser. Its host, Netlify, keeps the request " +
+          "logs any web server keeps, for a short time, as What the website collects says.",
         // Every provider the long version names, because a summary that lists
         // two of four is the version most people read and the one that was
         // wrong: it said "nobody except the payment processor and the
@@ -110,76 +111,43 @@ export const privacy = {
       ],
     },
     {
-      // "What the website collects" with the answer "Nothing" was the heading
-      // and the paragraph, and the script made both wrong at once. Loading is
-      // now the bigger of the two facts, so it goes first and the heading says
-      // so: a section headed "collects" would hide a vendor's script behind a
-      // word a reader reads as "stores".
-      heading: "What the website loads, and what it collects",
+      /*
+       * "What the website loads, and what it collects" while smpl.money
+       * carried AdSense, because loading a vendor's script was then the
+       * bigger of the two facts. With the ads moved to the application alone
+       * it loads nothing but itself, so "collects" is the question left, and
+       * the answer is the host's logs and nothing else.
+       */
+      heading: "What the website collects",
       paragraphs: [
+        "**Nothing of its own.** smpl.money has no analytics, no tracking pixel and no sign-in. " +
+          "It sets no cookie and saves nothing in your browser: the light or dark theme you see " +
+          "follows the setting your browser already has, so there's nothing to save.",
         /*
-         * The measured behavior of the shipped snippet, driven in a browser
-         * against a real build served as smpl.money: five hosts, one cookie,
-         * nothing else. That is why this paragraph can name hosts at all, and
-         * why the site's content security policy names those five rather than
-         * allowing any https script the way the application's does. Guessing
-         * would have produced a wider policy and a vaguer paragraph.
+         * Held by headers rather than by habit. `netlify.toml`'s content
+         * security policy allows this origin and nothing else, so a script,
+         * a font or a picture from anybody else is refused by the browser on
+         * the live site, and `tests/legal.test.tsx` fails if a host joins
+         * that policy while this sentence stands.
          *
-         * A measurement dates. A new AdSense feature can add a host, so this
-         * is a claim to re-measure whenever the snippet changes, and
-         * `legal-review` is where that is written down.
-         */
-        "**Every page of smpl.money loads Google's advertising script**, from " +
-          "pagead2.googlesyndication.com, carrying the publisher id for this site. Running it " +
-          "contacts five Google hosts: pagead2.googlesyndication.com, " +
-          "googleads.g.doubleclick.net, ep1.adtrafficquality.google, ep2.adtrafficquality.google " +
-          "and www.google.com. Nothing else on the site reaches anywhere but itself.",
-        /*
-         * One banner unit, in a fixed place on each page, replacing Auto ads
-         * rather than adding to it — Auto ads is still OFF, so Google is not
-         * choosing the page or the format, only filling the one box this site
-         * marks out. `src/components/ad-banner.tsx` is the unit and
-         * `legal-review` is where this paragraph is re-checked whenever that
-         * changes.
+         * Signing up is named because it is the one place a reader goes from
+         * here to somewhere that does carry advertising, and a reader who
+         * found an ad there would otherwise take this paragraph as wrong.
          *
-         * This said the ad was non-personalized, as a fact forced in code,
-         * while Advertising further down said the script on this website
-         * carried no such instruction and an ad here could be personalized:
-         * one page, both answers. The operator has since published Google's
-         * consent messages from the account, European and US-state, and set
-         * `ADSENSE_CONSENT_MANAGED` on both surfaces, so the code no longer
-         * forces non-personalized and the message decides. Said once, here,
-         * and pointed at Advertising for how.
+         * `public/ads.txt` stays on this origin and is not a contradiction:
+         * it is a text file Google's crawler reads to authorize the
+         * application's ads, and no page here loads it.
+         *
+         * Until the ads moved, this section named the five Google hosts the
+         * site's AdSense loader reached, measured in a browser, and the
+         * banner ad that sat on most pages.
          */
-        "That ad can be personalized, chosen partly from what Google knows of your browsing, " +
-          "unless you've said no. Where you are decides whether you're asked first, and " +
-          "Advertising says how. Requesting an ad still contacts the hosts above and still " +
-          "sets the cookie described further down, whether or not the ad is filled.",
-        /*
-         * What the request carries, and the one place this origin is better
-         * than the application: `Referrer-Policy: strict-origin-when-cross-origin`
-         * in `netlify.toml` sends the origin and not the path. That is a fact
-         * about the script load. An ad request made by the script carries the
-         * page address itself, which is why the limit is stated for the load
-         * and the ad request is pointed at Advertising rather than described
-         * twice in different words.
-         */
-        "What Google receives from those requests is what any site it loads something from " +
-          "receives: your IP address, your browser's details, and its own cookies where they're " +
-          "allowed. The referrer is held to this origin, so the address of the page you're on " +
-          "doesn't travel with the script. An ad requested by that script carries the page " +
-          "address too, and on this site those addresses are public pages that name nothing " +
-          "about you. Advertising says what Google does with what it gets.",
-        // The cookie itself is under Cookies, where a reader who came looking
-        // for cookies will look, and named here so that somebody reading this
-        // section straight through is not told about the script and left to
-        // discover the cookie somewhere else.
-        "That script sets one cookie today, and it's Google's advertising identifier. Cookies " +
-          "names it, says how long your browser keeps it and where you're asked about it " +
-          "first, and says what you can do.",
-        "The site stores nothing of its own in your browser. It has no analytics and no " +
-          "tracking pixel, and the light or dark theme you see follows the setting your browser " +
-          "already has, so there's nothing to save.",
+        "**It loads nothing from anywhere else.** Every page, script, style, font and picture " +
+          "on smpl.money comes from smpl.money itself, and the site tells your browser to " +
+          "refuse to load anything from another origin. There's no advertising on it, no " +
+          "third-party script and nothing embedded from another company. Signing up or signing " +
+          "in takes you to the application at app.smpl.money, which is covered below, and " +
+          "which carries advertising on its free plan.",
         "Our hosting provider, Netlify, processes the technical information any web server " +
           "receives in order to serve a page (your IP address, the page requested, your browser " +
           "and the time) and retains it briefly for operational and security purposes. We do " +
@@ -203,9 +171,29 @@ export const privacy = {
           "browser it was started from.",
         "**Operational records.** Server logs, which include IP addresses and request paths, " +
           "kept briefly for security and debugging. Sign-up and sign-in attempts are counted " +
-          "per IP address, so nobody can guess at passwords one after another. An audit " +
-          "history of changes to your own ledger, which is part of the product and visible to " +
-          "you.",
+          "per IP address, so nobody can guess at passwords one after another.",
+        /*
+         * `audit_event`, written by `writeAudit` in the application's
+         * `services/helpers.ts`: every service that changes a record stores
+         * it as `before` and `after` JSON, a deletion as `before` alone, so a
+         * deleted staged row, account, category, template or recurrence is
+         * gone from its own table and still whole here. Nothing prunes the
+         * table, and it cascades from the user, so it goes with the account.
+         *
+         * It was "an audit history of changes to your own ledger, which is
+         * part of the product and visible to you", filed under operational
+         * records. What the Activity page shows is a line per change, not the
+         * copies, and the retention paragraph then said the ledger was kept
+         * "until you delete it", while the homepage sells "a correction
+         * doesn't erase what it corrected". The copies are said here because
+         * this is where a reader asks what is collected, and their lifetime
+         * under Where it is held.
+         */
+        "**A history of changes.** The application records the changes made to your ledger, " +
+          "by you, by an assistant you connected or by its own schedule, and keeps a copy of " +
+          "what each change touched, as it was before and after. You can read the list on the " +
+          "Activity page. Nothing in it is rewritten, so whatever you edit or delete keeps its " +
+          "earlier version there until your account is deleted.",
         // `billing_customer` and `billing_subscription`, named rather than
         // summed up as "payment details", which reads as the card this very
         // paragraph says is never here.
@@ -225,34 +213,40 @@ export const privacy = {
           "**consent**, for personalized advertising and for optional emails, which you may " +
           "withdraw at any time.",
         /*
-         * The basis for the website's own cookie, said rather than left to be
-         * inferred from a list that describes the application. Under ePrivacy
-         * a non-essential cookie needs consent before it is set, whatever
-         * lawful basis the processing after it would rest on. This said
-         * nothing on smpl.money asked for it; Google's European message is
-         * published for this origin now, so the basis is the consent it asks
-         * for, and the paragraph says where that is collected.
+         * The basis for Google's advertising cookies, said rather than left
+         * to be inferred. Under ePrivacy a non-essential cookie needs consent
+         * before it is set, whatever lawful basis the processing after it
+         * would rest on, and Google's European message is what asks for it.
+         *
+         * In the application only. This said "on this website as well as in
+         * the application" while smpl.money carried AdSense; the website now
+         * sets no cookie at all, so there is nothing there to ask about.
          */
-        "In the EEA, the UK and Switzerland, Google's message asks for that consent before an " +
-          "advertising cookie is set, on this website as well as in the application, and " +
-          "Cookies says how to change your answer.",
+        "In the EEA, the UK and Switzerland, Google's message in the application asks for " +
+          "that consent before an advertising cookie is set, and Cookies says how to change " +
+          "your answer.",
       ],
     },
     {
-      // "Advertising, on the free plan" was the whole heading, and it put the
-      // website's script behind a qualifier that does not apply to it: a
-      // Premium subscriber reading this page is loading Google's code while
-      // reading a section headed as being about somebody else.
-      heading: "Advertising, here and on the free plan",
+      /*
+       * "Advertising, here and on the free plan" while smpl.money carried
+       * AdSense, because a Premium subscriber reading this page was loading
+       * Google's code under a heading about somebody else. The ads are the
+       * application's alone again, so the qualifier is true of all of them.
+       */
+      heading: "Advertising, on the free plan",
       paragraphs: [
-        "**This website carries Google's advertising script on every page**, whatever plan " +
-          "you're on and whether or not you have an account at all. What it loads is under " +
-          "What the website loads, and the cookie it sets is under Cookies. The rest of this " +
-          "section is about the hosted application, and says where the two differ.",
+        // First, because somebody reading a section headed "Advertising" on
+        // this website is also asking whether the page in front of them has
+        // any, and the answer differs from the one for the rest of the
+        // section.
+        "**Advertising is in the hosted application only.** This website shows none and loads " +
+          "no advertising script, whatever plan you're on, so everything below is about the " +
+          "application.",
         "The hosted application shows advertising to accounts on the free plan, supplied by " +
-          "**Google AdSense**. Paid accounts are shown no advertising there, and a paid " +
-          "account doesn't load Google's script in the application at all, because the server " +
-          "decides and the browser is never told the rule.",
+          "**Google AdSense**. Paid accounts are shown no advertising, and a paid account " +
+          "doesn't load Google's script in the application at all, because the server decides " +
+          "and the browser is never told the rule.",
         // CalOPPA, Bus. & Prof. Code 22575(b)(6): whether another party may
         // collect information about somebody's activity over time and across
         // other sites. Google's advertising cookies are its own and are read on
@@ -261,15 +255,15 @@ export const privacy = {
         /*
          * "In the application, ads are requested as non-personalized by
          * default" was true while the application forced the flag. It no
-         * longer does, on either surface: the operator set
-         * `ADSENSE_CONSENT_MANAGED`, so Google's consent message decides.
+         * longer does: the operator set `ADSENSE_CONSENT_MANAGED`, so
+         * Google's consent message decides.
          */
         "Google and its partners use cookies and similar technologies to serve ads, and through " +
           "the cookies it sets for advertising, Google may collect information about what you " +
-          "do over time and across other websites. **On both the website and the application, " +
-          "an ad can be personalized**: chosen partly from a profile Google keeps of your " +
-          "browsing. An ad that isn't personalized is chosen from the page and your rough " +
-          "location instead. Neither kind is chosen from the figures in your ledger.",
+          "do over time and across other websites. **In the application, an ad can be " +
+          "personalized**: chosen partly from a profile Google keeps of your browsing. An ad " +
+          "that isn't personalized is chosen from the page and your rough location instead. " +
+          "Neither kind is chosen from the figures in your ledger.",
         /*
          * What declining does, and it is not "no ads". This said "Declining
          * means no ads are served to you" while the pricing page said saying
@@ -286,31 +280,20 @@ export const privacy = {
          * were declined.
          */
         /*
-         * This said the consent "is collected through Google's own certified
-         * consent platform before any ad cookie is set", which is a claim
-         * about a setting in an AdSense account rather than about anything
-         * either repository ships. A browser driven against this site finds
-         * `window.googlefc` undefined on every page, so no consent platform is
-         * loading here and nobody is being asked. The promise was written from
-         * the plan (`docs/adsense.md` §5, and the application's own
-         * configuration page, which says outright that nothing in the software
-         * can check the message exists) and the plan is not the deployment.
+         * What the account is configured to do, not what anybody has watched
+         * happen. Google's European and US-state messages are published from
+         * the AdSense account and delivered by Google's script, so nothing in
+         * either repository can show them. This once promised "Google's own
+         * certified consent platform" from the plan rather than the deployment
+         * (once `docs/adsense.md` §5, now the application's own
+         * `docs/monetization.md`). A policy that promises a notice nobody sees
+         * is worse than one that admits there is none, so a measurement that
+         * finds no message moves this paragraph.
          *
-         * So the requirement is stated, the mechanism is stated, and whether
-         * it is in place is stated as the fact it is. A policy that promises a
-         * notice nobody will see is worse than one that admits there is none:
-         * the reader can act on the second.
-         */
-        /*
-         * And then the operator published both of Google's messages, a
-         * European one and a US-state one, for both origins. They are
-         * delivered by Google's script on the account's instructions, so
-         * nothing in either repository can show them, and a browser driven
-         * against a build served as smpl.money from California on
-         * 4 October 2026 still found `window.googlefc` undefined. That is
-         * recorded in `docs/adsense.md` §8 as a thing to re-measure from
-         * inside each region rather than settled here: this paragraph
-         * describes what the account is configured to do.
+         * The one measurement so far was of smpl.money, from California on
+         * 4 October 2026, and it found `window.googlefc` undefined. That site
+         * no longer loads the script, so the application is where
+         * `legal-review` §5 has to look, from inside each region.
          */
         "**Where you are decides how you're asked.** In the EEA, the UK and Switzerland, " +
           "Google shows a message asking for your consent before any advertising cookie is set " +
@@ -319,7 +302,7 @@ export const privacy = {
           "do that instead, and an ad there can be personalized until you use it. Anywhere " +
           "else there's no message, an ad can be personalized, and the controls further down " +
           "are how to stop it. The messages are published from the advertising account and " +
-          "shown by Google's script, not by code in either site.",
+          "shown by Google's script in the application, not by the application's own code.",
         "**Non-personalized is not the same as cookie-free.** Even an ad that isn't " +
           "personalized sets cookies, for frequency capping and fraud prevention, which is why " +
           "consent is required in the EEA, the UK and Switzerland before any advertising " +
@@ -328,46 +311,51 @@ export const privacy = {
           "it keeps Google from setting the advertising cookies that need your consent, though " +
           "Google may still show what it calls a limited ad in the same place.",
         /*
-         * This used to be two sentences because the two surfaces differed:
-         * the application forced non-personalized ads and the website did
-         * not. Both now leave it to Google's message, so one sentence says
-         * so rather than two saying the same thing in different words.
+         * The application's setting, said as one: with
+         * `ADSENSE_CONSENT_MANAGED` on, its code stops forcing
+         * non-personalized ads and the message decides. One sentence covered
+         * both surfaces while the website carried ads too.
          */
-        "The website and the application ask for ads the same way. Neither forces an ad to be " +
-          "non-personalized: both leave it to Google's message, by where you are, as set out " +
-          "above.",
+        "The application doesn't force an ad to be non-personalized: it leaves that to " +
+          "Google's message, by where you are, as set out above.",
         /*
-         * Named because the `Permissions-Policy` header stopped denying it,
-         * and a header and a policy disagreeing about what reaches Google is
-         * exactly the failure `content.md` 2.4 is about. The header carried
-         * `browsing-topics=()` for a while; denying it was measured and does
-         * work, costing relevance rather than fill. It was dropped
-         * deliberately, because advertising is how this site is paid for —
-         * so the honest thing is to say the signal is available rather than
-         * let a header imply it is not.
+         * Checked against the application's own headers at v0.2.1, over the
+         * network: `securityHeaderOptions` in `http-security.ts` gives Hono's
+         * `secureHeaders` no `permissionsPolicy`, whose default is empty and
+         * sends no header, and neither the nginx include nor the Caddyfile
+         * adds one. So nothing on app.smpl.money denies `browsing-topics`, and
+         * an ad there may use it. A release that adds the header is a change
+         * to this paragraph.
+         *
+         * smpl.money denies it in `netlify.toml`, and `tests/legal.test.tsx`
+         * holds the sentence that says so to that header. While the site
+         * carried AdSense it was left allowed so the inventory earned what it
+         * could, and this paragraph said "this website doesn't block that".
          */
         "**Your browser may tell Google what you're interested in.** Chrome and some other " +
           "browsers keep a short list of topics inferred from the sites you visit, and offer " +
-          "it to advertisers through what Google calls the Topics API. This website doesn't " +
-          "block that, so an ad shown here may be chosen partly from it. The list is your " +
-          "browser's rather than ours: we never see it, it's built from your browsing and " +
-          "not from anything you do here, and your browser settings control it. In Chrome " +
+          "it to advertisers through what Google calls the Topics API. The application doesn't " +
+          "block that, so an ad shown there may be chosen partly from it. This website tells " +
+          "your browser not to offer the list to anything on its pages. The list is your " +
+          "browser's rather than ours: we never see it, it's built from the sites you visit and " +
+          "not from anything in your ledger, and your browser settings control it. In Chrome " +
           "that's Settings, then Privacy and security, then Ads.",
         // The request for an ad comes from the reader's browser, so Google
         // gets what any site gets from one, and the rough location above is
         // read from that address. A heading that reads as the whole list, with
         // only what the application adds on it, made the list look shorter
-        // than it is (`content.md` 2.4).
+        // than it is (`content.md` 2.4). The referrer limit is the
+        // application's `strict-origin-when-cross-origin` on the pages that
+        // carry ads, which sends the origin and never the path.
         "**What Google receives.** What any site your browser loads something from receives: " +
           "your IP address and your browser's details, with Google's own cookies where they're " +
           "allowed. From us, it receives our publisher id and the address of the page the ad " +
-          "sits on. That address is not nothing: pages in the application carry record identifiers " +
-          "in their paths, so a URL identifies a row in your ledger, though not a person, a " +
-          "name or an amount. No account name, no balance, no figure, no email address and no " +
-          "identifier of yours is sent as a targeting parameter, and the browser's referrer is " +
-          "held to this origin so it does not travel either. From this website it's the same " +
-          "three things your browser hands any site, with the address of a public marketing " +
-          "page rather than one of yours, and What the website loads carries the rest.",
+          "sits on. That address is not nothing: pages in the application carry record " +
+          "identifiers in their paths, so a URL identifies a row in your ledger, though not a " +
+          "person, a name or an amount. No account name, no balance, no figure, no email " +
+          "address and no identifier of yours is sent as a targeting parameter, and the " +
+          "browser's referrer is held to the application's origin, so it doesn't carry the " +
+          "page either.",
         // youradchoices.com by name, because it is the opt-out Google's own
         // program policies point a publisher at, and aboutads.info is the
         // address of the program behind it rather than of the tool. Naming
@@ -379,16 +367,10 @@ export const privacy = {
           "out of third-party vendor cookies at youradchoices.com, which is the industry " +
           "opt-out run at aboutads.info, and at youronlinechoices.eu in Europe. Blocking " +
           "third-party cookies in your browser does the same thing for every site at once.",
-        /*
-         * "Google chooses where an ad goes" described Auto ads, which is
-         * off: one banner unit sits at the end of the content on every page
-         * but this policy, the terms and the 404, and
-         * `tests/ad-placement.test.ts` holds that list.
-         */
+        // The application's own exclusions. This also listed the pages of
+        // this website that carried a banner, which went with the banner.
         "In the application, advertising never appears on the billing page or the sign-in " +
-          "screen. On this website the script is on every page, this one included, and one ad " +
-          "space sits at the end of the content on every page except this policy, the terms " +
-          "and a page that doesn't exist. The page that sells the paid plan is among them.",
+          "screen.",
       ],
     },
     {
@@ -486,13 +468,27 @@ export const privacy = {
         /*
          * "Share it for anyone else's marketing" with no exception sat above a
          * section saying Google receives an address and its cookies in order
-         * to show somebody else's ad, so the exception is said here.
+         * to show somebody else's ad, so the exception is said here. It had a
+         * second half, what Google received from this website on every
+         * visit, until the website stopped loading Google's script.
+         *
+         * The selling sentence names its subject and carries its own
+         * qualifier, because it's the one an answer engine lifts alone for
+         * "does Simple Balance sell my data". It was "We don't sell your data
+         * or rent it.", which quoted by itself names nobody and says more
+         * than Your rights does, where the California paragraph concedes
+         * that personalized ads can count as selling or sharing. A
+         * clarification, not a change of practice, so it moves no date
+         * (`legal-review` §7).
          */
         "**Nobody, other than the providers needed to run the service**, and an AI assistant " +
-          "if you connect one yourself. We don't sell your data or rent it. What leaves for " +
-          "advertising is what Google receives from this website on every visit, whoever you " +
-          "are, and what it receives to show an ad to a free account in the application. Both " +
-          "are set out under Advertising.",
+          "if you connect one yourself. Simple Balance doesn't sell your data or rent it to " +
+          "anyone, though under the California Consumer Privacy Act and similar laws in other " +
+          "states, letting Google's advertising cookies personalize the ads on a free account " +
+          "can count as selling or sharing personal information, which Opting out of sale or " +
+          "sharing, under Your rights, tells you how to stop. What leaves for advertising is " +
+          "what Google receives to show an ad to a free account in the application, set out " +
+          "under Advertising. This website sends Google nothing about you.",
         /*
          * Named, not "our providers" (`legal-review` §5). Oracle is the
          * application's host and holds the database, so it is the provider
@@ -516,10 +512,10 @@ export const privacy = {
          * copies included, reaches us through it.
          */
         "Those providers are: **Oracle Cloud Infrastructure**, which hosts the application and " +
-          "stores its database; **Stripe**, for payments; **Google**, for the advertising " +
-          "script this website loads and for advertising to a free account in the " +
-          "application, for Google sign-in if you use it, and through **Gmail**, which carries the " +
-          "email the application sends; and **Cloudflare**, which receives the mail you send " +
+          "stores its database; **Stripe**, for payments; **Google**, for advertising to a free " +
+          "account in the application, for Google sign-in if you use it, and through " +
+          "**Gmail**, which carries the email the application sends; and **Cloudflare**, which " +
+          "receives the mail you send " +
           "to info@smpl.money and forwards it to us. For advertising and for sign-in, Google " +
           "decides for itself how it uses what it receives, under its own privacy policy at " +
           "policies.google.com/privacy.",
@@ -617,8 +613,16 @@ export const privacy = {
          * details are the card, and the policy says the card is never here.
          * What is here is what the Payments section lists, and the sentence
          * after says so where somebody reading about deletion will look.
+         *
+         * "Kept until you delete it or delete your account" said a deletion
+         * inside the ledger erased something, and none does. A transaction is
+         * marked with `deleted_at` and stays where Show deleted can restore
+         * it, and every deletion leaves the record whole in the history of
+         * changes above. Only deleting the account removes either.
          */
-        "Your ledger is kept until you delete it or delete your account. Server logs are kept " +
+        "Your ledger is kept until you delete your account. Deleting something in it doesn't " +
+          "erase it before then: a deleted transaction stays where you can restore it, and the " +
+          "history of changes keeps a copy of anything you delete. Server logs are kept " +
           "for a short operational period. Deleting your account deletes the billing records " +
           "the application keeps and your customer record at Stripe. Those records are the " +
           "ones listed under Payments, such as Stripe's identifiers and your subscription's " +
@@ -687,36 +691,37 @@ export const privacy = {
          * restriction on the tag, so it rests on an account setting nothing
          * here can read. The sentence can come back naming it once it's on.
          *
-         * "And on Premium nothing does" went the day this website started
-         * loading Google's script: a Premium subscriber reading that sentence
-         * was handing Google their address and their browser's details while
-         * reading that they were not. Premium still takes the advertising out
-         * of the application, which is what it was sold as, so the claim is
-         * kept and given the boundary it always had.
+         * Premium's half went through two versions while smpl.money carried
+         * AdSense: "and on Premium nothing does" was false for a subscriber
+         * reading it on a page that loaded Google's script, so it became
+         * "it doesn't take the script off this website". The script is off
+         * the website now, so the website's half is said as its own fact,
+         * true on every plan, rather than as a limit on what Premium buys.
          */
         "Where the UK or EU GDPR applies you have the right to access your data, to correct it, " +
           "to have it erased, to restrict or object to how it is used, and to receive it in a " +
           "portable form. The California Consumer Privacy Act gives California residents " +
           "comparable rights, including the right not to be discriminated against for exercising " +
           "them. What leaves for advertising is what Google receives, set out under What " +
-          "Google receives: from this website on every visit, and from the application to " +
-          "show an ad to a free account. Premium takes the advertising out of the " +
-          "application. It doesn't take the script off this website.",
+          "Google receives, to show an ad to a free account in the application. Premium takes " +
+          "the advertising out of the application, Google's script with it, and this website " +
+          "sends Google nothing about you on any plan.",
         /*
          * Not a conclusion about whether we sell or share, which the check
          * above refuses without restricted data processing named beside it,
          * but what the law may call personalized advertising and the one
-         * control for it that the account now publishes. Google's US-state
-         * message is configured for both origins, so the link is Google's,
-         * and so is how it treats an opt-out.
+         * control for it that the account publishes. Google's US-state
+         * message is shown by Google's script, so the link is Google's, and
+         * so is how it treats an opt-out. "On both the website and the
+         * application" until the website stopped loading that script.
          */
         "**Opting out of sale or sharing.** Under the California Consumer Privacy Act and " +
           "similar laws in other states, letting Google's advertising cookies collect " +
           "information to personalize ads can count as selling or sharing personal " +
           "information, even though no money changes hands for it and nothing from your ledger " +
-          "is involved. If you live in one of those states, Google's message on both the " +
-          "website and the application carries a link to opt out, and using it keeps Google " +
-          "from personalizing ads for you there.",
+          "is involved. If you live in one of those states, Google's message in the application " +
+          "carries a link to opt out, and using it keeps Google from personalizing ads for you " +
+          "there.",
         "Most of these you can exercise yourself and immediately: the product has CSV export of " +
           "your transactions for portability, editing for correction, and account deletion for " +
           "erasure. For anything else, write to the address below and we will answer within " +
@@ -734,72 +739,33 @@ export const privacy = {
     },
     {
       /*
-       * "Cookies, and why this site has no banner" answered a question the
-       * site can no longer answer that way. The heading is the claim a reader
-       * takes away from a contents list without opening the section, so it had
-       * to move with the paragraph under it; leaving it and rewriting the body
-       * would have left the lie in the one line most people read.
-       *
-       * The heading names the vendor rather than the site, because that is
-       * where the cookie comes from: smpl.money still sets none of its own,
-       * and a heading saying "the cookies this site sets" would trade one
-       * false sentence for another.
+       * The heading is the claim a reader takes away from a contents list
+       * without opening the section, so it moves with the paragraphs under
+       * it. It was "Cookies, and why this site has no banner", then
+       * "Cookies, and the one Google sets on this website" while smpl.money
+       * carried AdSense. With the ads gone from the website, every cookie
+       * this section names is set in the application, Stripe's and Google's
+       * included, and the heading says where.
        */
-      heading: "Cookies, and the one Google sets on this website",
+      heading: "Cookies, all of them in the application",
       paragraphs: [
         /*
-         * Measured in a browser against a real build served as smpl.money,
-         * not read off a vendor page, and measured twice because the first
-         * reading stopped at the first page. The sequence is `test_cookie` on
-         * `.doubleclick.net` while Google checks that cookies work, then
-         * `IDE` on the next navigation, in the response that deletes
-         * `test_cookie`. `IDE` is what the browser is left holding.
+         * While the site carried AdSense this paragraph named the cookie a
+         * browser measured there: `test_cookie` on `.doubleclick.net` on a
+         * first visit, then `IDE`, Google's advertising identifier, kept for
+         * about thirteen months. Both came from the loader, which is gone, so
+         * a fresh private window on smpl.money should hold no cookie at all,
+         * and `legal-review` §5 is where that is looked at.
          *
-         * The first telling of this paragraph called the cookie short-lived
-         * and "not an identifier for you", which was the probe described and
-         * the identifier missed, and it is the worst direction to be wrong
-         * in: a reader who opens their own cookie list to check finds an
-         * advertising identifier where the policy promised a probe. The
-         * lifetime is stated because it was read off the stored cookie
-         * (Google sends two years, the browser caps it at 400 days), not
-         * copied from a consent manager's database.
-         *
-         * `__gads` and `__gpi` are named as what follows if an ad ever fills
-         * here, rather than as what is set today, because an ad unit
-         * rendering on this site is a change nothing in this repository would
-         * announce. What is no longer said is that the identifier waits for
-         * one: it does not, and saying so made an unfilled slot sound like a
-         * reason not to worry.
+         * Start that window on smpl.money, not after the application: a
+         * cookie the application sets for the whole of smpl.money rather than
+         * for app.smpl.money alone would show there too, without this site
+         * setting it.
          */
-        "**smpl.money sets no cookie of its own, and Google's script on it sets one.** It's " +
-          "called IDE, it belongs to doubleclick.net, which is Google's, and it's an " +
-          "advertising identifier: a number that lets Google recognize your browser on the " +
-          "other sites carrying its ads, for measurement and for targeting. Your browser " +
-          "keeps it for about thirteen months. On a first visit a short-lived test_cookie " +
-          "lands there instead, while Google checks that cookies work at all, and the next " +
-          "page replaces it with IDE. No ad has filled on this site yet, and outside Europe the " +
-          "identifier is set anyway. If one ever fills, Google's advertising cookies __gads " +
-          "and __gpi follow it, and this page will say so.",
-        /*
-         * This said nobody is asked first, because no message was published
-         * and `window.googlefc` was undefined on every page. The operator has
-         * since published Google's European and US-state messages for this
-         * origin, so who is asked is now a question of where the reader is,
-         * and each region is said as what happens there. Outside both, the
-         * cookie still arrives with no notice, and that stays said in so
-         * many words rather than left out of a paragraph about asking.
-         */
-        "**Who is asked first depends on where you are.** In the EEA, the UK and Switzerland, " +
-          "Google's message asks before this cookie or any other advertising cookie is set, " +
-          "and you can change your answer later from the message itself. In the US states " +
-          "whose privacy laws give you the right to opt out, nothing asks before the cookie is " +
-          "set, and the message offers a link to opt out of the sale or sharing of your " +
-          "information instead. Everywhere else, the cookie is set on your first visit with no " +
-          "notice. Wherever you are, blocking third-party cookies in your browser keeps it out, " +
-          "and clearing your cookies removes it. The opt-outs under Advertising work on what " +
-          "Google already has: Google's own ad settings at myadcenter.google.com, and the " +
-          `industry opt-outs at youradchoices.com and youronlinechoices.eu. Write to ` +
-          `${operator.contact} about any of it.`,
+        "**smpl.money sets no cookie, and loads nothing from anybody else that could.** It has " +
+          "no sign-in, no analytics and no advertising, and the light or dark theme follows " +
+          "your browser's own setting. Every cookie below is set in the application at " +
+          "app.smpl.money.",
         // Better Auth's session cookie, and the short-lived ones it sets while
         // a sign-in or an agent's authorization is under way. The application
         // writes no cookie of its own beyond those.
@@ -823,16 +789,36 @@ export const privacy = {
         "**On the plan page, Stripe sets its own cookies.** That page, where you subscribe, is " +
           "the only one that loads Stripe's script, and Stripe sets cookies there to prevent " +
           "fraud. They are covered by Stripe's privacy policy.",
-        // The second copy of what the website's paragraph says, for the
-        // application, and the two move together: a whole-document check is
-        // satisfied by either, so changing one and leaving the other is a
-        // green suite and a page that disagrees with itself in the section a
-        // reader opens looking for cookies.
+        /*
+         * Who is asked, region by region, said where a reader who came
+         * looking for cookies will look. The third region is the one a
+         * rewrite would drop: outside both, the cookies arrive with no
+         * message, and that stays said in so many words rather than left out
+         * of a paragraph about asking.
+         *
+         * The cookies are not named, because nobody has yet watched them set
+         * in the application from inside each region (`legal-review` §5).
+         * The website's were named only once they had been measured, and the
+         * first measurement named the wrong one.
+         */
         "**On the free plan, Google sets cookies for advertising**, and those are the ones " +
-          "that do require your consent. In the EEA, the UK and Switzerland, the same message " +
-          "the website shows asks before any of them are set, and you can change or withdraw " +
-          "your answer from it. In the US states with the right to opt out, it offers the opt-out " +
-          "link instead, and elsewhere they're set without asking.",
+          "that do require your consent. Who is asked first depends on where you are. In the " +
+          "EEA, the UK and Switzerland, Google's message asks before any of them are set, and " +
+          "you can change or withdraw your answer from it later. In the US states whose " +
+          "privacy laws give you the right to opt out, nothing asks before they're set, and the " +
+          "message offers a link to opt out of the sale or sharing of your information instead. " +
+          "Everywhere else, they're set without asking.",
+        // The opt-out half of the three disclosures AdSense requires, here as
+        // well as under Advertising, because this is where somebody looking
+        // to be rid of a cookie looks. "From its own domains" because
+        // blocking third-party cookies reaches what Google sets as a third
+        // party and nothing a script sets on the application's own address.
+        "**How to keep them out.** Blocking third-party cookies in your browser keeps out the " +
+          "ones Google sets from its own domains, and clearing your cookies removes them. The " +
+          "opt-outs under Advertising work on what Google already has: Google's own ad settings " +
+          "at myadcenter.google.com, and the industry opt-outs at youradchoices.com and " +
+          "youronlinechoices.eu. On Premium the application doesn't load Google's script, so " +
+          `it sets none. Write to ${operator.contact} about any of it.`,
         "If you decline, that doesn't remove the ads. It keeps them from being personalized " +
           "and keeps Google from setting the advertising cookies that need your consent, though " +
           "Google may still show a limited ad. It doesn't limit the product in any other way, " +
@@ -841,15 +827,17 @@ export const privacy = {
         // responds to the signal, and the answer is that nothing reads it:
         // the application's source has no `doNotTrack` and no `DNT` header.
         // What Google's own script does with it is Google's, so it is not
-        // promised here either way.
+        // promised here either way, and with the script off the website the
+        // question arises only in the application.
         // Global Privacy Control beside it, because the US-state message is
         // an opt-out of sale or sharing and GPC is the browser signal for
         // exactly that. Neither repository reads it, so the sentence says so
         // rather than implying the message does on our behalf.
         "**Do Not Track and Global Privacy Control.** Neither smpl.money nor the application " +
-          "responds to a browser's Do Not Track or Global Privacy Control signal. Neither one " +
-          "reads them, and what Google's script makes of them is Google's to say rather than " +
-          "ours.",
+          "responds to a browser's Do Not Track or Global Privacy Control signal, because " +
+          "neither one reads them. smpl.money loads no script from anybody else, so Google's " +
+          "is only in the application, and what it makes of them is Google's to say rather " +
+          "than ours.",
       ],
     },
     {

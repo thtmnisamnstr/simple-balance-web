@@ -2,6 +2,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import matter from "gray-matter";
 import { isAuthorKey, type AuthorKey } from "@/content/authors";
+import { typeset } from "@/lib/typeset";
 
 /**
  * The content pipeline for `/blog`, `/docs` and `/learn`.
@@ -31,9 +32,9 @@ export type Collection = "blog" | "docs" | "learn";
  * The collections ordered by hand into groups rather than by date.
  *
  * `/docs` and `/learn` share the ordering machinery and nothing else: a docs
- * page is reference for somebody running the product, a learn article is a
- * guide for somebody who has never kept track of their money, and each has
- * its own `_sections.json` naming its own groups.
+ * page is reference for somebody using the product, on app.smpl.money first;
+ * a learn article is a guide for somebody who has never kept track of their
+ * money; and each has its own `_sections.json` naming its own groups.
  */
 export type Shelved = "docs" | "learn";
 
@@ -165,13 +166,18 @@ function parse(collection: Collection, file: string): Entry {
   }
   // A learn article is ordered by hand, so the date orders nothing. It is
   // required anyway because it is what the byline and the article's
-  // structured data say it was published on, and an article about money
-  // with no date and no author is one a reader has no reason to trust.
+  // structured data say it was published on.
   if (collection === "learn" && !date) {
     throw new Error(`${where} is missing "date" — the byline and its structured data need one`);
   }
-  if (collection === "learn" && !(data.authors as unknown[] | undefined)?.length) {
-    throw new Error(`${where} names no author — a learn article carries a byline`);
+  // And it credits nobody. The articles were written by an AI, and the owner
+  // took the byline off them on 25 October 2026: a byline naming a person who
+  // didn't write the words is a claim about authorship this site won't make,
+  // and structured data that names one is the same claim made to a crawler.
+  // Refused here rather than left to habit, because the blog's frontmatter
+  // carries `authors` and copying a post's is how one would come back.
+  if (collection === "learn" && (data.authors as unknown[] | undefined)?.length) {
+    throw new Error(`${where} names an author — learn articles credit nobody (content.md 5.14)`);
   }
 
   const authorKeys: AuthorKey[] = [];
@@ -260,11 +266,11 @@ function compareShelved(collection: Shelved, a: Entry, b: Entry): number {
 /**
  * Section order, from `content/<collection>/_sections.json`.
  *
- * Sidebar groups need an order that is not alphabetical — "Install" belongs
- * above "Reference" — and there is nowhere in a per-page frontmatter to say
+ * Sidebar groups need an order that is not alphabetical — "Using Simple
+ * Balance" belongs above "Self-hosting" — and there is nowhere in a per-page frontmatter to say
  * so without repeating it on every page in the group and letting two pages
- * disagree. One file names the order; a section missing from it sorts last,
- * so adding a group is not a two-file change.
+ * disagree. One file names the order. A group missing from it sorts last here,
+ * but the grouping test refuses it: `content.md` 5.5 lists what a group needs.
  */
 const sectionOrderCache = new Map<Shelved, readonly string[]>();
 function sectionOrder(collection: Shelved): readonly string[] {
@@ -318,13 +324,59 @@ export function neighbors(
   return { previous: all[index - 1], next: all[index + 1] };
 }
 
-/** Featured posts, then the rest. Both newest first. */
-export function blogIndex(): { featured: readonly Entry[]; rest: readonly Entry[] } {
-  const posts = allEntries("blog");
+/**
+ * The blog's front page: one post to lead with, and the rest of page one.
+ *
+ * The lead is the newest featured post, or the newest post when none is
+ * featured, so the front page always opens on a story rather than on a grid.
+ * Any other featured posts open the grid, newest first, which is what
+ * `featured` has always meant: pulled to the top. A featured post older than
+ * page one is pulled onto it as well, and stays on its own page too.
+ *
+ * It used to show every post there was, featured and not, and never
+ * paginated: `/blog/page/2/` existed and nothing on `/blog/` led to it. Page
+ * one is `paginate`'s page one now, so the front page and `/blog/page/1/`,
+ * which names `/blog/` as its canonical, hold the same posts, and `pages` is
+ * what the front page's pagination needs to reach the rest.
+ *
+ * `posts` is a parameter so the choice can be tested against posts that do
+ * not exist; every caller passes nothing.
+ */
+export function blogFront(posts: readonly Entry[] = allEntries("blog")): {
+  readonly lead: Entry | undefined;
+  readonly rest: readonly Entry[];
+  readonly pages: number;
+} {
+  const { items, pages } = paginate(posts, 1);
+  const featured = posts.filter((post) => post.frontmatter.featured === true);
+  const pulled = featured.length > 0 ? featured : posts.slice(0, 1);
   return {
-    featured: posts.filter((post) => post.frontmatter.featured === true),
-    rest: posts.filter((post) => post.frontmatter.featured !== true),
+    lead: pulled[0],
+    rest: [...pulled.slice(1), ...items.filter((post) => !pulled.includes(post))],
+    pages,
   };
+}
+
+/**
+ * Every series, each with its parts in reading order, the one most recently
+ * added to first.
+ *
+ * Derived from the posts like the tags are (`content.md` 5.11): a series is
+ * whatever two or more posts name, and nobody keeps a list of them. One post
+ * naming a series is not one yet, because "Part 1 of 1" is not a series.
+ */
+export function blogSeries(
+  posts: readonly Entry[] = allEntries("blog"),
+): readonly { readonly name: string; readonly parts: readonly Entry[] }[] {
+  const names = [
+    ...new Set(posts.flatMap((post) => (post.frontmatter.series ? [post.frontmatter.series] : []))),
+  ];
+  return names
+    .map((name) => ({
+      name,
+      parts: posts.filter((post) => post.frontmatter.series === name).toSorted(inReadingOrder),
+    }))
+    .filter((series) => series.parts.length > 1);
 }
 
 /** Every tag in use, with how many posts carry it, most-used first. */
@@ -364,7 +416,10 @@ export function tableOfContents(
     const match = /^(#{2,3})\s+(.+?)\s*$/.exec(line);
     if (!match) continue;
     const text = match[2]!.replace(/[*_`]/g, "");
-    out.push({ depth: match[1]!.length as 2 | 3, text, id: slugify(text) });
+    // The heading on the page is typeset by the prose pipeline, so its entry
+    // here is too. The id stays the source's, which is what `rehype-slug`
+    // saw before the quotes were curled, and both slug to the same thing.
+    out.push({ depth: match[1]!.length as 2 | 3, text: typeset(text), id: slugify(text) });
   }
   return out;
 }
@@ -431,12 +486,15 @@ export function seriesOf(entry: Entry): readonly Entry[] {
   if (!name) return [];
   return allEntries("blog")
     .filter((post) => post.frontmatter.series === name)
-    .toSorted(
-      (a, b) =>
-        (a.frontmatter.seriesOrder ?? Number.MAX_SAFE_INTEGER) -
-          (b.frontmatter.seriesOrder ?? Number.MAX_SAFE_INTEGER) ||
-        (a.frontmatter.date ?? "").localeCompare(b.frontmatter.date ?? ""),
-    );
+    .toSorted(inReadingOrder);
+}
+
+function inReadingOrder(a: Entry, b: Entry): number {
+  return (
+    (a.frontmatter.seriesOrder ?? Number.MAX_SAFE_INTEGER) -
+      (b.frontmatter.seriesOrder ?? Number.MAX_SAFE_INTEGER) ||
+    (a.frontmatter.date ?? "").localeCompare(b.frontmatter.date ?? "")
+  );
 }
 
 /**

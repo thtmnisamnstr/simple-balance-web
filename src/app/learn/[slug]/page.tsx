@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { feedAlternates } from "@/lib/feed";
-import { openGraph } from "@/app/open-graph";
+import { openGraph, pageCard } from "@/app/open-graph";
 import { notFound } from "next/navigation";
 import {
   allEntries,
@@ -10,16 +10,16 @@ import {
   tableOfContents,
 } from "@/content/collections";
 import { section } from "@/content/sections";
-import { authors } from "@/content/authors";
-import { learnCta } from "@/content/learn";
+import { learnCta, learnIndex } from "@/content/learn";
 import { Prose } from "@/components/prose";
 import { Byline } from "@/components/byline";
 import { Contents } from "@/components/contents";
 import { Breadcrumbs } from "@/components/breadcrumbs";
-import { ArticleStructuredData, BreadcrumbStructuredData } from "@/components/structured-data";
-import { DocPager } from "@/components/doc-pager";
+import { ArticleStructuredData } from "@/components/structured-data";
+import { LearnCard, LearnHero } from "@/components/learn-art/pieces";
 import { ShareLinks } from "@/components/share-links";
-import { AdBanner } from "@/components/ad-banner";
+import { typeset } from "@/lib/typeset";
+import { sectionRobots } from "@/lib/indexing";
 
 const learn = section("learn");
 
@@ -40,16 +40,17 @@ export async function generateMetadata({
   return {
     title: meta.title,
     description: meta.description,
-    robots: learn.announced ? undefined : { index: false, follow: false },
-    alternates: feedAlternates(canonical),
+    robots: sectionRobots("learn"),
+    // The page's plain-Markdown copy, which `./index.md/route.ts` writes.
+    alternates: feedAlternates(canonical, `/learn/${slug}/index.md`),
     openGraph: openGraph({
       type: "article",
       title: meta.title,
       description: meta.description,
       url: canonical,
+      images: pageCard(`learn/${slug}`, meta.title),
       ...(meta.date ? { publishedTime: meta.date } : {}),
       ...(meta.updated ? { modifiedTime: meta.updated } : {}),
-      authors: (meta.authors ?? []).map((key) => authors[key].name),
     }),
   };
 }
@@ -78,18 +79,21 @@ export default async function LearnArticle({ params }: { params: Promise<{ slug:
   ];
 
   return (
-    <article className="section">
+    <article className="section learn-article">
       <div className="page page-narrow">
         <ArticleStructuredData entry={entry} />
-        <BreadcrumbStructuredData trail={trail} />
         <Breadcrumbs trail={trail} />
 
-        {group ? <p className="eyebrow">{group.section}</p> : null}
-        <h1 className="entry-heading">{meta.title}</h1>
-        <p className="lede">{meta.description}</p>
+        <LearnHero slug={slug} />
 
+        {group ? <p className="eyebrow">{group.section}</p> : null}
+        <h1 className="entry-heading">{typeset(meta.title)}</h1>
+        <p className="lede">{typeset(meta.description)}</p>
+
+        {/* Date and reading time only: the articles credit nobody
+            (content.md 5.14). */}
         <Byline
-          keys={meta.authors ?? []}
+          keys={[]}
           {...(meta.date ? { date: meta.date } : {})}
           {...(meta.updated ? { updated: meta.updated } : {})}
           readingMinutes={entry.readingMinutes}
@@ -103,7 +107,7 @@ export default async function LearnArticle({ params }: { params: Promise<{ slug:
           <h2 id="learn-cta-title" className="learn-cta-title">
             {learnCta.title}
           </h2>
-          <p>{learnCta.body}</p>
+          <p>{typeset(learnCta.body)}</p>
           <p className="learn-cta-actions">
             <a className="button button-primary" href={learnCta.primaryHref}>
               {learnCta.primaryLabel}
@@ -114,10 +118,27 @@ export default async function LearnArticle({ params }: { params: Promise<{ slug:
           </p>
         </aside>
 
-        <AdBanner />
-
         <ShareLinks title={meta.title} path={path} />
-        <DocPager previous={previous} next={next} base={learn.href} label="More guides" />
+
+        {previous || next ? (
+          <nav className="learn-next" aria-labelledby="learn-next-title">
+            <h2 id="learn-next-title" className="learn-next-title">
+              {learnIndex.keepReading}
+            </h2>
+            <ul className="learn-grid">
+              {previous ? (
+                <li>
+                  <LearnCard entry={previous} rel="prev" />
+                </li>
+              ) : null}
+              {next ? (
+                <li>
+                  <LearnCard entry={next} rel="next" />
+                </li>
+              ) : null}
+            </ul>
+          </nav>
+        ) : null}
       </div>
     </article>
   );

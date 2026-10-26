@@ -1,6 +1,7 @@
 import { allEntries, type Entry } from "@/content/collections";
 import { authors } from "@/content/authors";
 import { site } from "@/content/home";
+import { section } from "@/content/sections";
 
 /**
  * Feed generation, shared by all three formats.
@@ -57,17 +58,53 @@ const FEED_TYPES = {
 } as const;
 
 /**
- * A page's `alternates`: its own canonical, and the feeds every page advertises.
+ * The three feeds as links a reader can follow, each named by its format.
+ *
+ * Read from the same map as the alternates, so the blog's front page cannot
+ * link a reader to one address while advertising another to their feed
+ * reader. Named by format rather than described, because a reader who knows
+ * what Atom is wants the word, and one who does not wants RSS.
+ */
+export const FEED_LINKS = [
+  { name: "RSS", href: FEED_TYPES["application/rss+xml"] },
+  { name: "Atom", href: FEED_TYPES["application/atom+xml"] },
+  { name: "JSON Feed", href: FEED_TYPES["application/feed+json"] },
+] as const;
+
+/**
+ * Whether a page advertises the blog's feeds.
+ *
+ * Every page, once the blog is announced; until then, only the blog's own
+ * pages. It was every page always, which put three links to an unannounced
+ * section in the head of the homepage, the pricing page and every guide:
+ * the half-launch `src/content/sections.ts` exists to prevent, arriving
+ * through `<link rel="alternate">` instead of a nav link. The flag decides
+ * this the way it decides the link, the `noindex` and the sitemap.
+ */
+function advertisesFeeds(canonical: string | null): boolean {
+  return section("blog").announced || (canonical?.startsWith("/blog/") ?? false);
+}
+
+/**
+ * A page's `alternates`: its own canonical, the feeds when it advertises them,
+ * and its Markdown copy when it has one.
  *
  * `null` is the 404's, which is served at every address that does not exist
- * and so has no canonical to give. Declaring the feeds alone is what keeps it
- * from inheriting the root's, which pointed every mistyped link at the
- * homepage.
+ * and so has no canonical to give. Declaring its alternates at all is what
+ * keeps it from inheriting the root's, which pointed every mistyped link at
+ * the homepage.
+ *
+ * `markdown` is the address of the page's plain-Markdown copy, for the docs
+ * and the learn guides (`src/lib/markdown.ts`), advertised as
+ * `rel="alternate" type="text/markdown"` so a crawler that reads Markdown
+ * finds it from the page. `content.md` 5.15.
  */
-export function feedAlternates(canonical: string | null) {
-  return canonical === null
-    ? ({ types: FEED_TYPES } as const)
-    : ({ canonical, types: FEED_TYPES } as const);
+export function feedAlternates(canonical: string | null, markdown?: string) {
+  const types = {
+    ...(advertisesFeeds(canonical) ? FEED_TYPES : {}),
+    ...(markdown ? { "text/markdown": markdown } : {}),
+  };
+  return canonical === null ? ({ types } as const) : ({ canonical, types } as const);
 }
 
 /**

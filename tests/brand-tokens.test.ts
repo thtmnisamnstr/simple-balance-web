@@ -65,9 +65,12 @@ describe("the brand token contract", () => {
       // than following the page, so both themes paint it the same. The
       // application's `--art-*` set works the same way.
       "--art-base",
+      "--art-glow-a",
+      "--art-glow-b",
       "--art-ink",
       "--art-bar",
       "--art-hairline",
+      "--art-veil",
       "--on-art-muted",
     ]);
     const light = tokensIn(lightBlock());

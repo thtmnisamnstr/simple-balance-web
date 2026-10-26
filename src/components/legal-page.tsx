@@ -4,6 +4,7 @@ import { formatDate } from "@/lib/format";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Contents } from "@/components/contents";
 import { slugify } from "@/content/collections";
+import { typeset } from "@/lib/typeset";
 
 /**
  * A legal document.
@@ -18,12 +19,21 @@ import { slugify } from "@/content/collections";
  * emphasis on the sentences that matter — "we never see or store your card
  * details" — and running them through the whole MDX pipeline for one
  * inline mark would be heavier than the mark is worth.
+ *
+ * Every string is typeset where it is rendered (`web.md` 3.3), because none
+ * of it passes through the prose pipeline that curls the docs' quotes: the
+ * policy showed 79 straight apostrophes under a header, and linked from a
+ * pricing page, that curled every one. Each part is set on its own, as the
+ * prose sets a bold run as its own text, and a heading's id is slugged from
+ * the source, so no anchor moves.
  */
 function Emphasized({ text }: { readonly text: string }) {
   // Odd indices are what sat between the asterisks.
   const nodes = text
     .split(/\*\*(.+?)\*\*/g)
-    .map((part, index) => (index % 2 === 1 ? createElement("strong", null, part) : part));
+    .map((part, index) =>
+      index % 2 === 1 ? createElement("strong", null, typeset(part)) : typeset(part),
+    );
 
   /*
    * Passed as variadic children rather than as an array, which is what lets
@@ -50,7 +60,7 @@ export function LegalPage({
 }) {
   const contents = sections.map((section) => ({
     depth: 2 as const,
-    text: section.heading,
+    text: typeset(section.heading),
     id: slugify(section.heading),
   }));
 
@@ -63,8 +73,8 @@ export function LegalPage({
             { name: title, href },
           ]}
         />
-        <h1 className="entry-heading">{title}</h1>
-        <p className="lede">{description}</p>
+        <h1 className="entry-heading">{typeset(title)}</h1>
+        <p className="lede">{typeset(description)}</p>
         <p className="entry-meta">
           Last updated <time dateTime={legalUpdated}>{formatDate(legalUpdated)}</time>
         </p>
@@ -82,7 +92,7 @@ export function LegalPage({
         <div className="prose-body">
           {sections.map((section) => (
             <section key={section.heading}>
-              <h2 id={slugify(section.heading)}>{section.heading}</h2>
+              <h2 id={slugify(section.heading)}>{typeset(section.heading)}</h2>
               {section.paragraphs.map((paragraph) => (
                 <p key={paragraph}>
                   <Emphasized text={paragraph} />

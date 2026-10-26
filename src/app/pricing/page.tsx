@@ -1,12 +1,34 @@
 import type { Metadata } from "next";
 import { feedAlternates } from "@/lib/feed";
-import { openGraph } from "@/app/open-graph";
-import { comparison, faq, included, pricing, pricingMeta, tiers } from "@/content/pricing";
+import { openGraph, pageCard } from "@/app/open-graph";
+import {
+  comparison as comparisonCopy,
+  faq as faqCopy,
+  included as includedCopy,
+  pricing as pricingCopy,
+  pricingMeta,
+  tiers as tiersCopy,
+} from "@/content/pricing";
 import { site } from "@/content/home";
 import { CheckIcon } from "@/components/icons";
 import { Breadcrumbs } from "@/components/breadcrumbs";
-import { BreadcrumbStructuredData, FaqStructuredData } from "@/components/structured-data";
-import { AdBanner } from "@/components/ad-banner";
+import { FaqStructuredData } from "@/components/structured-data";
+import { typesetAll } from "@/lib/typeset";
+
+/*
+ * Curly quotes on every string this page shows, set once where the copy
+ * arrives rather than at forty render points (`web.md` 3.3). The FAQ's
+ * structured data is built from the same typeset copy, so the answers a
+ * crawler reads and the ones on the page stay the same characters, which
+ * `tests/pricing.test.tsx` holds.
+ */
+const { comparison, faq, included, pricing, tiers } = typesetAll({
+  comparison: comparisonCopy,
+  faq: faqCopy,
+  included: includedCopy,
+  pricing: pricingCopy,
+  tiers: tiersCopy,
+});
 
 export const metadata: Metadata = {
   title: pricingMeta.title,
@@ -16,6 +38,7 @@ export const metadata: Metadata = {
     title: `${pricingMeta.socialTitle} — ${site.name}`,
     description: pricingMeta.socialDescription,
     url: "/pricing/",
+    images: pageCard("pricing", pricingCopy.title),
   }),
 };
 
@@ -50,7 +73,6 @@ export default function PricingPage() {
   return (
     <>
       <FaqStructuredData items={faq} />
-      <BreadcrumbStructuredData trail={trail} />
 
       <section className="section" aria-labelledby="pricing-title">
         <div className="page">
@@ -166,7 +188,7 @@ export default function PricingPage() {
               has a limit and some advertising. Here they do the job those
               rows were added for, which is answering "is the cheap one the
               cut-down one" without implying there is a cut-down one. */}
-          <h3 className="section-title">{pricing.includedTitle}</h3>
+          <h3 className="included-title">{pricing.includedTitle}</h3>
           <ul className="checklist">
             {included.map((item) => (
               <li key={item}>
@@ -202,10 +224,6 @@ export default function PricingPage() {
           </div>
         </div>
       </section>
-
-      <div className="page page-narrow">
-        <AdBanner />
-      </div>
     </>
   );
 }

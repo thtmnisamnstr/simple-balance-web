@@ -7,7 +7,368 @@ than a contract with readers.
 
 ## Unreleased
 
+### Added
+
+**A Learn section, at /learn.** Twelve plain guides to the everyday jobs of
+looking after money: tracking your spending, choosing budget categories,
+making a budget, zero-based and envelope budgeting, sinking funds, budgeting
+on irregular pay, balancing a checking account, budgeting with a credit card,
+finding your subscriptions, net worth, and how big an emergency fund should
+be. Each one says why the job matters, how to do it with any tool, and then
+how to do it in Simple Balance, using the buttons as they're named on the
+screen. The topics were picked from what people search for and what the
+product can genuinely help with; the ones it can't, like investing and credit
+scores, were left out on purpose.
+
+- Every article ends with its sources, and credits the people and
+  organizations its methods and figures came from: government agencies,
+  regulators and the original authors, never personal-finance personalities.
+- They're written to be read at a 5th to 8th grade level, and measured
+  against it.
+- Every article opens on a picture drawn on the same dark green panel the app
+  uses on its sign-in screen, with one object for its topic (a balance scale
+  for net worth, a jar for sinking funds), and it moves for a moment when the
+  page opens. Each one also has diagrams drawn from its own numbers, in the
+  page's colors so they follow dark mode, and screenshots of the real screens
+  where it explains how to do the job in Simple Balance. Seven screens are new
+  to the site: accounts, categories, payees, recurring, staged, templates and
+  activity. On a phone, tap a screenshot to open it full size and zoom in.
+- The Learn page is a set of cards with each article's picture, grouped and
+  numbered in reading order, under an introduction showing the logo among
+  every article's mark. A card's picture plays when you rest the pointer on
+  it, not when the pointer only passes over it.
+- Nothing moves for long. A picture plays once and stops within a few
+  seconds, diagrams build as you scroll to them and are finished by the time
+  you can see all of one, and with reduced motion turned on everything simply
+  appears finished.
+- The contents list, the titles and summaries on the cards, and the words in
+  the pictures use curly apostrophes and quotes, the same as the article text
+  beside them.
+- "Learn" is the first link in the header and the footer, and the articles are
+  in the sitemap for search engines.
+- Every article ends with a short box saying the free plan does everything
+  the guides describe, for three accounts you can use at once, with the
+  sign-up and pricing links.
+- Every article shows the real screens it walks through, each with a line
+  saying the money in it is made up.
+
+**The guides teach how the work is done here, not only what's forbidden.**
+A fourth label, Guidance, marks a recipe or a vocabulary to copy, with its
+reason, where departing from it is a judgment rather than a defect. New
+sections cover motion (choosing when a drawing plays, the effects, timing a
+loop, moving nothing around it, looking at it frame by frame), drawing on the
+art panel, the docs index and the folding sidebar, a docs page's shape,
+writing the docs for the cloud app first, writing from the app's code and
+then trying to prove it wrong, and the Next.js behaviors that cost time here.
+About two dozen statements the work had made false were corrected.
+
+- `npm run frames` captures the built site's drawings and motion as stills:
+  the finished picture, chosen moments of a loop, a drawing being scrolled
+  to, a timing report, and a contact sheet.
+- A new skill, `draw-and-animate`, for making or changing a picture or an
+  animation and looking at it in both themes and at both widths.
+- `merge-prep` now runs `update-dependencies`, `legal-review`,
+  `design-review`, `seo-review`, `aeo-review`, `optimize` and
+  `guides-update` itself, then commits and pushes once. It refuses to push
+  from `main` and asks before pushing again to a pull request that already
+  exists.
+- Two new skills, `seo-review` and `aeo-review`, read the site the way a
+  search engine and an AI assistant do, past what the tests already hold:
+  whether each title is what somebody would search and its description
+  answers it, links and dates, and whether the sentence an assistant would
+  quote for each common question is on the page, true and able to stand on
+  its own. Each lists what only the owner can do, such as Search Console,
+  Bing Webmaster Tools and the repository's website field. `optimize` keeps
+  page weight, images and fonts, and hands its old findability section to
+  them.
+- `sync-from-app` now also writes and corrects the docs from the
+  application's code, has a second reader try to refute every claim, and
+  brings the privacy policy and terms up to date with the release. It lists,
+  without rewriting, any learn guide a release made wrong, and ends by running
+  `merge-prep`.
+- The README's new "Which skill to run" says which skill to run before a
+  merge and for a release.
+
+**The docs cover the whole app.** Fifteen new pages explain every screen and
+feature in Simple Balance 0.2.1. Each one was written from the app's code at
+that release, then checked again against it.
+
+- Using Simple Balance: the Overview, accounts and the register, adding and
+  editing transactions, splits and transfers, the Staged screen and possible
+  duplicates, categories and payees, transaction templates, recurring
+  transactions, changing many transactions at once, and more than one
+  currency.
+- Budgets and reports, a new section: saving goals, budgets that work out
+  their own amount, what gets funded first and the forecast, and all six
+  reports with their options.
+- Your account, a new section: theme, timezone and currency; activity
+  history; and every limit you can run into, with what happens at each one.
+- Finding your way around, for the sidebar, the dates at the top of each
+  screen, and the search, sort and row menus every list shares.
+- The existing pages gained what they were missing, such as the import size
+  limits, the duplicate rule, switching between monthly and yearly billing,
+  a failed renewal, and the connected-agent list. The import page says how
+  each cell of a bank file is read, with the fix for card files that list
+  purchases as positive numbers. The self-hosting configuration page covers
+  `ads.txt`, switching sign-in methods without locking anybody out, and the
+  price-change email a seller has to send. "Accounts and transactions"
+  is now "How the books work", and "Agents and MCP" is "Connecting an AI
+  assistant (MCP)".
+- On a phone, the docs menu starts folded, so a page opens on its own words
+  instead of on a list of 27 links.
+
 ### Changed
+
+**Easier to find, in search results and in AI assistants.** The homepage's
+title says what the product is, "Free budget app and spending tracker", and
+so do its description and a small label above the headline. Before, nothing
+on the page used the words people search for.
+
+- Every Learn guide, every docs page, the pricing page and both indexes have
+  their own preview picture when a link is shared, instead of all showing the
+  homepage's.
+- Each docs page and Learn guide has a plain Markdown copy at its address
+  plus `index.md`, and `smpl.money/llms.txt` lists them, for AI assistants
+  and coding tools. Search engines are told not to list either; the pages
+  themselves are what they index.
+- Search engines may show a large image beside any page's result. The setting
+  was on four pages of 45; a Next.js detail dropped it everywhere else.
+- The sitemap dates every page. The structured data names the site, the app
+  and its real prices, which it reads from the app's own published facts.
+  `robots.txt` still lets every crawler in, AI ones included, and a test now
+  stops anyone blocking one by accident.
+- Descriptions that ran past what a search result shows are shorter: two
+  Learn guides, the pricing page and the privacy policy. The Learn and docs
+  indexes and three self-hosting pages have clearer titles.
+- Five Learn guides say once, in plain words, what kind of tool Simple
+  Balance is for that job, such as an expense tracker or a net worth tracker.
+- Four Learn guides and the Backups and Docker Compose pages have new
+  descriptions, which are also the summary under each title and on each
+  card. Each says how the job is done, where it used to say only what the
+  page covers. Track your spending, Configuration, Backups and the Oracle
+  Cloud or AWS guide open on a sentence that answers the title and names
+  Simple Balance, so an AI assistant quoting that sentence alone still says
+  what it's about.
+
+**The homepage's drawings move on a loop.** The hero's payments adding up,
+the payment being corrected, and the conversation with the assistant each
+build, hold the finished picture for about five seconds, and build again.
+Each has a "Stop the animation" checkbox under it, which leaves the finished
+picture still; anyone whose system asks for less motion sees the finished
+pictures with no animation and no checkbox. The plans picture turns its two
+rings of guide marks around the logo while you rest the pointer on it.
+
+- The assistant section plays as a chat with an AI model rather than an
+  instant answer. The assistant thinks for a moment and calls two of Simple
+  Balance's MCP tools, `list_payees` and then `list_transactions`, each
+  finishing in turn. Then the answer arrives a word at a time and holds for
+  about six seconds, time to read it and then rest on it. A screen reader
+  hears the answer whole, and at rest it's the finished exchange.
+- The plans section is headed "Start free. Pay only for more accounts or no
+  ads." instead of "The whole product is free."
+- The Learn guides no longer name an author, on the page or to search
+  engines. They were written by an AI.
+
+### Fixed
+
+- The sitemap check refused every page dated before the app snapshot was
+  last refreshed, so the next sync could never have passed it. It now
+  refuses only dates before the site existed or after today.
+- The homepage's closing picture finishes building when the drawing is fully
+  on screen, rather than when the whole panel around it is.
+- The homepage says what Simple Balance is in one sentence, under "What it's
+  for": a free budget app and spending tracker, used in the browser with the
+  cloud app or self-hosted. The pricing page asks its bank question the way
+  people ask it: "Does Simple Balance connect to my bank?"
+- The homepage's search description says "your accounts on one page" rather
+  than "every account", which the free plan's three-account limit made too
+  strong. Its AI-assistant section names Simple Balance in its first
+  sentence, and the pricing page asks "Is Simple Balance really free?" and
+  answers "Yes" with the limit and Premium's price.
+- The self-hosting page says Simple Balance is open source, under the
+  AGPL-3.0 license, and its title no longer names the product twice in a
+  search result. "How the books work" is now "How deposits, withdrawals and
+  transfers work", the words someone would search.
+- The Learn guides link the docs page for every screen they walk through,
+  and a check now fails a guide that names a screen without linking its
+  page. The docs pages for importing, Staged and deposits, withdrawals and
+  transfers link back to the guides that use them, and the emergency-fund
+  guide is linked from the guides that mention one.
+- `/llms.txt` said a connected AI assistant could only read and stage. It can
+  also make changes itself, if you allow it, and now says so.
+- The privacy policy's "doesn't sell your data" sentence carries its own
+  qualifier, so an AI assistant quoting it alone doesn't overstate it: under
+  California's law and similar ones, personalized ads on a free account can
+  count as selling or sharing.
+- Links to a heading on the same page work in the Markdown copies, and the
+  homepage's social card is now checked against the headline, tagline and
+  price it draws.
+- The self-hosting configuration page said a reminder missed while a server
+  had no email set up is never sent. The app sends the most recent one once
+  email is configured, and the page now says so. It also gave a failed
+  payment a seven-day grace period; the app gives 15.
+- Five docs pages disagreed with the app or each other: whether you choose
+  your 3 usable accounts only once, whether archived accounts leave every
+  report, whether future-dated money counts in an account's ending balance,
+  "no limits" on a copy you run yourself, and what Save as template leaves
+  out.
+- A docs page's breadcrumb links its section to that section on the docs
+  index, instead of to the top of the index twice.
+- The developer console no longer reports a hydration error when the
+  LanguageTool browser extension is installed. It adds an attribute to the
+  page's `<html>` element before the page starts, and React now ignores
+  attributes on that one element.
+- `npm audit` finds nothing. Next.js moved from 16.3.8 to 16.4.3, which fixes
+  a critical advisory, along with Vite, undici and fast-uri. The `serve`
+  package used for local previews pins an old `compression`, so an override
+  gives it the patched version until `serve` ships one.
+- The writing guide's example for putting a screenshot in a docs page or an
+  article would have shipped it without its size, so the page jumped as it
+  loaded. Nothing had used it yet. The guide shows the spelling that works
+  now, and a check refuses the other.
+- The "Using it" group on the documentation index had no name for a screen
+  reader. Its label pointed at an id with a space in it, which reads as two
+  ids that don't exist. It's named properly now.
+- The privacy policy said that deleting something in your ledger removed it.
+  The app keeps a copy of every change, deletions included, in the history
+  on its Activity page until the account itself is deleted, and a deleted
+  transaction can be restored. The policy says so now, and so does the
+  Activity page's documentation, which also no longer says that signing in
+  and changing your plan aren't recorded. They are, just not on that page.
+- The box at the end of every Learn guide said everything the guides do is
+  on the free plan, without the three-account limit, under a net worth guide
+  that asks for every account you have. It names the limit now, as the
+  homepage and the pricing page do.
+- Between about 912 and 992 pixels wide, a high-density screen downloaded the
+  largest file of the two screenshots under the homepage's feature list,
+  for pictures shown about 414 pixels wide: around 40 KB more than the page
+  needed. Every screenshot now tells the browser its real width, and a check
+  holds each one to the layout at eleven widths.
+- The internal link check that runs on every pull request skipped any link
+  with a `#` or a `?` in it, page and all, so a link to a section of a
+  renamed page passed. It checks the page and the section now.
+- The check that refuses wording implying a bank connection reads the
+  summary at `/llms.txt` as well as the homepage and the pricing page.
+
+**Keyboard focus looks the same everywhere.** The pricing page's questions,
+and a table that scrolls sideways on a phone, wore the browser's own blue
+ring instead of the site's. On the dark green panels the site's green ring
+was hard to see in light mode, about 2.4 to 1 against the panel; there it's
+the panel's light ink now.
+
+- The docs search box's clear button was the browser's blue on the dark
+  panel. It's drawn in the field's own ink now.
+- The privacy policy and the terms ran each section's heading into its text
+  and its paragraphs into one another. They're spaced like the docs now, and
+  their apostrophes and quotes are curly like the rest of the site, as are
+  the 404's.
+- In the homepage's chat, each tool call showed cut in half for a moment as
+  the reply's bubble grew around it. The bubble opens before each one
+  appears now.
+- On the pricing page, the heading over the list below the comparison sat
+  tight under the table; on a phone, a row's divider stepped out of line with
+  the rest of its row; and a plan card alone on its row had extra space at
+  its top.
+- The docs pager's two titles start level, each of the docs index's three
+  starting points keeps its label on its title, the gap under a list in a
+  docs page or a guide is the site's own, and the homepage's privacy list
+  starts level with the words beside it.
+- A short page, such as the 404, ends in its footer's color instead of in a
+  band of a different shade below it.
+- The small labels inside the Learn pictures hide whenever a picture is too
+  small to read them, not only on a phone. On a tablet's cards they were
+  about 5 pixels tall.
+- A blog with no posts no longer offers its feeds above the sentence saying
+  there's nothing to subscribe to.
+- The docs index's link preview starts its headline with a capital letter,
+  and the self-hosting configuration page's mail port setting has a
+  description.
+
+**No ads on this website.** The ads run in the app alone now, on its free
+plan, so smpl.money loads nothing from Google or anybody else, sets no cookie,
+and tells the browser to refuse anything from another origin. The privacy
+policy says so, with a new date, and still carries everything it has to about
+the ads in the app.
+
+- `smpl.money/ads.txt` stays. It's how Google knows the ads on app.smpl.money
+  are authorized, and removing it would stop them earning anything without a
+  single visible symptom.
+- The two errors in the browser's developer console are gone. Google's script
+  was changing the ad space before React had finished taking over the page, so
+  React threw the page away and drew it again in the browser, and complained
+  about the script tags it had to recreate on the way.
+- The pricing page's answer about the ads no longer mentions a cookie this
+  website sets, because it sets none.
+
+**The homepage, redrawn.** It opens on the same dark green panel as the app's
+sign-in screen, with a drawing of three payments adding up to a balance.
+
+- The real Overview screen rises out of the top of the page.
+- A new section, What it's for, starts from what people come to do: see where
+  the money goes, make a budget they'll keep, get ready for bills they can see
+  coming, find forgotten subscriptions, use a credit card without the surprise,
+  and know whether they're getting ahead. Each has its picture from the Learn
+  guides and links to the guide.
+- The three reasons to trust the numbers are numbered rows beside their
+  screenshots, and the one about corrections has a drawing of a fixed payment
+  that keeps what it used to say.
+- The assistant section shows a conversation instead of a terminal, and it
+  builds as you scroll to it. The page ends on the plans, with a sign-up button
+  beside See pricing.
+- The privacy section names the two ways to use it the way people say them:
+  self-host it, or use our cloud app. The pricing page's answers do the same,
+  and the one telling self-hosting skeptics to "wait for the version we run"
+  now points at the cloud app, which has been open since October 7.
+- The pricing page's comparison is headed "What's different between the
+  plans" instead of "Only four lines change".
+
+**The docs and blog front pages, redrawn.** Both had become plain lists next
+to the Learn page.
+
+- /docs/ opens on the same green panel, with search and three ways in:
+  getting started, importing a statement, and running your own copy. Each
+  section has its own picture and its pages as cards with their own small
+  marks, so Get started, Using Simple Balance and Self-hosting are easy to
+  tell apart. Getting started lists its four steps right on the card.
+  Self-hosting sits last, in its own tinted band.
+- /blog/ opens on a masthead with the feeds, then the newest post as a large
+  lead story, the rest as cards with their covers, and the series in order.
+  The topic, author, archive and older-post pages share the same header and
+  cards, and the archive is a timeline.
+- The blog front page shows one page of posts and links to the next, where it
+  used to list every post on one page, and post cards no longer skip a
+  heading level on topic and author pages.
+- Cards rise into place as you scroll instead of fading in, so text is never
+  left half-faded at the bottom of the screen.
+
+**The docs start with signing up, not installing.** Getting started is now
+about the version we run at app.smpl.money: creating an account, adding your
+first account, bringing in a statement, and free versus Premium, with
+screenshots of each step. The sidebar reads Get started, Using Simple Balance,
+and Self-hosting, in that order.
+
+- Getting started's first step is "Sign up", so it isn't confused with adding
+  your first account, which is the second.
+- Moving to your own copy is now Moving between the cloud app and your own
+  copy, and covers both directions: from the cloud app to a copy you host, and
+  back. Moving to the cloud app says what the free plan's three accounts mean
+  for it. The old address redirects to the new one.
+- A new page, Your account and plan, covers resetting a password, upgrading,
+  canceling, what happens to your accounts when Premium ends, exporting, and
+  deleting your account.
+- Agents and MCP gives the address to use with app.smpl.money,
+  `https://app.smpl.money/mcp`.
+- Self-hosting is its own section at the bottom, and explains the common ways
+  to run it instead of linking to them. Running your own copy covers trying
+  it on your own computer with two containers, the setup code, and which way
+  to run it for real. Two new guides walk through the supported setups step
+  by step: Deploying with Docker Compose, on machines you already have, and
+  Deploying to Oracle Cloud or AWS, where a Pulumi program builds everything.
+  Configuration, Backups and Moving between the cloud app and your own copy sit
+  with them.
+- A list in a docs page can hold a code block or a long command on a phone
+  now. The list was as wide as its widest line, so the page scrolled
+  sideways.
 
 **You can sign up.** The application is live at app.smpl.money, and the
 four controls that read "Sign-ups open soon" — in the header, under the
@@ -485,14 +846,6 @@ carried the old headline.
 banned-words test could not see.
 
 ### Fixed
-
-- The writing guide's example for putting a screenshot in a docs page or an
-  article would have shipped it without its size, so the page jumped as it
-  loaded. Nothing had used it yet. The guide shows the spelling that works
-  now, and a check refuses the other.
-- The "Using it" group on the documentation index had no name for a screen
-  reader. Its label pointed at an id with a space in it, which reads as two
-  ids that don't exist. It's named properly now.
 
 **Pulling a release now reads what the release changed, not only its
 product kit.** The kit carries prices, plans, the feature list and the
@@ -1061,24 +1414,6 @@ list the sixth.
 devDependency now.
 
 ### Added
-
-**A Learn section, at /learn.** Twelve plain guides to the everyday jobs of
-looking after money: tracking your spending, making a budget, the 50/30/20
-rule, zero-based and envelope budgeting, sinking funds, budgeting on
-irregular pay, balancing a checking account, budgeting with a credit card,
-finding your subscriptions, net worth, and how big an emergency fund should
-be. Each one says why the job matters, how to do it with any tool, and then
-how to do it in Simple Balance, using the buttons as they're named on the
-screen. The topics were picked from what people search for and what the
-product can genuinely help with; the ones it can't, like investing and credit
-scores, were left out on purpose.
-
-- "Learn" is the first link in the header and the footer, and the articles are
-  in the sitemap for search engines.
-- Every article ends with a short box saying the free plan does everything
-  the guides describe, with the sign-up and pricing links.
-- Four articles show a screenshot of the real product, each with a line saying
-  the money in it is made up.
 
 **The documentation is announced.** `/docs` is in the header and the footer,
 its eight pages no longer send `noindex`, and they're in the sitemap with a

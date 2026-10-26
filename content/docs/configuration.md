@@ -1,13 +1,16 @@
 ---
 title: Configuration
 description: Every environment variable the server reads, what it defaults to, and which ones it refuses to start without.
-section: Reference
-order: 1
-updated: 2026-10-04
+section: Self-hosting
+order: 4
+updated: 2026-10-26
 ---
 
-Configuration is environment variables. There's no configuration file. This
-page is written from the application's own reference,
+This page is for a copy you run yourself. On app.smpl.money there's nothing
+to configure.
+
+Simple Balance reads its configuration from environment variables, and
+there's no configuration file. This page is written from the application's own reference,
 [`docs/deployment.md`](https://github.com/thtmnisamnstr/simple-balance/blob/main/docs/deployment.md)
 and
 [`.env.example`](https://github.com/thtmnisamnstr/simple-balance/blob/main/.env.example),
@@ -51,9 +54,19 @@ server refuses to start and says which setting to use instead.
 
 | Variable         | Default   | What it does                                                                                                                                                                                                                               |
 | ---------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `AUTH_MODE`      | `local`   | Which sign-in methods are offered: `local`, `google`, or `both`.                                                                                                                                                                           |
+| `AUTH_MODE`      | `local`   | Which sign-in methods are offered: `local`, `google`, or `both`. Changing it on a copy that has accounts takes the dropped method away from them; see below.                                                                               |
 | `ALLOWED_EMAILS` | unset     | Who may create an account. Unset admits nobody but the first account. Required, and must admit somebody, when `AUTH_MODE` is `google` or `both`.                                                                                           |
 | `SETUP_TOKEN`    | generated | The one-time code that claims a fresh instance. At least 16 characters if you set it; a shorter one refuses to start. Left unset, one is generated and, where password sign-in is on, printed to the startup log. It also takes a `_FILE`. |
+
+**Changing `AUTH_MODE` once people have accounts takes the method you drop
+away from them**, on the web and over MCP, and an account that has only that
+method can't sign in until it comes back. To move from one method to the
+other, go through `both`: switch to it, have each person who signs in with
+Google add a password on the **Password** card in **Settings**, within 15
+minutes of signing in, and each person with a password press **Connect
+Google** under **Sign-in methods**, using the same email address. Then drop
+the method you're leaving. Neither card is offered while its method is off,
+which is why the step through `both` can't be skipped.
 
 `ALLOWED_EMAILS` is a comma-separated list, matched without regard to case, and
 each entry is one of these:
@@ -157,12 +170,18 @@ reset a forgotten password, a new account has to confirm its address before it
 works, and scheduled reminders can be delivered. Leave both unset and none of
 it happens. Setting only one of them refuses to start.
 
+The scheduled ones are the two emails a person turns on for themselves:
+[template reminders](/docs/templates/#email-reminders), and the notice a
+[recurring transaction](/docs/recurring-transactions/) sends when it puts a
+row on **Staged**. Without a mail server, both settings still save, and the
+form says nothing will be sent until one is configured.
+
 | Variable        | Default                                 | What it is                                                                                                                                        |
 | --------------- | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `SMTP_HOST`     | unset                                   | The submission server. Setting it turns mail on.                                                                                                  |
 | `MAIL_FROM`     | unset                                   | The address messages come from: `balance@example.com`, or `Simple Balance <balance@example.com>`. Required alongside `SMTP_HOST`.                 |
 | `MAIL_REPLY_TO` | unset                                   | Where a reply should go, if not to `MAIL_FROM`. Same two forms.                                                                                   |
-| `SMTP_PORT`     | `587`, or `465` when `SMTP_SSL` is true |                                                                                                                                                   |
+| `SMTP_PORT`     | `587`, or `465` when `SMTP_SSL` is true | The submission server's port.                                                                                                                     |
 | `SMTP_SSL`      | `false`                                 | `true` for a connection encrypted from the first byte, which is what 465 expects. `false` starts on 587 and upgrades with STARTTLS.               |
 | `SMTP_USERNAME` | unset                                   | Set with `SMTP_PASSWORD` or not at all.                                                                                                           |
 | `SMTP_PASSWORD` | unset                                   | Never sent unencrypted: with `SMTP_SSL` off and credentials set, the STARTTLS upgrade is required rather than attempted. It also takes a `_FILE`. |
@@ -176,10 +195,10 @@ The connection to the relay is opened once at startup, so a wrong setting shows
 up in the log. A refusal there is logged and the server keeps running, because
 the ledger works whether or not mail does.
 
-A reminder set up while there's no mail server is kept and starts arriving once
-one is configured, but nothing queues in the meantime: a reminder whose moment
-passed isn't sent later. Accounts created without a mail server keep working
-after one is added.
+A reminder set up while there's no mail server is kept, and it waits rather
+than counting its dates as sent. Once one is configured, a reminder that missed
+several dates sends one email, for the most recent, rather than one for each.
+Accounts created without a mail server keep working after one is added.
 
 ## Your privacy policy and terms
 
@@ -235,7 +254,7 @@ what you chose, so an endpoint subscribed to the wrong set fails silently.
 | `customer.subscription.updated`                                                                        | Every change of status, price, cancellation and renewal. This is the one that grants and revokes the plan. |
 | `customer.subscription.deleted`                                                                        | The end of a subscription, however it ended.                                                               |
 | `invoice.paid`                                                                                         | The only thing treated as proof that a first payment succeeded.                                            |
-| `invoice.payment_failed`                                                                               | Starts the seven-day grace period, by recording when the failure happened.                                 |
+| `invoice.payment_failed`                                                                               | Starts the 15-day grace period, by recording when the failure happened.                                    |
 | `setup_intent.succeeded`                                                                               | Makes a replacement card the one Stripe bills.                                                             |
 | `customer.deleted`                                                                                     | Drops a customer mapping Stripe no longer has.                                                             |
 | `charge.refunded`, `charge.dispute.created`, `charge.dispute.closed`, `charge.dispute.funds_withdrawn` | Logged for an operator to act on. None of them changes a plan by itself.                                   |
@@ -247,6 +266,20 @@ A test delivery from Stripe's dashboard answering `200` with
 `{"received": true}` proves the signature verified and nothing else. To prove a
 subscription works end to end, make a real test-mode subscription and watch the
 plan tab change.
+
+### Running a plan you sell
+
+**The plan tab promises your subscribers an email between 7 and 30 days
+before a price change**, or before tax is added to what a renewal costs,
+saying what the renewal will cost and how to cancel. Simple Balance sends no
+such email, so sending it is yours to do.
+
+The rest of running a plan is done in Stripe and the database rather than in
+the app: giving somebody the plan without a payment, refunds and disputes, a
+webhook Stripe couldn't deliver, changing a price, and stopping selling. The
+application's
+[billing operations](https://github.com/thtmnisamnstr/simple-balance/blob/main/docs/billing-operations.md)
+has a procedure for each.
 
 `SB_CSP_REPORT_ONLY=true` rehearses the plan and billing tab's content security
 policy instead of enforcing it, for the hour after turning billing on: that page
@@ -285,6 +318,22 @@ page that shows your balances, including allowing scripts to be evaluated at
 runtime. A deployment that sets none of these keeps the `default-src 'self'`
 policy the container ships with.
 
+### ads.txt
+
+The app serves `/ads.txt` at its own address once the AdSense settings are
+set, naming your publisher id as a direct seller:
+`google.com, pub-…, DIRECT, f08c47fec0942fa0`. Without it, AdSense treats the
+ads as unauthorized: they still show, and they earn nothing.
+
+**If the app is on a subdomain**, such as `balance.example.com`, Google reads
+the root domain's `/ads.txt` instead of the app's, so put the same line in the
+root domain's file. Add a `subdomain=` line there only if the subdomain uses a
+different publisher id. A root `ads.txt` that exists and doesn't name your id
+keeps the ads from earning anything, and nothing on screen says so, so check
+both files with `curl` after turning ads on. The application's
+[monetization guide](https://github.com/thtmnisamnstr/simple-balance/blob/main/docs/monetization.md#what-you-have-to-do-at-google-and-what-this-does-for-you)
+has the steps at Google, in order.
+
 ### The consent message
 
 **Publish a European regulations message whether or not you want personalized
@@ -315,6 +364,11 @@ the software can check that the message exists.
 | `IDEMPOTENCY_RETENTION_HOURS` | `0`, meaning forever | How long a used idempotency key keeps replaying. Nothing prunes the stored responses unless you set it, and the pruning rides the scheduler's tick. Ceiling 8760, one year. |
 | `METRICS_ENABLED`             | `false`              | Whether this process answers `GET /metrics` in Prometheus' text format. With it off there's no such route.                                                                  |
 | `METRICS_TOKEN`               | unset                | A bearer token `GET /metrics` demands before it answers. Unset means anybody who can reach the port can scrape it. It also takes a `_FILE`.                                 |
+
+The schedule is what makes a
+[recurring transaction](/docs/recurring-transactions/) put its row on
+**Staged** and a [template reminder](/docs/templates/#email-reminders) go out.
+If no process runs it, neither happens.
 
 The six with a ceiling and a default above zero (`DATABASE_POOL_SIZE`,
 `CSV_MAX_BYTES`, `CSV_MAX_ROWS` and the three `RECURRENCE_` numbers) are each a

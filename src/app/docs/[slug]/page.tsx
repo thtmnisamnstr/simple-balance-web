@@ -1,24 +1,25 @@
 import type { Metadata } from "next";
 import { feedAlternates } from "@/lib/feed";
-import { openGraph } from "@/app/open-graph";
+import { openGraph, pageCard } from "@/app/open-graph";
 import { notFound } from "next/navigation";
 import {
   allEntries,
   bySection,
   entryBySlug,
   neighbors,
+  slugify,
   tableOfContents,
 } from "@/content/collections";
 import { editUrl, section } from "@/content/sections";
 import { Prose } from "@/components/prose";
 import { Contents } from "@/components/contents";
 import { Breadcrumbs } from "@/components/breadcrumbs";
-import { BreadcrumbStructuredData, DocStructuredData } from "@/components/structured-data";
+import { DocStructuredData } from "@/components/structured-data";
 import { DocsSidebar } from "@/components/docs-sidebar";
 import { ActiveContents } from "@/components/client/active-contents";
-import { AdBanner } from "@/components/ad-banner";
 import { DocPager } from "@/components/doc-pager";
 import { formatDate } from "@/lib/format";
+import { sectionRobots } from "@/lib/indexing";
 
 const docs = section("docs");
 
@@ -38,13 +39,15 @@ export async function generateMetadata({
   return {
     title: entry.frontmatter.title,
     description: entry.frontmatter.description,
-    robots: docs.announced ? undefined : { index: false, follow: false },
-    alternates: feedAlternates(canonical),
+    robots: sectionRobots("docs"),
+    // The page's plain-Markdown copy, which `./index.md/route.ts` writes.
+    alternates: feedAlternates(canonical, `/docs/${slug}/index.md`),
     openGraph: openGraph({
       type: "article",
       title: entry.frontmatter.title,
       description: entry.frontmatter.description,
       url: canonical,
+      images: pageCard(`docs/${slug}`, entry.frontmatter.title),
       ...(entry.frontmatter.updated ? { modifiedTime: entry.frontmatter.updated } : {}),
     }),
   };
@@ -61,7 +64,9 @@ export default async function DocPage({ params }: { params: Promise<{ slug: stri
   const trail = [
     { name: "Home", href: "/" },
     { name: docs.label, href: docs.href },
-    ...(group ? [{ name: group.section, href: docs.href }] : []),
+    // The group's own shelf on the index, not the index's top: the same URL
+    // as the crumb before it named one page twice in the breadcrumb markup.
+    ...(group ? [{ name: group.section, href: `${docs.href}#${slugify(group.section)}` }] : []),
     { name: entry.frontmatter.title, href: `/docs/${slug}/` },
   ];
 
@@ -71,7 +76,6 @@ export default async function DocPage({ params }: { params: Promise<{ slug: stri
 
       <article className="docs-article">
         <DocStructuredData entry={entry} />
-        <BreadcrumbStructuredData trail={trail} />
         <Breadcrumbs trail={trail} />
 
         <h1 className="entry-heading">{entry.frontmatter.title}</h1>
@@ -104,8 +108,6 @@ export default async function DocPage({ params }: { params: Promise<{ slug: stri
         <Prose body={entry.body} />
 
         <DocPager previous={previous} next={next} base={docs.href} label="More documentation" />
-
-        <AdBanner />
       </article>
     </div>
   );

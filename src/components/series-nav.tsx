@@ -1,4 +1,5 @@
 import type { Entry } from "@/content/collections";
+import { typeset } from "@/lib/typeset";
 
 /**
  * The other parts of a multi-part post.
@@ -28,9 +29,9 @@ export function SeriesNav({
         {parts.map((part) => (
           <li key={part.slug}>
             {part.slug === current ? (
-              <span aria-current="page">{part.frontmatter.title}</span>
+              <span aria-current="page">{typeset(part.frontmatter.title)}</span>
             ) : (
-              <a href={`/blog/${part.slug}/`}>{part.frontmatter.title}</a>
+              <a href={`/blog/${part.slug}/`}>{typeset(part.frontmatter.title)}</a>
             )}
           </li>
         ))}

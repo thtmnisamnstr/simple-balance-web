@@ -5,11 +5,12 @@ import remarkSmartypants from "remark-smartypants";
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypePrettyCode from "rehype-pretty-code";
-import { Shot } from "@/components/shot";
+import { ProseShot } from "@/components/shot";
 import { Callout } from "@/components/callout";
 import { CodeBlock } from "@/components/code-block";
 import { CodeTab, CodeTabs } from "@/components/code-tabs";
 import { Figure } from "@/components/figure";
+import { Diagram } from "@/components/learn-art/pieces";
 
 /**
  * A rendered Markdown body.
@@ -47,9 +48,11 @@ const prettyCode = {
 } as const;
 
 const components = {
-  Shot,
+  // Markdown writes `<Shot>`, and gets the one that opens full size.
+  Shot: ProseShot,
   Callout,
   Figure,
+  Diagram,
   CodeTabs,
   CodeTab,
   // Every fenced block becomes a CodeBlock, which is a <pre> plus a copy

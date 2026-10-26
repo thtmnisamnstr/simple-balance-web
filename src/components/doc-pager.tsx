@@ -1,11 +1,12 @@
 import type { Entry } from "@/content/collections";
 
 /**
- * The page before and after this one, in a hand-ordered collection.
+ * The docs page before and after this one, in the order the sidebar gives.
  *
- * Shared by the docs and the learn articles, which both read as a sequence
- * somebody chose. The blog has its own, `post-pager.tsx`, because its order is
- * the calendar and its labels say so.
+ * The learn articles had this too, and show their neighbors as cards with
+ * their pictures now (`LearnCard`), because a guide's next step is a thing a
+ * reader chooses by looking. The blog has its own, `post-pager.tsx`, because
+ * its order is the calendar and its labels say so.
  */
 export function DocPager({
   previous,
