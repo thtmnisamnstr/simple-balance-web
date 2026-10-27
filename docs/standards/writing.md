@@ -42,6 +42,13 @@ citation, find what the sentence names and cite where it is now. A pass that
 shifts every number by the size of a diff is wrong for every citation whose
 target did not move by exactly that much.
 
+**Every number in a citation is a line**, a range's end written after it
+(`` `…:42`–`51` ``) and another line of the same file (`` `…:42`, `:60` ``)
+included. The test read only the first for a while, so a pass that shifted
+the starts left a range in `code/testing.md` running backwards and a `:303`
+naming the helper inserted above the one it cited. It reads all of them now,
+and refuses a range that ends before it starts.
+
 _Checked by:_ `tests/standards-citations.test.ts`.
 
 ## What a skill's text survives

@@ -237,13 +237,14 @@ Break one of these and the site is wrong rather than untidy.
   and a full text description. `docs/standards/web.md` 5.7 and 5.8.
 - **Anything that moves on its own for more than five seconds can be
   stopped.** WCAG 2.2.2. On `/learn` nothing does: a hero plays once, a card
-  plays when pointed at, a diagram builds as it is scrolled to. The homepage's
-  hero, correction and chat loop, at the owner's request, building, holding
-  the finished picture about five seconds and building again, and each one
-  carries a "Stop the animation" checkbox (`LoopStop`). A loop without one is
-  the failure, and `tests/home-page.test.tsx` counts them. All of it sits
-  inside `prefers-reduced-motion: no-preference`, and there is no client code
-  for any of it. `docs/standards/web.md` 8.2.
+  plays when pointed at, or on a touch screen as it scrolls in, and a diagram
+  builds as it is scrolled to. The homepage's hero, correction and chat loop,
+  at the owner's request, building, holding the finished picture about five
+  seconds and building again, and each one carries a "Stop the animation"
+  checkbox (`LoopStop`). A loop without one is the failure, and
+  `tests/home-page.test.tsx` counts them. All of it sits inside
+  `prefers-reduced-motion: no-preference`, and there is no client code for
+  any of it. `docs/standards/web.md` 8.2.
 - **A client component is an island and earns its place.** Three exist, all
   under `src/components/client/`, each because the behavior is impossible on
   the server. The page must be correct before any of them hydrates.

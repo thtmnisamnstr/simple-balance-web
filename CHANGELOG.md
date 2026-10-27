@@ -174,8 +174,6 @@ rings of guide marks around the logo while you rest the pointer on it.
 - The sitemap check refused every page dated before the app snapshot was
   last refreshed, so the next sync could never have passed it. It now
   refuses only dates before the site existed or after today.
-- The homepage's closing picture finishes building when the drawing is fully
-  on screen, rather than when the whole panel around it is.
 - The homepage says what Simple Balance is in one sentence, under "What it's
   for": a free budget app and spending tracker, used in the browser with the
   cloud app or self-hosted. The pricing page asks its bank question the way
@@ -256,6 +254,16 @@ ring instead of the site's. On the dark green panels the site's green ring
 was hard to see in light mode, about 2.4 to 1 against the panel; there it's
 the panel's light ink now.
 
+- On a phone, the drawings on the learn cards, the homepage's job cards and
+  the docs cards sat still, because they played only for a resting mouse.
+  On a touch screen each now builds as its card scrolls into view, finished
+  by the time the picture is all on screen, and the homepage's closing rings
+  turn as you scroll past. A screen with a mouse is unchanged.
+- The picture at the end of the homepage builds mark by mark as you scroll
+  to it, finished once all of it is on screen. It used to finish only once
+  the whole panel around it was, and the change that tied it to the picture
+  instead left it sitting already finished on every screen, because the
+  panel measured the scroll inside itself, where nothing moves.
 - The docs search box's clear button was the browser's blue on the dark
   panel. It's drawn in the field's own ink now.
 - The privacy policy and the terms ran each section's heading into its text

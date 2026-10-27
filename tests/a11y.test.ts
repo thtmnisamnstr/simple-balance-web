@@ -299,6 +299,94 @@ function contrast(one: string, two: string): number {
   return (light! + 0.05) / (dark! + 0.05);
 }
 
+/**
+ * Something built by scroll: the `index`th match of `selector` on `path`,
+ * and, when the picture is only part of it, the `drawing` inside it whose
+ * own bottom edge is where a reader stops.
+ */
+interface ScrollBuilt {
+  readonly path: string;
+  readonly selector: string;
+  readonly index: number;
+  readonly drawing?: string;
+}
+
+/** Each animation under a `ScrollBuilt`: its keyframes, whether a scroll paces it, and how far along. */
+function motionUnder([selector, index]: readonly [string, number]) {
+  const root = document.querySelectorAll(selector)[index]!;
+  return root.getAnimations({ subtree: true }).map((animation) => ({
+    name: (animation as CSSAnimation).animationName,
+    scroll: animation.timeline !== document.timeline,
+    progress: animation.effect!.getComputedTiming().progress ?? 0,
+  }));
+}
+
+type Motion = ReturnType<typeof motionUnder>[number];
+
+/** A part of a drawing, played by one of the `.mo` effects, rather than a card's own rise. */
+const drawn = (part: Motion) => part.name.startsWith("mo-");
+
+/** The closing picture's marks, which pop in as it arrives. */
+const closingMarks = (parts: readonly Motion[]) => parts.filter((part) => part.name === "mo-pop");
+
+/** The closing picture's two rings, and each mark turning back on them, which turn about the logo. */
+const closingRings = (parts: readonly Motion[]) =>
+  parts.filter((part) => part.name.startsWith("orbit-"));
+
+/**
+ * What runs under `target`, read as a reader arrives at it, a fifth of it
+ * over the screen's bottom edge; with its `drawing`'s bottom edge just on
+ * screen, if it names one; and once all of it is on screen, its top at the
+ * screen's top or as near as the page's end allows. On a phone that touches,
+ * or on a desktop: `(hover: none)` follows touch emulation, not the width.
+ */
+async function scrolledThrough({ path, selector, index, drawing }: ScrollBuilt, touch: boolean) {
+  const context = await browser.newContext(
+    touch
+      ? { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true }
+      : { viewport: { width: 1280, height: 900 } },
+  );
+  const page = await context.newPage();
+  await page.goto(`http://localhost:${PORT}${path}`);
+  const at = async (share: number, inner = "") => {
+    await page.evaluate(
+      ([css, nth, fraction, part]) => {
+        const target = document.querySelectorAll(css)[nth]!;
+        const box = (part ? target.querySelector(part)! : target).getBoundingClientRect();
+        window.scrollBy(
+          0,
+          part
+            ? box.bottom + 2 - window.innerHeight
+            : fraction
+              ? box.top + box.height * fraction - window.innerHeight
+              : box.top,
+        );
+      },
+      [selector, index, share, inner] as const,
+    );
+    await page.evaluate(
+      () => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))),
+    );
+    return page.evaluate(motionUnder, [selector, index] as const);
+  };
+  const arriving = await at(0.2);
+  const pictured = drawing ? await at(0, drawing) : [];
+  const shown = await at(0);
+  await context.close();
+  return { arriving, pictured, shown };
+}
+
+/** Each box on the page that names a view timeline, with whether the page's own scroll paces it. */
+function readTimelines() {
+  return [...document.querySelectorAll("*")]
+    .filter((box) => getComputedStyle(box).viewTimelineName !== "none")
+    .map((box) => ({
+      box: `${box.tagName.toLowerCase()}.${[...box.classList].join(".")}`,
+      // The browser's own answer to which scroller it measures against.
+      page: new ViewTimeline({ subject: box, axis: "block" }).source === document.scrollingElement,
+    }));
+}
+
 /** Whether the docs sidebar is open in the markup, and whether it shows. */
 function readSidebar() {
   const link = document.querySelector(".docs-nav a[aria-current='page']")!;
@@ -349,8 +437,11 @@ function readShotSizes() {
   });
 }
 
-async function measure<T>(path: string, read: () => T, width = 1280): Promise<T> {
-  const context = await browser.newContext({ viewport: { width, height: 900 } });
+async function measure<T>(path: string, read: () => T, width = 1280, touch = false): Promise<T> {
+  const context = await browser.newContext({
+    viewport: { width, height: 900 },
+    ...(touch ? { isMobile: true, hasTouch: true } : {}),
+  });
   const page = await context.newPage();
   await page.goto(`http://localhost:${PORT}${path}`);
   await page.waitForLoadState("networkidle").catch(() => {});
@@ -802,4 +893,100 @@ describe.skipIf(SKIPPED)("layout", () => {
     expect(shown.length, "no label shown anywhere, so this checks nothing").toBeGreaterThan(0);
     expect(shown.filter((label) => label.size < 10)).toEqual([]);
   }, 60_000);
+
+  /*
+   * A card's drawing replays for a resting pointer, which a touch screen
+   * never has, so on a phone every card on /learn/, the homepage's job cards
+   * and the docs cards' marks sat still. There, a card builds as it scrolls
+   * in, like a diagram, and is finished by the time its picture is on screen
+   * (`web.md` 8.3); a screen that hovers keeps waiting for the pointer. One
+   * of each, because they don't share one rule: a learn or job card's
+   * timeline is on its picture, a docs card's on the card. Paced by the list
+   * item, a learn card's picture, the top 45% of it, still had parts arriving
+   * while it and its title sat whole on screen. The feature card names no
+   * `drawing`: its mark is the top 14% of it on a phone, and the stroke left
+   * to draw there is a pixel.
+   */
+  it("builds a card's drawing as it scrolls in on a touch screen, and waits for a pointer elsewhere", async () => {
+    const cards: readonly ScrollBuilt[] = [
+      { path: "/learn/", selector: ".learn-grid > li", index: 2, drawing: ".learn-card-art" },
+      { path: "/", selector: ".home-job-grid > li", index: 1, drawing: ".learn-card-art" },
+      { path: "/docs/", selector: ".docs-card", index: 2, drawing: ".docs-card-mark" },
+      { path: "/docs/", selector: ".docs-feature", index: 0 },
+    ];
+    const [phone, desktop] = await Promise.all(
+      [true, false].map((touch) => Promise.all(cards.map((card) => scrolledThrough(card, touch)))),
+    );
+    const wrong = cards.flatMap(({ selector }, index) => {
+      const arriving = phone![index]!.arriving.filter(drawn);
+      const pictured = phone![index]!.pictured.filter(drawn);
+      const shown = phone![index]!.shown.filter(drawn);
+      return [
+        arriving.length === 0 && `${selector} sits still on a touch screen`,
+        arriving.some((part) => !part.scroll) && `${selector} isn't paced by the scroll`,
+        arriving.every((part) => part.progress === 1) && `${selector} is built before it arrives`,
+        pictured.some((part) => part.progress < 1) &&
+          `${selector} is unfinished once its picture is on screen`,
+        shown.some((part) => part.progress < 1) && `${selector} is unfinished once on screen`,
+        desktop![index]!.arriving.some(drawn) && `${selector} plays on scroll for a pointer`,
+      ].filter(Boolean);
+    });
+    expect(wrong).toEqual([]);
+  }, 60_000);
+
+  /*
+   * The closing picture's timeline is named on the drawing, inside a panel
+   * whose `overflow: hidden` made it a scroller that never moves, so the
+   * timeline held still: the marks sat finished from the first frame on
+   * every screen, and the rings that turn with the scroll on a touch screen
+   * sat tilted. The marks build as the picture arrives on every screen; the
+   * rings turn with the scroll on a touch screen and wait for a pointer
+   * elsewhere.
+   */
+  it("builds the closing picture as it arrives, and turns its rings with the scroll on a touch screen", async () => {
+    const closing = { path: "/", selector: ".home-closing-art", index: 0 };
+    const [phone, desktop] = await Promise.all(
+      [true, false].map((touch) => scrolledThrough(closing, touch)),
+    );
+    const wrong = [
+      ...(["phone", "desktop"] as const).flatMap((screen) => {
+        const { arriving, shown } = screen === "phone" ? phone! : desktop!;
+        return [
+          closingMarks(arriving).every((part) => part.progress === 1) &&
+            `${screen}: the marks are built before the picture arrives`,
+          closingMarks(shown).some((part) => part.progress < 1) &&
+            `${screen}: the marks are unfinished once the picture is on screen`,
+        ];
+      }),
+      closingRings(phone!.arriving).length === 0 && "phone: no ring turns",
+      closingRings(phone!.arriving).some((part) => !part.scroll) &&
+        "phone: a ring isn't paced by the scroll",
+      closingRings(phone!.arriving).some(
+        (part, index) => part.progress >= closingRings(phone!.shown)[index]!.progress,
+      ) && "phone: a ring doesn't turn as the picture passes",
+      closingRings(desktop!.arriving).length === 0 && "desktop: no ring waits for a pointer",
+      closingRings(desktop!.arriving).some((part) => part.scroll) &&
+        "desktop: a ring turns with the scroll",
+    ].filter(Boolean);
+    expect(wrong).toEqual([]);
+  }, 60_000);
+
+  /*
+   * A view timeline is measured against the nearest scroller above the box
+   * that names it, and a box that hides its overflow is one, whether or not
+   * anything in it scrolls, so a timeline named inside a clipped panel, as
+   * the closing picture's was, holds still. Every page, on a touch screen,
+   * where the cards name theirs as well.
+   */
+  it("paces every view timeline by the page's own scroll", async () => {
+    const found = await Promise.all(PAGES.map((path) => measure(path, readTimelines, 390, true)));
+    const named = found.flatMap((boxes, index) =>
+      boxes.map((box) => ({ path: PAGES[index], ...box })),
+    );
+    expect(
+      [...new Set(named.map(({ box }) => box))],
+      "missed the closing picture's timeline, or a card's that only a touch screen names",
+    ).toEqual(expect.arrayContaining(["div.home-closing-art", "a.learn-card-art"]));
+    expect(named.filter((box) => !box.page)).toEqual([]);
+  }, 120_000);
 });

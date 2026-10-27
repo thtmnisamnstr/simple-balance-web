@@ -396,7 +396,7 @@ the index is laid out. The two ways of doing it come after the shelf below.
 index rather than a rule a different design breaks. The docs index is a
 shelf per group. The group's picture, its heading, its blurb and its page
 count sit in a column that stays in view while the group's pages scroll past
-beside it as cards (`.docs-group`, `src/styles/site.css:4011`). Below 62rem
+beside it as cards (`.docs-group`, `src/styles/site.css:4019`). Below 62rem
 the column stops sticking and the heading goes beside its picture, over the
 cards. The Self-hosting group sits
 on its own band (`.docs-group-own`), because it's for a different reader and
@@ -414,10 +414,10 @@ fails the build rather than linking to nowhere
 (`src/components/docs-art/cards.tsx:49`).
 
 **No holes.** With an odd number of cards the first takes the whole row
-(`src/styles/site.css:4094`), as on the learn index
+(`src/styles/site.css:4102`), as on the learn index
 (`src/styles/site.css:1604`), and the blog's grid works the same idea out for
 three columns, widening its first cards by what's left over
-(`src/styles/site.css:4787`). A grid with a gap in its last row reads as a
+(`src/styles/site.css:4886`). A grid with a gap in its last row reads as a
 page that lost a card.
 
 **One tab stop per card, named by its title**, which is the House half. Two
@@ -471,11 +471,11 @@ worse than a list and better than a list nobody can reach.
 
 **Measure "shown" with `checkVisibility()`, never with a size.** A closed
 `<details>` hides its content with `content-visibility: hidden`, and a script
-asking for a hidden element's height still gets one (`tests/a11y.test.ts:306`).
+asking for a hidden element's height still gets one (`tests/a11y.test.ts:394`).
 
 _Checked by:_ `tests/a11y.test.ts`, "layout", that the sidebar is closed in
 the markup at both widths, shown at 1280 and folded at 390
-(`tests/a11y.test.ts:572`).
+(`tests/a11y.test.ts:663`).
 
 ### 4.8 An article has two widths: its text's and its column's
 
@@ -808,7 +808,7 @@ panel's tokens and never the page's. Today's set, which a new panel copies:
 - **Second button:** outlined, so it reads as the second
   (`.home-button-ghost`).
 - **Field:** frosted, `--art-veil` behind an `--art-hairline` border
-  (`src/styles/site.css:3865`). The page's white field was a hole punched in
+  (`src/styles/site.css:3873`). The page's white field was a hole punched in
   the panel in light mode and nearly invisible in dark, where `--surface` is
   almost the panel's own green. Its clear button is the browser's, drawn
   through a mask in the field's own ink (`.docs-search-input`'s cancel-button
@@ -834,11 +834,11 @@ dot grid, which is an absolutely placed `::before` (`.learn-intro-text`,
 its brightest glow top left, which is exactly where the words start on a
 panel with text, and the learn intro's eyebrow and lede measured 2.7:1 and
 3.6:1 on it (`src/styles/site.css:1462`). When the panel stacks below 62rem,
-the glow moves down with the drawing (`src/styles/site.css:3662`).
+the glow moves down with the drawing (`src/styles/site.css:3670`).
 
 **Hover answers with the border, not a brighter veil, under muted text.** The
 docs starting points' kicker fell under 4.5:1 on a veil lightened for hover
-(`src/styles/site.css:3912`).
+(`src/styles/site.css:3920`).
 
 **`.art-panel` clips its drawing**, so a panel that has to let something hang
 out of it sets `overflow: visible`, as the docs intro does for its search
@@ -1129,7 +1129,7 @@ no-preference block is the rule, and the global block is the second net.
 _Checked by:_ `tests/learn.test.ts`, "starts only inside the no-preference
 block", which reads every `animation:` or `animation-name:` declaration that
 isn't `none`, a shorthand over several lines included, and fails on any
-outside every such block (`tests/learn.test.ts:447`). It once matched only two
+outside every such block (`tests/learn.test.ts:473`). It once matched only two
 spellings, and the loops, the chat's spinner and dots, the card rise and the
 orbits were all outside what it could see. What a reader with the setting on
 actually sees is `human`, and it's the picture `npm run frames` captures by
@@ -1148,15 +1148,15 @@ everywhere else the old rule still holds.
 **What moves, and on which clock.** 8.3 says how to pick a clock for
 something new, and 8.4 and 8.5 how to write it.
 
-| What moves                                                          | Clock                                                          |
-| ------------------------------------------------------------------- | -------------------------------------------------------------- |
-| A learn hero; the learn, docs and blog intros and their marks       | Once, on load, at rest within about three and a half seconds   |
-| Learn cards, the homepage's job cards, a docs card's mark           | Replays after the pointer rests 250ms on the card, or on focus |
-| A blog post card                                                    | Lifts after the pointer rests 250ms, or on focus               |
-| Learn diagrams, docs group pictures, the homepage's closing picture | Built by scroll, finished at `entry 100%`                      |
-| The closing picture's two rings                                     | Turn only while a pointer rests on the panel or focus is in it |
-| The homepage's hero and correction                                  | The shared loop keyframes, on a 10s cycle                      |
-| The homepage's chat                                                 | Its own keyframes, one per role, on a 16s cycle                |
+| What moves                                                          | Clock                                                                                                             |
+| ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| A learn hero; the learn, docs and blog intros and their marks       | Once, on load, at rest within about three and a half seconds                                                      |
+| Learn cards, the homepage's job cards, a docs card's mark           | Replays after the pointer rests 250ms on the card, or on focus; on a touch screen, built by scroll                |
+| A blog post card                                                    | Lifts after the pointer rests 250ms, or on focus                                                                  |
+| Learn diagrams, docs group pictures, the homepage's closing picture | Built by scroll, finished at `entry 100%`                                                                         |
+| The closing picture's two rings                                     | Turn only while a pointer rests on the panel or focus is in it; on a touch screen, a quarter turn with the scroll |
+| The homepage's hero and correction                                  | The shared loop keyframes, on a 10s cycle                                                                         |
+| The homepage's chat                                                 | Its own keyframes, one per role, on a 16s cycle                                                                   |
 
 Everything above the loops stops by itself or is started by the reader, and
 motion a reader starts owes no control. Swing and float, the two effects
@@ -1171,7 +1171,7 @@ no loop and no control (8.1).
 
 _Checked by:_ `tests/learn.test.ts`, that every animation that repeats
 forever is inside a `.mo-loop` or held `paused` until a reader starts it, and
-that the stop rule sets `animation: none` (`tests/learn.test.ts:478`), beside
+that the stop rule sets `animation: none` (`tests/learn.test.ts:504`), beside
 8.1's sweep; `tests/home-page.test.tsx`, that the homepage has exactly three
 loops, each holding a labeled checkbox outside the hidden drawing
 (`tests/home-page.test.tsx:228`), and that the chat rests on the finished
@@ -1199,7 +1199,7 @@ who starts it:
    card it crossed, and twelve cards playing on their own are twelve moving
    pictures. The clock has two forms: replay once (the cards), or run while
    held, written `paused` and set running by the query (the closing
-   picture's rings, `src/styles/site.css:3757-3795`). A browser without style
+   picture's rings, `src/styles/site.css:3765-3803`). A browser without style
    queries never plays either, and shows the finished picture, which is the
    right way for this to fail.
 
@@ -1218,6 +1218,26 @@ who starts it:
    finding. Dropping or lengthening the replay was the alternative, and
    longer waits didn't stop it, only made it later.
 
+   **On a touch screen this clock becomes the scroll clock.** A phone has no
+   pointer to rest, so under `(hover: none)` a card's drawing builds as it
+   scrolls in, by clock 3's rules, finished by the time the picture is on
+   screen, and the closing picture's rings turn a quarter turn as it passes
+   through (the touch block before the blog index in `site.css`). Without it
+   every card on a phone sat still. A learn card's timeline is named on its
+   picture, `.learn-card-art`, by clock 3's rule below: it was first on the
+   card's list item, and a picture that's the top 45% of a phone's card had
+   four to fourteen parts still arriving, on all twelve cards on /learn/,
+   while it and its title sat whole on screen. The card rises as it scrolls,
+   but a named view timeline is measured from the layout box rather than the
+   transformed one, so the picture's doesn't jump with the rise; it starts a
+   little before the picture shows and finishes a few pixels before its
+   bottom edge arrives. A docs card names its own: its mark's one stroke is
+   done by 30% of the card, about where the mark ends, and on the 44-pixel
+   mark alone it would draw in a dozen pixels of scroll. A card's step is
+   3.5% over a 30% span (8.4). It's keyed on hover, not on width: a narrow
+   desktop window still waits for its pointer, and the frames script's
+   `--touch` is how to see the phone's version (8.7).
+
 3. **Scroll.** A diagram, or anything below the fold. One view timeline is
    named on the container, which doesn't move, and each part's range is set
    by `--s` so the last finishes at `entry 100%`, the moment the whole figure
@@ -1229,8 +1249,16 @@ who starts it:
    is taller than the drawing, so the parts finished as the panel's bottom
    edge arrived, and a reader who stopped with the whole drawing on screen
    saw three of its marks still popping in. It's named on `.home-closing-art`
-   now (`src/styles/site.css:3805`), so the picture finishes when the
+   now (`src/styles/site.css:3813`), so the picture finishes when the
    drawing, not the panel, is on screen, the same moment a diagram does.
+   **And nothing between the drawing and the page may hide its overflow.**
+   A box with `overflow: hidden` is a scroll container even when nothing in
+   it scrolls, and a view timeline is measured against the nearest one, so
+   the move to `.home-closing-art` put the timeline inside the panel, which
+   never scrolls, and it held still: the marks sat finished from the first
+   frame on every screen until the touch rings, frozen at a tilt, showed it.
+   The panel clips with `overflow: clip` instead (`src/styles/site.css:3632`),
+   which cuts the same corners and scrolls nothing.
    Where scroll-driven animation is unsupported, the panel and diagram rule
    plays the parts once on load instead, and they're long finished by the
    time a reader scrolls to them.
@@ -1251,17 +1279,29 @@ class plus `.mo`, which is equal specificity, so whichever comes later in
 purpose, and names its timeline outright, so a loop on a panel or in a
 diagram loops (`src/styles/site.css:2116`). A surface rule written further
 down beats it all the same: `.home-closing-art .mo`
-(`src/styles/site.css:3809`) would hand its scroll timeline to any loop
+(`src/styles/site.css:3817`) would hand its scroll timeline to any loop
 nested inside the closing picture. So a new surface's motion rules go above
-the loop rule, or no loop goes inside that surface.
+the loop rule, or no loop goes inside that surface. The touch block is the
+second kind: it has to come after the card and ring rules it replaces, which
+puts it below the loop rule, and no card or ring holds a loop. On the
+homepage one would be a fourth loop, which `tests/home-page.test.tsx`
+refuses by counting three; anywhere else, nothing does.
 
 **The obvious alternative is to pick the effect first and leave the clock at
 whatever the surface already does.** That's how the closing picture came to
 finish on load before anybody scrolled to it, and how the cards, started by a
 plain `:hover`, came to rebuild under a parked pointer.
 
-_Checked by:_ `tests/learn.test.ts`, for the guards in 8.1 and 8.2. The choice
-of clock is `human`.
+_Checked by:_ `tests/learn.test.ts`, for the guards in 8.1 and 8.2, and that
+no learn card's picture staggers two parts past the last step a touch
+screen's scroll keeps apart (`tests/learn.test.ts:335`);
+`tests/a11y.test.ts`, "layout", that on a touch screen each kind of card
+builds as it arrives and is finished once its picture is on screen while a
+pointer screen's waits (`tests/a11y.test.ts:910`), that the closing picture
+builds as it arrives on every screen and its rings turn with the scroll only
+on a touch screen (`tests/a11y.test.ts:946`), and that every view timeline on
+every page is paced by the page's own scroll (`tests/a11y.test.ts:981`). The
+choice of clock is `human`.
 
 ### 8.4 The motion vocabulary
 
@@ -1269,9 +1309,12 @@ of clock is `human`.
 and one effect class, and `--s` sets its place in the order: 120ms a step on
 load, 90ms on a hovered card, a share of the entry range on scroll. That
 share isn't one number: 5% a step over a 35% span for a diagram and the
-closing picture, so steps past 13 bunch at the end, and 7% over a 40% span
-for a docs group picture, so steps past 8 do
-(`src/styles/site.css:2096`, `src/styles/site.css:4326`). `--dur`
+closing picture, so steps past 13 bunch at the end, 7% over a 40% span
+for a docs group picture, so steps past 8 do, and 3.5% over a 30% span for a
+card on a touch screen, the rested pointer's 90ms over 0.8s as a share, so
+its pictures, staggered to 21 for the pointer, stay distinct to 20
+(`src/styles/site.css:2096`, `src/styles/site.css:4334`,
+`src/styles/site.css:4390`). `--dur`
 changes its length from the default 0.8s, and `--n` its plays, which only
 swing and float set. The typed `css()` helper sets `--s`, `--dur`, a color and
 a pivot (`src/components/learn-art/frame.tsx:104`).
@@ -1465,9 +1508,11 @@ better command written here as well would leave two to drift.
 - **A drawing built by scroll**, scrolled into view gradually, as a reader
   does, so its timeline passes every position rather than jumping to the
   last.
-- **A card**, which the script doesn't drive: it plays after the pointer
-  rests on it, and not as a pointer passes over it. A scroll that leaves a
-  parked pointer resting on a card plays that card once, by decision (8.3).
+- **A card**, which the script doesn't drive with a pointer: it plays after
+  the pointer rests on it, and not as a pointer passes over it. A scroll that
+  leaves a parked pointer resting on a card plays that card once, by decision
+  (8.3). On a touch screen it builds as it scrolls in: `--touch` with
+  `--scroll` and a `--selector` on the card's list item shows it.
 - **Several drawings at once**, tiled on a contact sheet, which is how one
   that's busier or emptier than the rest is found.
 
@@ -1477,11 +1522,18 @@ ends, which should be under about three and a half seconds; then a row per
 animation with its clock (once, loop or scroll), its keyframes, its timing
 and the element it runs on. A timed row gives its delay, the length of one
 play and when it ends, which for a loop is never; a scroll-built row says
-"paced by scroll", because its clock is a position. Last, it scrolls each element that owns a view timeline, a diagram,
-a docs group picture and the closing picture, until its bottom edge is on
-screen, and names any with a part not yet finished there, where every part
-should be. That line is how the closing picture's timeline was found on the
-wrong element (8.3).
+"paced by scroll", because its clock is a position. Last, it takes each
+element that names a view timeline, found by its computed style rather than
+a list, and names any with a part already under way while its top edge is
+still below the screen, a timeline the page's scroll isn't moving, and any
+with a part not yet finished once its bottom edge is on screen, where every
+part that ends in `entry` should be. The top edge is the layout box's, which
+is what a view timeline measures, because a learn card's picture rides the
+card's rise up to 32px below it, and measured where it showed, its timeline
+read as frozen. The second line is how the closing picture's timeline was
+found on the wrong element (8.3); the first is how it was found frozen inside
+its panel, which the second passed, because a timeline that never moves is
+never late.
 
 **Check the finished picture's contrast on purpose.** On the homepage the
 axe audit measures whichever frame of each loop network idle lands on
@@ -1548,6 +1600,7 @@ _Checked by:_ `human`.
 | 8.1 Reduced motion                  | `tests/learn.test.ts`                                             |
 | 8.2 Motion stops, or can be stopped | `tests/learn.test.ts`, `tests/home-page.test.tsx`; timing `human` |
 | 8.3–8.5 Clocks, effects and loops   | `tests/learn.test.ts`, `tests/home-page.test.tsx`; timing `human` |
+| 8.3 Scroll timelines, touch cards   | `tests/a11y.test.ts`, "layout"                                    |
 | 8.6 Nothing shifts, words read once | `tests/home-page.test.tsx`; the shift is `human`                  |
 | 8.7 Frames                          | `human`                                                           |
 | 3.3 Quotes outside the prose        | `tests/typeset.test.ts`, the legal pages and the 404 included     |

@@ -50,8 +50,8 @@ function guideTitle(slug: string): string {
  * the homepage was the plain one. The hero and the closing section are the
  * application's sign-in art panel, the jobs are the learn articles' own
  * pictures, and the motion obeys `web.md` 8.2: the hero, the correction and
- * the chat loop, each with a stop control; a card replays only when a pointer
- * rests on it; and the closing picture builds as it is scrolled to.
+ * the chat loop, each with a stop control; a card replays for a rested pointer
+ * or builds by scroll on a touch screen; and the closing picture builds by scroll.
  *
  * Every section is a landmark with its own heading, and the headings step
  * h1 -> h2 -> h3 with nothing skipped, because a screen reader's document

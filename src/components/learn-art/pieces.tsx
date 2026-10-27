@@ -23,7 +23,7 @@ export function LearnHero({ slug }: { readonly slug: string }) {
   );
 }
 
-/** The same picture on a card, where it plays when somebody points at it. */
+/** The same picture on a card: played when pointed at, or built by scroll on a touch screen. */
 export function LearnThumb({ slug }: { readonly slug: string }) {
   const { Hero } = artFor(slug);
   return (

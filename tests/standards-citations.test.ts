@@ -30,8 +30,25 @@ const guides = sourceFiles("docs", /\.md$/)
     existsSync("AGENTS.md") ? [{ path: "AGENTS.md", code: readFileSync("AGENTS.md", "utf8") }] : [],
   );
 
-/** `src/app/page.tsx:42` or `src/app/page.tsx:42-51`, inside backticks. */
-const CITATION = /`((?:src|tests|scripts|content)\/[\w./[\]-]+?):(\d+)(?:-(\d+))?`/g;
+/**
+ * `src/app/page.tsx:42` or `src/app/page.tsx:42-51`, inside backticks, and
+ * the two spellings the guides write after one: a range's end,
+ * `` `…:42`–`51` ``, and another line of the same file, `` `…:42`, `:60` ``
+ * or `` `…:42` and `:60` ``, the `and` free to start the next line.
+ */
+const CITATION =
+  /`((?:src|tests|scripts|content)\/[\w./[\]-]+?):(\d+)(?:-(\d+))?`(?:–`(\d+)`|((?:(?:,|\s+and)\s+`:\d+`)+))?/g;
+
+/** Every line a citation names: its start, its range's end if any, and each line after it. */
+function citedLines(match: RegExpMatchArray): { start: number; end?: number; more: number[] } {
+  const [, , start, hyphenEnd, dashEnd, more] = match;
+  const end = hyphenEnd ?? dashEnd;
+  return {
+    start: Number(start),
+    ...(end ? { end: Number(end) } : {}),
+    more: [...(more ?? "").matchAll(/`:(\d+)`/g)].map(([, line]) => Number(line)),
+  };
+}
 
 describe("the guides' citations", () => {
   it("found guides to check, including the skills", () => {
@@ -62,15 +79,43 @@ describe("the guides' citations", () => {
   it("lands on a line with something on it", () => {
     const drifted: string[] = [];
     for (const guide of guides) {
-      for (const [, file, start] of guide.code.matchAll(CITATION)) {
-        if (!existsSync(file!)) continue;
-        const lines = readFileSync(file!, "utf8").split("\n");
-        const line = lines[Number(start) - 1];
-        if (line === undefined) drifted.push(`${guide.path} -> ${file}:${start} is past the end`);
-        else if (line.trim() === "") drifted.push(`${guide.path} -> ${file}:${start} is blank`);
+      for (const match of guide.code.matchAll(CITATION)) {
+        const file = match[1]!;
+        if (!existsSync(file)) continue;
+        const lines = readFileSync(file, "utf8").split("\n");
+        const { start, end, more } = citedLines(match);
+        for (const number of [start, ...(end ? [end] : []), ...more]) {
+          const line = lines[number - 1];
+          if (line === undefined)
+            drifted.push(`${guide.path} -> ${file}:${number} is past the end`);
+          else if (line.trim() === "") drifted.push(`${guide.path} -> ${file}:${number} is blank`);
+        }
       }
     }
     expect(drifted).toEqual([]);
+  });
+
+  it("ends a range after it starts", () => {
+    /*
+     * Only the start was read, so a pass that moved every citation by the
+     * size of a diff moved a range's start and left its end, and
+     * `` `tests/a11y.test.ts:329`–`309` `` named a range that ran backwards
+     * beside a `` `:303` `` that now named a different function. A range end
+     * before its start is the one drift this can see for certain; the other
+     * is the person's read `writing.md` §Citations describes.
+     */
+    const backwards: string[] = [];
+    let ranges = 0;
+    for (const guide of guides) {
+      for (const match of guide.code.matchAll(CITATION)) {
+        const { start, end } = citedLines(match);
+        if (end === undefined) continue;
+        ranges += 1;
+        if (end <= start) backwards.push(`${guide.path} -> ${match[0]}`);
+      }
+    }
+    expect(ranges, "no range found, so this checks nothing").toBeGreaterThan(5);
+    expect(backwards).toEqual([]);
   });
 
   it("cites section numbers that exist in the guide named", () => {

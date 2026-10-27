@@ -1891,9 +1891,9 @@ svg {
 
    It stops, or it can be stopped. WCAG 2.2.2 asks for a pause control on
    anything that moves by itself for more than five seconds, and the cheapest
-   way to owe nobody one is to stop, as three clocks here do: a hero plays
-   once as the page opens, a card plays when somebody points at it, and a
-   diagram builds as it is scrolled into view, the reader's scrolling its
+   way to owe nobody one is to stop, as three clocks here do: a hero plays on
+   load, a card when somebody points at it, and a diagram, or a card on a
+   touch screen, builds as it's scrolled into view, the reader's scroll its
    clock. The fourth, the homepage's `.mo-loop`, never stops, so it has one.
 
    And all of it sits inside `no-preference`, so the global reduced-motion
@@ -2040,8 +2040,8 @@ svg {
   }
 
   /* On the index a card sits still until somebody points at it or tabs to
-     it, which is what makes twelve moving pictures on one page a choice
-     rather than a distraction.
+     it, which makes twelve moving pictures on one page a choice rather than
+     a distraction. A touch screen builds it on scroll instead (`web.md` 8.3).
 
      Pointing means resting there a quarter of a second, not passing over.
      Chrome moves `:hover` when the page scrolls under a pointer that has not
@@ -3616,12 +3616,20 @@ figure[data-rehype-pretty-code-figure] {
 
 /* The page ends where /learn begins: the same panel and the same picture,
    every guide's mark around the logo, with the plans and the way in. As in
-   the hero, the light sits behind the drawing and the words on the base. */
+   the hero, the light sits behind the drawing and the words on the base.
+
+   Clipped with `clip`, not the panel's `hidden`. A box that hides its
+   overflow is a scroll container, and a view timeline measures against the
+   nearest one, so the drawing's timeline (`--closing`, below) measured it
+   inside a panel that never scrolls: its marks sat finished from the first
+   frame on every screen, and the rings that turn with the scroll on a touch
+   screen sat tilted. `clip` cuts the same corners and is no scroller. */
 .home-closing {
   display: grid;
   grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
   align-items: center;
   gap: var(--s-6);
+  overflow: clip;
   aspect-ratio: auto;
   padding: var(--s-7);
   background:
@@ -3731,12 +3739,12 @@ figure[data-rehype-pretty-code-figure] {
 }
 
 /* The closing picture's two rings of guide marks turn around the logo while
-   a pointer rests on the panel, the outer ring one way and the inner the
-   other, each mark turning back about its own center so it stays upright.
-   Hover-started rather than looping: the owner was happy with either, and
-   motion a reader starts is motion WCAG 2.2.2 owes no stop control. The
-   quarter-second wait is the cards' (`--play`, above), so scrolling past
-   with the mouse parked over the panel doesn't set it spinning. */
+   a pointer rests on the panel, or with the scroll on a touch screen (the
+   `hover: none` block), the outer ring one way and the inner the other, each
+   mark turning back about its own center so it stays upright. Started by the
+   reader, not looping: the owner was happy with either, and WCAG 2.2.2 owes
+   motion a reader starts no stop control. The quarter-second wait is the
+   cards' (`--play`, above), so a parked mouse doesn't start it mid-scroll. */
 .intro-ring,
 .intro-token {
   transform-box: view-box;
@@ -4289,12 +4297,12 @@ figure[data-rehype-pretty-code-figure] {
 
 /* The learn motion's three rules, kept (`web.md` 8.3). The intro's drawing and
    the starting points' marks are on an `.art-panel`, so they play once with
-   the page by the rule there. A card's mark redraws only after the pointer
-   has rested on it a quarter of a second, by the same registered `--play`
-   the learn cards wait on, for the same reason: a page scrolled under a
-   parked pointer otherwise set off every card it crossed. A group's picture
-   builds as it enters, paced by its own entry, so it is finished by the time
-   all of it is on screen. */
+   the page by the rule there. A card's mark redraws after the pointer has
+   rested on it a quarter of a second, by the same registered `--play` the
+   learn cards wait on, for the same reason: a page scrolled under a parked
+   pointer otherwise set off every card it crossed. On a touch screen it
+   builds on scroll instead (below). A group's picture builds as it enters,
+   paced by its own entry, finished by the time all of it is on screen. */
 @media (prefers-reduced-motion: no-preference) {
   .docs-card:hover,
   .docs-feature:hover {
@@ -4330,6 +4338,97 @@ figure[data-rehype-pretty-code-figure] {
       animation-range: entry min(calc(var(--s, 0) * 7%), 60%) entry
         min(calc(40% + var(--s, 0) * 7%), 100%);
     }
+  }
+}
+
+/* On a screen with no hover, which is a phone or a tablet, a card can't be
+   pointed at, so a card's drawing builds as it scrolls in, the way a diagram
+   does (`web.md` 8.3): one timeline, each part's place in it set by `--s`,
+   finished by the time the drawing is on screen. Without this, every card on
+   /learn/, the homepage's job cards and the docs cards' marks sat still on a
+   phone, and the closing picture's rings never turned.
+
+   A learn card's timeline is on its picture, not the card or its list item,
+   because the picture is the top 45% of a phone's card, and a timeline goes
+   on the box whose bottom edge a reader stops at (`web.md` 8.3). Paced by
+   the list item, all twelve pictures on /learn/ still had four to fourteen
+   parts arriving with their bottom edge on a phone's screen, the picture and
+   its title whole and the last beats missing. The card rises as it scrolls
+   (`card-rise`), and a view timeline is measured from the layout box, not
+   the transformed one, so the picture's timeline doesn't jump with the rise;
+   it starts a little before the picture shows, and finishes a few pixels
+   before its bottom edge arrives rather than after. A docs card keeps its
+   own: its mark is one stroke, done by 30% of the card, which is about where
+   a docs card's mark ends and leaves a pixel of stroke on the feature card's,
+   and on the 44-pixel mark alone it would draw in a dozen pixels of scroll,
+   which is no motion at all.
+
+   3.5% a step over a 30% span, not a diagram's 5% over 35%. The card
+   pictures were staggered for the rested pointer's 90ms over 0.8s, which is
+   the same ratio, and run to `--s` 21. At 5% everything from 13 up shared
+   the last window, so a check popped while it swung and coins floated while
+   they were still falling; here 20 is the last distinct step.
+
+   Paced by the reader's scroll, so it owes no stop control: nothing moves
+   unless the reader does. Here, after every rule it replaces, because each
+   is a container class and `.mo`, and order decides between equals
+   (`web.md` 8.3). A screen that hovers keeps the rested-pointer replay. */
+@media (prefers-reduced-motion: no-preference) {
+  @media (hover: none) {
+    @supports (animation-timeline: view()) {
+      .learn-card-art,
+      .docs-card,
+      .docs-feature {
+        view-timeline: --card block;
+      }
+
+      .learn-card .mo,
+      .docs-card .mo,
+      .docs-feature .mo {
+        animation: var(--mo) auto cubic-bezier(0.2, 0.7, 0.2, 1) 0s var(--n, 1) both;
+        animation-timeline: --card;
+        animation-range: entry min(calc(var(--s, 0) * 3.5%), 70%) entry
+          min(calc(30% + var(--s, 0) * 3.5%), 100%);
+      }
+
+      /* The closing picture's rings turn a quarter turn as the picture
+         passes through the screen, each its own way, the marks turning back
+         so their glyphs stay upright, rather than waiting on a pointer that
+         won't come. */
+      .home-closing .intro-ring-outer,
+      .home-closing .intro-ring-inner .intro-token {
+        animation: orbit-scroll-turn auto linear both;
+        animation-timeline: --closing;
+        animation-range: cover 0% cover 100%;
+      }
+
+      .home-closing .intro-ring-inner,
+      .home-closing .intro-ring-outer .intro-token {
+        animation: orbit-scroll-back auto linear both;
+        animation-timeline: --closing;
+        animation-range: cover 0% cover 100%;
+      }
+    }
+  }
+}
+
+@keyframes orbit-scroll-turn {
+  from {
+    transform: rotate(-45deg);
+  }
+
+  to {
+    transform: rotate(45deg);
+  }
+}
+
+@keyframes orbit-scroll-back {
+  from {
+    transform: rotate(45deg);
+  }
+
+  to {
+    transform: rotate(-45deg);
   }
 }
 

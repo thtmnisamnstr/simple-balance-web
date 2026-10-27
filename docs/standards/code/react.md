@@ -125,7 +125,7 @@ stops was already running.
 component. Each keeps its state in the browser, so the page is right before
 any script arrives and 1.1's four conditions never come up.
 
-_Checked by:_ `tests/a11y.test.ts:572` for the sidebar at both widths and
+_Checked by:_ `tests/a11y.test.ts:663` for the sidebar at both widths and
 `tests/home-page.test.tsx:228` for a labeled checkbox beside every loop; the
 choice of element is `human`.
 
@@ -164,7 +164,7 @@ its hero, and its diagrams keyed by the name the article's Markdown uses.
 (`src/components/learn-art/registry.ts:15`–`24`).
 
 **Written out rather than discovered.** A static export resolves its imports
-at build time, and `tests/learn.test.ts:352` holds the list and the articles
+at build time, and `tests/learn.test.ts:378` holds the list and the articles
 to one set in both directions (`code/testing.md` 2.8). The list costs a line
 per article, and in exchange a misnamed file fails rather than shipping.
 
