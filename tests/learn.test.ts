@@ -331,6 +331,32 @@ describe("the learn index, as built", () => {
     const groups = bySection("learn").map((group) => group.section);
     expect(Object.keys(learnIndex.groups).toSorted()).toEqual(groups.toSorted());
   });
+
+  it("staggers no card's picture past the steps a touch screen's scroll keeps apart", () => {
+    // On a touch screen a card's picture builds by scroll, a step of `--s`
+    // a share of its entry, and every step from (100 − span) / step up shares
+    // the last window. At a diagram's 5% over 35% that was 13, and a check
+    // popped while it swung, and coins floated while they fell (`web.md` 8.3).
+    const scale = readFileSync("src/styles/site.css", "utf8").match(
+      /\.learn-card \.mo,[^{]*\{[^}]*animation-range: entry min\(calc\(var\(--s, 0\) \* ([\d.]+)%\), [\d.]+%\) entry\s+min\(calc\(([\d.]+)% \+ var\(--s, 0\) \* [\d.]+%\), 100%\)/,
+    );
+    expect(scale, "found no touch-screen scroll rule for a card").not.toBeNull();
+    const last = (100 - Number(scale![2])) / Number(scale![1]);
+    const pictures = [...html.matchAll(/<a class="learn-card-art" href="([^"]+)"[\s\S]*?<\/a>/g)];
+    expect(pictures.length).toBe(articles.length);
+    const bunched = pictures
+      .map(([picture, href]) => ({
+        href,
+        late: new Set(
+          [...picture.matchAll(/--s:\s*([\d.]+)/g)]
+            .map(([, s]) => Number(s))
+            .filter((s) => s >= last),
+        ),
+      }))
+      .filter(({ late }) => late.size > 1)
+      .map(({ href, late }) => `${href}: ${[...late].join(", ")} past ${last}`);
+    expect(bunched).toEqual([]);
+  });
 });
 
 describe("the learn articles' pictures", () => {

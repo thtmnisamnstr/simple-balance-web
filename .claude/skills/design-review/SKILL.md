@@ -65,13 +65,15 @@ Pages worth opening, and they are not only the homepage:
   too, where the hero stacks and its glow has to follow the drawing down.
 - `/learn/` — the index. Rest the pointer on a card a moment and its picture
   replays; pass over one quickly and it doesn't. Then park the pointer over
-  the grid and scroll with the wheel: nothing may move (`web.md` 8.3).
+  the grid and scroll with the wheel: nothing may move (`web.md` 8.3). On a
+  phone, which has no pointer, each card builds as it scrolls in instead.
 - `/learn/net-worth/` — one guide whole: the hero on the panel, two diagrams
   built as they're scrolled to, and the line under each screenshot saying
   the money in it is made up (`web.md` 5.5).
 - `/docs/` — the index: the intro and its starting points on the panel, the
   feature card with its steps, each group's picture building as it enters,
-  and a card's mark redrawing when the pointer rests on it (`web.md` 4.6).
+  and a card's mark redrawing when the pointer rests on it, or on a phone as
+  it scrolls in (`web.md` 4.6, 8.3).
 - Any docs page at 390 wide, where the sidebar folds shut behind its summary
   and the page's own first line is the first thing on screen (`web.md` 4.7).
 - `/docs/configuration/` — the busiest page on the site: sidebar, search,
@@ -180,8 +182,10 @@ also took the pages out from under any other agent working in the tree.
   stacks, rather than staying behind the words (`web.md` 5.9).
 - The homepage's closing picture builds as it's scrolled to, finished once
   the drawing itself is on screen rather than the panel around it (its scroll
-  rule is `.home-closing-art .mo`), and its rings turn only while a pointer
-  rests on it.
+  rule is `.home-closing-art .mo`). Its panel clips with `overflow: clip`, not
+  the art panel's `hidden`, which would freeze that timeline (`web.md` 8.3).
+  Its rings turn while a pointer rests on it, and on a touch screen with the
+  scroll (`web.md` 8.2).
 - A hero is hidden from assistive technology, while a diagram is described in
   full (`web.md` 5.7, 5.8).
 
@@ -213,14 +217,19 @@ had already started to disagree about which element and which times.
 3. **A scroll-built drawing with its bottom edge just on screen**: a learn
    diagram, a docs group picture, the homepage's closing picture. It must be
    finished there, because a reader who stops scrolling at that point keeps
-   whatever frame it's on. `--report` names any that isn't, and `--scroll`
-   shows it building.
+   whatever frame it's on. `--report` names any that isn't, and any already
+   under way before it arrives, which is a timeline frozen inside something
+   that hides its overflow; `--scroll` shows it building.
 4. **A card.** A pass-over doesn't fire and a rest of a quarter second
    replays, on the learn index and the docs index both. A scroll that leaves
    a parked pointer resting on a card for a quarter second plays that card
    once: that's the owner's decision (`web.md` 8.3), not a finding. A finding
    is a card that plays while the pointer only crosses it, or plays more than
-   once, or keeps moving.
+   once, or keeps moving. Then the same cards on a phone, scrolled in with
+   `--touch` at 390: each builds as it comes in and is finished once its
+   picture is on screen, not only once the whole card is, and the homepage's
+   closing rings turn with the scroll. A narrow window without `--touch` is a
+   desktop, and shows none of it.
 5. **A loop.** The hold, about five seconds of the finished picture, counted
    from when its last part lands (the chat's is about six); the blank gap,
    short but there, so a loop doesn't rebuild its first parts while its last

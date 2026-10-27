@@ -191,7 +191,7 @@ export function DocMark({
  * Mint strokes on the dark panel for a card on the page, and the logo's own
  * inversion, dark on mint, for the starting points on the intro's panel,
  * where a dark tile would vanish. Every stroke draws itself in (`mo-draw`):
- * once with the intro, and again on a card when somebody rests on it.
+ * once with the intro, and on a card for a rested pointer or a touch screen's scroll.
  */
 export function DocTile({
   slug,

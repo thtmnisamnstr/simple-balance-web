@@ -16,9 +16,15 @@
  *                      below the fold to near the top in N steps, for a
  *                      drawing built by scroll
  *   --report           print each running animation's delay, duration and
- *                      end, and any scroll-built part unfinished once its
- *                      bottom edge is on screen
+ *                      end, and any scroll-built part under way before its
+ *                      drawing arrives or unfinished once its bottom edge is
+ *                      on screen
  *   --sheet            also tile each path's captures into one contact sheet
+ *   --touch            emulate a phone's touch screen as well as its width:
+ *                      no hover, so the site's touch rules apply (a card's
+ *                      drawing builds as it scrolls in, the closing rings turn
+ *                      with the scroll), which a narrow desktop window doesn't
+ *                      show
  *
  * With neither --frames nor --scroll it captures the finished picture, under
  * `reducedMotion: "reduce"`, which is what a stopped loop and a reader who
@@ -53,6 +59,7 @@ const scrollSteps = Number(option("scroll", 0));
 if (scrollSteps && !selector) throw new Error("--scroll steps a --selector element into view");
 const report = args.includes("--report");
 const sheet = args.includes("--sheet");
+const touch = args.includes("--touch");
 mkdirSync(outDir, { recursive: true });
 
 const site = resolve("out");
@@ -131,26 +138,65 @@ async function printReport(page, label) {
   }
 }
 
-/** Parts of a scroll-built drawing still unfinished once its bottom edge is on screen. */
-async function unfinishedAtEntry(page) {
+/**
+ * Every box that names a view timeline, found by its computed style rather
+ * than a list, so a card's timeline on a touch screen counts too, and the
+ * scroll-built parts under each that are wrong at either end: under way
+ * before its top edge arrives, which is a timeline the page's scroll isn't
+ * moving, or unfinished once its bottom edge is on screen. The first is how
+ * the closing picture sat finished on every screen: it was named inside a
+ * panel that hid its overflow, which makes a scroller, and the second line
+ * passed it, because a timeline that never moves is never late. Only a part
+ * whose range ends in `entry` owes the second; the closing rings turn across
+ * `cover`, the whole passage, and are meant to be part-way there.
+ */
+async function scrollBuiltAtEntry(page) {
   return page.evaluate(async () => {
+    const early = [];
     const late = [];
-    // The elements that own a view timeline, which is what "finished at
-    // entry" is measured against: the drawing, not the panel around it.
-    for (const drawing of document.querySelectorAll(
-      ".diagram, .docs-group-art, .home-closing-art",
-    )) {
-      const box = drawing.getBoundingClientRect();
-      window.scrollTo(0, window.scrollY + box.bottom - window.innerHeight + 2);
-      await new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done)));
-      for (const animation of drawing.getAnimations({ subtree: true })) {
-        if (animation.timeline === document.timeline) continue;
-        const progress = animation.effect.getComputedTiming().progress;
-        if (progress !== null && progress < 0.999)
-          late.push(drawing.className.baseVal ?? drawing.className);
+    const settle = () =>
+      new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done)));
+    const scrolled = (box) =>
+      box
+        .getAnimations({ subtree: true })
+        .filter((animation) => animation.timeline !== document.timeline)
+        .map((animation) => ({
+          progress: animation.effect.getComputedTiming().progress ?? 0,
+          byEntry: animation.rangeEnd?.rangeName === "entry",
+        }));
+    // How far a transform has carried the box from its layout box, which is
+    // what a view timeline measures. A learn card's picture rides the card's
+    // rise, up to 32px below where its timeline puts it, and placed by where
+    // it showed, its timeline, which the scroll does move, read as frozen.
+    const carried = (box) => {
+      let y = 0;
+      for (let at = box; at; at = at.parentElement) {
+        const { transform } = getComputedStyle(at);
+        if (transform !== "none") y += new DOMMatrixReadOnly(transform).m42;
       }
+      return y;
+    };
+    const owners = [...document.querySelectorAll("*")].filter(
+      (box) => getComputedStyle(box).viewTimelineName !== "none",
+    );
+    for (const box of owners) {
+      const name =
+        (box.className.baseVal ?? box.className) ||
+        `${box.parentElement.className} > ${box.tagName.toLowerCase()}`;
+      const top = () => box.getBoundingClientRect().top - carried(box);
+      window.scrollTo(0, window.scrollY + top() - window.innerHeight - 2);
+      await settle();
+      // A box near the top of the page can't be scrolled below the fold.
+      const below = top() >= window.innerHeight;
+      if (below && scrolled(box).some((part) => part.progress > 0.001)) early.push(name);
+      window.scrollTo(
+        0,
+        window.scrollY + box.getBoundingClientRect().bottom - window.innerHeight + 2,
+      );
+      await settle();
+      if (scrolled(box).some((part) => part.byEntry && part.progress < 0.999)) late.push(name);
     }
-    return [...new Set(late)];
+    return { early: [...new Set(early)], late: [...new Set(late)] };
   });
 }
 
@@ -167,6 +213,8 @@ for (const path of paths) {
         deviceScaleFactor: 1,
         colorScheme: scheme,
         reducedMotion: moving ? "no-preference" : "reduce",
+        // `(hover: none)` follows touch emulation, not the width.
+        ...(touch ? { isMobile: true, hasTouch: true } : {}),
       });
       const page = await context.newPage();
       // The site loads nothing from anywhere else; a request out is a fault
@@ -174,7 +222,7 @@ for (const path of paths) {
       await page.route(/^https?:\/\/(?!localhost)/, (route) => route.abort());
       await page.goto(`${origin}${path}`, { waitUntil: "load" });
       await settleImages(page);
-      const name = `${slug}-${width}-${scheme}`;
+      const name = `${slug}-${width}-${scheme}${touch ? "-touch" : ""}`;
       const target = selector ? page.locator(selector).first() : page;
       const shot = async (suffix) => {
         const file = join(outDir, `${name}${suffix}.png`);
@@ -184,7 +232,8 @@ for (const path of paths) {
 
       if (report) {
         await printReport(page, name);
-        const late = await unfinishedAtEntry(page);
+        const { early, late } = await scrollBuiltAtEntry(page);
+        if (early.length) console.log(`  under way before it arrives: ${early.join(", ")}`);
         console.log(
           late.length
             ? `  unfinished at entry: ${late.join(", ")}`
