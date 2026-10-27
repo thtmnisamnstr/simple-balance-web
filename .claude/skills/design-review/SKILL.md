@@ -66,14 +66,15 @@ Pages worth opening, and they are not only the homepage:
 - `/learn/` — the index. Rest the pointer on a card a moment and its picture
   replays; pass over one quickly and it doesn't. Then park the pointer over
   the grid and scroll with the wheel: nothing may move (`web.md` 8.3). On a
-  phone, which has no pointer, each card builds as it scrolls in instead.
+  phone, which has no pointer, each card plays once its picture is in view
+  instead, a second or two on the clock, and stands still while it arrives.
 - `/learn/net-worth/` — one guide whole: the hero on the panel, two diagrams
   built as they're scrolled to, and the line under each screenshot saying
   the money in it is made up (`web.md` 5.5).
 - `/docs/` — the index: the intro and its starting points on the panel, the
   feature card with its steps, each group's picture building as it enters,
-  and a card's mark redrawing when the pointer rests on it, or on a phone as
-  it scrolls in (`web.md` 4.6, 8.3).
+  and a card's mark redrawing when the pointer rests on it, or on a phone
+  once the card is in view (`web.md` 4.6, 8.3).
 - Any docs page at 390 wide, where the sidebar folds shut behind its summary
   and the page's own first line is the first thing on screen (`web.md` 4.7).
 - `/docs/configuration/` — the busiest page on the site: sidebar, search,

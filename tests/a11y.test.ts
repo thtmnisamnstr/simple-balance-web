@@ -376,15 +376,29 @@ async function scrolledThrough({ path, selector, index, drawing }: ScrollBuilt, 
   return { arriving, pictured, shown };
 }
 
-/** Each box on the page that names a view timeline, with whether the page's own scroll paces it. */
+/**
+ * Each box on the page that names a view timeline or runs an animation on
+ * its own anonymous `view()`, with whether the page's own scroll paces it.
+ */
 function readTimelines() {
-  return [...document.querySelectorAll("*")]
+  const named = [...document.querySelectorAll("*")]
     .filter((box) => getComputedStyle(box).viewTimelineName !== "none")
     .map((box) => ({
-      box: `${box.tagName.toLowerCase()}.${[...box.classList].join(".")}`,
+      box,
       // The browser's own answer to which scroller it measures against.
       page: new ViewTimeline({ subject: box, axis: "block" }).source === document.scrollingElement,
     }));
+  const anonymous = document
+    .getAnimations()
+    .filter((animation) => animation.timeline instanceof ViewTimeline)
+    .map((animation) => ({
+      box: (animation.effect as KeyframeEffect).target!,
+      page: (animation.timeline as ViewTimeline).source === document.scrollingElement,
+    }));
+  return [...named, ...anonymous].map(({ box, page }) => ({
+    box: `${box.tagName.toLowerCase()}.${[...box.classList].join(".")}`,
+    page,
+  }));
 }
 
 /** Whether the docs sidebar is open in the markup, and whether it shows. */
@@ -897,38 +911,39 @@ describe.skipIf(SKIPPED)("layout", () => {
   /*
    * A card's drawing replays for a resting pointer, which a touch screen
    * never has, so on a phone every card on /learn/, the homepage's job cards
-   * and the docs cards' marks sat still. There, a card builds as it scrolls
-   * in, like a diagram, and is finished by the time its picture is on screen
-   * (`web.md` 8.3); a screen that hovers keeps waiting for the pointer. One
-   * of each, because they don't share one rule: a learn or job card's
-   * timeline is on its picture, a docs card's on the card. Paced by the list
-   * item, a learn card's picture, the top 45% of it, still had parts arriving
-   * while it and its title sat whole on screen. The feature card names no
-   * `drawing`: its mark is the top 14% of it on a phone, and the stroke left
-   * to draw there is a pixel.
+   * and the docs cards' marks sat still. There, a card plays the same replay
+   * once its picture is all on screen: a view timeline turns `--play` on, the
+   * switch the pointer's hover turns on (`web.md` 8.3). Built by scroll
+   * instead, as this first shipped, a card's picture was finished within
+   * about eighty pixels of its edge arriving, mostly below the screen, and a
+   * phone's flick covers that in a frame, so on a real phone nothing was seen
+   * to move. So: still while it's arriving, playing on the clock once its
+   * picture is in, and on a desktop nothing on scroll at all. One of each,
+   * because a learn or job card's trigger is on its picture and a docs card's
+   * on the card.
    */
-  it("builds a card's drawing as it scrolls in on a touch screen, and waits for a pointer elsewhere", async () => {
+  it("plays a card's drawing once it's on a touch screen, and waits for a pointer elsewhere", async () => {
     const cards: readonly ScrollBuilt[] = [
       { path: "/learn/", selector: ".learn-grid > li", index: 2, drawing: ".learn-card-art" },
       { path: "/", selector: ".home-job-grid > li", index: 1, drawing: ".learn-card-art" },
-      { path: "/docs/", selector: ".docs-card", index: 2, drawing: ".docs-card-mark" },
+      { path: "/docs/", selector: ".docs-card", index: 2 },
       { path: "/docs/", selector: ".docs-feature", index: 0 },
     ];
     const [phone, desktop] = await Promise.all(
       [true, false].map((touch) => Promise.all(cards.map((card) => scrolledThrough(card, touch)))),
     );
-    const wrong = cards.flatMap(({ selector }, index) => {
+    const wrong = cards.flatMap(({ selector, drawing }, index) => {
       const arriving = phone![index]!.arriving.filter(drawn);
-      const pictured = phone![index]!.pictured.filter(drawn);
-      const shown = phone![index]!.shown.filter(drawn);
+      const playing = (drawing ? phone![index]!.pictured : phone![index]!.shown).filter(drawn);
       return [
-        arriving.length === 0 && `${selector} sits still on a touch screen`,
-        arriving.some((part) => !part.scroll) && `${selector} isn't paced by the scroll`,
-        arriving.every((part) => part.progress === 1) && `${selector} is built before it arrives`,
-        pictured.some((part) => part.progress < 1) &&
-          `${selector} is unfinished once its picture is on screen`,
-        shown.some((part) => part.progress < 1) && `${selector} is unfinished once on screen`,
-        desktop![index]!.arriving.some(drawn) && `${selector} plays on scroll for a pointer`,
+        arriving.length > 0 && `${selector} moves before it's on a touch screen`,
+        playing.length === 0 && `${selector} sits still once it's on a touch screen`,
+        playing.some((part) => part.scroll) && `${selector} is scrubbed by the scroll`,
+        playing.length > 0 &&
+          playing.every((part) => part.progress === 1) &&
+          `${selector} was already finished when it came on screen`,
+        [...desktop![index]!.arriving, ...desktop![index]!.shown].some(drawn) &&
+          `${selector} plays on scroll for a pointer`,
       ].filter(Boolean);
     });
     expect(wrong).toEqual([]);
@@ -976,7 +991,7 @@ describe.skipIf(SKIPPED)("layout", () => {
    * that names it, and a box that hides its overflow is one, whether or not
    * anything in it scrolls, so a timeline named inside a clipped panel, as
    * the closing picture's was, holds still. Every page, on a touch screen,
-   * where the cards name theirs as well.
+   * where each card's trigger runs on its own view timeline as well.
    */
   it("paces every view timeline by the page's own scroll", async () => {
     const found = await Promise.all(PAGES.map((path) => measure(path, readTimelines, 390, true)));
@@ -985,7 +1000,7 @@ describe.skipIf(SKIPPED)("layout", () => {
     );
     expect(
       [...new Set(named.map(({ box }) => box))],
-      "missed the closing picture's timeline, or a card's that only a touch screen names",
+      "missed the closing picture's timeline, or the trigger only a touch screen runs on a card",
     ).toEqual(expect.arrayContaining(["div.home-closing-art", "a.learn-card-art"]));
     expect(named.filter((box) => !box.page)).toEqual([]);
   }, 120_000);

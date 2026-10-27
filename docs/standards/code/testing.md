@@ -220,7 +220,7 @@ doesn't.
 - The page cards: `tests/export-shape.test.ts:362`.
 - The docs marks and the group pictures: `tests/docs-features.test.ts:196`
   and `:205`.
-- The learn art and glyphs: `tests/learn.test.ts:378`.
+- The learn art and glyphs: `tests/learn.test.ts:352`.
 - The screenshots' narrow copies: `tests/home-page.test.tsx:336` and `:372`.
 
 **One direction is the natural test to write, and it is half the defect.**
@@ -293,16 +293,16 @@ conditional on Chromium being present.
 2. **Ask whether something shows with `checkVisibility()`, never its size.**
    A closed `<details>` hides its content with `content-visibility: hidden`,
    and a script asking for a height gets one anyway
-   (`tests/a11y.test.ts:394`–`397`).
+   (`tests/a11y.test.ts:408`–`411`).
 3. **A responsive behavior is measured at both widths in one test**, through
-   `measure()`'s width argument (`tests/a11y.test.ts:440`), so the test
+   `measure()`'s width argument (`tests/a11y.test.ts:454`), so the test
    states the behavior as the pair it is: the sidebar shown at 1280 and
-   folded at 390 (`tests/a11y.test.ts:663`). Split in two, either half can be
+   folded at 390 (`tests/a11y.test.ts:677`). Split in two, either half can be
    deleted or go stale while the other stays green. A phone is a context, not
    a width: `(hover: none)` follows touch emulation, so a 390-wide context
    without `measure()`'s `touch` argument is a narrow desktop, and the card
    test states phone and desktop as one pair the same way
-   (`tests/a11y.test.ts:910`).
+   (`tests/a11y.test.ts:925`).
 4. **The contexts don't set reduced motion**, so axe audits the page moving,
    as most readers see it. A contrast failure that comes and goes between
    runs is text fading in over a background, and the fix is the animation,

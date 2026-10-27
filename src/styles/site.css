@@ -1892,9 +1892,10 @@ svg {
    It stops, or it can be stopped. WCAG 2.2.2 asks for a pause control on
    anything that moves by itself for more than five seconds, and the cheapest
    way to owe nobody one is to stop, as three clocks here do: a hero plays on
-   load, a card when somebody points at it, and a diagram, or a card on a
-   touch screen, builds as it's scrolled into view, the reader's scroll its
-   clock. The fourth, the homepage's `.mo-loop`, never stops, so it has one.
+   load, a card when somebody points at it or, on a touch screen, once it's
+   scrolled into view, and a diagram builds as it's scrolled into view, the
+   reader's scroll its clock. The fourth, the homepage's `.mo-loop`, never
+   stops, so it has one.
 
    And all of it sits inside `no-preference`, so the global reduced-motion
    block near the top of this file is a second net rather than the only one.
@@ -2041,7 +2042,7 @@ svg {
 
   /* On the index a card sits still until somebody points at it or tabs to
      it, which makes twelve moving pictures on one page a choice rather than
-     a distraction. A touch screen builds it on scroll instead (`web.md` 8.3).
+     a distraction. A touch screen plays it once it's in view (`web.md` 8.3).
 
      Pointing means resting there a quarter of a second, not passing over.
      Chrome moves `:hover` when the page scrolls under a pointer that has not
@@ -4301,7 +4302,7 @@ figure[data-rehype-pretty-code-figure] {
    rested on it a quarter of a second, by the same registered `--play` the
    learn cards wait on, for the same reason: a page scrolled under a parked
    pointer otherwise set off every card it crossed. On a touch screen it
-   builds on scroll instead (below). A group's picture builds as it enters,
+   plays once the card is in view instead (below). A group's picture builds as it enters,
    paced by its own entry, finished by the time all of it is on screen. */
 @media (prefers-reduced-motion: no-preference) {
   .docs-card:hover,
@@ -4342,53 +4343,45 @@ figure[data-rehype-pretty-code-figure] {
 }
 
 /* On a screen with no hover, which is a phone or a tablet, a card can't be
-   pointed at, so a card's drawing builds as it scrolls in, the way a diagram
-   does (`web.md` 8.3): one timeline, each part's place in it set by `--s`,
-   finished by the time the drawing is on screen. Without this, every card on
-   /learn/, the homepage's job cards and the docs cards' marks sat still on a
-   phone, and the closing picture's rings never turned.
+   pointed at, so it plays its replay once its picture is all on screen
+   instead (`web.md` 8.3). A view timeline on the picture, or on a docs card,
+   turns `--play` on from the moment the whole of it is in view, which is the
+   switch the rested pointer's hover turns on, and the replay below runs on
+   the clock from there, a second or two, the same animation a pointer
+   starts. A card still arriving shows its finished picture, standing still.
+   Without this, every card on /learn/, the homepage's job cards and the docs
+   cards' marks sat still on a phone, and the closing picture's rings never
+   turned.
 
-   A learn card's timeline is on its picture, not the card or its list item,
-   because the picture is the top 45% of a phone's card, and a timeline goes
-   on the box whose bottom edge a reader stops at (`web.md` 8.3). Paced by
-   the list item, all twelve pictures on /learn/ still had four to fourteen
-   parts arriving with their bottom edge on a phone's screen, the picture and
-   its title whole and the last beats missing. The card rises as it scrolls
-   (`card-rise`), and a view timeline is measured from the layout box, not
-   the transformed one, so the picture's timeline doesn't jump with the rise;
-   it starts a little before the picture shows, and finishes a few pixels
-   before its bottom edge arrives rather than after. A docs card keeps its
-   own: its mark is one stroke, done by 30% of the card, which is about where
-   a docs card's mark ends and leaves a pixel of stroke on the feature card's,
-   and on the 44-pixel mark alone it would draw in a dozen pixels of scroll,
-   which is no motion at all.
+   It was built by the scroll first, part by part across the picture's
+   entry, the way a diagram is, and on a real phone nothing was seen to move:
+   the picture finished within about eighty pixels of its edge arriving,
+   mostly below the screen, and a flick covers that in a frame. A diagram can
+   be paced by scroll because it's read where it stops; a card is scrolled
+   past.
 
-   3.5% a step over a 30% span, not a diagram's 5% over 35%. The card
-   pictures were staggered for the rested pointer's 90ms over 0.8s, which is
-   the same ratio, and run to `--s` 21. At 5% everything from 13 up shared
-   the last window, so a check popped while it swung and coins floated while
-   they were still falling; here 20 is the last distinct step.
-
-   Paced by the reader's scroll, so it owes no stop control: nothing moves
-   unless the reader does. Here, after every rule it replaces, because each
-   is a container class and `.mo`, and order decides between equals
-   (`web.md` 8.3). A screen that hovers keeps the rested-pointer replay. */
+   Started by the reader's scroll and played once, so it owes no stop
+   control. Here, after every rule it replaces, because each is a container
+   class and `.mo`, and order decides between equals (`web.md` 8.3). A
+   screen that hovers keeps the rested-pointer replay. */
 @media (prefers-reduced-motion: no-preference) {
   @media (hover: none) {
     @supports (animation-timeline: view()) {
       .learn-card-art,
       .docs-card,
       .docs-feature {
-        view-timeline: --card block;
+        animation: card-in-view linear forwards;
+        animation-timeline: view();
+        animation-range: entry 100% exit 100%;
       }
 
-      .learn-card .mo,
-      .docs-card .mo,
-      .docs-feature .mo {
-        animation: var(--mo) auto cubic-bezier(0.2, 0.7, 0.2, 1) 0s var(--n, 1) both;
-        animation-timeline: --card;
-        animation-range: entry min(calc(var(--s, 0) * 3.5%), 70%) entry
-          min(calc(30% + var(--s, 0) * 3.5%), 100%);
+      @container style(--play: 1) {
+        .learn-card .mo,
+        .docs-card .mo,
+        .docs-feature .mo {
+          animation: var(--mo) var(--dur, 0.8s) cubic-bezier(0.2, 0.7, 0.2, 1)
+            calc(var(--s, 0) * 90ms) var(--n, 1) both;
+        }
       }
 
       /* The closing picture's rings turn a quarter turn as the picture
@@ -4409,6 +4402,13 @@ figure[data-rehype-pretty-code-figure] {
         animation-range: cover 0% cover 100%;
       }
     }
+  }
+}
+
+@keyframes card-in-view {
+  from,
+  to {
+    --play: 1;
   }
 }
 
