@@ -8,12 +8,12 @@ import { repoFile } from "./support/source";
 /**
  * Announced versus merely built.
  *
- * `/docs` is announced and `/blog` is not. Three things have to be true of an
- * announced section and false of an unannounced one: a link in the header and
- * the footer, a page a crawler may index, and an entry in the sitemap. One
- * flag in `src/content/sections.ts` decides all three, and these hold it to
- * that in both directions, so a section cannot be half-launched from either
- * side.
+ * `/learn` and `/docs` are announced and `/blog` is not. Three things have to
+ * be true of an announced section and false of an unannounced one: a link in
+ * the header and the footer, a page a crawler may index, and an entry in the
+ * sitemap. One flag in `src/content/sections.ts` decides all three, and these
+ * hold it to that in both directions, so a section cannot be half-launched
+ * from either side.
  *
  * **The link half is checked twice, and the second check is the one that
  * matters.** For most of this file's life the flag did not move the link at
@@ -44,12 +44,15 @@ function sitemapLocsUnder(xml: string, href: string): readonly string[] {
 }
 
 describe("what this site announces", () => {
-  it("is the docs, and not the blog", () => {
+  it("is the learn articles and the docs, and not the blog", () => {
     // The blog is built, styled and finished, and what goes in it has not
     // been decided. If this fails because the blog was announced deliberately,
     // the checks below are the ones to read: each asserts a third of the flag.
-    expect(announcedSections().map((entry) => entry.key)).toEqual(["docs"]);
-    expect(sections.map((entry) => entry.key).toSorted()).toEqual(["blog", "docs"]);
+    // Flipping `/learn`'s flag fails here and nowhere else, which is the
+    // promise `write-content` §5 makes about this line, and it was measured
+    // rather than assumed: turned off, rebuilt, one failure in the suite.
+    expect(announcedSections().map((entry) => entry.key)).toEqual(["learn", "docs"]);
+    expect(sections.map((entry) => entry.key).toSorted()).toEqual(["blog", "docs", "learn"]);
   });
 
   it("links to an announced section from the chrome, under its own label", () => {
@@ -140,6 +143,11 @@ describe("what this site announces", () => {
     const robots = repoFile("out/robots.txt");
     expect(robots).toContain("Allow: /");
     expect(robots).not.toContain("Disallow");
+    // One group, for every crawler, AI crawlers included, by decision
+    // (`src/app/robots.ts`): a named group would replace `*` for that bot.
+    expect(robots.match(/^User-Agent:/gim)).toHaveLength(1);
+    expect(robots).toMatch(/^User-Agent: \*$/im);
+    expect(robots).toContain("Sitemap: https://smpl.money/sitemap.xml");
   });
 });
 

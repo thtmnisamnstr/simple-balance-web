@@ -9,6 +9,18 @@ import { site } from "@/content/home";
  * the `noindex` on it, so a URL somebody links to can still end up indexed —
  * as a bare link with no description, which is the worst of both. Allow the
  * fetch, and let the meta tag do the work it is for.
+ *
+ * **Every crawler is welcome, the AI ones included, and that is a decision.**
+ * One `*` group admits the search crawlers, the answer engines' search and
+ * citation crawlers (OAI-SearchBot, Claude-SearchBot, PerplexityBot), the
+ * ones that fetch a page because somebody asked about it (ChatGPT-User,
+ * Claude-User), and the training crawlers (GPTBot, ClaudeBot, CCBot,
+ * Google-Extended, Applebot-Extended). The site wants to be found and cited,
+ * and blocking Google-Extended would also keep it out of the Gemini app's
+ * answers. No named groups: a group per bot is a list that goes stale, and a
+ * named group replaces `*` for that bot, so one written to add a rule quietly
+ * drops every other. `tests/sections.test.tsx` holds the file to one group
+ * with no `Disallow`. `docs/roadmap.md` records the decision.
  */
 export default function robots(): MetadataRoute.Robots {
   return {

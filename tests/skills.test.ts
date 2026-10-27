@@ -73,9 +73,9 @@ const NOT_SKILLS: Record<string, string> = {
   "react-jsx": "a TypeScript JSX setting",
   "scroll-padding-top": "a CSS property",
   "ui-monospace": "a CSS generic font family",
-  // The policy in `netlify.toml` names hosts per directive now that an ad
-  // script ships, so the documents arguing about it name the directives.
-  // `script-src` was here alone while it was the only one worth mentioning.
+  // The policy in `netlify.toml` named hosts per directive while an ad script
+  // shipped, and the documents arguing about it name the directives still,
+  // though it names no host now. `script-src` was here alone before that.
   "base-uri": "a Content-Security-Policy directive",
   "child-src": "a Content-Security-Policy directive",
   "connect-src": "a Content-Security-Policy directive",
@@ -217,7 +217,7 @@ describe("the skills a document names", () => {
   it("catches a dead name however it is cited, and nothing else", () => {
     // Fixtures, so the patterns are tested directly rather than through what
     // the documents happen to say today, against a fixed pair of skills so a
-    // rename done properly does not fail them. `code/testing.md` 2.6.
+    // rename done properly does not fail them. `code/testing.md` 2.7.
     const known = new Set(["sync-from-app", "optimize"]);
     const check = (line: string) =>
       unresolved([{ path: "fixture.md", code: line }], [...CITED_AS_A_SKILL, HYPHENATED], known);

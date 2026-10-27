@@ -8,8 +8,8 @@ import { SiteHeader } from "@/components/site-header";
 import { feedAlternates } from "@/lib/feed";
 import { SiteFooter } from "@/components/site-footer";
 import { site, hero } from "@/content/home";
-import { adsense } from "@/content/ads";
 import { openGraph } from "@/app/open-graph";
+import { indexable } from "@/lib/indexing";
 
 export const metadata: Metadata = {
   metadataBase: new URL(`https://${site.domain}`),
@@ -39,6 +39,9 @@ export const metadata: Metadata = {
    */
   description: site.description,
   applicationName: site.name,
+  // Large image previews; a section's routes ask for the same thing through
+  // `sectionRobots`, because a route's own `robots` replaces this one.
+  robots: indexable,
   /*
    * The link preview says something different from the tab, on purpose. A tab
    * is read by somebody who already has the page open and wants to find it
@@ -63,10 +66,10 @@ export const metadata: Metadata = {
    */
   twitter: { card: "summary_large_image" },
   /*
-   * Advertised on every page, which this could not do on its own: Next
-   * replaces `alternates` rather than merging it, so every route declaring a
-   * canonical used to drop the feeds. `feedAlternates` is what makes the
-   * comment true — see `src/lib/feed.ts`.
+   * The feeds, on the blog's pages and, once the blog is announced, on every
+   * page, which this could not do on its own: Next replaces `alternates`
+   * rather than merging it, so every route declaring a canonical used to drop
+   * the feeds. `feedAlternates` makes this true — see `src/lib/feed.ts`.
    */
   alternates: feedAlternates("/"),
   /**
@@ -105,35 +108,14 @@ export default function RootLayout({ children }: { readonly children: ReactNode 
     // `en-US`, not `en`: a browser choosing a spell-checker, a screen reader
     // choosing a voice and a translator choosing a source are all told only
     // "English" by the bare tag, and the copy is American.
-    <html lang="en-US">
+    //
+    // `suppressHydrationWarning` because extensions write attributes onto
+    // <html> before React arrives: LanguageTool adds `data-lt-installed`, and
+    // every visitor running it saw a hydration error in development. It
+    // silences attribute differences on this one element and nothing below
+    // it, so a real mismatch anywhere in the page is still reported.
+    <html lang="en-US" suppressHydrationWarning>
       <body>
-        {/*
-         * The AdSense loader, which React 19 hoists out of here into <head>.
-         *
-         * A static export has no <head> to render into from a layout, and
-         * `next/script` either injects the tag after hydration or pulls a
-         * client component into the root layout — neither is what an ad
-         * loader wants. React's own hoisting of a plain element is the
-         * mechanism, and `tests/adsense.test.ts` reads the built HTML to
-         * prove it landed above </head> on every page rather than trusting
-         * that it did.
-         *
-         * **`async` is load-bearing and its absence is silent.** React hoists
-         * a <script> only when it is async with a src and no event handler.
-         * Drop `async`, write `defer` instead, or add an `onLoad`, and the
-         * tag stays in <body> with no build error and no warning — which is
-         * why the test asserts the position and not merely the presence.
-         *
-         * The inline JSON-LD in `src/components/structured-data.tsx` is the
-         * deliberate opposite: it has no src, so it is not hoisted, and it
-         * belongs where it renders.
-         *
-         * Absent entirely where `adsense` is `undefined` — every contributor's
-         * machine and every CI run that has not set the two variables, per
-         * `.env.example`. A loader with nothing to ask for is a request this
-         * build has no account to make.
-         */}
-        {adsense ? <script async src={adsense.scriptSrc} crossOrigin="anonymous" /> : null}
         <a className="skip-link" href="#main">
           Skip to content
         </a>

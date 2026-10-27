@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { site } from "@/content/home";
+import { hero, site } from "@/content/home";
 
 type OpenGraph = NonNullable<Metadata["openGraph"]>;
 
@@ -37,9 +37,27 @@ const SITE_WIDE = {
    * with a cover of its own passes `images` and replaces this.
    */
   images: [
-    { url: "/og.png", width: 1200, height: 630, alt: `${site.name} — ${site.titleTagline}` },
+    // What the card shows, which is the alt text's job: the name, the
+    // headline and the tagline. It was the tab title, which describes a page.
+    {
+      url: "/og.png",
+      width: 1200,
+      height: 630,
+      alt: `${site.name}: ${hero.title} ${site.titleTagline}.`,
+    },
   ],
 } satisfies OpenGraph;
+
+/**
+ * A page's own card, for `images`: the typographic card
+ * `scripts/build-images.mjs` draws into `public/og/` for the pricing page,
+ * both indexes and every learn guide and docs page. `file` is its path there
+ * without the extension, and `tests/export-shape.test.ts` holds every one to
+ * a file the build wrote under the page's current title.
+ */
+export function pageCard(file: string, title: string): OpenGraph["images"] {
+  return [{ url: `/og/${file}.png`, width: 1200, height: 630, alt: `${site.name}: ${title}` }];
+}
 
 /**
  * A page's `openGraph`: the site-wide defaults, then the page's own fields.

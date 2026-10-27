@@ -1,23 +1,38 @@
 ---
-title: Backups
-description: What to back up, how to restore it, and how to check that the backup you have is one you could actually use.
-section: Operations
-order: 1
-updated: 2026-09-22
+title: Backing up and restoring a self-hosted copy
+description: Back up the PostgreSQL database with pg_dump, restore it with pg_restore, and check that a backup is one you could actually use.
+section: Self-hosting
+order: 5
+updated: 2026-10-26
 ---
 
-There's one thing to back up: the PostgreSQL database. No uploads directory,
-no object store, no state on disk in the container.
+This page is for a copy you run yourself. On app.smpl.money, the copy of your
+records you can take with you is an export:
+[Taking your data with you](/docs/your-account-and-plan/#taking-your-data-with-you)
+says how.
+
+A self-hosted copy of Simple Balance has one thing to back up: its PostgreSQL
+database. No uploads directory, no object store, no state on disk in the
+container. Both deployment guides,
+[Docker Compose](/docs/deploying-with-docker-compose/#backups) and
+[Oracle Cloud or AWS](/docs/deploying-to-oracle-cloud-or-aws/#backups), set up
+a backup every night and say how to restore one. This page is the same thing
+by hand, for anywhere else.
 
 ## Taking one
 
 ```sh
-pg_dump --format=custom --no-owner "$DATABASE_URL" > simple-balance-$(date +%F).dump
+pg_dump --format=custom "$DATABASE_URL" > simple-balance-$(date +%F).dump
 ```
 
 `--format=custom` rather than plain SQL because it restores selectively and
-compresses, and `--no-owner` so the restore doesn't need the original role to
-exist.
+compresses.
+
+`$DATABASE_URL` is the connection string written for the app, and
+PostgreSQL's own tools read a few parts of it differently. They refuse
+`sslmode=no-verify`. They need the `sslrootcert` file where they run, and
+without one, `verify-full` looks for `~/.postgresql/root.crt`. And `pg_dump`
+has to be the same major version as the server, or newer.
 
 ## Restoring one
 
@@ -26,8 +41,9 @@ createdb simple_balance_restored
 pg_restore --no-owner --dbname=simple_balance_restored simple-balance-2026-09-17.dump
 ```
 
-Point a deployment at the restored database and start it. Migrations run at
-startup, so a dump from an older release upgrades on first boot.
+`--no-owner` so the restore doesn't need the original role to exist. Point a
+deployment at the restored database and start it. Migrations run at startup,
+so a dump from an older release upgrades on first boot.
 
 <Callout kind="danger" title="Restore into a new database, not over the live one">
 `pg_restore` into a database that already has these tables produces a mixture

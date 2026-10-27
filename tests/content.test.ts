@@ -2,10 +2,9 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import {
   allEntries,
-  blogIndex,
   blogTags,
-  docsBySection,
-  docsNeighbors,
+  bySection,
+  neighbors,
   slugify,
   tableOfContents,
 } from "@/content/collections";
@@ -24,10 +23,11 @@ describe("the content collections", () => {
   it("found content to check", () => {
     // Without this every claim below passes vacuously on an empty directory.
     expect(allEntries("docs").length + allEntries("blog").length).toBeGreaterThan(0);
+    expect(allEntries("learn").length).toBeGreaterThan(0);
   });
 
   it("gives every entry a title, a description and a slug", () => {
-    for (const collection of ["blog", "docs"] as const) {
+    for (const collection of ["blog", "docs", "learn"] as const) {
       for (const entry of allEntries(collection)) {
         expect(entry.frontmatter.title, `${entry.slug} title`).toBeTruthy();
         expect(entry.frontmatter.description, `${entry.slug} description`).toBeTruthy();
@@ -40,7 +40,7 @@ describe("the content collections", () => {
     // `gray-matter` hands back a Date for an unquoted `2026-09-17`. Left
     // alone it interpolates as "Wed Sep 17 2026 …" and every consumer that
     // builds a string from it produces an Invalid Date.
-    for (const post of allEntries("blog")) {
+    for (const post of [...allEntries("blog"), ...allEntries("learn")]) {
       expect(post.frontmatter.date, `${post.slug} has a date`).toMatch(/^\d{4}-\d{2}-\d{2}$/);
       expect(new Date(`${post.frontmatter.date}T00:00:00Z`).getTime()).not.toBeNaN();
     }
@@ -52,20 +52,12 @@ describe("the content collections", () => {
   });
 
   it("names only authors that exist", () => {
-    for (const post of allEntries("blog")) {
+    for (const post of [...allEntries("blog"), ...allEntries("learn")]) {
       for (const key of post.frontmatter.authors ?? []) {
         expect(isAuthorKey(key), `${post.slug} names "${key}"`).toBe(true);
         expect(authors[key].name).toBeTruthy();
       }
     }
-  });
-
-  it("separates featured posts from the rest without losing any", () => {
-    const { featured, rest } = blogIndex();
-    expect(featured.length + rest.length).toBe(allEntries("blog").length);
-    // A post cannot be in both halves.
-    const overlap = featured.filter((f) => rest.some((r) => r.slug === f.slug));
-    expect(overlap).toEqual([]);
   });
 
   it("counts tags across posts", () => {
@@ -77,11 +69,13 @@ describe("the content collections", () => {
   });
 });
 
-describe("the docs ordering", () => {
-  it("puts every page in exactly one sidebar group", () => {
-    const grouped = docsBySection().flatMap((group) => group.entries.map((e) => e.slug));
+// The docs and the learn articles share one ordering, so both are held to it.
+describe.each(["docs", "learn"] as const)("the %s ordering", (collection) => {
+  it("puts every page in exactly one group", () => {
+    const grouped = bySection(collection).flatMap((group) => group.entries.map((e) => e.slug));
+    expect(grouped.length).toBeGreaterThan(0);
     expect(grouped.toSorted()).toEqual(
-      allEntries("docs")
+      allEntries(collection)
         .map((e) => e.slug)
         .toSorted(),
     );
@@ -89,22 +83,24 @@ describe("the docs ordering", () => {
   });
 
   it("sorts groups by _sections.json, not alphabetically", () => {
-    // The whole reason that file exists: "Install" belongs above "Reference",
-    // and alphabetically it is below it.
+    // The whole reason that file exists: "Using Simple Balance" belongs
+    // above "Self-hosting", and alphabetically it is below it.
     const order = (
-      JSON.parse(readFileSync("content/docs/_sections.json", "utf8")) as { order: string[] }
+      JSON.parse(readFileSync(`content/${collection}/_sections.json`, "utf8")) as {
+        order: string[];
+      }
     ).order;
-    const present = docsBySection()
+    const present = bySection(collection)
       .map((g) => g.section)
       .filter((s) => order.includes(s));
     const expected = order.filter((s) => present.includes(s));
     expect(present).toEqual(expected);
   });
 
-  it("gives neighbors that agree with the sidebar order", () => {
-    const all = allEntries("docs");
+  it("gives neighbors that agree with the group order", () => {
+    const all = allEntries(collection);
     for (const [index, entry] of all.entries()) {
-      const { previous, next } = docsNeighbors(entry.slug);
+      const { previous, next } = neighbors(collection, entry.slug);
       expect(previous?.slug).toBe(all[index - 1]?.slug);
       expect(next?.slug).toBe(all[index + 1]?.slug);
     }

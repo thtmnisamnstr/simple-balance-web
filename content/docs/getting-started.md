@@ -1,136 +1,177 @@
 ---
 title: Getting started
-description: Try Simple Balance on your own machine with Docker and PostgreSQL, create the first account with its setup code, and see what running it for real takes.
-section: Install
+description: Sign up at app.smpl.money, add your first account, bring in a statement, and see where your money goes. There's nothing to install.
+section: Get started
 order: 1
-updated: 2026-10-07
+updated: 2026-10-25
 ---
 
-Simple Balance runs as a container against a PostgreSQL database. This page is
-for running your own copy. If you'd rather we ran it for you, there's nothing
-to install: [sign up at app.smpl.money](https://app.smpl.money/) instead.
+Simple Balance runs in your web browser at
+[app.smpl.money](https://app.smpl.money/). There's nothing to install and no
+card needed to start. This page takes you from signing up to seeing where your
+money went, using one bank statement.
 
-## What you need
+Once you're in, [Finding your way around](/docs/finding-your-way-around/) says
+what each screen in the sidebar is for and how the dates at the top of a page
+work.
 
-- A machine that can run Docker, with a few hundred megabytes free.
-- PostgreSQL 15 or later, and 18 recommended. It can be managed, a server you
-  already run, or a container beside the app.
-- For anybody but you to reach it, a domain and HTTPS. Any address other than
-  `localhost` has to be `https`, with something in front of the app handling
-  the certificate, such as Caddy, nginx or a cloud load balancer. Then set
-  `TRUST_PROXY=true` so each visitor gets their own sign-in allowance, but only
-  once that proxy replaces `X-Forwarded-For` rather than appending to it. Caddy
-  does without being told, nginx does once it's told to, and a cloud load
-  balancer usually appends, so check yours.
-  [Behind a proxy](/docs/configuration/#behind-a-proxy) says why it matters.
+## Sign up
 
-Nothing else. There's no queue, no cache and no object store, and the project
-treats adding one as a change that has to be argued rather than a convenience.
+1. Go to [app.smpl.money](https://app.smpl.money/) and choose
+   **Create an account**.
+2. Fill in **Your name**, **Email address** and a **Password** of at least 12
+   characters, then type the password again under **Confirm password**.
+3. Press **Create account**.
+4. Open the email titled **Confirm your email address** and follow its link
+   within an hour. The account can't be signed in to until you do. If the link
+   runs out, sign in anyway and a fresh one is sent.
+5. Sign in with your email address and password.
 
-## Try it on your own machine
+Or press **Continue with Google** instead, and there's no email to confirm.
+If you already made an account with a password, sign in with it first and
+choose **Connect Google** under **Settings**, with a Google account that uses
+the same email address. Google won't sign you in to an existing account until
+you've connected it there.
 
-```sh
-docker run --rm --name simple-balance -p 3000:3000 \
-  -e DATABASE_URL="postgresql://user:password@host:5432/simple_balance" \
-  -e AUTH_SECRET="$(openssl rand -hex 32)" \
-  -e APP_BASE_URL="http://localhost:3000" \
-  ghcr.io/thtmnisamnstr/simple-balance:latest
-```
+Creating an account means accepting the [terms of use](/terms/), and the
+[privacy policy](/privacy/) says what's stored and who can see it.
 
-This is for trying it out on the machine in front of you: `http://localhost`
-is the one address the server accepts without HTTPS. The command also makes a
-new `AUTH_SECRET` every time it runs, which signs you out on every restart, so
-for a copy you keep, generate one once and keep it.
+## Add your first account
 
-If the database `DATABASE_URL` names doesn't exist yet, it's created, as long
-as the role connecting has `CREATEDB`. Migrations run at startup under an
-advisory lock, so starting two copies at once is safe and the second waits.
-Nothing answers until they've finished, and a migration that fails stops the
-process rather than leaving it serving a database it couldn't finish upgrading.
+You start on **Overview**, which stays empty until you have an account. An
+account is anywhere money sits: a checking account, a savings account, a
+credit card, a loan or cash.
 
-## The first account
+1. Open **Accounts** and press **New account**.
+2. Give it a name, choose its **Account type**, and set the **Opening date**
+   to the day you want to start tracking from.
+3. Enter what it held on that day as the **Opening balance**.
+4. Press **Create account**.
 
-Open the address you set as `APP_BASE_URL`. On an empty deployment you get the
-create-account form rather than a sign-in form, because there's nobody to sign
-in as yet.
+For a credit card or a loan, leave **Starting balance type** on
+**Amount owed** and type what you owe in **Starting amount** as a plain
+number, like `500`. The
+account opens below zero, because that's money you owe rather than money you
+have.
 
-That form asks for a one-time **setup code**. While there are no accounts, the
-server prints it to its log at startup as `First-run setup code: …`. With the
-command above it's in the terminal you started it from, and from any other
-terminal:
+If you're about to bring in a statement, set the opening date on or before the
+statement's first transaction, and enter the balance from before that
+transaction. [Accounts](/docs/accounts/) covers every field on the form.
 
-```sh
-docker logs simple-balance | grep -i setup
-```
+<Shot
+  name="accounts"
+  alt="The accounts page: a search box and sort controls, then accounts grouped by type. Under Checking, a euro account at €1,621.10 and Everyday Checking at $7,663.45. Under Savings, Savings at $20,200.00. Under Credit card, a card named Travel Card."
+  width="1600"
+  height="1000"
+/>
 
-Set `SETUP_TOKEN` to a string of at least 16 characters to choose the code
-yourself instead of reading it from the log. It stops working as soon as an
-account exists, and the claim is serialized, so two people racing for it can't
-both win.
+_The money in this picture is made up. It's the real product, filled with
+example spending._
 
-No code is needed when `ALLOWED_EMAILS` already admits the address signing up.
-Leaving `ALLOWED_EMAILS` unset admits nobody, which is what keeps an
-unconfigured deployment private: whoever holds the setup code gets the first
-account, and nobody else can register. Set it when you want to let other people
-in. [Configuration](/docs/configuration/) has the forms it takes, and the rest
-of the settings the server reads.
+## Bring in your spending
 
-## Running it for real
+Simple Balance doesn't connect to your bank. You bring transactions in from
+the file your bank lets you download, or you type them in.
 
-The application describes two shapes. What separates them is how many machines
-there are and what runs on each.
+**From a statement.** Most banks let you download your transactions from their
+website as a CSV file, which is a simple spreadsheet file.
 
-| Profile  | What it is                                                                                                             |
-| -------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `single` | Two machines: one running the app and whatever handles TLS, and one running PostgreSQL, unreachable from the internet. |
-| `ha`     | A Kubernetes cluster, with PostgreSQL spread across several nodes by Citus.                                            |
+1. Open **Import CSV**, choose the file, and pick the account it belongs to.
+2. Check which column is the date, the payee and the amount, and set
+   **Date format**. It starts on `YYYY-MM-DD`, and many US banks write the
+   month first, `MM/DD/YYYY`, so `03/04/2026` is March 4.
+3. Press **Dry run** to see how the first rows will be read and how many of
+   them are ready. Nothing is saved yet.
+4. Press **Stage all rows**.
 
-**Start with `single`.** It's the supported shape, and the one the
-application's own docs assume. There are two ways to stand it up:
+<Shot
+  name="import"
+  alt="The import screen before a file is picked: a step headed Choose a CSV file, an empty drop target reading Drop in a file or browse, and a preview panel saying no file has been chosen yet."
+  width="1600"
+  height="1000"
+/>
 
-- [`deploy/compose/single`](https://github.com/thtmnisamnstr/simple-balance/tree/main/deploy/compose/single)
-  runs the app under Docker Compose, given a `DATABASE_URL`: a PostgreSQL you
-  already have, or the one its `compose.postgres.yml` runs on a second machine.
-  Its `compose.caddy.yml` overlay adds Caddy, which gets and renews the
-  certificate and sets `TRUST_PROXY` for you, and the unit in `deploy/systemd`
-  starts it after a reboot. With a proxy of your own instead, set
-  `TRUST_PROXY=true` yourself, once the proxy replaces `X-Forwarded-For` rather
-  than appending to it ([Behind a proxy](/docs/configuration/#behind-a-proxy)).
-- [`deploy/pulumi`](https://github.com/thtmnisamnstr/simple-balance/tree/main/deploy/pulumi)
-  has `oci-single` and `aws-single`, which stand up both machines on Oracle
-  Cloud or EC2, the app with Caddy under systemd. The app machine's separate
-  data disk holds the nightly backups and the generated secret. With
-  `simple-balance:databaseNode` set to `false` you get only the app machine,
-  and it waits until the stack has the `DATABASE_URL` of a PostgreSQL you
-  already run. Its login message says how.
+_The money in this picture is made up. It's the real product, filled with
+example spending._
 
-On the machines the Pulumi programs build, settings live in the stack, and the
-program keeps them in the cloud's own secret store, so nothing gets typed into
-a file on the machine. Set one and apply it, and the machine picks it up within
-five minutes:
+The import screen then links you to the rows on **Staged**, where nothing
+counts toward a balance yet. If you open **Staged** from the menu instead, set its
+dates to **All time**, because it starts on **This month**. Click a row's
+category to set it. Typing a name you haven't used before adds that category
+when the row is committed. Anything that looks like a transaction you already
+have is flagged, and isn't committed unless you say so, so bringing in the
+same statement twice won't count your spending twice. When it all looks
+right, select the rows and press **Commit selected**.
 
-```sh
-pulumi config set --path 'simple-balance:env.SB_BILLING_ENABLED' true
-pulumi config set --secret --path 'simple-balance:secrets.STRIPE_SECRET_KEY'
-pulumi up
-```
+<Shot
+  name="staged"
+  alt="Staged transactions, the review queue: four rows that don't count yet, each with a date, payee, account, category, a Ready status and an amount, including a $19.99 refund from Streamly and a $23.50 transit pass on the travel card."
+  width="1600"
+  height="1000"
+/>
 
-The second line names a secret and no value, so Pulumi asks for it, which
-keeps it out of your shell history. The programs deploy the pinned release
-image, which is 0.2.1. A machine that's already running moves to a new release
-on the machine itself, as the programs' README describes, not from another
-`pulumi up`.
+_The money in this picture is made up. It's the real product, filled with
+example spending._
 
-[Deployment profiles](https://github.com/thtmnisamnstr/simple-balance/blob/main/docs/deployment-profiles.md)
-compares the two, and the
-[deployment reference](https://github.com/thtmnisamnstr/simple-balance/blob/main/docs/deployment.md)
-covers the settings in more depth, along with the reverse proxy configuration
-and backups.
+**By hand.** Press **Add transaction** on **Overview** or **Transactions**.
+Choose **Withdrawal** for money you spent, **Deposit** for money that came in,
+or **Transfer** for money moved between two of your own accounts, such as
+paying a credit card from checking. A transfer is one entry, not two, and it
+never counts as spending. At the bottom of the form, **Commit now** counts it
+straight away, and **Stage for review** puts it on **Staged** beside your
+imported rows until you commit it.
 
-## What to do next
+[Importing a statement](/docs/importing-a-statement/) covers the importer in
+detail, [Transactions](/docs/transactions/) covers every field of the form,
+and [How deposits, withdrawals and transfers work](/docs/accounts-and-transactions/)
+explains which of the three to use.
 
-[Import a statement](/docs/importing-a-statement/). The importer reads a CSV
-your bank exported, suggests which column is which, asks you how its dates and
-amounts are written, and stages the rows. Staged rows affect no balance until
-you commit them, and a **Dry run** before staging shows how the file will be
-read without creating anything.
+## See where it went
+
+**Overview** shows each account's balance and your spending by category for
+the dates you choose. **Reports** goes further, from income against spending
+to your net worth. [The overview](/docs/the-overview/) and
+[Reports](/docs/reports/) explain every number on them.
+
+<Shot
+  name="dashboard"
+  alt="The Simple Balance overview for one month: a dollar total with balance, deposits, withdrawals and net cash flow across the top, then a checking account, a savings account and a credit card with their balances, beside spending by category as bars from rent down to subscriptions."
+  width="1600"
+  height="1000"
+/>
+
+_The money in this picture is made up. It's the real product, filled with
+example spending._
+
+## Free and Premium
+
+The free plan does everything Simple Balance can do, with up to 3 accounts in
+use at once and ads on the page. An archived account doesn't count toward
+the 3. Premium is $3 a month or $30 a year, for as many accounts as you like
+and no ads.
+
+To upgrade, open **Settings**, choose **Plan and billing**, and pick the
+annual or monthly plan. [Your account and plan](/docs/your-account-and-plan/)
+covers changing plans, canceling, and taking your data with you.
+
+## What to read next
+
+- [Finding your way around](/docs/finding-your-way-around/), for what each
+  screen is for and how the dates work.
+- [Transactions](/docs/transactions/), to find, fix, split and restore
+  entries.
+- [Templates](/docs/templates/), for things you enter by hand again and again.
+- [Recurring transactions](/docs/recurring-transactions/), so rent, pay and
+  subscriptions wait on **Staged** on the day they're due.
+- [Budgets](/docs/budgets/), once you have a month or two of spending in.
+- [Reports](/docs/reports/), for net worth, cash flow and spending over time.
+- [Connecting an AI assistant](/docs/agents-and-mcp/), to let an AI assistant file your
+  transactions for you to approve.
+- The [Learn](/learn/) guides, for the money side: how to
+  [track your spending](/learn/track-your-spending/),
+  [make a budget](/learn/make-a-budget/) and more.
+
+Would you rather self-host it? [Self-hosting: running your own copy](/docs/self-hosting/)
+covers that.
+[Moving between the cloud app and your own copy](/docs/moving-between-cloud-and-self-hosted/)
+brings your transactions with you and says what to set up again by hand.

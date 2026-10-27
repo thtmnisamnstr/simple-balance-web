@@ -4,6 +4,7 @@ import { render, screen } from "@testing-library/react";
 import PricingPage from "@/app/pricing/page";
 import { hero, site } from "@/content/home";
 import { comparison, faq, MAX_FREE_ACCOUNTS, tiers } from "@/content/pricing";
+import { typeset } from "@/lib/typeset";
 
 /**
  * The pricing page.
@@ -125,13 +126,15 @@ describe("the FAQ", () => {
      * promise the site no longer makes — the product may yet pull
      * transactions on a schedule — but "how does my spending get in" is the
      * thing the reader actually needs answered, whatever the answer becomes.
+     * It's now asked as "does Simple Balance connect to my bank", the words
+     * a reader types into a search box or an assistant.
      */
     for (const topic of [
       "more than three",
       "close an account",
       "cancel",
       "running it yourself",
-      "how does my spending get in",
+      "connect to my bank",
     ]) {
       expect(questions, `no question about ${topic}`).toContain(topic);
     }
@@ -158,9 +161,11 @@ describe("the FAQ", () => {
 
     const visible = html.replaceAll(/<script[\s\S]*?<\/script>/g, "");
 
+    // Typeset, because the page curls its quotes where the copy is imported
+    // (`web.md` 3.3) and the structured data is built from the same copy.
     for (const item of faq) {
-      expect(visible, `question not rendered: ${item.q}`).toContain(escape(item.q));
-      expect(visible, `answer not rendered: ${item.q}`).toContain(escape(item.a));
+      expect(visible, `question not rendered: ${item.q}`).toContain(escape(typeset(item.q)));
+      expect(visible, `answer not rendered: ${item.q}`).toContain(escape(typeset(item.a)));
     }
   });
 });

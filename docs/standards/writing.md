@@ -29,10 +29,11 @@ script that had been deleted. A wrong citation in a skill is worse than the
 same mistake in a guide: a skill is read by whoever is _about to do the work_,
 so it sends somebody to the wrong rule at the moment they are relying on it.
 
-Thirty-five section citations live in `.claude/` and none of them was checked.
-Both spellings count — a guide writes `` `operations.md` 6.2 `` and a skill
-usually writes the full path — and the pattern only ever allowed one directory
-segment, so the skills' own form was invisible to it twice over.
+There were thirty-five section citations in `.claude/` when the check was
+added, and none of them had ever been checked. Both spellings count — a
+guide writes `` `operations.md` 6.2 `` and a skill usually writes the full
+path — and the pattern only ever allowed one directory segment, so the
+skills' own form was invisible to it twice over.
 
 Line numbers rot. That is accepted rather than solved: the citation test proves
 the file exists and the line is inside it and has something on it, and cannot
@@ -66,6 +67,40 @@ words, because the form is a price as well.
 
 _Checked by:_ `tests/skills.test.ts`, which refuses the form in every skill
 and is proved against each of those shapes.
+
+## What a guide's backticks survive
+
+**House.** A backticked lowercase hyphenated name in `docs/`, `.claude/`,
+`AGENTS.md` or the README is read as a skill. `tests/skills.test.ts` treats
+every one that way and passes skills, packages, `aria-` and `data-`
+attributes, the application's own skills in its `APPLICATION_SKILLS` record
+(`tests/skills.test.ts:50`), identifiers ending in a long number like the
+publisher id (`tests/skills.test.ts:103`), and the names in its `NOT_SKILLS`
+record (`tests/skills.test.ts:63`). Nothing else. That's how a skill renamed
+under a bare citation gets caught, and bare is how most skills here are
+cited.
+
+Motion and drawing sections are full of names with that shape: CSS
+properties, keyframes, classes and lint rules. Write each the way it's
+written where it lives, and the sweep passes it:
+
+- a class with its dot, `.mo-loop`;
+- a property with its value, `clip-path: inset(50%)`;
+- a keyframe in prose, by what it does;
+- a lint rule with its plugin prefix, `jsx-a11y/prefer-tag-over-role`.
+
+A name that can't be written any of those ways goes into `NOT_SKILLS` with
+what it is, in the same commit.
+
+**The obvious alternative is to narrow the sweep to skip CSS**, which is what
+`code/testing.md` 2.5 would suggest for a check firing on correct text.
+Nothing in a name's shape says CSS, though. A narrowing is either a list of
+every property, keyframe and class, which is `NOT_SKILLS` with more to
+maintain, or a pattern loose enough to pass a renamed skill cited bare,
+which is the defect the check exists to catch. `NOT_SKILLS` is the narrowed
+check, kept by name.
+
+_Checked by:_ `tests/skills.test.ts`.
 
 ## Measured numbers
 

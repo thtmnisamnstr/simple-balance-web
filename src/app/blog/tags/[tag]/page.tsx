@@ -4,11 +4,11 @@ import { openGraph } from "@/app/open-graph";
 import { site } from "@/content/home";
 import { notFound } from "next/navigation";
 import { blogTags, postsByTag, tagLabel, tagSlug } from "@/content/collections";
-import { section, tagDescriptions } from "@/content/sections";
-import { PostCard } from "@/components/post-card";
+import { blogIndex, section, tagDescriptions } from "@/content/sections";
+import { PostGrid } from "@/components/post-card";
 import { Breadcrumbs } from "@/components/breadcrumbs";
-import { BreadcrumbStructuredData } from "@/components/structured-data";
-import { AdBanner } from "@/components/ad-banner";
+import { BlogBanner, BlogBrowse } from "@/components/blog-header";
+import { sectionRobots } from "@/lib/indexing";
 
 const blog = section("blog");
 
@@ -30,7 +30,7 @@ export async function generateMetadata({
   return {
     title,
     description,
-    robots: blog.announced ? undefined : { index: false, follow: false },
+    robots: sectionRobots("blog"),
     alternates: feedAlternates(path),
     openGraph: openGraph({ title: `${title} — ${site.name}`, description, url: path }),
   };
@@ -50,24 +50,19 @@ export default async function TagPage({ params }: { params: Promise<{ tag: strin
 
   return (
     <section className="section" aria-labelledby="tag-title">
-      <div className="page page-narrow">
-        <BreadcrumbStructuredData trail={trail} />
+      <div className="page">
         <Breadcrumbs trail={trail} />
-        <p className="eyebrow">Tag</p>
-        <h1 id="tag-title" className="section-title">
-          {label}
-        </h1>
-        {tagDescriptions[tag] ? <p className="lede">{tagDescriptions[tag]}</p> : null}
-        <p className="entry-meta">
-          {posts.length} {posts.length === 1 ? "post" : "posts"}.
-        </p>
-        <ul className="entry-list">
-          {posts.map((post) => (
-            <PostCard key={post.slug} post={post} />
-          ))}
-        </ul>
-
-        <AdBanner />
+        <BlogBanner
+          id="tag-title"
+          eyebrow={blogIndex.tag.eyebrow}
+          title={label}
+          lede={tagDescriptions[tag]}
+          kind="tag"
+        >
+          <p className="blog-banner-facts">{blogIndex.tag.count(posts.length)}</p>
+        </BlogBanner>
+        <BlogBrowse current={tag} />
+        <PostGrid posts={posts} level={2} />
       </div>
     </section>
   );

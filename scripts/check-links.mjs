@@ -24,15 +24,36 @@ for (const path of files) {
   if (path.endsWith("/index.html")) pages.add(path.slice(0, -"index.html".length));
 }
 
+/*
+ * A link with a `#` or a `?` is read too, page and heading. The pattern used
+ * to stop at either, so it never matched such a link at all: a link to
+ * `/docs/renamed-page/#section` passed with its page gone, which is the link a
+ * renamed slug leaves behind, and `sync-from-app` §5.7 carried a hand-run
+ * check for it. A heading is an `id` in the target page's HTML.
+ */
+const ids = new Map();
+const idsOf = (page) => {
+  const file = "out" + (page.endsWith("/") ? page + "index.html" : page);
+  if (!ids.has(file)) {
+    const html = file.endsWith(".html") ? readFileSync(file, "utf8") : "";
+    ids.set(file, new Set([...html.matchAll(/\sid="([^"]+)"/g)].map(([, id]) => id)));
+  }
+  return ids.get(file);
+};
+
 const broken = [];
 for (const path of files) {
   if (!path.endsWith(".html")) continue;
   const source = path.replace(/index\.html$/, "");
   const html = readFileSync("out" + path, "utf8");
-  for (const [, href] of html.matchAll(/href="(\/[^"#?]*)"/g)) {
-    if (href.startsWith("/_next")) continue;
-    if (pages.has(href) || files.has(href)) continue;
-    broken.push(`${source} -> ${href}`);
+  for (const [, href] of html.matchAll(/href="([/#][^"]*)"/g)) {
+    const [address = "", heading = ""] = href.split("#", 2);
+    const page = address.replace(/\?.*$/, "") || source;
+    if (page.startsWith("/_next")) continue;
+    if (!pages.has(page) && !files.has(page)) broken.push(`${source} -> ${href}`);
+    else if (heading && !idsOf(page).has(decodeURIComponent(heading))) {
+      broken.push(`${source} -> ${href} (no such heading)`);
+    }
   }
 }
 

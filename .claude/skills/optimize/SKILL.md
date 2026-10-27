@@ -1,17 +1,25 @@
 ---
 name: optimize
-description: Audit and improve what the site ships — page weight, images, fonts, metadata, structured data and search discoverability. Use periodically, after adding images or a dependency, or when the site feels heavy.
+description: Audit and improve what the site ships — page weight, images, fonts and what the browser is asked to do. Use periodically, after adding images or a dependency, or when the site feels heavy.
 ---
 
-# Make it lighter and easier to find
+# Make it lighter
 
 `npm run verify` holds weight to a budget and accessibility to WCAG on every
 build. This is the pass that goes further than a gate can: a gate says "not
 worse", and this asks "could it be better".
 
-Run it after adding images or a dependency, and periodically. Not on every
-commit — most of what it finds is a judgment, and a judgment in a gate is a
-gate people route around.
+`merge-prep` runs it on every branch (its §10), and on its own it's worth a run
+after adding images or a dependency, and periodically. It isn't in
+`npm run verify`: most of what it finds is a judgment, and a judgment in a
+gate is a gate people route around.
+
+**Run from `merge-prep`, it's about the branch.** Measure (§1) every time, so
+the report has numbers. Spend the rest on what the branch added or changed:
+an image or a screenshot (§2), a dependency or a drawing (§1 and §4). A
+branch that touched none of those says so, and that's a result. A page's
+title, description and dates are `seo-review`'s and `aeo-review`'s now (§5),
+and both run before this.
 
 ## 1. Measure before changing anything
 
@@ -44,21 +52,31 @@ The biggest lever on this site, because it ships screenshots.
 - **`width` and `height` on every one** (`web.md` 5.3). Without them the page
   reflows as each arrives.
 - **`loading="lazy"` on everything below the fold**, and `eager` with
-  `fetchPriority="high"` on exactly one: the hero shot, which is the largest
-  contentful paint.
+  `fetchPriority="high"` on exactly one: the dashboard that rises out of the
+  homepage's hero, the only screenshot a reader sees before scrolling. The
+  hero itself is words and an inline drawing, so check which of them is the
+  largest contentful paint at each width before moving the priority.
 - **Two widths, not one.** Each screenshot also ships at 1200px and
   `<picture>` picks. A `sizes` that does not match the CSS is worse than none,
   because the browser trusts it and gets the wrong file silently —
   `src/components/shot.tsx` names the two layouts and `web.md` 5.2 has the
   measurements.
 - **Re-run `build:images`** after changing the generator, after pulling new
-  screenshots, or after touching `brand.css`. It makes three things — the
-  social card, a cover per post per theme, and the narrow screenshot copies —
-  and it reads its palette out of the contract.
+  screenshots, after touching `brand.css`, and after adding, retitling or
+  removing a page. It makes four things: the homepage's social card
+  (`public/og.png`), a card per page in `public/og/`, a cover per post per
+  theme, and the narrow screenshot copies. It reads its palette out of the
+  contract, and it writes `scripts/build-images.sources.json`, the record
+  `tests/export-shape.test.ts` holds each card's title to and
+  `tests/home-page.test.tsx` holds each narrow copy to.
 
 ```sh
 npm run build:images
 ```
+
+**It never deletes**, and `operations.md` 7.1 says what that leaves shipping
+with every test green. Delete a removed or renamed page's card by hand in the
+same change, and a removed screenshot's `1200/` copy with it.
 
 ## 3. Fonts
 
@@ -79,8 +97,8 @@ curl -fsSL "https://raw.githubusercontent.com/thtmnisamnstr/simple-balance/$REF/
 **Not a ref typed by hand.** The site is kept in step with whichever ref
 that script chooses: `main` once a release has merged, and the release
 branch while one is open. A stack checked against any other ref is checked
-against a stylesheet the site is not following. A `null` ref or a 404 is a failed check, not a match, and
-`sync-from-app` §0 says how to tell why.
+against a stylesheet the site is not following. A `null` ref or a 404 is a
+failed check, not a match, and `sync-from-app` §0 says how to tell why.
 
 The sans stacks are byte-identical. The **monospace** stacks are not, on
 purpose, and `web.md` 3.2 carries the argument and the condition that would
@@ -97,44 +115,33 @@ possible divergence.
 
 - **Client components.** `ls src/components/client/` is the whole audit.
   Three, each argued in `code/react.md` 1.1. A fourth is a decision.
-- **No render-blocking anything.** There is exactly one third-party script,
-  Google's AdSense loader (`web.md` 6.5), and it is `async`, so it blocks
-  nothing. It is also the heaviest external request on every page it reaches
-  and the largest single thing here that is not ours. Leave it alone: it is
-  the account's own snippet unmodified, `tests/adsense.test.ts` asserts it is
-  in `<head>`, `async` and `crossorigin`, and deferring or lazy-loading it is
-  a revenue decision rather than a performance one. The banner unit beside it
-  (`src/components/ad-banner.tsx`) costs nothing extra to load — same script,
-  already fetched — and is the one thing allowed to sit next to the loader; a
-  second one, or a second vendor's script, is forbidden outright.
-- **Check the CSS is still all used.** The dead-class sweep is in
-  `merge-prep` §4.
+- **No render-blocking anything, and nothing from anybody else.** There is
+  no third-party script (`web.md` 6.5), and the content security policy
+  admits no origin but this one, so there is no external request to audit.
+  Google's AdSense loader was the one exception, and the heaviest external
+  request on every page, until the ads moved to the application alone in
+  October 2026. `tests/budget.test.ts` never saw it, because it measures what
+  this site ships and the loader was fetched from Google, so a vendor script
+  is weight no gate here would have caught.
+- **The homepage's motion costs no script.** The hero, the jobs, the chat and
+  the closing picture are inline SVG and CSS, so they add markup and no
+  JavaScript (`web.md` 8.2). Inline drawings are weight in the HTML, though,
+  and the homepage carries six of the learn articles' pictures and the
+  index's, so a page that got heavier after a drawing changed is worth
+  measuring here.
+- **Check the CSS is still all used.** `tests/dead-css.test.ts` holds the
+  classes on every build; what it can't see is `merge-prep` §5.
 
-## 5. Findability
+## 5. Findability, which is two skills of its own now
 
-This is where the unforced errors are, because none of it is visible on the
-page.
+Titles, descriptions, structured data, the sitemap's dates, the page cards'
+words, the Markdown copies and `/llms.txt` were a section here, and moved to
+**`seo-review`** and **`aeo-review`**, which `merge-prep` runs just before
+this. Run on its own, this skill doesn't cover them: run those.
 
-- **Title and description on every page**, unique, and the title under 60
-  characters so a result listing does not truncate the half that identifies
-  it (`tests/copy.test.ts` holds the homepage's).
-- **Canonical on every page.** Page one of the blog lives at two URLs by
-  necessity (`operations.md` 1.4) and its canonical is what stops them
-  competing.
-- **The sitemap matches the build.** `tests/sitemap.test.ts`, both
-  directions.
-- **Structured data still describes visible content** (`content.md` 5.13).
-  Validate it rather than reading it:
-
-  ```sh
-  node -e '
-  const html = require("fs").readFileSync("out/pricing/index.html","utf8");
-  for (const m of html.matchAll(/application\/ld\+json">(.*?)<\/script>/gs))
-    console.log(JSON.parse(m[1].replaceAll("\\u003c","<"))["@type"]);'
-  ```
-
-- **`noindex` is still only on the unannounced sections**, and nowhere else.
-  One stray one is a page silently removed from search.
+What stays here is what they weigh. A card is an image, so its size is §2's
+and `tests/budget.test.ts`'s, and redrawing one is `npm run build:images`
+like any other picture; its words are theirs.
 
 ## 6. What not to do
 
@@ -142,10 +149,11 @@ page.
   not the same twice; a flaky performance gate is one people re-run rather
   than read. Run it by hand here if you want a second opinion.
 - **Do not add analytics to find out if this worked.** `docs/roadmap.md` 3 has
-  the decision and it survives the ad script: a third-party tag is a second
-  vendor, a second host in the policy, and a second thing the privacy policy
-  has to disclose. One vendor script is the exception `web.md` 6.5 argues
-  for; a second is what turns an exception into a general permission.
+  the decision: a third-party tag is a vendor, a host in a policy that names
+  none, and a sentence the privacy policy would have to retract, since it
+  says this site loads nothing from another origin. `web.md` 6.5 forbids it,
+  and the four weeks the AdSense loader spent here as the one exception are
+  the record of what an exception costs.
 - **Do not raise a budget to make a change fit.** Raising one is fine;
   raising one without saying so in the commit is how the budget stops
   meaning anything.
@@ -155,5 +163,16 @@ page.
 `npm run verify`, then look at the site — a page that got lighter and worse
 is a regression no test here can see. Then **`merge-prep`**.
 
+**When `merge-prep` called this, return to it instead.** Run §1 again for the
+after numbers, since the build is what they measure, and leave the verify and
+the last look to its §12, which comes after the guides. The report tells that
+look where to go.
+
 Report the before and after as numbers, and say plainly where you found
-nothing. "Images were already right" is a result.
+nothing. "Images were already right" is a result. Then what changed, by kind:
+
+- **Each picture this changed**, re-encoded, resized or redrawn, by file.
+- **Any words this rewrote**, by page, with the old beside the new. A pass
+  about weight rarely touches one, and under `merge-prep` one it did lands
+  after `merge-prep` §3 read the claims and `merge-prep` §6 the policy, so
+  this list is where anybody reads it as copy rather than as metadata.

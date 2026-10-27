@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import pulled from "@/content/app-features.json";
-import { agents, features, privacy, proofs } from "@/content/home";
+import { agents, features, jobs, privacy, proofs } from "@/content/home";
 
 /**
  * This site's words against the application's feature list.
@@ -41,6 +41,7 @@ describe("what this site chose to say", () => {
   const covered = new Set([
     ...proofs.flatMap((p) => p.covers),
     ...features.flatMap((f) => f.covers),
+    ...jobs.flatMap((j) => j.covers),
     ...privacy.covers,
     ...agents.covers,
   ]);

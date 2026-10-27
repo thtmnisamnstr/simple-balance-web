@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { typeset } from "@/lib/typeset";
 
 /**
  * An aside inside a doc or a post — a note, a warning, a tip.
@@ -30,7 +31,7 @@ export function Callout({
 }) {
   return (
     <aside className={`callout callout-${kind}`}>
-      <p className="callout-label">{title ?? LABELS[kind]}</p>
+      <p className="callout-label">{title ? typeset(title) : LABELS[kind]}</p>
       <div className="callout-body">{children}</div>
     </aside>
   );

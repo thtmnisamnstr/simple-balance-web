@@ -6,12 +6,22 @@ import HomePage from "@/app/page";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import * as homeContent from "@/content/home";
-import { hero, heroShot, shotDisclosure, site } from "@/content/home";
+import {
+  agents,
+  hero,
+  heroArt,
+  heroShot,
+  jobs,
+  motion,
+  shotDisclosure,
+  site,
+} from "@/content/home";
+import { typeset } from "@/lib/typeset";
 
 /**
  * The rendered page, against the rules in `docs/standards/web.md` that a
  * renderer can decide. Layout and rhythm cannot be checked here — jsdom has no
- * layout — and `docs/standards/web.md` 10 says which rules are left to eyes.
+ * layout — and `docs/standards/web.md` 9 says which rules are left to eyes.
  */
 
 describe("the homepage", () => {
@@ -63,8 +73,9 @@ describe("the homepage", () => {
         <HomePage />
       </>,
     );
+    // Three: the header, the hero, and the closing panel the page ends on.
     const labelled = screen.getAllByText(hero.primaryLabel);
-    expect(labelled).toHaveLength(2);
+    expect(labelled).toHaveLength(3);
     for (const node of labelled) {
       expect(node.tagName).toBe("A");
       expect(node.getAttribute("href")).toBe(site.appUrl);
@@ -73,7 +84,7 @@ describe("the homepage", () => {
     // And the other direction: nothing reaches the application under a
     // second label, which would be two names for one door.
     const toApp = [...container.querySelectorAll(`a[href="${site.appUrl}"]`)];
-    expect(toApp.map((a) => a.textContent)).toEqual([hero.primaryLabel, hero.primaryLabel]);
+    expect(toApp.map((a) => a.textContent)).toEqual(labelled.map(() => hero.primaryLabel));
   });
 
   it("links nowhere empty", () => {
@@ -139,7 +150,7 @@ describe("the homepage", () => {
     // the product's phrase for it and not a reader's — so rewriting the
     // sentence into plain words failed a test about whether the sentence is
     // there at all.
-    expect(screen.getByText(shotDisclosure)).toBeInTheDocument();
+    expect(screen.getByText(typeset(shotDisclosure))).toBeInTheDocument();
   });
 
   it("gives every screenshot alt text that describes what it shows", () => {
@@ -207,6 +218,99 @@ function shotNames(value: unknown): readonly string[] {
 }
 
 const sha256 = (path: string) => createHash("sha256").update(readFileSync(path)).digest("hex");
+
+/** "$1,200.00", "+$2,450.00" or "-$86.40", in whole cents. */
+function cents(amount: string): number {
+  return Math.round(Number(amount.replace(/[$,+]/g, "")) * 100);
+}
+
+describe("the homepage's motion", () => {
+  it("gives every drawing that loops a control that stops it", () => {
+    // WCAG 2.2.2: anything that moves by itself for longer than five
+    // seconds needs a way to stop it, and these loop forever. A loop added
+    // without the control is the failure, so every loop is counted and
+    // every one must hold a labelled checkbox.
+    const { container } = render(<HomePage />);
+    const loops = [...container.querySelectorAll(".mo-loop")];
+    expect(loops.length, "the hero, the correction and the chat loop").toBe(3);
+    for (const loop of loops) {
+      const input = loop.querySelector<HTMLInputElement>("input.mo-stop-input[type=checkbox]");
+      expect(input, "a loop with no stop control").not.toBeNull();
+      expect(input!.closest("label")?.textContent).toBe(motion.stop);
+      expect(
+        input!.closest("[aria-hidden=true]"),
+        "the control is hidden from a screen reader",
+      ).toBeNull();
+    }
+  });
+});
+
+describe("the chat with an assistant", () => {
+  /*
+   * It plays as a chat with a model: thinking, two tool calls, then the
+   * answer a word at a time. Each of those is a way to get the exchange
+   * wrong for somebody who isn't watching it play, so each is held here.
+   */
+  it("reads the answer whole, though it's drawn a word at a time", () => {
+    // A word per span would be read a word at a time by some screen readers.
+    const { container } = render(<HomePage />);
+    const lines = [...container.querySelectorAll(".home-chat-line")];
+    const answers = agents.sample.filter((line) => line.kind === "out");
+    expect(lines).toHaveLength(answers.length);
+    lines.forEach((line, index) => {
+      const text = typeset(answers[index]!.text);
+      expect(line.querySelector(".visually-hidden")?.textContent).toBe(text);
+      const drawn = line.querySelector('[aria-hidden="true"]');
+      expect(drawn?.textContent?.trim()).toBe(text);
+    });
+  });
+
+  it("names the tools it calls, and hides what only shows while it plays", () => {
+    const { container } = render(<HomePage />);
+    const tools = [...container.querySelectorAll(".home-chat-tool-name")];
+    expect(tools.map((tool) => tool.textContent)).toEqual([...agents.tools]);
+    // Read out, not only present: jsdom finds aria-hidden text too.
+    for (const tool of tools) expect(tool.closest('[aria-hidden="true"]')).toBeNull();
+    expect(container.querySelector(".home-chat-thinking")).toHaveAttribute("aria-hidden", "true");
+    for (const state of container.querySelectorAll(".home-chat-tool-state")) {
+      expect(state).toHaveAttribute("aria-hidden", "true");
+    }
+  });
+
+  it("rests on the finished exchange, with nothing still thinking", () => {
+    // At rest, which is what a reader who asked for less motion sees and
+    // what the stop control leaves, the indicator and the spinners are gone.
+    const css = readFileSync("src/styles/site.css", "utf8");
+    for (const part of ["home-chat-thinking", "home-chat-spin"]) {
+      const rule = new RegExp(`\\n\\.${part} \\{[^}]*\\bopacity: 0;`);
+      expect(css, part).toMatch(rule);
+    }
+  });
+});
+
+describe("what the homepage says it's for", () => {
+  it("sends every job to a guide that exists, by the job's own words", () => {
+    // The jobs are the reader's reasons to be here, and each one's whole
+    // promise is "here is how". A card pointing at a guide that was renamed
+    // is a promise that 404s, so the link and the file are both checked.
+    render(<HomePage />);
+    expect(jobs.length).toBeGreaterThanOrEqual(4);
+    for (const job of jobs) {
+      expect(existsSync(`content/learn/${job.guide}.md`), job.guide).toBe(true);
+      const link = screen.getByRole("link", { name: typeset(job.title) });
+      expect(link).toHaveAttribute("href", `/learn/${job.guide}/`);
+    }
+  });
+
+  it("draws a sum that adds up", () => {
+    // The hero's picture is about money adding up, so its figures are held to
+    // arithmetic: where it started, plus and minus each payment, is the total.
+    const sum =
+      cents(heroArt.start.amount) +
+      heroArt.payments.reduce((total, payment) => total + cents(payment.amount), 0);
+    expect(sum).toBe(cents(heroArt.total));
+  });
+});
 
 describe("the screenshots", () => {
   const names = [...new Set(shotNames(homeContent))];

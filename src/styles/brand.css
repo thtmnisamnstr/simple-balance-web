@@ -9,13 +9,19 @@
  * set so a token added to one theme cannot go missing from the other.
  *
  * WHAT IS DELIBERATELY NOT HERE. The app declares about sixty tokens per
- * block. This file carries the thirty-five a marketing page can use, and
- * leaves out four groups that would be dead weight: the ten `--series-*` chart
- * colors, the five `--field*` form tokens, the seven `--art-*` illustration
- * tokens, and `--fill-deep`, `--scrim` and `--shadow-overlay`, which exist for
- * modals and overlays this site does not have. Adding one back is fine; adding
- * one that nothing uses is what `npm run lint` and the dead-CSS sweep in
- * `merge-prep` are for.
+ * block. This file carries the fifty-three a marketing page can use, and
+ * leaves out what would be dead weight: the five `--field*` form tokens, and
+ * `--fill-deep`, `--scrim` and `--shadow-overlay`, which exist for modals and
+ * overlays this site does not have. Adding one back is fine; adding one that
+ * nothing uses is what `npm run lint` and the dead-CSS sweep in `merge-prep`
+ * are for.
+ *
+ * The ten `--series-*` chart colors and the rest of the `--art-*` set came back
+ * with the learn articles' pictures. A diagram comparing ten kinds of spending
+ * needs ten colors that the application already tells apart, and a picture of
+ * the product's world should be painted the way the product paints its own:
+ * the sign-in screen's art panel is `--art-base` lit by `--art-glow-a` and
+ * `--art-glow-b`, with `--art-veil` cards floating on it.
  *
  * WHY THERE ARE TWO BLOCKS AND NOT THREE. The app has a third,
  * `:root[data-theme="dark"]`, because it ships a theme toggle that stamps that
@@ -89,10 +95,27 @@
      it does not ask which theme block a declaration sits in, and this is the
      one line it is expected to report. */
   --art-base: #123e2d;
+  --art-glow-a: #508f72;
+  --art-glow-b: #1d6d4c;
   --art-ink: #e7ede9;
   --art-bar: #86ceb0;
   --art-hairline: rgb(255 255 255 / 16%);
+  --art-veil: rgb(255 255 255 / 10%);
   --on-art-muted: rgb(255 255 255 / 68%);
+
+  /* The application's chart colors, in its order. A diagram reaches for them
+     in order too, so the same kind of spending is the same color wherever the
+     application and this site draw it. */
+  --series-0: #2f7451;
+  --series-1: #b03d38;
+  --series-2: #4671aa;
+  --series-3: #a8801f;
+  --series-4: #764f99;
+  --series-5: #1a7d82;
+  --series-6: #b06030;
+  --series-7: #821a47;
+  --series-8: #455819;
+  --series-9: #374b6c;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -147,9 +170,23 @@
 
     /* Unchanged from the light block. See the note there. */
     --art-base: #123e2d;
+    --art-glow-a: #508f72;
+    --art-glow-b: #1d6d4c;
     --art-ink: #e7ede9;
     --art-bar: #86ceb0;
     --art-hairline: rgb(255 255 255 / 16%);
+    --art-veil: rgb(255 255 255 / 10%);
     --on-art-muted: rgb(255 255 255 / 68%);
+
+    --series-0: #37a66e;
+    --series-1: #d6625c;
+    --series-2: #9cc4fa;
+    --series-3: #ab812b;
+    --series-4: #be96e1;
+    --series-5: #50a1a5;
+    --series-6: #e49465;
+    --series-7: #c06b8f;
+    --series-8: #86a145;
+    --series-9: #6689c5;
   }
 }

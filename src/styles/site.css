@@ -47,12 +47,13 @@
      actually needed it. */
   /*
    * The monospace stack, declared once because it was written out three times
-   * — the terminal, inline code and the code-block language label — and three
-   * copies of a value are three chances for it to disagree with itself.
+   * — the homepage's old terminal sample, inline code and the code-block
+   * language label — and three copies of a value are three chances for it to
+   * disagree with itself.
    *
    * It is deliberately NOT the application's. The app has one mono rule, an
    * 11px internal label, and its stack stops at `Menlo, monospace`; this site
-   * renders code blocks and a terminal, and `ui-monospace` has no
+   * renders code blocks, and `ui-monospace` has no
    * implementation on Windows in several browsers, so without `Consolas` a
    * code block there falls through to the generic `monospace` — usually
    * Courier New. `web.md` 3.2 records the divergence and what would end it.
@@ -81,15 +82,22 @@
   box-sizing: border-box;
 }
 
+/* The canvas past the end of the page is the footer's color, so a page
+   shorter than the window ends in its footer rather than in a band of the
+   page ground under it, 81px to 381px of it under the 404 on a desktop. The
+   body still paints the ground over everything it holds. Making the body a
+   full-height column was the other way, and it changes how margins meet
+   between the header, the main and the footer on every page to fix one. */
 html {
   -webkit-text-size-adjust: 100%;
+  background: var(--surface-soft);
 }
 
 body {
   margin: 0;
   /* Inter is named first to match the application's stack exactly. Neither
      surface loads a webfont, so both render in the system UI face and stay
-     identical. `docs/standards/web.md` 4.1 records what adding a webfont
+     identical. `docs/standards/web.md` 3.2 records what adding a webfont
      would then owe the other surface. */
   font-family:
     Inter,
@@ -127,13 +135,39 @@ a {
   text-underline-offset: 0.2em;
 }
 
-/* `input` is here for the docs search, the one field on the site. Left out,
-   it fell back to the browser's own blue ring, a color from neither theme,
-   while every link beside it had this one. */
-:where(a, button, input, [tabindex]):focus-visible {
+/* Every focusable element, not a list of them. The list named links,
+   buttons and `[tabindex]`, then gained `input` for the docs search, and
+   still missed the pricing questions' `summary` and a table that scrolls
+   inside its box on a phone, which the browser makes a stop of its own:
+   each wore the browser's blue ring, a color from neither theme, beside
+   links wearing this one. A list is a claim about what can take focus,
+   made by somebody who couldn't see what would be added. */
+:focus-visible {
   outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
   border-radius: var(--radius-sm);
+}
+
+/* On the art panel the ring is the panel's ink, as its words are
+   (`web.md` 5.9). The page's green measures 2.4:1 on the panel's base in
+   light, under the 3:1 a focus indicator needs, and 7:1 in dark, which is
+   why it went unseen. The token is redefined rather than a second ring
+   rule written, so there is still one ring. The hero paints the panel
+   without being an `.art-panel`, so it's named too. */
+.art-panel,
+.home-hero {
+  --focus-ring: var(--art-ink);
+}
+
+/* The docs search's results hang off the panel on a page surface, where the
+   panel's near-white ring would vanish in light, so they take the page's
+   back: `--page-focus-ring` is read at the root, before a panel changes it. */
+:root {
+  --page-focus-ring: var(--focus-ring);
+}
+
+.docs-search-results {
+  --focus-ring: var(--page-focus-ring);
 }
 
 img,
@@ -161,46 +195,6 @@ svg {
 
 .section + .section {
   border-top: 1px solid var(--line-soft);
-}
-
-.ad-banner {
-  margin-block: var(--s-7);
-  padding-block: var(--s-5);
-  border-block: 1px solid var(--line-soft);
-  text-align: center;
-}
-
-/* An ad unit Google had nothing to fill, collapsed rather than left as blank
-   space. AdSense marks the <ins> with data-ad-status="unfilled" once it
-   knows, and its help page on hiding unfilled ad units gives exactly this
-   rule for it, !important included: the unit carries display: block inline,
-   which is what the tag is documented with and what AdBanner renders, and
-   only an important declaration outranks an inline one. Left alone, an
-   unfilled responsive unit kept its reserved height: a blank band with a
-   border above and below it on every page, which is worse than the ad it is
-   standing in for. The wrapper goes with it, because an empty .ad-banner is
-   still a block in the page's flow and would keep its own margin and border
-   on both sides of nothing. `src/client/styles.css` in the application
-   repository has the identical pair, for the identical reason. */
-.ad-banner ins.adsbygoogle[data-ad-status="unfilled"] {
-  display: none !important;
-}
-
-.ad-banner:has(> ins.adsbygoogle[data-ad-status="unfilled"]) {
-  display: none;
-}
-
-/* The frame waits for AdSense to take the unit. Where its script never runs,
-   because a blocker or a DNS filter stopped it, the <ins> is never marked
-   either way, so the rule above never fires and every page ended on an empty
-   band between two rules. The loader marks the unit
-   data-adsbygoogle-status="done" within moments of running, so a reader
-   whose ads load sees the frame arrive with the ad and nobody else sees it
-   at all. Only the frame: hiding the unit itself would leave the loader no
-   width to size a responsive ad from. */
-.ad-banner:not(:has(> ins.adsbygoogle[data-adsbygoogle-status])) {
-  padding-block: 0;
-  border-block-width: 0;
 }
 
 .eyebrow {
@@ -345,31 +339,9 @@ svg {
   background: var(--fill-subtle);
 }
 
-/* ---------- hero ---------- */
-
-.hero {
-  padding-block: var(--s-9) var(--s-8);
-  background: radial-gradient(80ch 40ch at 15% -10%, var(--ambient), transparent 70%);
-}
-
-.hero-inner {
-  display: grid;
-  gap: var(--s-7);
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-  align-items: center;
-}
-
-.hero h1 {
-  font-size: var(--step-4);
-  max-width: 18ch;
-}
-
-.hero-lede {
-  font-size: var(--step-1);
-  color: var(--ink-soft);
-  max-width: 46ch;
-  margin-top: var(--s-5);
-}
+/* ---------- hero actions ----------
+   The row of buttons under a headline: the homepage's hero and closing
+   panel, and the 404. */
 
 .hero-actions {
   display: flex;
@@ -378,29 +350,7 @@ svg {
   margin-top: var(--s-6);
 }
 
-.hero-note {
-  font-size: var(--step--1);
-  color: var(--muted);
-  margin-top: var(--s-4);
-}
-
-.proofs {
-  display: grid;
-  gap: var(--s-6);
-  margin-top: var(--s-7);
-}
-
-.proof {
-  display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-  gap: var(--s-6);
-  padding: var(--s-6);
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow);
-}
-
+/* The proof list's claim and body, on the homepage. */
 .proof-claim {
   font-size: var(--step-2);
   font-weight: var(--weight-semi);
@@ -495,28 +445,6 @@ svg {
   flex: none;
 }
 
-/* ---------- code sample ---------- */
-
-.terminal {
-  background: var(--art-base);
-  color: var(--art-ink);
-  border-radius: var(--radius-lg);
-  padding: var(--s-5);
-  font-family: var(--mono);
-  font-size: var(--step-mono);
-  line-height: 1.7;
-  overflow-x: auto;
-  border: 1px solid var(--art-hairline);
-}
-
-.terminal .prompt {
-  color: var(--art-bar);
-}
-
-.terminal .comment {
-  color: var(--on-art-muted);
-}
-
 /* ---------- footer ---------- */
 
 .site-footer {
@@ -559,25 +487,15 @@ svg {
 
 /* ---------- responsive ----------
    One breakpoint, and it is the point at which two columns stop fitting rather
-   than a device width. `docs/standards/web.md` 9.1. */
+   than a device width. `docs/standards/web.md` 4.1. */
 
 @media (max-width: 62rem) {
-  .hero-inner,
-  .proof,
   .band-inner {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .hero-inner {
-    gap: var(--s-6);
-  }
-
   .section {
     padding-block: var(--s-8);
-  }
-
-  .hero h1 {
-    max-width: none;
   }
 }
 
@@ -701,6 +619,43 @@ svg {
   background: var(--surface);
 }
 
+/* A screenshot in an article opens full size (`ProseShot`), through a link
+   laid over it, one per theme. */
+.shot-open {
+  position: relative;
+}
+
+.shot-open-link {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-lg);
+  cursor: zoom-in;
+}
+
+.shot-open-dark {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .shot-open-light {
+    display: none;
+  }
+
+  .shot-open-dark {
+    display: block;
+  }
+}
+
+/* In an article, the line under a screenshot says its money is made up
+   (`web.md` 5.5). Markdown can only write it as a paragraph, so it is set as
+   the picture's caption here rather than read as one more line of the text. */
+.prose-body .shot-open + p {
+  margin-top: var(--s-3);
+  color: var(--muted);
+  font-size: var(--step--1);
+  text-align: center;
+}
+
 .shot-img {
   display: block;
   width: 100%;
@@ -733,18 +688,6 @@ svg {
   margin-top: var(--s-7);
 }
 
-/* A proof card that carries a screenshot puts it below the prose on narrow
-   screens and beside it on wide ones. The card's own two-column rule already
-   collapses at 62rem, so this only has to widen the image column. */
-.proof-shot {
-  grid-column: 1 / -1;
-  margin-top: var(--s-2);
-}
-
-.shot-disclosure {
-  margin-top: var(--s-5);
-}
-
 /* ---------- long-form content: /blog and /docs ----------
    One set of prose styles for both, because a docs page and a post are the
    same typographic problem and two sets would drift. */
@@ -767,6 +710,15 @@ svg {
   margin-top: var(--s-4);
 }
 
+/* The legal pages wrap each heading and its paragraphs in a `<section>`,
+   and the rule above reaches direct children only, so the sections were
+   spaced and everything inside them ran together: a heading flush on its
+   text, and a paragraph break that read as a line wrap. A section's heading
+   is its first child and keeps its own margin. */
+.prose-body > section > * + * {
+  margin-top: var(--s-4);
+}
+
 .prose-body h2 {
   font-size: var(--step-2);
   color: var(--ink);
@@ -779,10 +731,21 @@ svg {
   margin-top: var(--s-6);
 }
 
+/* `minmax(0, 1fr)` rather than the implicit `auto` column, because an auto
+   track can't shrink below its widest item's content: a code block or a long
+   command inside a step widened the whole list past a phone's screen, and the
+   block's own sideways scroll never got the chance to work.
+
+   No bottom margin: the browser's own 1em outlived every rule here, since
+   the spacing rule above sets only the top, and the gap under a list was
+   1em of the fluid body step rather than `--s-4`. The top is left to that
+   rule, which this one would outrank. */
 .prose-body ul,
 .prose-body ol {
+  margin-bottom: 0;
   padding-left: var(--s-5);
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--s-2);
 }
 
@@ -855,37 +818,7 @@ svg {
   border-bottom: 1px solid var(--line-soft);
 }
 
-/* ---------- entry lists ---------- */
-
-.entry-list {
-  list-style: none;
-  padding: 0;
-  margin: var(--s-6) 0 0;
-  display: grid;
-  gap: var(--s-5);
-}
-
-.entry {
-  display: grid;
-  gap: var(--s-2);
-  padding-bottom: var(--s-5);
-  border-bottom: 1px solid var(--line-soft);
-}
-
-.entry-title {
-  font-size: var(--step-1);
-  margin: 0;
-}
-
-.entry-title a {
-  color: var(--ink);
-  text-decoration: none;
-}
-
-.entry-title a:hover {
-  color: var(--green);
-  text-decoration: underline;
-}
+/* ---------- entry headings ---------- */
 
 .entry-heading {
   font-size: var(--step-3);
@@ -895,11 +828,6 @@ svg {
 .entry-meta {
   color: var(--muted);
   font-size: var(--step--1);
-}
-
-.entry-summary {
-  color: var(--ink-soft);
-  max-width: var(--measure);
 }
 
 /* ---------- empty states ---------- */
@@ -1095,10 +1023,6 @@ svg {
   padding: 0.15em 0.7em;
 }
 
-.tag-summary {
-  margin-top: var(--s-6);
-}
-
 /* The `<picture>` that carries the two theme files has no box of its own.
    `<picture>` is inline by default, which would put an inline wrapper — and
    its baseline gap — around an image that was previously a direct child.
@@ -1122,30 +1046,6 @@ svg {
   border-radius: var(--radius-lg);
   border: 1px solid var(--line);
   margin-top: var(--s-5);
-}
-
-/* The cover's own top margin is the gap below a post's byline. Leading the
-   featured card it stacked on the card's padding instead, and the card had
-   twice the space above its picture that it has beside it. */
-.entry-featured > .cover:first-child .entry-cover {
-  margin-top: 0;
-}
-
-.entry-featured {
-  padding: var(--s-5);
-  background: var(--surface);
-  border: 1px solid var(--green-line);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow);
-}
-
-.featured {
-  margin-top: var(--s-6);
-}
-
-.doc-group-title {
-  font-size: var(--step-1);
-  margin-top: var(--s-7);
 }
 
 .contents {
@@ -1250,8 +1150,12 @@ svg {
   border-top: 1px solid var(--line-soft);
 }
 
+/* `align-content: start` for `.docs-card`'s reason: both links stretch to
+   the taller one's height, and a stretched grid shares the slack between its
+   rows, so a one-line title sank 14px from its label beside a two-line one. */
 .doc-pager-link {
   display: grid;
+  align-content: start;
   gap: var(--s-1);
   padding: var(--s-4);
   border: 1px solid var(--line);
@@ -1320,10 +1224,12 @@ svg {
 }
 
 /* The separator is a pseudo-element so a screen reader reads the trail as
-   words rather than as "slash" between every one. */
-.breadcrumbs li + li::before {
+   words rather than as "slash" between every one. It ends an item rather
+   than starting the next, so a trail that wraps on a phone breaks after a
+   slash: "Home / Learn /" and then the title, not a line opening on one. */
+.breadcrumbs li:not(:last-child)::after {
   content: "/";
-  margin-right: var(--s-2);
+  margin-left: var(--s-2);
   color: var(--line-strong);
 }
 
@@ -1362,13 +1268,6 @@ svg {
 
 /* ---------- author header ---------- */
 
-.author-header {
-  display: flex;
-  align-items: center;
-  gap: var(--s-5);
-  margin-bottom: var(--s-4);
-}
-
 .avatar-large {
   width: 72px;
   height: 72px;
@@ -1402,6 +1301,1276 @@ svg {
 
 .series-list a {
   color: var(--green);
+}
+
+/* ---------- learn ---------- */
+
+/* The series box's surface, because it is the same kind of thing: an aside
+   about where to go next, set apart from the article without shouting. */
+.learn-cta {
+  margin-top: var(--s-8);
+  padding: var(--s-5);
+  border: 1px solid var(--green-line);
+  background: var(--green-wash);
+  border-radius: var(--radius-lg);
+}
+
+.learn-cta-title {
+  margin: 0 0 var(--s-2);
+  font-size: var(--step-1);
+  color: var(--ink);
+}
+
+.learn-cta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  margin: var(--s-4) 0 0;
+}
+
+/* ---------- learn art ---------- */
+
+/* The application's own art panel, from its sign-in screen (`.auth-art` in its
+   stylesheet): the base green lit from two corners, and a dot grid that fades
+   toward the far corner. Copied rather than reinvented, so a picture here and
+   the product's own are recognizably the same place. The glows are sized as a
+   share of the panel rather than the app's fixed rem, because the same panel
+   is a hero here and a card thumbnail on the index. */
+.art-panel {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 2 / 1;
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(circle at 20% 20%, var(--art-glow-a), transparent 55%),
+    radial-gradient(circle at 90% 85%, var(--art-glow-b), transparent 60%), var(--art-base);
+}
+
+.art-panel::before {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(var(--art-hairline) 1px, transparent 1px);
+  background-size: 22px 22px;
+  content: "";
+  mask-image: linear-gradient(to bottom right, black, transparent 80%);
+}
+
+/* `meet`, so a 2:1 drawing sits whole in a 16:10 card and the panel's own
+   background fills the difference rather than the drawing being cropped. */
+.art-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* What a drawing on the panel is made of. The app's panel has orbit rings,
+   frosted cards and mint bars, and nothing else, so neither does this: a
+   picture of a ledger in the product's colors, not a new illustration style. */
+.art-orbit {
+  fill: none;
+  stroke: var(--art-hairline);
+  stroke-width: 2;
+}
+
+.art-veil {
+  fill: var(--art-veil);
+  stroke: var(--art-hairline);
+  stroke-width: 2;
+}
+
+.art-base {
+  fill: var(--art-base);
+}
+
+.art-ink {
+  fill: var(--art-ink);
+}
+
+.art-mint {
+  fill: var(--art-bar);
+}
+
+.art-muted {
+  fill: var(--on-art-muted);
+}
+
+.art-line {
+  fill: none;
+  stroke: var(--art-ink);
+  stroke-width: 10;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.art-line-mint {
+  fill: none;
+  stroke: var(--art-bar);
+  stroke-width: 10;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.art-line-muted {
+  fill: none;
+  stroke: var(--on-art-muted);
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* A glyph is drawn on the 24-unit grid the logo is, at the logo's 2-unit
+   stroke, and scaled as a group, so every article's mark has the logo's
+   weight at whatever size it is shown. */
+.art-glyph {
+  fill: none;
+  stroke: var(--art-ink);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* The logo's own strokes, dark on the mint badge, as the app puts white on
+   its green one. */
+.art-glyph-on-mint {
+  fill: none;
+  stroke: var(--art-base);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.art-text {
+  fill: var(--art-ink);
+  font-size: 40px;
+  font-weight: var(--weight-semi);
+  letter-spacing: -0.02em;
+}
+
+.art-text-muted {
+  fill: var(--on-art-muted);
+  font-size: 26px;
+  font-weight: var(--weight-medium);
+}
+
+/* ---------- learn index and articles ---------- */
+
+/* The index opens on the app's art panel, the same surface every article's
+   picture is drawn on, with the words on the left and the logo among every
+   article's mark on the right. On the panel the page's own colors would be
+   dark text on dark green, so the words take the panel's. */
+/* The one panel that carries HTML text, so the one that moves the light. The
+   app's panel puts its brightest glow top-left, which is exactly where the
+   words start here, and the eyebrow and the lede measured 2.7:1 and 3.6:1 on
+   it. The glow sits behind the drawing instead, and the words stay on the
+   dark base, where every one of them clears 6:1. */
+.learn-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--s-6);
+  aspect-ratio: auto;
+  padding: var(--s-7);
+  background:
+    radial-gradient(circle at 74% 45%, var(--art-glow-a), transparent 42%),
+    radial-gradient(circle at 90% 85%, var(--art-glow-b), transparent 60%), var(--art-base);
+}
+
+.learn-intro-text {
+  position: relative;
+}
+
+.learn-intro .eyebrow {
+  color: var(--art-bar);
+}
+
+.learn-intro .section-title {
+  color: var(--art-ink);
+}
+
+.learn-intro .lede {
+  color: var(--on-art-muted);
+}
+
+.learn-intro-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-3) var(--s-4);
+  margin: var(--s-6) 0 0;
+}
+
+/* Mint on the panel, the way the app's own art panel does its one bright
+   thing, rather than the page's green button, which disappears on it. */
+.learn-intro .button-primary {
+  background: var(--art-bar);
+  color: var(--art-base);
+}
+
+.learn-intro .button-primary:hover {
+  background: var(--art-ink);
+}
+
+.learn-intro-count {
+  color: var(--on-art-muted);
+  font-size: var(--step--1);
+}
+
+.learn-intro-art {
+  position: relative;
+}
+
+.learn-intro-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* The groups in reading order, as a strip a reader can jump along. */
+.learn-path ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin: var(--s-6) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.learn-path a {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--s-2);
+  padding: var(--s-2) var(--s-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: var(--step--1);
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+}
+
+.learn-path a:hover {
+  border-color: var(--green-line-strong);
+  color: var(--green);
+}
+
+.learn-path-num,
+.learn-group-num {
+  color: var(--green);
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--weight-semi);
+}
+
+.learn-group {
+  margin-top: var(--s-8);
+  scroll-margin-top: calc(var(--header-h) + var(--s-4));
+}
+
+.learn-group-head {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: baseline;
+  gap: var(--s-2) var(--s-4);
+}
+
+.learn-group-num {
+  font-size: var(--step-2);
+}
+
+.learn-group-title {
+  margin: 0;
+  font-size: var(--step-2);
+}
+
+.learn-group-blurb {
+  grid-column: 2;
+  margin: 0;
+  max-width: var(--measure);
+  color: var(--ink-soft);
+}
+
+.learn-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-5);
+  margin: var(--s-5) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* An odd number of cards leaves a hole, so the first card of an odd group
+   takes the whole row, its picture beside its words. */
+.learn-index .learn-grid > li:first-child:nth-last-child(odd) {
+  grid-column: 1 / -1;
+}
+
+/* `align-content: start`, because a card stretched to its row's height
+   otherwise shares the spare height between its picture row and its words,
+   and the card with the shorter summary drops its title 13px below its
+   neighbor's.
+
+   The lift is `translate` rather than `transform`, because the scroll reveal
+   below holds `transform` once it finishes, and an animation's value beats a
+   transition's: the lift jumped in one frame while its shadow eased. */
+.learn-card {
+  display: grid;
+  align-content: start;
+  gap: var(--s-3);
+  height: 100%;
+  padding: var(--s-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  transition:
+    translate 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.learn-card:hover {
+  translate: 0 -3px;
+  box-shadow: var(--shadow-pop);
+}
+
+.learn-index .learn-grid > li:first-child:nth-last-child(odd) .learn-card {
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  align-items: center;
+}
+
+.learn-card-art {
+  display: block;
+}
+
+.learn-card .art-panel {
+  aspect-ratio: 16 / 10;
+  border-radius: var(--radius);
+}
+
+.learn-card-body {
+  display: grid;
+  align-content: start;
+  gap: var(--s-2);
+  padding: 0 var(--s-2) var(--s-2);
+}
+
+.learn-card-title {
+  margin: 0;
+  font-size: var(--step-1);
+}
+
+.learn-card-title a {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.learn-card-title a:hover {
+  color: var(--green);
+  text-decoration: underline;
+}
+
+.learn-card-meta {
+  margin: 0;
+  color: var(--muted);
+  font-size: var(--step--1);
+}
+
+.learn-card-summary {
+  margin: 0;
+  color: var(--ink-soft);
+}
+
+.learn-hero {
+  margin-bottom: var(--s-6);
+}
+
+.learn-next {
+  margin-top: var(--s-7);
+}
+
+.learn-next-title {
+  margin: 0;
+  font-size: var(--step-2);
+}
+
+/* The first and last guides have one neighbor, and one card in a two-column
+   grid left half the section empty. It takes the row instead, the same wide
+   card an odd group opens with on the index. */
+.learn-next .learn-grid > li:only-child {
+  grid-column: 1 / -1;
+}
+
+.learn-next .learn-grid > li:only-child .learn-card {
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  align-items: center;
+}
+
+@media (max-width: 62rem) {
+  .learn-intro {
+    grid-template-columns: minmax(0, 1fr);
+    padding: var(--s-6) var(--s-5);
+    background:
+      radial-gradient(circle at 50% 80%, var(--art-glow-a), transparent 50%),
+      radial-gradient(circle at 90% 98%, var(--art-glow-b), transparent 60%), var(--art-base);
+  }
+
+  .learn-intro-art {
+    max-width: 26rem;
+    margin-inline: auto;
+    width: 100%;
+  }
+
+  .learn-index .learn-grid > li:first-child:nth-last-child(odd) .learn-card,
+  .learn-next .learn-grid > li:only-child .learn-card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* A picture's small labels (`.art-text-muted`, 26 units on the 1200 grid)
+   go when the picture is too narrow for them to read: under 30rem they're
+   under about 10px, and the title beside the picture already says what it
+   is. Measured by the picture's own width, not the window's. Keyed to the
+   window, they went on a phone's index cards and stayed at 7.8px in the
+   same phone's hero, at 8px on the two-up Keep reading cards at 1280, and
+   at 5px on a tablet's cards: one picture at one size, treated two ways. */
+.learn-hero,
+.learn-card .art-panel {
+  container: learn-art / inline-size;
+}
+
+@container learn-art (max-width: 30rem) {
+  .art-text-muted {
+    display: none;
+  }
+}
+
+/* On a phone the panel goes to the drawing's own 2:1, because the 16:10
+   that is breathing room in a two-column grid is two empty bands per card
+   in one column, 560px of them down the index. */
+@media (max-width: 34rem) {
+  .learn-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .learn-group-blurb {
+    grid-column: 1 / -1;
+  }
+
+  .learn-intro {
+    padding: var(--s-5) var(--s-4);
+  }
+
+  .learn-intro-art {
+    max-width: 18rem;
+  }
+
+  .learn-card .art-panel {
+    aspect-ratio: 2 / 1;
+  }
+
+  /* An article's contents list ran sixteen lines, about 900px, before the
+     first sentence. Its sections are enough to find your place by, and every
+     step heading still has its own anchor. */
+  .learn-article .contents-sub {
+    display: none;
+  }
+
+  /* The one table in the guides is short words and sums, and wrapping every
+     cell doubled each row. Only the first column, the names, may wrap. */
+  .learn-article .prose-body th,
+  .learn-article .prose-body td {
+    padding: var(--s-2);
+  }
+
+  .learn-article .prose-body :is(th, td):not(:first-child) {
+    white-space: nowrap;
+  }
+}
+
+/* ---------- learn diagrams ---------- */
+
+/* A diagram is the opposite of the art above: drawn on the page's own
+   surface, in the page's own colors, so it re-themes, and plain enough to read
+   at a glance. `--c` and `--c-soft` are the one color a shape is drawn in,
+   set on the shape from the contract (`style={{ "--c": "var(--blue)" }}`) so
+   ten series do not need forty classes. */
+.diagram {
+  --c: var(--green);
+  --c-soft: var(--green-soft);
+  margin: var(--s-6) 0;
+  padding: var(--s-5) var(--s-4) var(--s-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+
+/* At most 560 units wide with text of at least 22, drawn at its own size on
+   a desktop and no bigger, so a label is still about 13px on a 390px phone.
+   A diagram drawn to fill the article's column would be legible on a desktop
+   and nowhere else. */
+.dg-svg {
+  display: block;
+  width: 100%;
+  max-width: 560px;
+  height: auto;
+  margin-inline: auto;
+  overflow: visible;
+}
+
+.diagram figcaption {
+  margin-top: var(--s-4);
+  color: var(--muted);
+  font-size: var(--step--1);
+  text-align: center;
+}
+
+.dg-text {
+  fill: var(--ink);
+  font-size: 24px;
+}
+
+.dg-label {
+  fill: var(--muted);
+  font-size: 22px;
+}
+
+.dg-strong {
+  font-weight: var(--weight-semi);
+}
+
+.dg-num {
+  font-variant-numeric: tabular-nums;
+}
+
+.dg-fill {
+  fill: var(--c);
+}
+
+.dg-soft {
+  fill: var(--c-soft);
+}
+
+.dg-track {
+  fill: var(--track);
+}
+
+.dg-box {
+  fill: var(--surface-soft);
+  stroke: var(--line);
+  stroke-width: 2;
+}
+
+.dg-stroke {
+  fill: none;
+  stroke: var(--c);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.dg-rule {
+  fill: none;
+  stroke: var(--line-strong);
+  stroke-width: 2;
+}
+
+.dg-dash {
+  stroke-dasharray: 8 8;
+}
+
+/* ---------- learn motion ---------- */
+
+/* Motion is something a drawing opts into, an element at a time: `mo` plus
+   one effect, with `--s` as its place in the order. Three rules keep it
+   honest, and all three are why it is written this way rather than as a GIF.
+
+   It ends where the drawing already is. Every keyframe animates *from*
+   something toward the element's own resting state (a loop holds it, then
+   fades), so a browser that runs none of this, or a reader who asked for
+   less motion, sees the finished picture rather than a blank one.
+
+   It stops, or it can be stopped. WCAG 2.2.2 asks for a pause control on
+   anything that moves by itself for more than five seconds, and the cheapest
+   way to owe nobody one is to stop, as three clocks here do: a hero plays
+   once as the page opens, a card plays when somebody points at it, and a
+   diagram builds as it is scrolled into view, the reader's scrolling its
+   clock. The fourth, the homepage's `.mo-loop`, never stops, so it has one.
+
+   And all of it sits inside `no-preference`, so the global reduced-motion
+   block near the top of this file is a second net rather than the only one.
+   It cannot be the only one: a scroll-driven animation ignores a 0.01ms
+   duration, and a loop cut to one play rests on its last, empty frame. */
+/* Each of these is reset on every `.mo`, because a custom property inherits:
+   without the reset, a coin inside a swinging pan took the swing's two plays
+   and its 1.4s and dropped twice, ending well after the five seconds 8.2
+   allows. An element's own effect class or inline style still sets them. */
+.mo {
+  --s: 0;
+  --n: 1;
+  --dur: 0.8s;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* How long one loop of a `.mo-loop` drawing takes, set where the loop is
+   declared so a drawing can take longer by setting its own. */
+.mo-loop {
+  --cycle: 10s;
+}
+
+/* Registered so it can be transitioned, which is how a card waits before it
+   replays (below). An unregistered property cannot carry a delay. */
+@property --play {
+  syntax: "<integer>";
+  inherits: true;
+  initial-value: 0;
+}
+
+.mo-rise {
+  --mo: mo-rise;
+  --mo-loop: loop-rise;
+}
+
+/* The homepage chat's parts, each on its own point in one cycle rather than
+   on `loop-rise`, because a chat with a model happens in an order: the
+   question, a moment's thinking, a tool and then another, then the answer.
+   `chat-*` below has the timeline. */
+.home-chat-loop {
+  --cycle: 16s;
+}
+
+.mo-chat-you {
+  --mo-loop: chat-you;
+}
+
+.mo-chat-bot {
+  --mo-loop: chat-bot;
+}
+
+.home-chat-thinking {
+  --mo-loop: chat-thinking;
+}
+
+.home-chat-thought {
+  --mo-loop: chat-thought;
+}
+
+.home-chat-tool {
+  --mo-loop: chat-tool;
+}
+
+.home-chat-done {
+  --mo-loop: chat-done;
+}
+
+.home-chat-word {
+  --mo-loop: chat-word;
+}
+
+.mo-drop {
+  --mo: mo-drop;
+}
+
+.mo-fade {
+  --mo: mo-fade;
+  --mo-loop: loop-fade;
+}
+
+.mo-pop {
+  --mo: mo-pop;
+  --mo-loop: loop-pop;
+}
+
+.mo-grow-y {
+  --mo: mo-grow-y;
+  transform-origin: center bottom;
+}
+
+.mo-grow-x {
+  --mo: mo-grow-x;
+  transform-origin: left center;
+}
+
+/* Needs `pathLength="1"` on the element, so one dash is the whole stroke.
+   The gap is twice the dash and the start sits just past it, because with
+   `1` and an offset of exactly 1 the hidden dash ended at the path's first
+   point, and a round cap on a dash of no length is a dot: every arrow showed
+   one before it drew. */
+.mo-draw {
+  --mo: mo-draw;
+  --mo-loop: loop-draw;
+  stroke-dasharray: 1 2;
+}
+
+.mo-slide-l {
+  --mo: mo-slide-l;
+  --mo-loop: loop-slide-l;
+}
+
+.mo-slide-r {
+  --mo: mo-slide-r;
+}
+
+.mo-tilt {
+  --mo: mo-tilt;
+}
+
+.mo-spin {
+  --mo: mo-spin;
+}
+
+/* The two that move in place, for a hero's last beat. Twice and done. */
+.mo-swing {
+  --mo: mo-swing;
+  --n: 2;
+  --dur: 1.4s;
+}
+
+.mo-float {
+  --mo: mo-float;
+  --n: 2;
+  --dur: 1.6s;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .art-panel .mo,
+  .diagram .mo {
+    animation: var(--mo) var(--dur, 0.8s) cubic-bezier(0.2, 0.7, 0.2, 1) calc(var(--s, 0) * 120ms)
+      var(--n, 1) both;
+  }
+
+  /* On the index a card sits still until somebody points at it or tabs to
+     it, which is what makes twelve moving pictures on one page a choice
+     rather than a distraction.
+
+     Pointing means resting there a quarter of a second, not passing over.
+     Chrome moves `:hover` when the page scrolls under a pointer that has not
+     moved, so a reader scrolling with the mouse parked over the grid set off
+     every card it crossed, and each one blanked to its first frame and
+     rebuilt mid-scroll. `--play` turns on 250ms after the hover does, by a
+     transition delay on a registered property, and only a card where it has
+     turned on replays. A browser without style queries never replays, and
+     shows the finished picture, which is the right way for this to fail. */
+  .learn-card .mo {
+    animation: none;
+  }
+
+  .learn-card:hover {
+    --play: 1;
+    transition:
+      translate 0.2s ease,
+      box-shadow 0.2s ease,
+      --play 0s linear 250ms;
+  }
+
+  .learn-card:focus-within {
+    --play: 1;
+  }
+
+  @container style(--play: 1) {
+    .learn-card:is(:hover, :focus-within) .mo {
+      animation: var(--mo) var(--dur, 0.8s) cubic-bezier(0.2, 0.7, 0.2, 1) calc(var(--s, 0) * 90ms)
+        var(--n, 1) both;
+    }
+  }
+
+  /* One timeline for the whole figure, named on the figure, rather than
+     `view()` on each element. An element's own view timeline measures its own
+     box, and an element that is growing or moving changes that box as it
+     goes, so in Chrome it sat at its start and then jumped. The figure does
+     not move, so every part of a diagram is paced by one steady clock.
+
+     Paced by the figure *entering*, so the last step lands as its bottom edge
+     arrives. `entry 100%` is the moment the whole figure is on screen, at any
+     figure height and any viewport. This used to be measured across `cover`,
+     where fully on screen is about 30% on a phone, and a step past the third
+     was still half drawn when the reader could see all of it, and stayed
+     that way if they stopped there. The `min()`s are the guarantee: a
+     diagram with more steps than fit bunches its last few at the end rather
+     than finishing after the reader arrived. */
+  @supports (animation-timeline: view()) {
+    .diagram {
+      view-timeline: --diagram block;
+    }
+
+    .diagram .mo {
+      animation-duration: auto;
+      animation-delay: 0s;
+      animation-timeline: --diagram;
+      animation-range: entry min(calc(var(--s, 0) * 5%), 65%) entry
+        min(calc(35% + var(--s, 0) * 5%), 100%);
+    }
+
+    /* A card rises into place as it scrolls in, and does not fade. It faded
+       with `mo-rise` once, and a card the reader stopped scrolling at, half
+       over the bottom edge, held its words at half opacity: axe measured
+       1.2:1 to 2.9:1 on the docs and blog indexes, which dropped the reveal
+       for it, and the same card is on /learn and the homepage. */
+    .learn-card {
+      animation: card-rise auto linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 70%;
+    }
+  }
+
+  /* A drawing that loops: it builds, holds about five seconds, fades and
+     builds again, which the owner asked for on the homepage. Placed after
+     the art panel's play-once rule and the diagrams' scroll rule, and naming
+     the timeline outright, so a looping drawing that is also on a panel or in
+     a diagram loops rather than doing either.
+
+     WCAG 2.2.2 asks for a way to stop anything that moves by itself for
+     longer than five seconds, and this does, forever, so every `.mo-loop`
+     carries a control (`LoopStop`), a plain checkbox. Checked, every part
+     stops where it rests, which is the finished picture. `web.md` 8.2. */
+  .mo-loop .mo {
+    animation: var(--mo-loop) var(--cycle) cubic-bezier(0.2, 0.7, 0.2, 1) calc(var(--s, 0) * 120ms)
+      infinite both;
+    animation-timeline: auto;
+    animation-range: normal;
+  }
+
+  /* Two animations each, so written out: a spinner shows while its tool
+     runs and turns the whole time, and the thinking dots pulse in turn. The
+     stop rule below is more specific than both, so a checked box rests them
+     with everything else. */
+  .mo-loop .home-chat-spin.mo {
+    animation:
+      chat-spin var(--cycle) linear calc(var(--s) * 120ms) infinite both,
+      chat-turn 0.8s linear infinite;
+  }
+
+  .mo-loop .home-chat-dot.mo {
+    animation: chat-dot 1.2s ease-in-out calc(var(--s) * 160ms) infinite;
+  }
+
+  .mo-loop:has(.mo-stop-input:checked) .mo {
+    animation: none;
+  }
+}
+
+@keyframes card-rise {
+  from {
+    transform: translateY(32px);
+  }
+}
+
+@keyframes mo-rise {
+  from {
+    opacity: 0;
+    transform: translateY(32px);
+  }
+}
+
+@keyframes mo-drop {
+  from {
+    opacity: 0;
+    transform: translateY(-56px);
+  }
+
+  65% {
+    opacity: 1;
+    transform: translateY(6px);
+  }
+}
+
+@keyframes mo-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes mo-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+
+  70% {
+    transform: scale(1.06);
+  }
+}
+
+@keyframes mo-grow-y {
+  from {
+    transform: scaleY(0);
+  }
+}
+
+@keyframes mo-grow-x {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes mo-draw {
+  from {
+    stroke-dashoffset: 1.02;
+  }
+}
+
+@keyframes mo-slide-l {
+  from {
+    opacity: 0;
+    transform: translateX(-56px);
+  }
+}
+
+@keyframes mo-slide-r {
+  from {
+    opacity: 0;
+    transform: translateX(56px);
+  }
+}
+
+@keyframes mo-tilt {
+  from {
+    opacity: 0;
+    transform: rotate(-14deg) scale(0.9);
+  }
+}
+
+@keyframes mo-spin {
+  from {
+    transform: rotate(-360deg);
+  }
+}
+
+@keyframes mo-swing {
+  25% {
+    transform: rotate(-5deg);
+  }
+
+  75% {
+    transform: rotate(5deg);
+  }
+}
+
+@keyframes mo-float {
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+/*
+ * The looping versions, for a drawing inside `.mo-loop` (below). One cycle is
+ * ten seconds: each part arrives over its first 8%, holds until 72%, fades by
+ * 78% and stays gone to the end. The parts are staggered by `--s` as a delay,
+ * up to about 1.2s, so the last to arrive is in by two seconds and the first
+ * to fade goes at 7.2: the finished picture holds for about five seconds, as
+ * the owner asked. The gap at the end is longer than the stagger, which is
+ * what makes the whole picture blank for a moment before it builds again
+ * rather than rebuilding its first rows while its last are still fading.
+ */
+@keyframes loop-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(32px);
+  }
+
+  8%,
+  72% {
+    opacity: 1;
+    transform: none;
+  }
+
+  78%,
+  100% {
+    opacity: 0;
+    transform: none;
+  }
+}
+
+/*
+ * The homepage chat, on a sixteen-second cycle, 1% = 160ms. The question
+ * rises at about 0.5s; the assistant's bubble opens at 1.4s on "Thinking",
+ * and grows to hold each tool call just before it fades in, by 1.68s and by
+ * 2.7s; the first tool call appears at 2s and finishes at 3.2s, the second a
+ * second behind it (its `--s` is 9); the thinking settles at 4.5s; the answer arrives
+ * a word every 120ms from 4.7s and is whole by about 6.6s. It holds until
+ * 12.6s, about six seconds, long enough to read and then rest on, and the
+ * panel is empty for a moment before the question comes back.
+ */
+@keyframes chat-you {
+  0%,
+  1.75% {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  5.25%,
+  78.75% {
+    opacity: 1;
+    transform: none;
+  }
+
+  83.125%,
+  100% {
+    opacity: 0;
+    transform: none;
+  }
+}
+
+/* The bubble grows as its contents arrive, the way a model's reply does,
+   by a clip rather than by its height: a height that grew would push the
+   rest of the page down twice every cycle. The stops are fractions of the
+   finished bubble, generous enough that each part is inside before it
+   shows at any width.
+
+   Each step finishes before the row it uncovers starts to fade in: 53% by
+   10.5%, where the first tool's fade starts, and 36% by 16.875%, before
+   the second's at 17.25% (`--s` 9 is 6.75% of the cycle). They used to
+   open alongside the rows, so for about 150ms a cycle each row showed
+   half-faded and sliced off at the bubble's edge, deepest at 390 where the
+   second row wraps to two lines. */
+@keyframes chat-bot {
+  0%,
+  7% {
+    opacity: 0;
+    transform: translateY(16px);
+    clip-path: inset(0 0 70% 0 round var(--radius-lg));
+  }
+
+  8.75% {
+    clip-path: inset(0 0 70% 0 round var(--radius-lg));
+  }
+
+  10.5% {
+    opacity: 1;
+    transform: none;
+    clip-path: inset(0 0 53% 0 round var(--radius-lg));
+  }
+
+  14.25% {
+    clip-path: inset(0 0 53% 0 round var(--radius-lg));
+  }
+
+  16.875% {
+    clip-path: inset(0 0 36% 0 round var(--radius-lg));
+  }
+
+  28% {
+    clip-path: inset(0 0 36% 0 round var(--radius-lg));
+  }
+
+  33.25%,
+  78.75% {
+    opacity: 1;
+    transform: none;
+    clip-path: inset(0 0 0 0 round var(--radius-lg));
+  }
+
+  83.125%,
+  100% {
+    opacity: 0;
+    transform: none;
+    clip-path: inset(0 0 0 0 round var(--radius-lg));
+  }
+}
+
+@keyframes chat-thinking {
+  0%,
+  7.875% {
+    opacity: 0;
+  }
+
+  10.5%,
+  26.25% {
+    opacity: 1;
+  }
+
+  28%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes chat-thought {
+  0%,
+  27.125% {
+    opacity: 0;
+  }
+
+  28.875%,
+  78.75% {
+    opacity: 1;
+  }
+
+  83.125%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes chat-tool {
+  0%,
+  10.5% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  13.125%,
+  78.75% {
+    opacity: 1;
+    transform: none;
+  }
+
+  83.125%,
+  100% {
+    opacity: 0;
+    transform: none;
+  }
+}
+
+@keyframes chat-spin {
+  0%,
+  10.5% {
+    opacity: 0;
+  }
+
+  13.125%,
+  18.375% {
+    opacity: 1;
+  }
+
+  20.125%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes chat-done {
+  0%,
+  18.375% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+
+  21%,
+  78.75% {
+    opacity: 1;
+    transform: none;
+  }
+
+  83.125%,
+  100% {
+    opacity: 0;
+    transform: none;
+  }
+}
+
+@keyframes chat-word {
+  0%,
+  28.875% {
+    opacity: 0;
+  }
+
+  30.625%,
+  78.75% {
+    opacity: 1;
+  }
+
+  83.125%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes chat-turn {
+  to {
+    rotate: 1turn;
+  }
+}
+
+@keyframes chat-dot {
+  0%,
+  60%,
+  100% {
+    opacity: 0.35;
+    transform: none;
+  }
+
+  30% {
+    opacity: 1;
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes loop-fade {
+  0% {
+    opacity: 0;
+  }
+
+  8%,
+  72% {
+    opacity: 1;
+  }
+
+  78%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes loop-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+
+  6% {
+    transform: scale(1.06);
+  }
+
+  8%,
+  72% {
+    opacity: 1;
+    transform: none;
+  }
+
+  78%,
+  100% {
+    opacity: 0;
+    transform: none;
+  }
+}
+
+@keyframes loop-slide-l {
+  0% {
+    opacity: 0;
+    transform: translateX(-56px);
+  }
+
+  8%,
+  72% {
+    opacity: 1;
+    transform: none;
+  }
+
+  78%,
+  100% {
+    opacity: 0;
+    transform: none;
+  }
+}
+
+@keyframes loop-draw {
+  0% {
+    opacity: 1;
+    stroke-dashoffset: 1.02;
+  }
+
+  8%,
+  72% {
+    opacity: 1;
+    stroke-dashoffset: 0;
+  }
+
+  78%,
+  100% {
+    opacity: 0;
+    stroke-dashoffset: 0;
+  }
 }
 
 /* ---------- share ---------- */
@@ -1447,42 +2616,9 @@ svg {
   margin-top: var(--s-8);
 }
 
-/* ---------- archive ---------- */
-
-.archive-list {
-  list-style: none;
-  margin: var(--s-4) 0 0;
-  padding: 0;
-  display: grid;
-  gap: var(--s-3);
-}
-
-.archive-list li {
-  display: grid;
-  grid-template-columns: 11rem 1fr;
-  gap: var(--s-4);
-  align-items: baseline;
-  font-size: var(--step--1);
-}
-
-.archive-date {
-  color: var(--muted);
-  font-variant-numeric: tabular-nums;
-}
-
-.archive-list a {
-  color: var(--ink);
-  text-decoration: none;
-}
-
-.archive-list a:hover {
-  color: var(--green);
-  text-decoration: underline;
-}
-
 /* ---------- code blocks ---------- */
 
-/* Follows the page theme, unlike `.terminal` on the homepage.
+/* Follows the page theme, unlike the homepage's art panels.
    `rehype-pretty-code` emits both Shiki themes as custom properties on the
    same markup and the rules at the end of this file pick between them, so the
    surface underneath has to switch with them. Painting this on the always-dark
@@ -1553,7 +2689,7 @@ figure[data-rehype-pretty-code-figure] {
      A code sample's longest line has no space in it to break at, so the track
      grew to fit it and pushed the page sideways instead of letting the block
      scroll inside itself — 482px of grid against a 320px screen. The same
-     shape appears wherever a grid holds something unbreakable; `web.md` 9.2
+     shape appears wherever a grid holds something unbreakable; `web.md` 4.3
      is the rule. */
   grid-template-columns: minmax(0, 1fr);
   gap: var(--s-4);
@@ -1589,8 +2725,20 @@ figure[data-rehype-pretty-code-figure] {
   top: calc(var(--header-h) + var(--s-5));
 }
 
-.docs-nav-details > summary {
-  display: none;
+/* On a wide screen the list is always shown and there's nothing to open.
+   The disclosure is closed in the markup, so it's shown here whatever its
+   state: a closed `<details>` hides its content with `content-visibility`
+   on `::details-content`, and this undoes that. A browser that can't style
+   `::details-content` keeps the summary instead, and the reader opens it,
+   which is worse than a list but better than a list nobody can reach. */
+@supports selector(::details-content) {
+  .docs-nav-details > summary {
+    display: none;
+  }
+
+  .docs-nav-details::details-content {
+    content-visibility: visible;
+  }
 }
 
 .docs-meta {
@@ -1633,6 +2781,24 @@ figure[data-rehype-pretty-code-figure] {
   border: 1px solid var(--line-strong);
   background: var(--surface);
   color: var(--ink);
+}
+
+/* The browser's own clear button, drawn in the field's colors. Chrome and
+   Safari paint it their own blue, which on the docs intro's dark panel was
+   a color from neither theme. A mask takes the cross's shape and
+   `currentColor` its color, the field's ink on the page and the panel's ink
+   on the panel. Only its opacity is read from the drawing, so it has no
+   color of its own. Firefox draws no button and loses nothing: Escape
+   clears the field in every browser. */
+.docs-search-input::-webkit-search-cancel-button {
+  width: 0.9em;
+  height: 0.9em;
+  appearance: none;
+  background: currentColor;
+  cursor: pointer;
+  opacity: 0.7;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 6l12 12M18 6 6 18' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E")
+    center / contain no-repeat;
 }
 
 .docs-search-results {
@@ -1703,9 +2869,8 @@ figure[data-rehype-pretty-code-figure] {
     padding: var(--s-3) 0;
   }
 
-  .archive-list li {
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--s-1);
+  .docs-nav-details:not([open])::details-content {
+    content-visibility: hidden;
   }
 
   .pagination {
@@ -1721,6 +2886,7 @@ figure[data-rehype-pretty-code-figure] {
 /* ---------- pricing ---------- */
 
 .tiers {
+  container: tiers / inline-size;
   display: grid;
   gap: var(--s-5);
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
@@ -1772,6 +2938,24 @@ figure[data-rehype-pretty-code-figure] {
    label wraps. */
 .tier-flag-ghost {
   visibility: hidden;
+}
+
+/* A card alone on its row has no heading beside it to be level with, and
+   its copy only opened a gap at its top edge: 56px over the heading against
+   33px everywhere else. The thresholds are the grid's own arithmetic, two
+   17rem tracks and the `--s-5` gap for two columns, three and two gaps for
+   three, so they move if either does. One column: every card is alone. */
+@container tiers (width < 35.5rem) {
+  .tier-flag-ghost {
+    display: none;
+  }
+}
+
+/* Two columns: an odd card last in the list sits alone on the last row. */
+@container tiers (35.5rem <= width < 54rem) {
+  .tier:nth-child(odd):last-child .tier-flag-ghost {
+    display: none;
+  }
 }
 
 .tier-name {
@@ -1867,11 +3051,15 @@ figure[data-rehype-pretty-code-figure] {
 .compare tbody th {
   font-weight: var(--weight-medium);
   color: var(--ink);
-  display: grid;
-  gap: var(--s-1);
 }
 
+/* A block under the feature's name, rather than the header cell made a
+   grid: a grid isn't a table cell, so it stopped stretching with its row,
+   and where a price wrapped and the name didn't, the name's divider was
+   drawn 21px above the rest of the row's. */
 .compare-note {
+  display: block;
+  margin-top: var(--s-1);
   font-weight: var(--weight-normal);
   color: var(--muted);
   font-size: var(--step--1);
@@ -1884,6 +3072,15 @@ figure[data-rehype-pretty-code-figure] {
 
 .compare-no {
   color: var(--muted);
+}
+
+/* The list under the table, introduced by a sub-heading of its own. It wore
+   the section title's class, and with it the 12px that is that class's gap
+   under an eyebrow, so it sat tight under a table it doesn't belong to and
+   twice as far above the list it introduces, at the size of the h2. */
+.included-title {
+  font-size: var(--step-2);
+  margin-top: var(--s-7);
 }
 
 /* ---------- FAQ ---------- */
@@ -1932,4 +3129,2011 @@ figure[data-rehype-pretty-code-figure] {
   color: var(--ink);
   border-radius: 3px;
   padding: 0 1px;
+}
+
+/* ---------- home ---------- */
+
+/* The hero is the application's sign-in art panel at the page's full width,
+   the surface every learn picture is drawn on, so the homepage and /learn
+   read as one site rather than a plain page beside a drawn one.
+
+   The light sits behind the drawing and the words sit on the dark base. The
+   learn intro measured its lede at 3.6:1 with a glow behind the words, and
+   the fix there is the rule here. */
+.home-hero {
+  position: relative;
+  overflow: hidden;
+  padding-block: var(--s-9) calc(var(--s-9) + var(--s-8));
+  background:
+    radial-gradient(circle at 80% 42%, var(--art-glow-a), transparent 32%),
+    radial-gradient(circle at 98% 100%, var(--art-glow-b), transparent 46%), var(--art-base);
+}
+
+/* The panel's dot grid, fading away from the drawing's corner. */
+.home-hero::before {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(var(--art-hairline) 1px, transparent 1px);
+  background-size: 22px 22px;
+  content: "";
+  mask-image: linear-gradient(to bottom left, black, transparent 70%);
+}
+
+.home-hero-inner {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--s-7);
+  align-items: center;
+}
+
+/* The category above the headline, in the panel's mint like the learn and
+   docs intros: the page's green measures under 3:1 on the dark base. */
+.home-hero .eyebrow {
+  margin-bottom: var(--s-3);
+  color: var(--art-bar);
+}
+
+.home-hero h1 {
+  max-width: 14ch;
+  font-size: var(--step-4);
+  color: var(--art-ink);
+}
+
+.home-hero-lede {
+  max-width: 44ch;
+  margin-top: var(--s-5);
+  font-size: var(--step-1);
+  color: var(--on-art-muted);
+}
+
+.home-hero-note {
+  max-width: 46ch;
+  margin-top: var(--s-4);
+  font-size: var(--step--1);
+  color: var(--on-art-muted);
+}
+
+/* Mint on the panel, the way the app's own art panel does its one bright
+   thing; the page's green button disappears on it. Shared with the closing
+   panel at the end of the page. */
+.home-hero .button-primary,
+.home-closing .button-primary {
+  background: var(--art-bar);
+  color: var(--art-base);
+  box-shadow: none;
+}
+
+.home-hero .button-primary:hover,
+.home-closing .button-primary:hover {
+  background: var(--art-ink);
+}
+
+/* The second choice on a dark panel: outlined, so it reads as the second. */
+.home-button-ghost {
+  border-color: var(--art-hairline);
+  background: transparent;
+  color: var(--art-ink);
+}
+
+.home-button-ghost:hover {
+  background: var(--art-veil);
+}
+
+/* The drawing already sits on the hero's panel, so it drops the panel's own
+   fill, corners and dot grid. It keeps the class for its positioning; the
+   class's play-once rule is overridden by `.mo-loop .mo`, so the hero loops. */
+.home-hero-art {
+  aspect-ratio: 640 / 440;
+  overflow: visible;
+  border-radius: 0;
+  background: none;
+}
+
+.home-hero-art::before {
+  content: none;
+}
+
+.home-art-label {
+  fill: var(--on-art-muted);
+  font-size: 21px;
+  font-weight: var(--weight-medium);
+}
+
+.home-art-amount,
+.home-art-amount-muted {
+  font-size: 26px;
+  font-weight: var(--weight-semi);
+  font-variant-numeric: tabular-nums;
+}
+
+.home-art-amount {
+  fill: var(--art-ink);
+}
+
+.home-art-amount-muted {
+  fill: var(--on-art-muted);
+}
+
+.home-art-total {
+  fill: var(--art-ink);
+  font-size: 40px;
+  font-weight: var(--weight-semi);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.home-art-pill {
+  fill: var(--art-base);
+  font-size: 22px;
+  font-weight: var(--weight-semi);
+}
+
+/* A payment going out is a hollow chip; money coming in is the mint one. */
+.home-art-chip {
+  fill: none;
+  stroke: var(--on-art-muted);
+  stroke-width: 2;
+}
+
+.home-art-total-card {
+  stroke: var(--art-bar);
+}
+
+.home-art-wire {
+  fill: none;
+  stroke: var(--art-bar);
+  stroke-width: 3;
+  stroke-linecap: round;
+  opacity: 0.7;
+}
+
+/* The real screen, rising out of the hero into the page. Its own shadow
+   carries the page's green, so it sits on the panel rather than being cut
+   out of it. */
+.home-showcase {
+  position: relative;
+  margin-top: calc(-1 * (var(--s-9) + var(--s-6)));
+}
+
+.home-showcase-figure {
+  display: grid;
+  gap: var(--s-3);
+  margin: 0;
+}
+
+.home-showcase-figure .shot {
+  box-shadow:
+    var(--shadow-pop),
+    0 40px 90px -40px var(--accent-glow);
+}
+
+.home-job-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-5);
+  margin: var(--s-6) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* The card is a `.learn-card`, so it lifts, rises into view and replays its
+   picture the way the learn index's do. The title is the one link, stretched
+   over the whole card. */
+.home-job {
+  position: relative;
+}
+
+.home-job-link::after {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-lg);
+  content: "";
+}
+
+.home-job-guide {
+  margin: 0;
+  color: var(--muted);
+  font-size: var(--step--1);
+}
+
+.home-proof-list {
+  display: grid;
+  gap: var(--s-8);
+  margin: var(--s-7) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Claim beside its evidence, alternating sides down the page, so three
+   proofs read as three steps rather than three identical boxes. */
+.home-proof {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: var(--s-7);
+  align-items: center;
+}
+
+.home-proof:nth-child(even) .home-proof-text {
+  order: 2;
+}
+
+.home-proof-num {
+  margin: 0 0 var(--s-3);
+  color: var(--green);
+  font-size: var(--step-3);
+  font-weight: var(--weight-semi);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.home-proof-text .proof-body {
+  margin-top: var(--s-4);
+}
+
+/* The evidence sits on a wash of the page's green, which re-themes, rather
+   than on the art panel: a screenshot is a page-colored thing, and a dark
+   frame around a light screen is a second picture around the first. */
+.home-proof-media {
+  padding: var(--s-5);
+  border: 1px solid var(--green-line);
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(circle at 15% 0%, var(--green-soft), transparent 70%), var(--green-wash);
+}
+
+.home-correction {
+  margin: 0;
+}
+
+.home-correction-clock {
+  fill: none;
+  stroke: var(--on-accent);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.home-features .card-icon {
+  width: 44px;
+  height: 44px;
+  border-color: transparent;
+  border-radius: var(--radius);
+  background: var(--art-base);
+  color: var(--art-bar);
+}
+
+/* The assistant as what it is, a conversation, on the art panel's colors. */
+.home-chat {
+  display: grid;
+  gap: var(--s-4);
+  margin: 0;
+  padding: var(--s-6);
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(circle at 88% 12%, var(--art-glow-a), transparent 45%), var(--art-base);
+  list-style: none;
+}
+
+.home-chat-msg {
+  display: grid;
+  gap: var(--s-1);
+  max-width: 85%;
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--radius-lg);
+  line-height: 1.5;
+}
+
+.home-chat-you {
+  justify-self: end;
+  border-bottom-right-radius: var(--radius-sm);
+  background: var(--art-bar);
+  color: var(--art-base);
+}
+
+.home-chat-bot {
+  justify-self: start;
+  border: 1px solid var(--art-hairline);
+  border-bottom-left-radius: var(--radius-sm);
+  background: var(--art-veil);
+  color: var(--art-ink);
+}
+
+.home-chat-who {
+  font-size: var(--step--2);
+  font-weight: var(--weight-semi);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.home-chat-bot .home-chat-who {
+  color: var(--on-art-muted);
+}
+
+.home-chat-line {
+  display: block;
+}
+
+/* "Thinking" while it plays, "Thought for 4 seconds" once it's done, in one
+   cell so the swap doesn't move anything. At rest only the second shows:
+   the finished exchange has nothing still thinking in it. */
+.home-chat-status {
+  display: grid;
+  color: var(--on-art-muted);
+  font-size: var(--step--1);
+}
+
+.home-chat-status > * {
+  grid-area: 1 / 1;
+}
+
+.home-chat-thinking {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  opacity: 0;
+}
+
+.home-chat-dots {
+  display: inline-flex;
+  gap: 3px;
+}
+
+.home-chat-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--art-bar);
+}
+
+/* A tool call the way an assistant's app shows one: whose server, which
+   tool, and whether it's finished. */
+.home-chat-tools {
+  display: grid;
+  gap: var(--s-2);
+  margin: var(--s-1) 0 var(--s-2);
+  padding: 0;
+  list-style: none;
+}
+
+.home-chat-tool {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-1) var(--s-2);
+  padding: var(--s-1) var(--s-3);
+  border: 1px solid var(--art-hairline);
+  border-radius: var(--radius);
+  color: var(--on-art-muted);
+  font-size: var(--step--1);
+}
+
+.home-chat-tool > svg {
+  color: var(--art-bar);
+}
+
+.home-chat-connector {
+  font-weight: var(--weight-semi);
+}
+
+.home-chat-tool-name {
+  color: var(--art-ink);
+  font-family: var(--mono);
+  font-size: var(--step--2);
+}
+
+.home-chat-tool-state {
+  display: grid;
+  place-items: center;
+  margin-left: auto;
+}
+
+.home-chat-tool-state > * {
+  grid-area: 1 / 1;
+}
+
+.home-chat-spin {
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--art-hairline);
+  border-top-color: var(--art-bar);
+  border-radius: 50%;
+  opacity: 0;
+}
+
+.home-chat-done {
+  display: inline-flex;
+  color: var(--art-bar);
+}
+
+/* Four tall cards beside a short heading, so the heading starts at the top
+   of them rather than floating halfway down. */
+.home-privacy {
+  align-items: start;
+}
+
+/* A looping drawing and the control that stops it, which sits under it at
+   the end, where it reads as belonging to the picture without covering any
+   of it. */
+.home-loop {
+  display: grid;
+  gap: var(--s-2);
+}
+
+.mo-stop {
+  display: inline-flex;
+  align-items: center;
+  justify-self: end;
+  gap: var(--s-2);
+  padding: var(--s-1) var(--s-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-size: var(--step--2);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+}
+
+.mo-stop-input {
+  margin: 0;
+  accent-color: var(--green);
+}
+
+/* On the hero's panel, the panel's colors. */
+.home-hero .mo-stop {
+  border-color: var(--art-hairline);
+  background: var(--art-veil);
+  color: var(--on-art-muted);
+}
+
+.home-hero .mo-stop-input {
+  accent-color: var(--art-bar);
+}
+
+/* Nothing moves for a reader who asked for less motion, so there is nothing
+   to stop and no control to show them. */
+@media (prefers-reduced-motion: reduce) {
+  .mo-stop {
+    display: none;
+  }
+}
+
+/* A column of the band, not a list under a lede, so it drops the
+   `.checklist` margin that belongs to that use: beside the words it started
+   24px below them, level with nothing, and stacked it put 72px between the
+   two where the band above puts the grid's 48. */
+.home-privacy-list {
+  margin-top: 0;
+}
+
+.home-privacy-list li {
+  padding: var(--s-4);
+  border: 1px solid var(--green-line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+
+/* The page ends where /learn begins: the same panel and the same picture,
+   every guide's mark around the logo, with the plans and the way in. As in
+   the hero, the light sits behind the drawing and the words on the base. */
+.home-closing {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--s-6);
+  aspect-ratio: auto;
+  padding: var(--s-7);
+  background:
+    radial-gradient(circle at 76% 50%, var(--art-glow-a), transparent 40%),
+    radial-gradient(circle at 94% 96%, var(--art-glow-b), transparent 58%), var(--art-base);
+}
+
+.home-closing-text {
+  position: relative;
+}
+
+.home-closing .eyebrow {
+  color: var(--art-bar);
+}
+
+.home-closing .section-title {
+  color: var(--art-ink);
+}
+
+.home-closing .prose {
+  color: var(--on-art-muted);
+}
+
+.home-closing-art {
+  position: relative;
+  justify-self: center;
+  width: 100%;
+  max-width: 24rem;
+}
+
+@media (max-width: 62rem) {
+  .home-hero-inner,
+  .home-proof,
+  .home-closing {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Stacked, the drawing is under the words, so the light moves down with
+     it rather than staying where the lede now is. */
+  .home-hero {
+    background:
+      radial-gradient(circle at 60% 82%, var(--art-glow-a), transparent 36%),
+      radial-gradient(circle at 98% 100%, var(--art-glow-b), transparent 46%), var(--art-base);
+  }
+
+  .home-closing {
+    background:
+      radial-gradient(circle at 50% 82%, var(--art-glow-a), transparent 46%),
+      radial-gradient(circle at 92% 98%, var(--art-glow-b), transparent 58%), var(--art-base);
+  }
+
+  .home-hero h1 {
+    max-width: none;
+  }
+
+  .home-hero-art {
+    max-width: 34rem;
+    width: 100%;
+    margin-inline: auto;
+  }
+
+  .home-job-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .home-proof:nth-child(even) .home-proof-text {
+    order: 0;
+  }
+
+  .home-closing {
+    padding: var(--s-6) var(--s-5);
+  }
+}
+
+@media (max-width: 34rem) {
+  .home-hero {
+    padding-block: var(--s-7) calc(var(--s-8) + var(--s-6));
+  }
+
+  .home-showcase {
+    margin-top: calc(-1 * var(--s-8));
+  }
+
+  .home-job-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .home-proof-media {
+    padding: var(--s-3);
+  }
+
+  .home-chat {
+    padding: var(--s-4);
+  }
+
+  .home-chat-msg {
+    max-width: 92%;
+  }
+
+  .home-closing {
+    padding: var(--s-5) var(--s-4);
+  }
+
+  .home-closing-art {
+    max-width: 18rem;
+  }
+}
+
+/* The closing picture's two rings of guide marks turn around the logo while
+   a pointer rests on the panel, the outer ring one way and the inner the
+   other, each mark turning back about its own center so it stays upright.
+   Hover-started rather than looping: the owner was happy with either, and
+   motion a reader starts is motion WCAG 2.2.2 owes no stop control. The
+   quarter-second wait is the cards' (`--play`, above), so scrolling past
+   with the mouse parked over the panel doesn't set it spinning. */
+.intro-ring,
+.intro-token {
+  transform-box: view-box;
+}
+
+@keyframes orbit-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes orbit-back {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .home-closing .intro-ring-outer,
+  .home-closing .intro-ring-inner .intro-token {
+    animation: orbit-turn 30s linear infinite paused;
+  }
+
+  .home-closing .intro-ring-inner,
+  .home-closing .intro-ring-outer .intro-token {
+    animation: orbit-back 30s linear infinite paused;
+  }
+
+  .home-closing .intro-ring-inner,
+  .home-closing .intro-ring-inner .intro-token {
+    animation-duration: 20s;
+  }
+
+  .home-closing:hover {
+    --play: 1;
+    transition: --play 0s linear 250ms;
+  }
+
+  .home-closing:focus-within {
+    --play: 1;
+  }
+
+  /* A mark follows its own ring, running when the ring runs, rather than
+     asking the style query itself: Chrome doesn't treat an SVG `<g>` as a
+     style container, so the query never matched a mark and the marks sat
+     still while their rings turned, which tilted every one of them. */
+  .home-closing .intro-ring .intro-token {
+    animation-play-state: inherit;
+  }
+
+  @container style(--play: 1) {
+    .home-closing .intro-ring {
+      animation-play-state: running;
+    }
+  }
+}
+
+/* The closing picture builds as it's scrolled to,
+   by the rules the learn diagrams follow (`web.md` 8.3): one timeline on the
+   drawing, each step's place in it set by `--s`, finished by the time the
+   whole drawing is on screen. The closing picture would otherwise play on load
+   with the hero, and be over before anybody reached it. Where scroll-driven
+   animation is missing, the panel's rule plays it once on load instead. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .home-closing-art {
+      view-timeline: --closing block;
+    }
+
+    .home-closing-art .mo {
+      animation-duration: auto;
+      animation-delay: 0s;
+      animation-timeline: --closing;
+      animation-range: entry min(calc(var(--s, 0) * 5%), 65%) entry
+        min(calc(35% + var(--s, 0) * 5%), 100%);
+    }
+  }
+}
+
+/* ---------- docs index ---------- */
+
+/* The index opens on the same art panel as the learn index, for the same
+   reason: it is the application's own picture language, so the docs look
+   like the product they explain rather than like a docs framework.
+
+   Two things differ, and both are about what sits on it. Search lives here,
+   so the panel lets its results hang out past its bottom edge: `.art-panel`
+   clips for its drawings, and a clipped dropdown is a search that shows its
+   first two results. And the light sits only behind the drawing, top right,
+   because everything else on this panel is HTML text, and the learn intro's
+   lede measured 3.6:1 with a glow behind it. */
+.docs-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  align-items: center;
+  gap: var(--s-6) var(--s-7);
+  aspect-ratio: auto;
+  overflow: visible;
+  padding: var(--s-7);
+  background:
+    radial-gradient(circle at 78% 36%, var(--art-glow-a), transparent 30%),
+    radial-gradient(circle at 100% 0%, var(--art-glow-b), transparent 40%), var(--art-base);
+}
+
+.docs-intro-text {
+  position: relative;
+}
+
+.docs-intro .eyebrow {
+  color: var(--art-bar);
+}
+
+.docs-intro .section-title {
+  color: var(--art-ink);
+}
+
+.docs-intro .lede {
+  color: var(--on-art-muted);
+}
+
+.docs-intro .docs-search {
+  max-width: 32rem;
+  margin-top: var(--s-6);
+}
+
+/* Frosted, like every other surface on the panel. The page's white field
+   was a hole punched in it in the light theme and near-invisible in the
+   dark one, where `--surface` is almost the panel's own green. */
+.docs-intro .docs-search-input {
+  padding: var(--s-3) var(--s-4);
+  border-color: var(--art-hairline);
+  background: var(--art-veil);
+  color: var(--art-ink);
+  font-size: var(--step-0);
+}
+
+.docs-intro .docs-search-input::placeholder {
+  color: var(--on-art-muted);
+}
+
+.docs-intro-count {
+  margin-top: var(--s-3);
+  color: var(--on-art-muted);
+  font-size: var(--step--1);
+}
+
+.docs-intro-art {
+  position: relative;
+}
+
+.docs-intro-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* The three places most people start, across the foot of the panel: one in
+   each group, so they double as the way into each. */
+.docs-starts {
+  grid-column: 1 / -1;
+  position: relative;
+}
+
+.docs-starts ul {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* No lighter fill on hover: the kicker is muted text, and on a brighter
+   veil it falls under 4.5:1. The border does the work instead.
+
+   `align-content: center` because the three are stretched to the tallest,
+   and a stretched grid shares the slack between its rows: the kicker
+   drifted 14px off a one-line title beside a card whose two-line title
+   touched its own. Packed and centered, each pair sits against its tile the
+   way the tallest card's does. */
+.docs-start {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  align-content: center;
+  column-gap: var(--s-4);
+  height: 100%;
+  padding: var(--s-4);
+  border: 1px solid var(--art-hairline);
+  border-radius: var(--radius-lg);
+  background: var(--art-veil);
+  transition:
+    border-color 0.2s ease,
+    translate 0.2s ease;
+}
+
+.docs-start:is(:hover, :focus-within) {
+  border-color: var(--art-bar);
+}
+
+.docs-start:hover {
+  translate: 0 -2px;
+}
+
+.docs-start .docs-tile {
+  grid-row: span 2;
+}
+
+.docs-start-kicker {
+  color: var(--on-art-muted);
+  font-size: var(--step--1);
+}
+
+.docs-start-title {
+  font-weight: var(--weight-semi);
+}
+
+.docs-start-title a {
+  color: var(--art-ink);
+  text-decoration: none;
+}
+
+.docs-start-title a:hover {
+  text-decoration: underline;
+}
+
+/* The title link's box, stretched over the tile, so the whole tile answers
+   a pointer while the link's name stays the page's title. */
+.docs-start-title a::after {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  content: "";
+}
+
+/* A page's mark on a square of the art panel, the way the header puts the
+   logo on a green one. Sized in px like that mark, because it is a picture
+   of a fixed thing rather than a gap. */
+.docs-tile {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius);
+  background:
+    radial-gradient(circle at 30% 20%, var(--art-glow-b), transparent 75%), var(--art-base);
+}
+
+.docs-tile-mint {
+  background: var(--art-bar);
+}
+
+.docs-tile-svg {
+  width: 24px;
+  height: 24px;
+  overflow: visible;
+}
+
+.docs-glyph {
+  fill: none;
+  stroke: var(--art-bar);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.docs-tile-mint .docs-glyph {
+  stroke: var(--art-base);
+}
+
+/* A group is a shelf: its picture and heading in a column that stays in
+   view while its pages scroll past, and its pages beside it. Three headings
+   over three lists were the same weight and the same gray, and nothing said
+   where one group stopped. */
+.docs-group {
+  display: grid;
+  grid-template-columns: minmax(0, 20rem) minmax(0, 1fr);
+  align-items: start;
+  gap: var(--s-7);
+  margin-top: var(--s-8);
+  scroll-margin-top: calc(var(--header-h) + var(--s-4));
+}
+
+/* The self-hosting group, on its own band: it is for a different reader,
+   and a reader using app.smpl.money should be able to see where the pages
+   for them end. */
+.docs-group-own {
+  padding: var(--s-6);
+  border: 1px solid var(--green-line);
+  border-radius: var(--radius-lg);
+  background: var(--green-wash);
+}
+
+.docs-group-head {
+  position: sticky;
+  top: calc(var(--header-h) + var(--s-5));
+  display: grid;
+  gap: var(--s-4);
+}
+
+.docs-group-art {
+  border-radius: var(--radius);
+}
+
+.docs-group-text {
+  display: grid;
+  gap: var(--s-2);
+}
+
+.docs-group-audience {
+  color: var(--green);
+  font-size: var(--step--2);
+  font-weight: var(--weight-semi);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.docs-group-title {
+  margin: 0;
+  font-size: var(--step-2);
+}
+
+.docs-group-num {
+  margin-right: var(--s-3);
+  color: var(--green);
+  font-variant-numeric: tabular-nums;
+}
+
+.docs-group-blurb {
+  color: var(--ink-soft);
+}
+
+.docs-group-count {
+  color: var(--muted);
+  font-size: var(--step--1);
+}
+
+.docs-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* A group's feature, when it has one, and the cards under it. */
+.docs-group-pages {
+  display: grid;
+  gap: var(--s-4);
+}
+
+/* An odd number of cards leaves a hole, so the first takes the row. */
+.docs-grid > li:first-child:nth-last-child(odd) {
+  grid-column: 1 / -1;
+}
+
+/* `align-content: start` for `.learn-card`'s reason: a card stretched to its
+   row shares the slack between its rows, and its title drops below its
+   neighbor's.
+
+   No scroll reveal, unlike the learn cards. The first card here sits on the
+   fold of a laptop screen, and a card fading in from nothing is a card whose
+   words are 1.2:1 for as long as the reader leaves it half on screen, which
+   axe found on the first run. The group pictures build as they enter
+   instead, and pictures carry no words. */
+.docs-card,
+.docs-feature {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  align-content: start;
+  gap: var(--s-3) var(--s-4);
+  height: 100%;
+  padding: var(--s-5);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  transition:
+    translate 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.docs-card:hover,
+.docs-feature:hover {
+  translate: 0 -3px;
+  border-color: var(--green-line-strong);
+  box-shadow: var(--shadow-pop);
+}
+
+.docs-feature {
+  gap: var(--s-4);
+  padding: var(--s-6);
+}
+
+.docs-card-mark {
+  display: block;
+  border-radius: var(--radius);
+}
+
+.docs-card-title,
+.docs-feature-title {
+  margin: 0;
+}
+
+.docs-card-title {
+  font-size: var(--step-1);
+}
+
+.docs-feature-title {
+  font-size: var(--step-2);
+}
+
+.docs-card-title a,
+.docs-feature-title a {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.docs-card-title a:hover,
+.docs-feature-title a:hover {
+  color: var(--green);
+  text-decoration: underline;
+}
+
+.docs-card-summary {
+  grid-column: 1 / -1;
+  color: var(--ink-soft);
+  font-size: var(--step--1);
+  line-height: 1.65;
+}
+
+.docs-feature-summary {
+  grid-column: 1 / -1;
+  max-width: var(--measure);
+  color: var(--ink-soft);
+}
+
+/* The steps of the first guide, each a link to its own part of the page. */
+.docs-steps {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-3);
+  margin: var(--s-2) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.docs-steps a {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  height: 100%;
+  padding: var(--s-3) var(--s-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-soft);
+  color: var(--ink);
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+}
+
+.docs-steps a:hover {
+  border-color: var(--green-line-strong);
+  color: var(--green);
+}
+
+.docs-step-num {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-pill);
+  background: var(--green-soft);
+  color: var(--green-dark);
+  font-size: var(--step--1);
+  font-weight: var(--weight-semi);
+  font-variant-numeric: tabular-nums;
+}
+
+/* One column. The drawing moves under the words and the light moves with
+   it, still clear of every line of text. A group's picture sits beside its
+   heading rather than above it, where at this width it would be a band as
+   wide as the page before a single title. */
+@media (max-width: 62rem) {
+  .docs-intro {
+    grid-template-columns: minmax(0, 1fr);
+    padding: var(--s-6) var(--s-5);
+    background:
+      radial-gradient(circle at 50% 54%, var(--art-glow-a), transparent 20%),
+      radial-gradient(circle at 50% 54%, var(--art-glow-b), transparent 30%), var(--art-base);
+  }
+
+  .docs-intro-art {
+    width: 100%;
+    max-width: 22rem;
+    margin-inline: auto;
+  }
+
+  .docs-group {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-5);
+  }
+
+  .docs-group-head {
+    position: static;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    align-items: center;
+    gap: var(--s-5);
+  }
+}
+
+@media (max-width: 34rem) {
+  .docs-intro {
+    padding: var(--s-5) var(--s-4);
+  }
+
+  .docs-intro-art {
+    max-width: 16rem;
+  }
+
+  .docs-starts ul,
+  .docs-grid,
+  .docs-steps {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .docs-starts ul {
+    gap: var(--s-3);
+  }
+
+  .docs-group-own {
+    padding: var(--s-5) var(--s-4);
+  }
+
+  .docs-group-head {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-4);
+  }
+
+  .docs-feature {
+    padding: var(--s-5);
+  }
+}
+
+/* The learn motion's three rules, kept (`web.md` 8.3). The intro's drawing and
+   the starting points' marks are on an `.art-panel`, so they play once with
+   the page by the rule there. A card's mark redraws only after the pointer
+   has rested on it a quarter of a second, by the same registered `--play`
+   the learn cards wait on, for the same reason: a page scrolled under a
+   parked pointer otherwise set off every card it crossed. A group's picture
+   builds as it enters, paced by its own entry, so it is finished by the time
+   all of it is on screen. */
+@media (prefers-reduced-motion: no-preference) {
+  .docs-card:hover,
+  .docs-feature:hover {
+    --play: 1;
+    transition:
+      translate 0.2s ease,
+      box-shadow 0.2s ease,
+      border-color 0.2s ease,
+      --play 0s linear 250ms;
+  }
+
+  .docs-card:focus-within,
+  .docs-feature:focus-within {
+    --play: 1;
+  }
+
+  @container style(--play: 1) {
+    :is(.docs-card, .docs-feature):is(:hover, :focus-within) .mo {
+      animation: var(--mo) var(--dur, 0.8s) cubic-bezier(0.2, 0.7, 0.2, 1) calc(var(--s, 0) * 90ms)
+        var(--n, 1) both;
+    }
+  }
+
+  @supports (animation-timeline: view()) {
+    .docs-group-art {
+      view-timeline: --docs-group block;
+    }
+
+    .docs-group-art .mo {
+      animation-duration: auto;
+      animation-delay: 0s;
+      animation-timeline: --docs-group;
+      animation-range: entry min(calc(var(--s, 0) * 7%), 60%) entry
+        min(calc(40% + var(--s, 0) * 7%), 100%);
+    }
+  }
+}
+
+/* ---------- blog index ---------- */
+
+/* The blog's front page, and the header and cards every other list of posts
+   shares with it. Everything the blog's lists look like is in this block,
+   breakpoints and motion included, so the blog can change without reading
+   the rest of the file.
+
+   The masthead is the learn index's panel (`.learn-intro`) at the front
+   page's scale: the app's art panel, the words on its dark base and the
+   light behind the drawing. Sized glows rather than the learn index's
+   percentages, because the same rules paint a 240px banner and a 520px
+   masthead, and a percentage of the far corner reaches the words on the
+   wider of the two. */
+.blog-masthead,
+.blog-banner {
+  display: grid;
+  align-items: center;
+  gap: var(--s-6);
+  aspect-ratio: auto;
+}
+
+.blog-masthead {
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  padding: var(--s-7);
+  background:
+    radial-gradient(26rem 24rem at 76% 46%, var(--art-glow-a), transparent),
+    radial-gradient(circle at 92% 92%, var(--art-glow-b), transparent 55%), var(--art-base);
+}
+
+.blog-banner {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 21rem);
+  padding: var(--s-6) var(--s-7);
+  background:
+    radial-gradient(17rem 13rem at 84% 50%, var(--art-glow-a), transparent),
+    radial-gradient(circle at 98% 100%, var(--art-glow-b), transparent 45%), var(--art-base);
+}
+
+/* Positioned so they paint above the panel's dot grid, which is an
+   absolutely positioned `::before` and would otherwise lie over the words. */
+.blog-masthead-text,
+.blog-masthead-art,
+.blog-banner-text,
+.blog-banner-art {
+  position: relative;
+}
+
+.blog-masthead .eyebrow,
+.blog-banner .eyebrow {
+  color: var(--art-bar);
+}
+
+.blog-masthead .section-title,
+.blog-banner .section-title {
+  color: var(--art-ink);
+}
+
+.blog-masthead .section-title {
+  font-size: var(--step-4);
+}
+
+.blog-masthead .lede,
+.blog-banner .lede {
+  color: var(--on-art-muted);
+}
+
+/* The orbits run past the drawing's own box into the panel, which clips
+   them at its rounded edge the way the app's panel clips its own, rather
+   than stopping in a straight line in the middle of it. */
+.blog-masthead-svg,
+.blog-banner-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.blog-masthead-count,
+.blog-banner-facts {
+  margin-top: var(--s-4);
+  color: var(--on-art-muted);
+  font-size: var(--step--1);
+}
+
+/* On the panel, a link takes the panel's one bright color, as the learn
+   index's button does, because the page's green all but disappears on it. */
+.blog-banner-facts a {
+  color: var(--art-bar);
+}
+
+.blog-banner .avatar-large {
+  margin-bottom: var(--s-4);
+  border-color: var(--art-hairline);
+}
+
+.blog-feeds {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2) var(--s-3);
+  margin-top: var(--s-5);
+  padding-top: var(--s-5);
+  border-top: 1px solid var(--art-hairline);
+}
+
+.blog-feeds-label {
+  color: var(--on-art-muted);
+  font-size: var(--step--1);
+}
+
+.blog-feeds-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* A frosted chip, the app panel's veil card at the size of a word. */
+.blog-feed {
+  display: inline-block;
+  padding: var(--s-1) var(--s-3);
+  border: 1px solid var(--art-hairline);
+  border-radius: var(--radius-pill);
+  background: var(--art-veil);
+  color: var(--art-ink);
+  font-size: var(--step--1);
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+}
+
+.blog-feed:hover {
+  border-color: var(--art-bar);
+  color: var(--art-bar);
+}
+
+/* The ways in other than the newest page: every topic with its count, and
+   the archive, as a strip of chips like the learn index's groups. */
+.blog-browse {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-3);
+  margin-top: var(--s-5);
+}
+
+.blog-browse-label {
+  color: var(--muted);
+  font-size: var(--step--2);
+  font-weight: var(--weight-semi);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* `flex: 1` so the archive, last, can sit at the far end of the row: it is
+   a different kind of way in from a topic, and the gap says so. */
+.blog-browse-list {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.blog-browse-archive {
+  margin-left: auto;
+}
+
+.blog-browse-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: var(--s-2) var(--s-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: var(--step--1);
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+}
+
+.blog-browse-link:hover {
+  border-color: var(--green-line-strong);
+  color: var(--green);
+}
+
+.blog-browse-link[aria-current="page"] {
+  border-color: var(--green-line-strong);
+  background: var(--green-soft);
+  color: var(--green-dark);
+}
+
+/* A count inside a chip: `em` insets, because it is a fraction of a
+   character inside one thing rather than a gap between two (`web.md` 2.1). */
+.blog-browse-count {
+  min-width: 1.6em;
+  padding: 0.05em 0.45em;
+  border-radius: var(--radius-pill);
+  background: var(--green-soft);
+  color: var(--green-dark);
+  font-size: var(--step--2);
+  font-weight: var(--weight-semi);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.blog-browse-link[aria-current="page"] .blog-browse-count {
+  background: var(--surface);
+}
+
+/* The lead story. The cover fills its column's height rather than keeping
+   its own 2:1, because the words beside it run longer than the picture is
+   tall at most widths, and a 2:1 cover then floated in the middle of a
+   taller row with a band of empty card above it: the inset `web.md` 4.4
+   holds even at the top. Cropped from the right, where every cover is only
+   its wash, so the title drawn on it is never cut. */
+.blog-lead {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: var(--s-6);
+  margin-top: var(--s-6);
+  padding: var(--s-3);
+  border: 1px solid var(--green-line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.blog-lead-cover,
+.post-card-cover {
+  display: block;
+}
+
+.blog-lead .entry-cover,
+.post-card .entry-cover {
+  margin-top: 0;
+  border-color: var(--line-soft);
+  border-radius: var(--radius);
+}
+
+.blog-lead .entry-cover {
+  height: 100%;
+  object-fit: cover;
+  object-position: left center;
+}
+
+.blog-lead-body {
+  display: grid;
+  align-self: center;
+  align-content: center;
+  gap: var(--s-3);
+  padding: var(--s-4) var(--s-5) var(--s-4) 0;
+}
+
+.blog-lead-kicker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2) var(--s-3);
+}
+
+.blog-lead-flag {
+  padding: 0.2em 0.75em;
+  border-radius: var(--radius-pill);
+  background: var(--green-soft);
+  color: var(--green-dark);
+  font-size: var(--step--2);
+  font-weight: var(--weight-semi);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.blog-lead-series,
+.post-card-series {
+  color: var(--green);
+  font-size: var(--step--2);
+  font-weight: var(--weight-semi);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.blog-lead-title {
+  font-size: var(--step-3);
+}
+
+.blog-lead-title a,
+.post-card-title a {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.blog-lead-title a:hover,
+.post-card-title a:hover {
+  color: var(--green);
+  text-decoration: underline;
+}
+
+.blog-lead-summary {
+  color: var(--ink-soft);
+  font-size: var(--step-1);
+  line-height: 1.5;
+}
+
+.blog-lead-byline {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  margin-top: var(--s-2);
+}
+
+.blog-lead-meta,
+.post-card-meta {
+  color: var(--muted);
+  font-size: var(--step--1);
+}
+
+/* A post's topics, on a card and under the post alike, overriding the gray
+   chip in the byline section above: green and without the underline, so a
+   row of them reads as labels on the post rather than as a second set of
+   titles, and the same chip wherever a reader meets it. Smaller on a card,
+   where they sit under a summary rather than at the end of an article. */
+.tag {
+  border-color: var(--green-line);
+  background: var(--green-wash);
+  color: var(--green-dark);
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+}
+
+.tag:hover {
+  border-color: var(--green-line-strong);
+}
+
+.blog-lead .tag-list,
+.post-card .tag-list {
+  margin-top: 0;
+}
+
+.blog-lead .tag,
+.post-card .tag {
+  font-size: var(--step--2);
+}
+
+/* A part of the front page. The short green rule before each heading is
+   what tells "More posts" from "Series" at a glance on a page where both are
+   cards. */
+.blog-part {
+  margin-top: var(--s-8);
+}
+
+.blog-part-title {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  font-size: var(--step-2);
+}
+
+.blog-part-title::before {
+  flex: none;
+  width: var(--s-5);
+  height: var(--s-1);
+  border-radius: var(--radius-pill);
+  background: var(--green);
+  content: "";
+}
+
+.blog-part-blurb {
+  max-width: var(--measure);
+  margin-top: var(--s-2);
+  color: var(--ink-soft);
+}
+
+/* The grid counts its own columns (`PostGrid`), so these breakpoints are
+   the grid's width and not the window's: three across on the front page,
+   two under a post, one on a phone. */
+.post-grid-wrap {
+  margin-top: var(--s-5);
+  container-type: inline-size;
+}
+
+.post-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--s-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Two rows, the second taking the slack, so in a row of cards the line at
+   the foot of each lines up whatever the summaries above it do. */
+.post-card {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: var(--s-4);
+  height: 100%;
+  padding: var(--s-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  transition:
+    translate 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.post-card:hover {
+  border-color: var(--green-line);
+}
+
+.post-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  padding: 0 var(--s-2) var(--s-1);
+}
+
+.post-card-title {
+  font-size: var(--step-1);
+}
+
+.post-card-summary {
+  color: var(--ink-soft);
+}
+
+.post-card-meta {
+  margin-top: auto;
+  padding-top: var(--s-3);
+  border-top: 1px solid var(--line-soft);
+}
+
+/* A short last row leaves holes, so the first cards take the room instead.
+   In two columns the first of an odd number takes the row, its cover beside
+   its words. In three, the track is six columns and a card spans two, so a
+   remainder of two becomes two half-width cards and a remainder of one
+   becomes one card across the row with its cover a column wide. Ten posts a
+   page is a lead and nine, three full rows; two posts is a lead and one card
+   across the page, which is this rule's other reason.
+
+   A wide card's cover keeps its own 2:1 and sits at the top. Stretched to
+   the row, as the lead's is, a cover beside a tall neighbor went three times
+   taller than wide and cropped the title drawn on it. */
+@container (min-width: 34rem) {
+  .post-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .post-card-item:first-child:nth-last-child(odd) {
+    grid-column: 1 / -1;
+  }
+
+  .post-card-item:first-child:nth-last-child(odd) .post-card {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto;
+    align-items: start;
+    gap: var(--s-5);
+  }
+
+  .post-card-item:first-child:nth-last-child(odd) .post-card-body {
+    height: 100%;
+    padding: var(--s-2) var(--s-4) var(--s-1) 0;
+  }
+}
+
+@container (min-width: 54rem) {
+  .post-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+
+  .post-card-item,
+  .post-card-item:first-child:nth-last-child(odd) {
+    grid-column: span 2;
+  }
+
+  .post-card-item:first-child:nth-last-child(odd) .post-card {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: var(--s-4);
+  }
+
+  .post-card-item:first-child:nth-last-child(odd) .post-card-body {
+    padding: 0 var(--s-2) var(--s-1);
+  }
+
+  .post-card-item:first-child:nth-last-child(3n + 2),
+  .post-card-item:first-child:nth-last-child(3n + 2) + .post-card-item {
+    grid-column: span 3;
+  }
+
+  .post-card-item:first-child:nth-last-child(3n + 1) {
+    grid-column: 1 / -1;
+  }
+
+  .post-card-item:first-child:nth-last-child(3n + 1) .post-card {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    grid-template-rows: auto;
+    gap: var(--s-5);
+  }
+
+  .post-card-item:first-child:nth-last-child(3n + 1) .post-card-body {
+    padding: var(--s-2) var(--s-4) var(--s-1) 0;
+  }
+}
+
+/* The pagination's first link is "Newer posts" from page two on, and as a
+   grid item it stretched to fill its column, a button half the page wide
+   beside a page count. The last link was already held to its edge; the first
+   is now held to its own. */
+.pagination a:first-child {
+  justify-self: start;
+}
+
+/* Series: each one's parts in reading order, numbered, on the wash the
+   series box on a post uses, so the two are recognizably the same thing. */
+.blog-series-list {
+  display: grid;
+  gap: var(--s-5);
+  margin: var(--s-5) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.blog-series {
+  display: grid;
+  grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
+  align-items: start;
+  gap: var(--s-4) var(--s-6);
+  padding: var(--s-5) var(--s-6);
+  border: 1px solid var(--green-line);
+  border-radius: var(--radius-lg);
+  background: var(--green-wash);
+}
+
+.blog-series-head {
+  display: grid;
+  gap: var(--s-1);
+}
+
+.blog-series-name {
+  font-size: var(--step-1);
+}
+
+.blog-series-count {
+  color: var(--muted);
+  font-size: var(--step--1);
+}
+
+.blog-series-parts {
+  display: grid;
+  gap: var(--s-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.blog-series-part {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: var(--s-1) var(--s-4);
+  padding: var(--s-3) var(--s-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.blog-series-num {
+  color: var(--green);
+  font-size: var(--step-1);
+  font-weight: var(--weight-semi);
+  font-variant-numeric: tabular-nums;
+}
+
+.blog-series-part a {
+  color: var(--ink);
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+}
+
+.blog-series-part a:hover {
+  color: var(--green);
+  text-decoration: underline;
+}
+
+.blog-series-part time {
+  color: var(--muted);
+  font-size: var(--step--1);
+  font-variant-numeric: tabular-nums;
+}
+
+/* The archive: a rail down the side and a mark at every post, so the gaps
+   between posts show as plainly as the posts. Each row draws its own length
+   of rail, centered in the first column its mark sits in, and the first and
+   last rows draw only the half toward their neighbor, so the rail runs from
+   mark to mark however a title wraps. Drawn once down the whole list, it ran
+   on past the last mark by however tall that row's title was. */
+.blog-year {
+  margin-top: var(--s-7);
+}
+
+.blog-year-title {
+  color: var(--green);
+  font-size: var(--step-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.blog-timeline {
+  display: grid;
+  max-width: 52rem;
+  margin: var(--s-4) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.blog-timeline-item {
+  display: grid;
+  grid-template-columns: var(--s-5) 11rem minmax(0, 1fr);
+  align-items: baseline;
+  gap: var(--s-4);
+  padding-block: var(--s-3);
+  background: linear-gradient(var(--green-line), var(--green-line)) no-repeat
+    calc(var(--s-5) / 2 - 1px) 0 / 2px 100%;
+}
+
+.blog-timeline-item:first-child {
+  background-position-y: 100%;
+  background-size: 2px 50%;
+}
+
+.blog-timeline-item:last-child {
+  background-position-y: 0;
+  background-size: 2px 50%;
+}
+
+.blog-timeline-item:only-child {
+  background: none;
+}
+
+.blog-timeline-item::before {
+  grid-row: 1;
+  grid-column: 1;
+  justify-self: center;
+  align-self: center;
+  width: var(--s-3);
+  height: var(--s-3);
+  border-radius: var(--radius-pill);
+  background: var(--green);
+  box-shadow: 0 0 0 var(--s-1) var(--ground);
+  content: "";
+}
+
+.blog-timeline-date {
+  color: var(--muted);
+  font-size: var(--step--1);
+  font-variant-numeric: tabular-nums;
+}
+
+.blog-timeline-title {
+  color: var(--ink);
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+}
+
+.blog-timeline-title:hover {
+  color: var(--green);
+  text-decoration: underline;
+}
+
+@media (max-width: 62rem) {
+  .blog-masthead {
+    grid-template-columns: minmax(0, 1fr);
+    padding: var(--s-6) var(--s-5);
+    background:
+      radial-gradient(22rem 20rem at 50% 82%, var(--art-glow-a), transparent),
+      radial-gradient(circle at 92% 98%, var(--art-glow-b), transparent 55%), var(--art-base);
+  }
+
+  .blog-masthead-art {
+    width: 100%;
+    max-width: 24rem;
+    margin-inline: auto;
+  }
+
+  .blog-banner {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 15rem);
+    padding: var(--s-6) var(--s-5);
+  }
+
+  .blog-lead {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-4);
+  }
+
+  .blog-lead .entry-cover {
+    height: auto;
+  }
+
+  .blog-lead-body {
+    padding: 0 var(--s-2) var(--s-2);
+  }
+
+  .blog-series {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .pagination a:first-child {
+    justify-self: center;
+  }
+}
+
+@media (max-width: 34rem) {
+  .blog-masthead {
+    padding: var(--s-5) var(--s-4);
+  }
+
+  .blog-masthead-art {
+    max-width: 18rem;
+  }
+
+  .blog-banner {
+    grid-template-columns: minmax(0, 1fr);
+    padding: var(--s-5) var(--s-4);
+    background:
+      radial-gradient(14rem 9rem at 50% 88%, var(--art-glow-a), transparent),
+      radial-gradient(circle at 92% 100%, var(--art-glow-b), transparent 55%), var(--art-base);
+  }
+
+  .blog-banner-art {
+    width: 100%;
+    max-width: 15rem;
+    margin-inline: auto;
+  }
+
+  .blog-browse-label {
+    flex-basis: 100%;
+  }
+
+  .blog-browse-archive {
+    margin-left: 0;
+  }
+
+  .blog-series {
+    padding: var(--s-4);
+  }
+
+  .blog-series-part {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .blog-series-part time {
+    grid-column: 2;
+  }
+
+  .blog-timeline-item {
+    grid-template-columns: var(--s-5) minmax(0, 1fr);
+    gap: 0 var(--s-4);
+  }
+
+  .blog-timeline-date,
+  .blog-timeline-title {
+    grid-column: 2;
+  }
+
+  /* Beside the date and the title together, now they are two lines, so the
+     mark sits at the row's middle, where its length of rail meets the next. */
+  .blog-timeline-item::before {
+    grid-row: 1 / span 2;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* A card lifts when somebody rests the pointer on it, not when it passes
+     under one. Chrome moves `:hover` when the page scrolls beneath a pointer
+     that has not moved, so a reader scrolling with the mouse parked over the
+     grid lifted and dropped every card it crossed. `--play`, the learn
+     cards' registered property, turns on a quarter second after the hover
+     and the lift waits for it; a browser without style queries never lifts,
+     and the card's border still answers the pointer. */
+  .post-card-item:hover {
+    --play: 1;
+    transition: --play 0s linear 250ms;
+  }
+
+  .post-card-item:focus-within {
+    --play: 1;
+  }
+
+  @container style(--play: 1) {
+    .post-card {
+      translate: 0 -4px;
+      box-shadow: var(--shadow-pop);
+    }
+  }
+
+  /* No scroll reveal, unlike the learn cards. A card fades in as it enters,
+     so a card stopped at the fold is a card of faint text: on the author
+     page at 1280 by 900 both cards sat there, and their titles, dates and
+     topics measured between 1.5:1 and 2.9:1. A cover is a picture to read,
+     not a drawing to watch build, so there was nothing to reveal. */
 }

@@ -84,7 +84,7 @@ jobs:
             gh issue list --state "$2" --search "\"$1\" in:title" --json number,title \
               -q "[.[] | select(.title == \"$1\") | .number] | max // empty"
           }
-          BODY=$(printf '%s\n\n---\n\nRun the `sync-from-app` skill. It diffs the contract, pulls the feature list and screenshots, and rewrites only the sections whose source descriptions moved. `tests/copy-provenance.test.ts` names those.\n\nThis issue is updated weekly while the difference remains, and closed when it does not.\n' "$REPORT")
+          BODY=$(printf '%s\n\n---\n\nRun the `sync-from-app` skill. It diffs the contract, pulls the feature list and screenshots, rewrites only the homepage sections whose source descriptions moved (`tests/copy-provenance.test.ts` names those), brings the docs and the privacy policy and terms up to date with the release, lists any learn guide the release made wrong, and ends by running `merge-prep`.\n\nThis issue is updated weekly while the difference remains, and closed when it does not.\n' "$REPORT")
           EXISTING=$(find_issue "$ISSUE_TITLE" open)
           [ -n "$EXISTING" ] || EXISTING=$(find_issue "$LEGACY_TITLE" open)
           if [ -z "$EXISTING" ]; then

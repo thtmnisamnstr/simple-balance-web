@@ -34,7 +34,9 @@ checked out here was a picture nobody could reproduce.
   the two repositories. `sync-from-app` §1 diffs its token values against the
   application's, and `--art-ink` is the one line that diff should report.
 - Copy lives in `src/content/`, not in markup, so it can be read by a test.
-- Long-form content is Markdown under `content/`, read at build time.
+- Long-form content is Markdown under `content/`, read at build time: the
+  blog, the docs, and the learn articles, which are guides to everyday money
+  jobs for a reader who has never kept track of their money.
 
 ## Non-negotiable invariants
 
@@ -46,6 +48,14 @@ Break one of these and the site is wrong rather than untidy.
   `ads.txt` that does not name the publisher id as an instruction to stop
   monetizing the domain. Every symptom is invisible: the file is served, the
   build is green, the ads render, the revenue is zero.
+
+  **This site shows no ads, and the file stays.** The ads moved to the
+  application alone in October 2026, and Google reads the root domain's
+  `ads.txt` for a subdomain's inventory, so this file is what the
+  application's ads rest on. The file and these three rules look like the
+  last of this site's advertising, and removing them with the rest is the
+  tidy-looking mistake — `docs/adsense.md` §1.
+
 - **`ads.txt` names the publisher id and nothing else.** A missing file is
   ignored and costs nothing; a well-formed one that does not name the id is
   the documented demonetizing state. So it arrived with the id, in one commit,
@@ -54,17 +64,20 @@ Break one of these and the site is wrong rather than untidy.
   holds it to exactly the DIRECT record and the `ownerdomain` line.
 - **The root `ads.txt` carries the DIRECT record, not a `subdomain=`
   referral.** Google requires a referral only when the publisher id differs
-  between root and subdomain, and here it does not — both derive from one
-  `ADSENSE_CLIENT_ID`. A referral would hand the authorization chain to a file
-  the application only serves while ads are configured.
+  between root and subdomain, and here it does not — this file and the
+  application's `ADSENSE_CLIENT_ID` name the same account. A referral would
+  hand the authorization chain to a file the application only serves while
+  ads are configured.
 - **A color outside `brand.css` cannot re-theme.** A literal looks right in
   light mode and broken in dark, which is the mode nobody checks.
 - **`announced` decides three things at once** — the link, the `noindex`, and
-  the sitemap. `/docs` is announced; `/blog` is built and is not. The three
+  the sitemap. `/learn` and `/docs` are announced; `/blog` is built and is
+  not. The three
   reach their surfaces separately and all read the one flag in
   `src/content/sections.ts`: `primaryNav` and `footer.links` in
   `src/content/home.ts` spread `announcedSections()`, each route file picks
-  its `robots` metadata from `section(key).announced`, and `src/app/sitemap.ts`
+  its `robots` metadata with `sectionRobots(key)`, which reads
+  `section(key).announced`, and `src/app/sitemap.ts`
   walks the announced sections.
 
   **Two of the three were true and the link was not**, until `/docs` was
@@ -83,7 +96,15 @@ Break one of these and the site is wrong rather than untidy.
 
 - **Crawling is allowed everywhere; indexing is controlled per page.**
   `Disallow` on an unannounced section is the reflex and is exactly wrong: a
-  crawler that cannot fetch the page never sees the `noindex`.
+  crawler that cannot fetch the page never sees the `noindex`. AI crawlers
+  are welcome too, search and training alike, in the one `User-agent: *`
+  group: an answer engine can only cite a page its crawler could fetch.
+- **The flag reaches the copies for machines as well.** Every docs page and
+  learn guide has a Markdown copy at `<page>/index.md`, and `/llms.txt` lists
+  them; both are generated from the pages' own sources, served `noindex`, and
+  list nothing from an unannounced section. Neither is written by hand,
+  because a summary that drifts from the page is their only real cost.
+  `content.md` 5.15.
 - **Every price and limit on the pricing page is what the application
   enforces**, and `tests/app-facts.test.ts` proves it. The application
   publishes `docs/product/facts.json`; `src/content/app-facts.json` is a
@@ -98,8 +119,10 @@ Break one of these and the site is wrong rather than untidy.
   label would not.
 - **The privacy policy names the real processors and carries the three
   AdSense disclosures** — third-party cookies, the vendors that set them, and
-  how to opt out. A generic policy is a false statement about somebody's data,
-  and a missing disclosure is a breach whose penalty is suspension.
+  how to opt out — for the application's ads, because app.smpl.money links
+  this policy from every page. A generic policy is a false statement about
+  somebody's data, and a missing disclosure is a breach whose penalty is
+  suspension.
 - **A marketing claim is never stronger than the privacy policy it links to.**
   The pricing page said ads were "requested without anything about you
   attached" while the policy disclosed rough location and a cookie; the
@@ -107,69 +130,35 @@ Break one of these and the site is wrong rather than untidy.
   server logs. Neither was written as a lie — both were a long document
   summarized from memory. `content.md` 2.4, and `tests/legal.test.tsx` holds
   the two surfaces together.
-- **No third-party branding, and exactly one third-party script.** No vendor
-  logo, badge or "powered by" mark, and no image, font, widget, analytics tag
-  or consent vendor from anybody else's domain. The privacy policy naming the
-  hosting provider and the payment processor is the one exception to the
-  branding half, and it is the opposite of branding. A host can inject its own
-  badge into the response, which no test here can see — `operations.md` 8
-  carries those as launch steps.
+- **No third-party branding and no third-party script.** No vendor logo,
+  badge or "powered by" mark, and no script, image, font, widget, analytics
+  tag or consent vendor from anybody else's domain: every page, script,
+  style, font and picture comes from this origin, and the privacy policy says
+  so in those words. The policy naming the hosting provider and the payment
+  processor is the one exception to the branding half, and it is the opposite
+  of branding. A host can inject its own badge into the response, which no
+  test here can see — `operations.md` 8 carries those as launch steps.
 
-  **The one script is Google's AdSense loader**, `adsbygoogle.js` from
-  `pagead2.googlesyndication.com`, in `src/app/layout.tsx` on every page. This
-  rule used to forbid it outright, and that was written when nothing on this
-  origin needed a vendor script and the site's whole privacy claim was that it
-  made no request to anywhere but itself. An AdSense account changed what the
-  rule is about rather than whether it is worth keeping, so the decision is
-  recorded here instead of being broken quietly — `docs/adsense.md` §8 has the
-  argument and the measurements.
+  **Google's AdSense loader was the one exception while this site carried
+  ads**, granted by name from late September 2026 with one banner unit beside
+  it, and this rule was rewritten to say so rather than broken quietly. The
+  ads moved to the application alone in October 2026 and the exception went
+  with them: the loader, the unit, the five Google hosts the content security
+  policy admitted, and the cookie the privacy policy disclosed. Putting an ad
+  or any vendor script back is a decision this file records first, with the
+  hosts measured again rather than copied — `docs/adsense.md` §7 has what
+  went and where the old measurement is.
 
-  **What keeps it an exception rather than a door.** The loader is the
-  account's own, unmodified. **One manual ad unit may run beside it, and
-  nothing else may** — the account's own banner, in `src/components/ad-banner.tsx`,
-  in exactly the shape Google documents: an `<ins class="adsbygoogle">`
-  carrying the account's client id and the banner's own slot id, and the
-  `push({})` that asks for it, forcing non-personalized unless a certified
-  consent platform is published. Not a second unit, not a consent vendor of
-  our own, not an analytics tag — those stay refused by the same sentence that
-  used to refuse the loader itself. The id and the slot are read from
-  `ADSENSE_CLIENT_ID` and `ADSENSE_BANNER_SLOT_ID`, the same two names the
-  application reads for the same account's same unit, so one parser two
-  deployments agree with is the thing not to let drift into two.
-
-  **Which pages carry it is a decision, not Google's.** A manual unit has no
-  format or placement Google chooses the way Auto ads would, which stays off
-  here for that reason among others — every page the unit appears on is one
-  somebody wrote `<AdBanner />` into. Every page except the legal pages and
-  the 404 today; `tests/ad-placement.test.ts` holds the exact set by route,
-  by name, so a page added later carries it by doing nothing and a legal page
-  added later has to be named there deliberately or the build does not fail,
-  it just quietly shows somebody an ad beside the policy that discloses it.
-
-  **The hosts and the cookie were run and watched rather than reasoned
-  about**, while Auto ads asked on every page: five hosts, one cookie,
-  Google's advertising identifier `IDE` on `.doubleclick.net`, and
-  `netlify.toml`'s policy names those five and nothing more, which is why it
-  is far narrower than the application's blanket `https:`. **That measurement
-  is now a ceiling to re-verify, not a current reading** — a single persistent
-  unit asking on ten pages is a different shape of traffic than Auto ads
-  asking on all twenty-two, and `docs/adsense.md` §8's recipe is how to find
-  out whether it still holds. Widening the policy to admit a host nobody has
-  observed is how this stops being one exception. And a script that reaches
-  another origin is a disclosure: this site is no longer a set of files that
-  talks to nobody, so `src/content/legal.ts` has to say what it does, to the
-  same standard the policy holds the application to.
-
-  **Three checks, and none of them is the whole rule.**
-  `tests/branding.test.ts` reads built markup: it holds the visible marks, and
-  it grants the loader's exact address by name so moving it has to be
-  re-granted. `tests/adsense.test.ts` reads `netlify.toml` and the built
-  pages: it holds the five measured hosts against a host lost and against an
-  unmeasured one added and against a wildcard, and holds the rendered unit to
-  the configured client and slot ids. `tests/ad-placement.test.ts` holds
-  which pages carry it. None can see a request at runtime, so **a sixth host
-  the vendor starts reaching is caught by nothing here** — only by re-running
-  `docs/adsense.md` §8's recipe, which is why that document writes it out.
+  **Two checks keep it closed.** `tests/export-shape.test.ts` parses
+  `netlify.toml`'s content security policy and fails on any host in it at
+  all, so a script from elsewhere is refused by the browser on the live site
+  whether it arrived in the markup or was injected at runtime, which no test
+  here can watch. `tests/branding.test.ts` reads built markup for a vendor's
+  marks and for any subresource from a vendor's domain, and still lists the
+  advertising hosts, so a loader put back fails by name. And
+  `tests/legal.test.tsx` holds the privacy policy's "loads nothing from any
+  other origin" to that same header, so the sentence and the header cannot
+  part.
 
 - **Nothing on the homepage or the pricing page may imply a bank connection,
   nothing may promise there will never be one, and both pages must say once
@@ -227,7 +216,34 @@ Break one of these and the site is wrong rather than untidy.
   can check that, because the application is a different repository. It is the
   rule that most needs a person.
 - **Screenshots are captured from a real running instance**, never mocked up,
-  and the page discloses that the ledger in them is seeded demo data.
+  and the page discloses that the ledger in them is seeded demo data. A
+  screenshot inside a learn article or a doc says so in the line right under
+  it, and names a file that exists in both themes — `tests/learn.test.ts`.
+- **A learn article says why, then how, then how in Simple Balance.** Each one
+  explains why the job matters, how to do it with any tool, and only last how
+  to do it in this product, which is what keeps the section from being an
+  advertisement or a detour. Every product step in it is a button on the
+  shipped application's screen, checked against the application's source at
+  the snapshot's release, because these are the pages most likely to be read
+  by somebody who then tries it. Every borrowed method and every figure is
+  credited to a reputable source in a closing `## Sources` list, never to a
+  personal-finance personality, and the prose reads at a 5th to 8th grade
+  level. `docs/standards/content.md` 5.14.
+- **A learn picture is the app's art panel, and a diagram is the page's own
+  colors.** Heroes are drawn on a copy of the application's sign-in art panel,
+  the homepage's hero and closing panel included, the same in both themes and
+  hidden from assistive technology; diagrams are
+  inline SVG in contract tokens only, at most 560 units wide, with a caption
+  and a full text description. `docs/standards/web.md` 5.7 and 5.8.
+- **Anything that moves on its own for more than five seconds can be
+  stopped.** WCAG 2.2.2. On `/learn` nothing does: a hero plays once, a card
+  plays when pointed at, a diagram builds as it is scrolled to. The homepage's
+  hero, correction and chat loop, at the owner's request, building, holding
+  the finished picture about five seconds and building again, and each one
+  carries a "Stop the animation" checkbox (`LoopStop`). A loop without one is
+  the failure, and `tests/home-page.test.tsx` counts them. All of it sits
+  inside `prefers-reduced-motion: no-preference`, and there is no client code
+  for any of it. `docs/standards/web.md` 8.2.
 - **A client component is an island and earns its place.** Three exist, all
   under `src/components/client/`, each because the behavior is impossible on
   the server. The page must be correct before any of them hydrates.
@@ -236,6 +252,12 @@ Break one of these and the site is wrong rather than untidy.
   that is not there, which is worse than claiming nothing.
 - **Structured data describes what a reader can see.** No invented ratings, no
   author who is not in the byline. It is both a policy violation and a lie.
+  The prices in it are read from `app-facts.json`, like every other price
+  here, and `tests/structured-data.test.ts` parses it from the built pages.
+- **Every page someone shares previews as itself.** A new or retitled guide or
+  docs page needs `npm run build:images`, which draws its card into
+  `public/og/`; the build fails on a card drawn from an old title.
+  `content.md` 5.16.
 - **A dynamic route must generate at least one page** under `output: "export"`,
   which is why page one of the blog exists at two URLs with a canonical tag.
 - **`npm run verify` builds before it tests**, because the tests read the built
@@ -280,31 +302,48 @@ npm run build:images
 
 ## Recurring tasks
 
-Eight skills in `.claude/skills/` hold the procedures that repeat:
+Eleven skills in `.claude/skills/` hold the procedures that repeat:
 
-- `merge-prep` — verify everything, commit, push, ready to merge. Does not
-  merge.
+- `merge-prep` — the one to run before a merge. It runs
+  `update-dependencies`, then its own correctness, fix and dead-code checks,
+  then `legal-review`, `design-review`, `seo-review`, `aeo-review`, `optimize`
+  and `guides-update`, then verifies, commits, pushes once and opens the pull
+  request. Each skill it calls returns to it rather than finishing on its
+  own. Does not merge.
 - `update-dependencies` — move everything to its newest supported version and
   fix what that breaks.
 - `guides-update` — bring the guides and `CHANGELOG.md` back to true.
 - `design-review` — review the rendered pages against `web.md`, in both themes
   and at both widths.
-
-- `write-content` — write a post or a documentation page, with the frontmatter
-  contract and the traps that fail a build.
-- `sync-from-app` — pull the application's contract, feature list and
-  screenshots, check the brand tokens, read the release's changelog for the
-  behavior none of those carry, rewrite the features for a general reader,
-  and update the site. Most runs end at the checks in §1.
+- `seo-review` — what a search engine reads: titles, descriptions,
+  structured data, the sitemap and the page cards, past what the tests gate.
+- `aeo-review` — what an answer engine quotes: each page's opening answer,
+  the Markdown copies and `/llms.txt`, and the owner's off-site steps.
+- `draw-and-animate` — make or change a hero, diagram, mark, group picture or
+  loop, and look at it frame by frame in both themes and at both widths.
+- `write-content` — write a post, a documentation page or a learn article,
+  with the frontmatter contract and the traps that fail a build.
+- `sync-from-app` — bring the site up to date with an application release:
+  pull the contract, feature list and screenshots, check the brand tokens,
+  read the release's changelog and source for the behavior none of those
+  carry, rewrite the features for a general reader, write the docs from the
+  release's code and try to refute every claim, and bring the privacy policy
+  and terms back to true through `legal-review`. It lists, without
+  rewriting, any learn guide whose steps name something the release changed,
+  and leaves the blog alone. Most runs end at the checks in §1, and a run
+  that changed something ends in `merge-prep`, so a release needs nothing
+  after it. Its §5 alone is how the docs are written or checked without a
+  release, and that run stops at its own checks without committing.
 - `legal-review` — bring the privacy policy and terms back to true when
   something changes what data is handled or who handles it, an application
   release included.
-- `optimize` — page weight, images, fonts, metadata and findability, beyond
-  what the budget gates.
+- `optimize` — page weight, images, fonts and what the browser is asked to
+  do, beyond what the budget gates.
 
 `docs/roadmap.md` records that there is no outstanding engineering work, and
 what remains waits on the application, on an account, or was decided against
-with the argument. `docs/adsense.md` is the AdSense procedure.
+with the argument. `docs/adsense.md` is what this site still owns of the
+application's advertising: `ads.txt`, why it stays, and how to check it.
 
 ## Definition of done
 
