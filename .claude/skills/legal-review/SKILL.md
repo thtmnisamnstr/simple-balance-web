@@ -49,11 +49,8 @@ policy change: `netlify.toml`'s policy names no origin but this one
 else, and the privacy policy says in so many words that the website loads
 nothing from another origin.
 
-**No vendor script is expected here.** This site loaded Google's AdSense
-loader from late September 2026 until the ads moved to the application alone
-in October (`web.md` 6.5), and that loader arriving was the change this
-section once failed to catch. Anything from another origin is now the thing
-this grep is looking for.
+**No vendor script is expected here** (`web.md` 6.5). Anything from another
+origin is the thing this grep is looking for.
 
 ```sh
 grep -rn "fetch(\|<script\|src=\"http\|action=" src/ | grep -v "\.test\." | head
@@ -126,24 +123,19 @@ them once:
 
 Avoiding the first is not avoiding the second. The policy's cookies section
 and the application's own `docs/monetization.md` both carry this; check they
-still agree. `docs/adsense.md` carried it too while this site served ads, and
-points at the application's documentation for it now.
+still agree.
 
 **Both are meant to be satisfied by one thing now**: Google's European
 regulations message, which the operator published from the AdSense account
-on 4 October 2026, beside a US state regulations message. They were
-published for both origins while both carried ads, and only the application
-loads Google's script now, so the application is the only place either can
+on 4 October 2026, beside a US state regulations message. Only the
+application loads Google's script, so it is the only place either can
 appear. It sets `ADSENSE_CONSENT_MANAGED`, so it does not force
 non-personalized ads, and the policy says who is asked, region by region:
 Europe before any advertising cookie, the US states through an opt-out link,
 and nobody elsewhere. **The state to check is whether that is still true.**
-The one reading so far was of `smpl.money` from California, on the day it was
-written, while that site still carried the loader: `window.googlefc`
-undefined, and no message requested at all. That site loads no Google script
-now, so the reading owed is of the application from inside each region (§5,
-the cookies sweep, step 2) before the policy's description of asking can be
-called observed. If the messages are ever unpublished, or the application
+No reading of the application from inside each region has been taken yet
+(§5, the cookies sweep, step 2), and one is owed before the policy's
+description of asking can be called observed. If the messages are ever unpublished, or the application
 turns the setting off, the policy is wrong in the other direction and this is
 the review that has to move it back.
 
@@ -214,12 +206,11 @@ the terms, and it may need opt-in at sign-up rather than opt-out.
   which page loaded Stripe.
   1. **`smpl.money`**: no cookie from anybody, nothing in local storage, and
      in the Network panel no request to any origin but `smpl.money`. Open two
-     pages, not one: the loader this site used to carry set a short-lived
-     probe on the first page and Google's advertising identifier on the
-     second, and a run that stopped at the first is how the policy once
-     described the probe and missed the identifier. `window.googlefc` is
-     undefined here, correctly, since nothing on the site loads Google's
-     script. Start the window here rather
+     pages, not one: a script can set one cookie on the first page and
+     another on the second, and a run that stopped at the first is how the
+     policy once described a probe and missed an advertising identifier.
+     `window.googlefc` is undefined here, correctly, since nothing on the site
+     loads Google's script. Start the window here rather
      than after the application, because a cookie the application set for
      the whole of `smpl.money` rather than for `app.smpl.money` alone would
      show here too, without this site having set it.

@@ -163,8 +163,8 @@ suits. What one step of `--s` buys depends on the clock:
 | -------------------------------------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Once, on load                                | 120ms                    | Each part ends at `--s` × 0.12s plus its duration (0.8s) times its plays, by about 3.5s. The net worth hero's swing, at `--s` 6 with two plays of 1.4s, ends at 3.52s.                                                                                                         |
 | A card, after a rest                         | 90ms                     | The same picture, replayed a little faster.                                                                                                                                                                                                                                    |
-| Scroll: a learn diagram, the closing picture | 5% of the figure's entry | A part runs from `--s` × 5% to 35% plus `--s` × 5%, so 13 is the last distinct step. Past it, steps bunch at the end rather than finish after the reader arrives. `.diagram .mo` (`src/styles/site.css:2097`) and `.home-closing-art .mo` (`src/styles/site.css:3818`) set it. |
-| Scroll: a docs group picture                 | 7% of the figure's entry | A part runs from `--s` × 7% to 40% plus `--s` × 7%, capped at 60% and 100%, so 8 is the last step that runs its whole span, and every step from 9 up shares one window. `.docs-group-art .mo` (`src/styles/site.css:4335`) sets it.                                            |
+| Scroll: a learn diagram, the closing picture | 5% of the figure's entry | A part runs from `--s` × 5% to 35% plus `--s` × 5%, so 13 is the last distinct step. Past it, steps bunch at the end rather than finish after the reader arrives. `.diagram .mo` (`src/styles/site.css:2113`) and `.home-closing-art .mo` (`src/styles/site.css:3834`) set it. |
+| Scroll: a docs group picture                 | 7% of the figure's entry | A part runs from `--s` × 7% to 40% plus `--s` × 7%, capped at 60% and 100%, so 8 is the last step that runs its whole span, and every step from 9 up shares one window. `.docs-group-art .mo` (`src/styles/site.css:4351`) sets it.                                            |
 | A loop                                       | 120ms, inside `--cycle`  | The hold and the gap, below.                                                                                                                                                                                                                                                   |
 
 **The scale belongs to the surface, not the drawing.** A picture moved from
@@ -216,11 +216,11 @@ story of.
   the hold into the comment, and look at it in the frames (§6), because
   nothing else measures it.
 - **A part that exists only while playing** (a spinner, "Thinking") is
-  `opacity: 0` in its base rule (`src/styles/site.css:3471`), so a stopped
+  `opacity: 0` in its base rule (`src/styles/site.css:3487`), so a stopped
   loop and a reader who asked for less motion see the finished exchange.
 - **The stop is `animation: none`**, never `paused`, which can freeze in the
   blank gap, and a part with its own shorthand stays less specific than the
-  stop rule (`src/styles/site.css:2148`).
+  stop rule (`src/styles/site.css:2164`).
 - **Grow by `clip-path: inset(…)`, never by height**, which pushes the page
   down twice a cycle (`web.md` 8.6).
 
@@ -514,7 +514,7 @@ each has its home in a guide:
 - **Chrome not treating an SVG `<g>` as a style container.** A style query
   never matches inside one, so a mark inside a ring sat still while the ring
   turned. Let it follow its parent with `animation-play-state: inherit`
-  (`src/styles/site.css:3796`).
+  (`src/styles/site.css:3812`).
 - **A hover firing under a parked pointer.** Chrome moves `:hover` when the
   page scrolls under a pointer that hasn't moved. Wait on `--play`, which
   turns on 250ms after the hover does (`web.md` 8.3).
@@ -527,7 +527,7 @@ each has its home in a guide:
   entry, and three were still popping when the drawing's own bottom edge was
   on screen, which is where a reader stops. `.home-closing-art` owns it now,
   and `.home-closing-art .mo` is the closing picture's scroll rule
-  (`src/styles/site.css:3818`). A timeline goes on the element whose bottom
+  (`src/styles/site.css:3834`). A timeline goes on the element whose bottom
   edge is the one that matters, which is also the element `--report`
   measures (`web.md` 8.3), and nothing between it and the page may hide its
   overflow: `hidden` makes a scroller, so the timeline measures a box that

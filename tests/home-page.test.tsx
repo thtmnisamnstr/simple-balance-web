@@ -74,6 +74,7 @@ describe("the homepage", () => {
       </>,
     );
     // Three: the header, the hero, and the closing panel the page ends on.
+    // The header's is hidden on a phone, which the next test holds.
     const labelled = screen.getAllByText(hero.primaryLabel);
     expect(labelled).toHaveLength(3);
     for (const node of labelled) {
@@ -85,6 +86,34 @@ describe("the homepage", () => {
     // second label, which would be two names for one door.
     const toApp = [...container.querySelectorAll(`a[href="${site.appUrl}"]`)];
     expect(toApp.map((a) => a.textContent)).toEqual(labelled.map(() => hero.primaryLabel));
+  });
+
+  it("drops the header's sign-up control on a phone, and only the header's", () => {
+    // `web.md` 4.3. The owner asked for a shorter header on a phone, and the
+    // hero has the same control on the first screen. jsdom has no layout, so
+    // the rule is read from the stylesheet: hidden inside the phone block and
+    // nowhere else, because a `display: none` outside it would take the
+    // header's sign-up off the desktop too, where it is the only one in view
+    // on most pages.
+    const { container } = render(
+      <>
+        <SiteHeader />
+        <HomePage />
+      </>,
+    );
+    const hidden = [...container.querySelectorAll(".header-signup")];
+    expect(hidden).toHaveLength(1);
+    expect(hidden[0]!.closest("header")).not.toBeNull();
+    expect(hidden[0]).toHaveTextContent(hero.primaryLabel);
+
+    const css = readFileSync("src/styles/site.css", "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+    const rules = [...css.matchAll(/\.header-signup\s*\{([^}]*)\}/g)];
+    expect(rules.map(([, body]) => body!.trim())).toEqual(["display: none;"]);
+    const phone = css.indexOf("@media (max-width: 34rem) {");
+    expect(phone, "the phone block moved").toBeGreaterThan(-1);
+    const end = css.indexOf("\n}\n", phone);
+    expect(rules[0]!.index).toBeGreaterThan(phone);
+    expect(rules[0]!.index).toBeLessThan(end);
   });
 
   it("links nowhere empty", () => {

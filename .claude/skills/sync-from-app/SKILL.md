@@ -370,8 +370,7 @@ carry behavior.** 0.2.1 moved the contract by its version number alone and
 the feature list not at all, and still left this site out of step in four
 ways: the pricing FAQ and both of the terms' downgrade paragraphs said a
 frozen account accepts no changes, when it can now be archived or deleted;
-Getting started and `docs/adsense.md` named 0.2.0 as the release the deploy
-programs pin; the import page said "drop" where the app now says "delete";
+Getting started named 0.2.0 as the release the deploy programs pin; the import page said "drop" where the app now says "delete";
 and it listed the columns the importer suggests without the bank's
 reference, which a person can now pick. Every check above passed on all of
 it. The application's changelog said every one of them in a sentence.

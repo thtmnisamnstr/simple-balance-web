@@ -285,8 +285,7 @@ export const privacy = {
          * the AdSense account and delivered by Google's script, so nothing in
          * either repository can show them. This once promised "Google's own
          * certified consent platform" from the plan rather than the deployment
-         * (once `docs/adsense.md` §5, now the application's own
-         * `docs/monetization.md`). A policy that promises a notice nobody sees
+         * (now the application's own `docs/monetization.md`). A policy that promises a notice nobody sees
          * is worse than one that admits there is none, so a measurement that
          * finds no message moves this paragraph.
          *

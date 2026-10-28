@@ -126,7 +126,7 @@ component. Each keeps its state in the browser, so the page is right before
 any script arrives and 1.1's four conditions never come up.
 
 _Checked by:_ `tests/a11y.test.ts:677` for the sidebar at both widths and
-`tests/home-page.test.tsx:228` for a labeled checkbox beside every loop; the
+`tests/home-page.test.tsx:257` for a labeled checkbox beside every loop; the
 choice of element is `human`.
 
 ## 5. Icons

@@ -65,10 +65,8 @@
     X-Frame-Options = "DENY"
     Strict-Transport-Security = "max-age=31536000; includeSubDomains"
     # `browsing-topics=()` because nothing on this origin is an ad. It is how
-    # an ad network asks the browser what a visitor is interested in, and the
-    # site carried AdSense until the ads moved to the application alone; it
-    # was left allowed then so the inventory earned what it could. With no ad
-    # here, allowing it would be an answer to a question nobody on this origin
+    # an ad network asks the browser what a visitor is interested in, and
+    # allowing it would be an answer to a question nobody on this origin
     # asks. app.smpl.money's own headers are the application's to decide.
     Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), browsing-topics=()"
     # Every source is this origin. `script-src` carries 'unsafe-inline'
@@ -77,10 +75,8 @@
     # means either build-time hashing of Next's bootstrap or dropping Next for
     # this page; `docs/standards/operations.md` records both.
     #
-    # It named five of Google's hosts while the site loaded AdSense, each one
-    # measured rather than guessed. They went with the ads, and
-    # `tests/export-shape.test.ts` now fails for any host in this policy at
-    # all, which is the policy-level half of "no third-party script".
+    # `tests/export-shape.test.ts` fails for any host in this policy at all,
+    # which is the policy-level half of "no third-party script".
     Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; object-src 'none'; upgrade-insecure-requests"
 
 # The plain-Markdown copies of the docs and the learn guides, and /llms.txt

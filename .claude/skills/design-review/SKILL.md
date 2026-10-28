@@ -62,7 +62,9 @@ Pages worth opening, and they are not only the homepage:
   themes on purpose (`web.md` 1.3), and the hero, the jobs, the correction,
   the chat and the closing picture all move (`web.md` 8.2). Three of them
   loop, which section 4 below gives a state of its own. Look at it narrow
-  too, where the hero stacks and its glow has to follow the drawing down.
+  too, where the hero stacks and its glow has to follow the drawing down,
+  and the header is the brand over one row of links with no sign-up button,
+  because the hero's is on the first screen (`web.md` 4.3).
 - `/learn/` — the index. Rest the pointer on a card a moment and its picture
   replays; pass over one quickly and it doesn't. Then park the pointer over
   the grid and scroll with the wheel: nothing may move (`web.md` 8.3). On a

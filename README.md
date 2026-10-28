@@ -183,9 +183,10 @@ what waits on an account or asset only the owner has, and what was decided
 against with the argument.
 
 This site shows no ads and loads no script from anybody else. The ads run in
-the application, and [`docs/adsense.md`](docs/adsense.md) is the one thing this
-site still owns of them: the `ads.txt` rule that makes it responsible for
-revenue earned on a different domain.
+the application, and the one thing this site owns of them is `public/ads.txt`,
+which makes it responsible for revenue earned on a different domain:
+[`docs/standards/operations.md`](docs/standards/operations.md) 2 says why it
+stays.
 
 ## Staying in sync with the application
 
