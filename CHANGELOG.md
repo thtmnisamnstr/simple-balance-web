@@ -119,6 +119,29 @@ that release, then checked again against it.
 
 ### Changed
 
+**A shorter top of the homepage, and a shorter header on a phone.**
+
+- The line under the headline is one sentence now: "See where your money
+  goes, make a budget you'll keep, and know whether you're getting ahead."
+  What it used to add, every account on one page and following a total back
+  to its payments, is still on the page, a little further down.
+- The note under the buttons says "No card to start. The software is open
+  source, so you can also self-host it, on a computer you control, with no
+  limits."
+- On a phone, the header no longer has a Sign up free button. It was the
+  thing that wrapped onto a line of its own, and the homepage has the same
+  button right under the headline. The header is 86 pixels tall on a phone
+  now, down from 112 (and 146 on the narrowest screens). Wider screens keep
+  it.
+
+**The AdSense guide is gone, and so is the history of this site's ads in
+the other guides.** `docs/adsense.md` was mostly a record of the weeks
+smpl.money showed ads and a copy of the application's own setup steps. What
+this site still owns of the app's ads is `ads.txt` and the privacy policy's
+disclosures, and both stay: why the file stays, the two spellings of the
+publisher id and how to check the live file are in
+`docs/standards/operations.md` 2 now.
+
 **Easier to find, in search results and in AI assistants.** The homepage's
 title says what the product is, "Free budget app and spending tracker", and
 so do its description and a small label above the headline. Before, nothing

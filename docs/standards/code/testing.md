@@ -171,7 +171,7 @@ not retyping it.
 they render (`web.md` 3.3), so the source says `doesn't` and the page says
 `doesn’t`. A test that looks for a content string on the rendered page
 compares `typeset(value)`, not the value
-(`tests/home-page.test.tsx:153`). "Unable to find an element with the text"
+(`tests/home-page.test.tsx:182`). "Unable to find an element with the text"
 right after a string gained an apostrophe or a quotation mark is almost
 always this, and the fix is the wrapper rather than a looser matcher.
 
@@ -221,7 +221,7 @@ doesn't.
 - The docs marks and the group pictures: `tests/docs-features.test.ts:196`
   and `:205`.
 - The learn art and glyphs: `tests/learn.test.ts:352`.
-- The screenshots' narrow copies: `tests/home-page.test.tsx:336` and `:372`.
+- The screenshots' narrow copies: `tests/home-page.test.tsx:365` and `:372`.
 
 **One direction is the natural test to write, and it is half the defect.**
 "Every page has a card" passes beside a card for a page that was renamed;

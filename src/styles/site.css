@@ -515,8 +515,11 @@ svg {
    *
    * Wrapping costs a second row on a phone. The alternatives all cost a
    * control: hiding the brand word leaves a link with no accessible name to
-   * fix afterwards, and dropping "Source" removes the only way a reader on a
-   * phone reaches the code. A taller header is the cheapest of the three.
+   * fix afterwards, and dropping "Run it yourself" removes the only way a
+   * reader on a phone reaches the code. A taller header is the cheapest of
+   * the three. The sign-up control is the one that did go (`.header-signup`,
+   * below), because unlike those it's repeated in the page's body, and the
+   * brand and four links still need the second row without it.
    */
   .site-header-inner {
     flex-wrap: wrap;
@@ -528,9 +531,11 @@ svg {
   /*
    * And once it has wrapped it stops following the reader.
    *
-   * Wrapping takes the header to 112px at 390px and 146px at 320px. Sticky,
-   * that is 13% of a phone screen and 17% of the narrowest one, permanently,
-   * on a page somebody reads once in one pass. The header is worth its space
+   * Wrapping took the header to 112px at 390px and 146px at 320px, when the
+   * sign-up button wrapped onto a row of its own. Sticky, that was 13% of a
+   * phone screen and 17% of the narrowest one, permanently, on a page
+   * somebody reads once in one pass. It's 86px at both now, and still not
+   * worth following the reader with. The header is worth its space
    * on a desktop, where it is 64px and the viewport is not the constraint;
    * on a phone the reader would rather have the page.
    *
@@ -546,6 +551,17 @@ svg {
   .header-actions {
     gap: var(--s-3);
     flex-wrap: wrap;
+  }
+
+  /*
+   * The sign-up button leaves the header on a phone, at the owner's request.
+   * It was the widest thing in the row and made the header taller than the
+   * rest of it needed, and the homepage's hero puts the same control on the
+   * first screen. Every page that sells keeps one in its body: the hero and
+   * the closing panel, both pricing cards, the end of every learn article.
+   */
+  .header-signup {
+    display: none;
   }
 
   .hero-actions .button {

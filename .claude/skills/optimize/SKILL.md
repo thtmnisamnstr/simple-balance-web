@@ -118,11 +118,9 @@ possible divergence.
 - **No render-blocking anything, and nothing from anybody else.** There is
   no third-party script (`web.md` 6.5), and the content security policy
   admits no origin but this one, so there is no external request to audit.
-  Google's AdSense loader was the one exception, and the heaviest external
-  request on every page, until the ads moved to the application alone in
-  October 2026. `tests/budget.test.ts` never saw it, because it measures what
-  this site ships and the loader was fetched from Google, so a vendor script
-  is weight no gate here would have caught.
+  If one ever appears, `tests/budget.test.ts` won't see it: it measures what
+  this site ships, so a script fetched from a vendor is weight no gate here
+  would catch.
 - **The homepage's motion costs no script.** The hero, the jobs, the chat and
   the closing picture are inline SVG and CSS, so they add markup and no
   JavaScript (`web.md` 8.2). Inline drawings are weight in the HTML, though,
@@ -151,9 +149,7 @@ like any other picture; its words are theirs.
 - **Do not add analytics to find out if this worked.** `docs/roadmap.md` 3 has
   the decision: a third-party tag is a vendor, a host in a policy that names
   none, and a sentence the privacy policy would have to retract, since it
-  says this site loads nothing from another origin. `web.md` 6.5 forbids it,
-  and the four weeks the AdSense loader spent here as the one exception are
-  the record of what an exception costs.
+  says this site loads nothing from another origin. `web.md` 6.5 forbids it.
 - **Do not raise a budget to make a change fit.** Raising one is fine;
   raising one without saying so in the commit is how the budget stops
   meaning anything.

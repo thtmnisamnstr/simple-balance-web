@@ -143,7 +143,7 @@ export type NavLink = { readonly label: string; readonly href: string };
  * nothing else knows when a sentence moved; `tests/sitemap.test.ts` refuses a
  * date in the future or one older than the snapshot the copy describes.
  */
-export const homeUpdated = "2026-10-25";
+export const homeUpdated = "2026-10-27";
 
 export const site = {
   name: "Simple Balance",
@@ -246,15 +246,18 @@ export const hero = {
   /*
    * It led on "keeps your accounts, your spending and your budgets on one
    * page", which is the inventory rather than the use, and the line eight
-   * competitors share. Now the three jobs the search read ranks highest come
-   * first, in the reader's words, and the one thing nobody else says
-   * (following a total back) closes it. "Getting ahead" rather than "net
-   * worth", which 1.3 keeps off this page.
+   * competitors share. Now it is the three jobs the search read ranks
+   * highest, in the reader's words, and nothing else. "Getting ahead" rather
+   * than "net worth", which 1.3 keeps off this page.
+   *
+   * **It was twice this long, and the owner cut it to the one sentence.**
+   * "With every account on one page" and a second sentence about following a
+   * total back to its payments made the hero a paragraph on a phone. Neither
+   * claim is lost: the proof section's first card is the second, and the
+   * first is a feature card. The headline is the argument; the lede only has
+   * to say what the reader can do.
    */
-  lede:
-    "See where your money goes, make a budget you'll keep, and know whether you're getting " +
-    "ahead, with every account on one page. When a total looks wrong, open it and follow it " +
-    "back to the payments behind it.",
+  lede: "See where your money goes, make a budget you'll keep, and know whether you're getting ahead.",
   /**
    * The sign-up control: a link to `site.appUrl`, in the header, the hero,
    * the closing panel, both plan cards on the pricing page and the end of
@@ -276,10 +279,16 @@ export const hero = {
   /*
    * This said "The version we run for you isn't open yet" until it was. What
    * is left is the second path, for the reader the first button is not for.
+   *
+   * The owner's wording, "open-source and self-hostable with no limits",
+   * kept but for the two words `content.md` 1.3 bans bare on this page. "So
+   * you can self-host it, on a computer you control" is both glosses at once:
+   * it says what open source buys this reader, and gives "self-host" the
+   * phrase 1.6 pairs it with everywhere else on the page.
    */
   note:
-    "No card to start. If you already run your own software, you can install the whole " +
-    "product yourself instead, free and with nothing left out.",
+    "No card to start. The software is open source, so you can also self-host it, on a " +
+    "computer you control, with no limits.",
   /*
    * Three checkmarked pills sat under the note for a while, each one of the
    * page's differences as a label: "Every feature on the free plan", "Any

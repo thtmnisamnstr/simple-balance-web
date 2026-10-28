@@ -404,10 +404,8 @@ describe("the FAQ", () => {
  * `content.md` 2.6. The application's Pulumi programs and Compose file pin the
  * image of the release they ship in, and the two deployment guides say which
  * that is, to somebody about to run `pulumi up` or start Compose, and clone
- * the release by its tag, which is the same claim in a command. The AdSense
- * procedure said it too, to the operator reading `docker ps`, until the site's
- * ads went; it is still read, so a release named there again is held. Getting
- * started and that procedure went on naming 0.2.0 after 0.2.1 was pulled, because no kit file
+ * the release by its tag, which is the same claim in a command. Getting
+ * started went on naming 0.2.0 after 0.2.1 was pulled, because no kit file
  * carries a sentence and every other check passed. The snapshot's version is
  * the one fact the pull moves for certain, so it is what these are held to.
  *
@@ -421,12 +419,9 @@ describe("the release this site says the deploy programs pin", () => {
     /\bmust name the (\d+\.\d+\.\d+) image\b/g,
     /--branch v(\d+\.\d+\.\d+)\b/g,
   ];
-  const pages = [
-    ...readdirSync("content/docs")
-      .filter((name) => name.endsWith(".md"))
-      .map((name) => `content/docs/${name}`),
-    "docs/adsense.md",
-  ];
+  const pages = readdirSync("content/docs")
+    .filter((name) => name.endsWith(".md"))
+    .map((name) => `content/docs/${name}`);
   const named = pages.flatMap((path) => {
     const text = readFileSync(path, "utf8").replace(/\s+/g, " ");
     return CURRENT.flatMap((pattern) =>
@@ -435,9 +430,7 @@ describe("the release this site says the deploy programs pin", () => {
   });
 
   it("finds the sentences, so a rewording cannot silence it", () => {
-    // Each deployment guide twice, its sentence and its clone. The AdSense
-    // procedure named the release twice until the site's ads went and it was
-    // cut down to `ads.txt`.
+    // Each deployment guide twice, its sentence and its clone.
     expect(named.length, "no page names the pinned release any more").toBeGreaterThanOrEqual(4);
   });
 

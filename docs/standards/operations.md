@@ -135,10 +135,11 @@ revenue is zero.
 `trailingSlash: true` already gives every route its own `index.html`, so a
 fallback buys nothing here.
 
-**It outlived this site's own ads, on purpose**, and nothing in this
-section changed when they went: the file, its content type and the absence
-of a fallback all serve the application's revenue now, and none of them
-looks it. Why is `AGENTS.md`'s and `docs/adsense.md` §1's.
+**This site shows no ads, and the file stays.** Google reads `ads.txt` from
+the root domain, `app.smpl.money`'s root domain is this one, and so the file,
+its content type and the absence of a fallback all serve the application's
+revenue, and none of them looks it. Removing them as the leftovers of an ad
+integration is the tidy-looking mistake `AGENTS.md` names.
 
 **Guidance: a moved page gets a fixed-path 301.** A renamed page redirects
 from its old directory with a splat, as the moved-page block in
@@ -176,10 +177,15 @@ the domain. So the file arrived with the id, in one commit, and the check that
 had asserted its absence was turned around in the same commit to assert its
 contents.
 
-**The id comes early.** AdSense shows it as soon as the account exists, before
-review, and this file is how the site is verified for that review, so it lands
-before the review request rather than after approval. `docs/adsense.md` §3 has
-the order.
+**It is also how the domain is verified to the account**, by AdSense's
+`ads.txt` method. Of the other two, the code snippet would put Google's
+script on this origin, which `AGENTS.md` forbids, and the meta tag is a
+second place to write the id.
+
+**The id has two spellings, and this file holds the one the application
+does not.** The dashboard and this file say `pub-…`; the application's
+`ADSENSE_CLIENT_ID` says `ca-pub-…`. Nothing here reads that variable, so
+the two agree only because whoever sets it matches this file.
 
 **The content** is the DIRECT record and not a `subdomain=` referral:
 
@@ -194,7 +200,9 @@ compared to the root domain."_ The application derives its own `ads.txt`
 from its `ADSENSE_CLIENT_ID`, which names the same account as this file, so
 the ids are identical and the root record already covers the subdomain.
 Adding a referral would hand the whole authorization chain to a file the
-application only serves while ads are configured.
+application only serves while ads are configured. Re-read this before adding
+a second seller, or a different id on the subdomain, which is the one case
+where a referral becomes correct.
 
 _Checked by:_ `tests/export-shape.test.ts`, which holds the file to those two
 records exactly, with the id written in the test rather than read from the
@@ -213,6 +221,25 @@ pattern would put `noindex` on the HTML pages beside the copies.
 _Checked by:_ `tests/export-shape.test.ts`, which also holds that nothing
 else is `noindex`.
 
+### 2.4 Checking the live file
+
+**Guidance.** The checks above read the artifact; these read what the host
+serves, which can differ.
+
+- `curl -si https://smpl.money/ads.txt` returns `200`, `text/plain` and
+  2.2's two records.
+- `curl -so /dev/null -w '%{http_code}\n' https://smpl.money/ads.tx` prints
+  `404`. A `200` is the catch-all rewrite 2.1 is about, arriving from the
+  host's settings rather than from `netlify.toml`.
+- `curl -s https://app.smpl.money/ads.txt` names the same id. That file
+  exists only while the application has ads configured, which is why nothing
+  here may point at it.
+- AdSense's **Sites** page says the file is found and authorized. A change
+  takes Google days to a month to pick up, so a stale status the day after
+  an edit is not yet a fault.
+
+_Checked by:_ `human`.
+
 ## 3. Headers
 
 ### 3.1 The security headers a static page owes
@@ -223,12 +250,10 @@ CSP.
 
 **The Permissions-Policy denies the Topics API as well as the hardware.**
 `browsing-topics=()` is how a page tells the browser not to hand an ad
-network the reader's interests, and it was left allowed while this site
-carried ads, so the inventory earned what it could, with the privacy policy
-saying so rather than the header implying otherwise. With no ad here,
-allowing it answers a question nobody on this origin asks. The privacy
-policy now says this website refuses it and the application does not, and
-`tests/legal.test.tsx` fails if the header stops saying the same.
+network the reader's interests, and with no ad here allowing it answers a
+question nobody on this origin asks. The privacy policy says this website
+refuses it and the application does not, and `tests/legal.test.tsx` fails if
+the header stops saying the same.
 
 ### 3.2 `script-src` carries `'unsafe-inline'`, and why that is tolerable here
 
@@ -240,15 +265,11 @@ session: `form-action 'none'` and `frame-ancestors 'none'` are the directives
 doing the real work, and they are absolute. There is nothing for injected
 script to post anywhere, and nothing to frame this page inside.
 
-**`connect-src 'self'` is absolute again, and every other source with it.**
-For about four weeks this origin loaded Google's AdSense loader
-(`web.md` 6.5), so `connect-src` named two of Google's hosts and the policy
-admitted five in all, each measured in a real browser rather than guessed,
-and this argument rested on the list being closed and observed instead. That
-was a weaker guarantee, stated as one. The ads moved to the application alone in
-October 2026, and the policy went back to naming nothing but this origin:
-every source is `'self'`, `'none'`, `'unsafe-inline'` or `data:`. So a
-script that did get injected would have nowhere to send anything.
+**`connect-src 'self'` is absolute, and every other source with it.** The
+policy names nothing but this origin: every source is `'self'`, `'none'`,
+`'unsafe-inline'` or `data:`. So a script that did get injected would have
+nowhere to send anything. A vendor script would need hosts admitted here,
+and that is a decision `AGENTS.md` records first (`web.md` 6.5).
 
 Removing it means either build-time hashing of Next's bootstrap or dropping
 Next for this page. Both are real options and neither is worth it today.
@@ -622,9 +643,8 @@ owner's half of `seo-review` and `aeo-review`, which name any not yet done.
 | AdSense → Privacy and messaging           | A European regulations message, and a US state regulations message, published for `app.smpl.money`   | The ads are the application's, and so is this setting; it is here because the privacy policy this site publishes says Google's message asks before an advertising cookie in the EEA, the UK and Switzerland, and offers US readers an opt-out. Unpublish either and that page is wrong. `legal-review` §3. |
 
 The account's other settings, Auto ads among them, are the application's
-alone, and its own `docs/monetization.md` is where they are listed
-(`docs/adsense.md` §5). They used to be rows here, while this site carried
-the loader and an account setting could change what its pages showed.
+alone, and its own `docs/monetization.md`, in
+`https://github.com/thtmnisamnstr/simple-balance`, is where they are listed.
 
 ## 9. DNS
 

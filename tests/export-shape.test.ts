@@ -226,7 +226,7 @@ describe("the published shape", () => {
       .map((line) => line.replace(/#.*/, "").trim())
       .filter(Boolean);
     // Exactly these two, in this order. A RESELLER line or a second seller is a
-    // decision `docs/adsense.md` §1 has to be re-read for, and a `subdomain=`
+    // decision `operations.md` 2.2 has to be re-read for, and a `subdomain=`
     // referral would hand authority to a file the application only serves
     // while ads are configured.
     expect(records).toEqual([

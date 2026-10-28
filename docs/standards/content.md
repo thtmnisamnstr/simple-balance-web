@@ -57,6 +57,14 @@ Google shows them.
 longer than "net worth" and says more. Where the accurate word is also the
 plain one, it stays.
 
+**A gloss can be what the word buys the reader.** The hero's note, the
+owner's wording, reads "The software is open source, so you can also
+self-host it, on a computer you control, with no limits." "Open source" is
+glossed by the clause after it, which says what it means to somebody who
+isn't going to read the code, and "self-host" by 1.6's phrase. Either word
+bare, as "open-source and self-hostable", is the operations vocabulary this
+rule keeps off the page.
+
 _Checked by:_ `human`. A word list in a test would catch the spellings and
 miss the sentence, and the failure is a register rather than a vocabulary —
 the previous copy contained no banned word at all.
@@ -200,7 +208,7 @@ itself. The version somebody installs is **a copy you run yourself**, or
 "on a computer you control" beside it, because 1.3 keeps the bare word off
 those pages unless the sentence says what it means. These are the owner's
 words, and they replaced "run it on your own computer" and "if we run it for
-you" (`src/content/home.ts:677`).
+you" (`src/content/home.ts:686`).
 
 **Retired:** "the version we run for you", which was written for the months
 the cloud app wasn't open, always beside "isn't open yet", and went when that
@@ -271,8 +279,8 @@ answer.
 This used to say "no link to `app.smpl.money` while the app is not deployed",
 which held from the first commit until the application went live on 7 October 2026. The sign-up control links there now (`web.md` 6.1), and the address is
 written once, as `site.appUrl`, so it cannot drift between the places it is
-used: the header, the homepage's hero and closing panel, both plan cards and
-the end of every learn article. Not counted, because the count is the thing
+used: the header (wider than a phone, `web.md` 4.3), the homepage's hero and
+closing panel, both plan cards and the end of every learn article. Not counted, because the count is the thing
 that went stale when the closing panel became the third on the homepage.
 
 _Checked by:_ `tests/home-page.test.tsx` for empty hrefs and `tests/copy.test.ts`
@@ -361,9 +369,6 @@ and so are `.` and `..`, a segment ending in a period, and more than one `#`.
 programs pin, the version it names is `facts.derived.appVersion` in
 `src/content/app-facts.json`. The two deployment guides say it to somebody
 about to run `pulumi up` or start Compose, and clone the release by its tag.
-`docs/adsense.md` said it too, to the operator reading `docker ps` before an
-ad setting went on, until that procedure went back to the application's own
-documentation with the rest of the advertising.
 
 A version written in prose is the one fact a pull moves that no kit file
 carries. Both pages went on naming 0.2.0 after 0.2.1 had been pulled, and
@@ -563,7 +568,7 @@ has already said what the section is about.
 **A drawing's words live in the same module**, not in the component that
 draws them: the hero's payments (`heroArt`), the correction (`correctionArt`),
 the chat's lines and the tools it calls (`agents`), and the stop label every
-loop carries (`motion.stop`, `src/content/home.ts:300`). That is 3.1's
+loop carries (`motion.stop`, `src/content/home.ts:309`). That is 3.1's
 reason again: `tests/copy.test.ts` reads every string the module exports and
 none of the JSX.
 
@@ -572,7 +577,7 @@ payments come to its balance, because a drawing about money adding up that
 didn't would be the one joke this page can't make. A real name in one is
 true at the snapshot's release: the chat calls `list_payees` and then
 `list_transactions`, which are read-only tools on the application's MCP
-server (`src/content/home.ts:641`), and a rename there leaves the picture
+server (`src/content/home.ts:650`), and a rename there leaves the picture
 describing something the product can't do, which only reading the release
 catches. An invented example is plainly an example: Meridian Power and Corner
 Cafe are made up, and nothing in the drawing presents them as anything else.
@@ -1456,13 +1461,11 @@ serving it is the application, and this is the policy its
 application and sit where a reader looks for them: under Advertising and
 again under Cookies.
 
-**And it says what this website does, which since October 2026 is nothing
-of anybody else's.** While smpl.money carried AdSense, the policy named the
-five Google hosts its loader reached and the advertising identifier it left,
-because a script that reaches another origin is a disclosure. With the ads in
-the application alone, the website loads nothing from another origin and
-sets no cookie, and the policy says so in the short version, in its own
-section and in the cookies section. Those sentences are true because of two
+**And it says what this website does, which is nothing of anybody
+else's.** A script that reaches another origin is a disclosure, and the
+website loads nothing from another origin and sets no cookie, so the policy
+says so in the short version, in its own section and in the cookies
+section. Those sentences are true because of two
 headers in `netlify.toml`, a content security policy naming no other origin
 and a Permissions-Policy denying the Topics API, so the check holds the
 sentences to the headers rather than to anybody's memory of them.

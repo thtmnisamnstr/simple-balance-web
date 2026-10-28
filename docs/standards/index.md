@@ -17,10 +17,6 @@ picking this up:
 
 - **[`../roadmap.md`](../roadmap.md)** — everything known to be outstanding,
   each item with why it is not done and what done looks like.
-- **[`../adsense.md`](../adsense.md)** — what this site still owns of the
-  application's advertising: why its `ads.txt` authorizes the ads on
-  `app.smpl.money` and has to stay now that none run here, and the one mistake
-  that costs revenue with no symptom.
 
 Eleven skills in `../../.claude/skills/` turn the recurring work into
 procedures: `sync-from-app` brings the site to a new application release,

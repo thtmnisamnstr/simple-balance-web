@@ -83,8 +83,8 @@ Six specific things to check:
   drawing moves, or naming code that's gone, is believed the way a wrong guide
   is, and no test reads it (`code/comments.md` 4). Grep `src/ tests/ scripts/`
   for the words it would have used: for motion, "plays once", "five seconds",
-  "on load"; for something removed, every name it went by, which for the ads
-  was "AdSense", "ad loader" and "banner".
+  "on load"; for something removed, every name it went by, not only its
+  file or component name.
 - **A count in prose the change moved.** "Eight skills", "five components",
   "twelve today": each was true when written and nothing recounts it
   (`writing.md` §Measured numbers). Grep for the number in words as well as

@@ -49,19 +49,19 @@ Break one of these and the site is wrong rather than untidy.
   monetizing the domain. Every symptom is invisible: the file is served, the
   build is green, the ads render, the revenue is zero.
 
-  **This site shows no ads, and the file stays.** The ads moved to the
-  application alone in October 2026, and Google reads the root domain's
-  `ads.txt` for a subdomain's inventory, so this file is what the
-  application's ads rest on. The file and these three rules look like the
-  last of this site's advertising, and removing them with the rest is the
-  tidy-looking mistake — `docs/adsense.md` §1.
+  **This site shows no ads, and the file stays.** The ads run in the
+  application alone, and Google reads the root domain's `ads.txt` for a
+  subdomain's inventory, so this file is what the application's ads rest on.
+  The file and these three rules look like leftovers of an ad integration,
+  and removing them is the tidy-looking mistake —
+  `docs/standards/operations.md` 2.
 
 - **`ads.txt` names the publisher id and nothing else.** A missing file is
   ignored and costs nothing; a well-formed one that does not name the id is
-  the documented demonetizing state. So it arrived with the id, in one commit,
-  before the review request rather than after approval, because it is how the
-  site is verified — `docs/adsense.md` §3. `tests/export-shape.test.ts`
-  holds it to exactly the DIRECT record and the `ownerdomain` line.
+  the documented demonetizing state. It is also how the domain is verified to
+  the AdSense account — `docs/standards/operations.md` 2.2.
+  `tests/export-shape.test.ts` holds it to exactly the DIRECT record and the
+  `ownerdomain` line.
 - **The root `ads.txt` carries the DIRECT record, not a `subdomain=`
   referral.** Google requires a referral only when the publisher id differs
   between root and subdomain, and here it does not — this file and the
@@ -139,15 +139,9 @@ Break one of these and the site is wrong rather than untidy.
   of branding. A host can inject its own badge into the response, which no
   test here can see — `operations.md` 8 carries those as launch steps.
 
-  **Google's AdSense loader was the one exception while this site carried
-  ads**, granted by name from late September 2026 with one banner unit beside
-  it, and this rule was rewritten to say so rather than broken quietly. The
-  ads moved to the application alone in October 2026 and the exception went
-  with them: the loader, the unit, the five Google hosts the content security
-  policy admitted, and the cookie the privacy policy disclosed. Putting an ad
-  or any vendor script back is a decision this file records first, with the
-  hosts measured again rather than copied — `docs/adsense.md` §7 has what
-  went and where the old measurement is.
+  **There is no exception, ads included.** Putting an ad or any vendor
+  script on this site is a decision this file records first, with the hosts
+  it reaches measured in a browser rather than guessed.
 
   **Two checks keep it closed.** `tests/export-shape.test.ts` parses
   `netlify.toml`'s content security policy and fails on any host in it at
@@ -343,8 +337,10 @@ Eleven skills in `.claude/skills/` hold the procedures that repeat:
 
 `docs/roadmap.md` records that there is no outstanding engineering work, and
 what remains waits on the application, on an account, or was decided against
-with the argument. `docs/adsense.md` is what this site still owns of the
-application's advertising: `ads.txt`, why it stays, and how to check it.
+with the argument. All this site owns of the application's advertising is
+`ads.txt` and the privacy policy's disclosures: `docs/standards/operations.md`
+2 has the file, why it stays and how to check it, and `legal-review` the
+policy.
 
 ## Definition of done
 

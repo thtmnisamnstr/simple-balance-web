@@ -8,6 +8,10 @@ import { LogoMark } from "@/components/icons";
  * as the hero's and the pricing cards'. It was a `<span>` reading "Sign-ups
  * open soon" until the application went live, because a link would have
  * 404'd. `docs/standards/web.md` 6.1.
+ *
+ * It is hidden on a phone (`.header-signup`, `web.md` 4.3), not left out of
+ * the markup: the header is server-rendered with no idea of the width, and
+ * the homepage's hero carries the same control on the first screen.
  */
 export function SiteHeader() {
   return (
@@ -29,7 +33,7 @@ export function SiteHeader() {
           <a className="header-link" href={headerSourceLink.href}>
             {headerSourceLink.label}
           </a>
-          <a className="button button-primary" href={site.appUrl}>
+          <a className="button button-primary header-signup" href={site.appUrl}>
             {hero.primaryLabel}
           </a>
         </nav>
