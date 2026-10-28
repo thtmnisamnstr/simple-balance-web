@@ -21,8 +21,8 @@
  *                      on screen
  *   --sheet            also tile each path's captures into one contact sheet
  *   --touch            emulate a phone's touch screen as well as its width:
- *                      no hover, so the site's touch rules apply (a card's
- *                      drawing builds as it scrolls in, the closing rings turn
+ *                      no hover, so the site's touch rules apply (a card plays
+ *                      once its picture is in view, the closing rings turn
  *                      with the scroll), which a narrow desktop window doesn't
  *                      show
  *
@@ -140,7 +140,7 @@ async function printReport(page, label) {
 
 /**
  * Every box that names a view timeline, found by its computed style rather
- * than a list, so a card's timeline on a touch screen counts too, and the
+ * than a list, so a timeline only a touch screen names counts too, and the
  * scroll-built parts under each that are wrong at either end: under way
  * before its top edge arrives, which is a timeline the page's scroll isn't
  * moving, or unfinished once its bottom edge is on screen. The first is how

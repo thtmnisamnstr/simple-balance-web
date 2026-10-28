@@ -256,9 +256,12 @@ the panel's light ink now.
 
 - On a phone, the drawings on the learn cards, the homepage's job cards and
   the docs cards sat still, because they played only for a resting mouse.
-  On a touch screen each now builds as its card scrolls into view, finished
-  by the time the picture is all on screen, and the homepage's closing rings
-  turn as you scroll past. A screen with a mouse is unchanged.
+  On a touch screen each now plays once its card's picture is fully in view,
+  the same few seconds of animation a resting mouse starts, and the
+  homepage's closing rings turn as you scroll past. A screen with a mouse is
+  unchanged. (A first version built each picture with the scroll itself,
+  which finished before most of the picture was on screen, so on a real
+  phone nothing was seen to move.)
 - The picture at the end of the homepage builds mark by mark as you scroll
   to it, finished once all of it is on screen. It used to finish only once
   the whole panel around it was, and the change that tied it to the picture

@@ -237,7 +237,7 @@ Break one of these and the site is wrong rather than untidy.
   and a full text description. `docs/standards/web.md` 5.7 and 5.8.
 - **Anything that moves on its own for more than five seconds can be
   stopped.** WCAG 2.2.2. On `/learn` nothing does: a hero plays once, a card
-  plays when pointed at, or on a touch screen as it scrolls in, and a diagram
+  plays when pointed at, or on a touch screen once it's in view, and a diagram
   builds as it is scrolled to. The homepage's hero, correction and chat loop,
   at the owner's request, building, holding the finished picture about five
   seconds and building again, and each one carries a "Stop the animation"
