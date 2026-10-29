@@ -113,7 +113,7 @@ things trip each new one:
 - **Reuse the walk.** The `out/` page walk is written out again in the
   accessibility, branding, copy, feeds, sitemap and structured-data tests,
   and the copies disagree about the error page: the copy and feeds tests
-  also read `404.html` (`tests/copy.test.ts:138`, `tests/feeds.test.ts:36`)
+  also read `404.html` (`tests/copy.test.ts:140`, `tests/feeds.test.ts:36`)
   and the others don't. Not counted, because nothing recounts it
   (`writing.md` §Measured numbers). The next one goes into `tests/support/`,
   beside `sourceFiles`, with the error page decided once.
@@ -185,7 +185,7 @@ after a copy edit is this rule, every time.
 literal lines it must catch and literal lines it must pass, tested against the
 pattern directly. The skill-name sweep has both lists
 (`tests/skills.test.ts:217`–`245`), the redirect predicate has both
-(`tests/export-shape.test.ts:176`), and so do the spelling and em dash
+(`tests/export-shape.test.ts:177`), and so do the spelling and em dash
 readers in `tests/copy.test.ts` and the content security policy reader in
 `tests/legal.test.tsx`.
 
@@ -201,7 +201,7 @@ in here, bold, in a list, in a table beside a section number and inside a
 path, and the bold one and the table row are lines a rename really left
 behind, in the legal review and the roadmap. The passing list matters as
 much: it is what stops a pattern widened in a hurry from becoming a ban on a
-word rather than on a claim, which is what `tests/copy.test.ts:314` exists
+word rather than on a claim, which is what `tests/copy.test.ts:333` exists
 for.
 
 **The obvious alternative** is to test the pattern only through the
@@ -217,7 +217,7 @@ sets equal: every page has its piece, and no piece exists for a page that
 doesn't.
 
 - The sitemap: `tests/sitemap.test.ts:70` and `:82`.
-- The page cards: `tests/export-shape.test.ts:362`.
+- The page cards: `tests/export-shape.test.ts:369`.
 - The docs marks and the group pictures: `tests/docs-features.test.ts:196`
   and `:205`.
 - The learn art and glyphs: `tests/learn.test.ts:352`.
@@ -231,7 +231,7 @@ a page that's gone.
 
 **The build fails first where it can.** The accessor a page renders through
 throws on a missing key, so the build names the page before any test runs
-(`src/components/docs-art/glyphs.tsx:153`, and the same shape for the group
+(`src/components/docs-art/glyphs.tsx:159`, and the same shape for the group
 pictures and the learn art). The test then holds the other direction, which
 no accessor can see, because nothing asks for a key that belongs to no page.
 

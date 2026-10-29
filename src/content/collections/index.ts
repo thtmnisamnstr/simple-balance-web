@@ -424,6 +424,47 @@ export function tableOfContents(
   return out;
 }
 
+/**
+ * A docs page's questions and answers, for its `FAQPage` markup.
+ *
+ * Read from the page rather than written beside it, so the markup can only
+ * say what the page shows (`content.md` 5.13): every `## ` heading that ends
+ * in a question mark is a question, and everything under it up to the next
+ * heading is its answer, as plain text. Links keep their words and lose their
+ * addresses, `**labels**` and `code` lose their marks, and the result is
+ * typeset the way the prose pipeline typesets the page, so a crawler reads the
+ * same apostrophes a reader sees. Only a page that opts in with `faq: true`
+ * is read this way; a heading phrased as a question elsewhere is a heading.
+ */
+export function faqItems(body: string): readonly { q: string; a: string }[] {
+  const out: { q: string; lines: string[] }[] = [];
+  let inFence = false;
+  for (const line of body.split("\n")) {
+    if (/^\s*```/.test(line)) inFence = !inFence;
+    const heading = inFence ? null : /^(#{2,3})\s+(.+?)\s*$/.exec(line);
+    if (heading) {
+      const text = heading[2]!;
+      if (heading[1] === "##" && text.endsWith("?")) out.push({ q: text, lines: [] });
+      else if (heading[1] === "##") out.push({ q: "", lines: [] });
+      continue;
+    }
+    out.at(-1)?.lines.push(line);
+  }
+  return out
+    .filter((item) => item.q)
+    .map((item) => ({ q: plain(item.q), a: plain(item.lines.join("\n")) }));
+}
+
+/** Markdown as the words a reader sees: link text kept, marks dropped, one line. */
+const plain = (text: string) =>
+  typeset(
+    text
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+      .replace(/[*`]/g, "")
+      .replace(/\s+/g, " ")
+      .trim(),
+  );
+
 /** The same algorithm `rehype-slug` uses (github-slugger), for the cases we hit. */
 export function slugify(text: string): string {
   return text

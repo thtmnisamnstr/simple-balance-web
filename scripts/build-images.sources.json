@@ -134,6 +134,7 @@
     "og/docs/deploying-to-oracle-cloud-or-aws.png": "Deploying to Oracle Cloud or AWS",
     "og/docs/deploying-with-docker-compose.png": "Deploying with Docker Compose",
     "og/docs/finding-your-way-around.png": "Finding your way around",
+    "og/docs/frequently-asked-questions.png": "Frequently asked questions",
     "og/docs/getting-started.png": "Getting started",
     "og/docs/importing-a-statement.png": "Importing a statement",
     "og/docs/limits.png": "Limits",
@@ -148,6 +149,11 @@
     "og/docs/templates.png": "Transaction templates",
     "og/docs/the-overview.png": "The overview",
     "og/docs/transactions.png": "Adding and editing transactions",
-    "og/docs/your-account-and-plan.png": "Your account and plan"
+    "og/docs/your-account-and-plan.png": "Your account and plan",
+    "og/compare.png": "How Simple Balance compares with other budget apps.",
+    "og/compare/ynab.png": "Simple Balance and YNAB",
+    "og/compare/monarch.png": "Simple Balance and Monarch",
+    "og/compare/quicken-simplifi.png": "Simple Balance and Quicken Simplifi",
+    "og/compare/actual-budget.png": "Simple Balance and Actual Budget"
   }
 }

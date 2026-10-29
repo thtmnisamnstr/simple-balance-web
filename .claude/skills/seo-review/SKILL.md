@@ -681,10 +681,10 @@ section of its own (§11), first when anything in it is due.
   only view of what Google's own crawler got. `aeo-review` §8 asks the same
   of the answer engines' crawlers.
 
-- **IndexNow, optionally**: it tells Bing and a few other engines a page
-  changed, though not Google, and it needs a key file and a script run after
-  a deploy, never inside `verify`. `docs/roadmap.md` 2 records it as later,
-  so it's the owner's decision, not a fix.
+- **Not IndexNow.** It tells Bing and a few other engines a page changed,
+  though not Google, and the owner decided against it on 29 October 2026
+  (`docs/roadmap.md` 2.7), so it isn't an open item. The sitemap Bing
+  already has is how it learns a page moved.
 
 Listings, the MCP Registry and asking assistants about the product are
 `aeo-review`'s half, and that report carries them.

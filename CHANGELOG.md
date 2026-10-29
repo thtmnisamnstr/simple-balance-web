@@ -9,6 +9,29 @@ than a contract with readers.
 
 ### Added
 
+**Comparisons, at /compare.** Simple Balance beside YNAB, Monarch, Quicken
+Simplifi and Actual Budget, one page each and a table of all five. Each page
+opens on a paragraph that answers the comparison with both apps' prices, then
+a table of what each costs, whether it has a free plan, how transactions get
+in, the files it reads, how it budgets, sharing, open source, running your
+own copy, AI assistants and where you can use it. Every fact about the other
+app links to the vendor's own page it came from, and every page says the day
+it was checked. Each page says when the other app is the better choice before
+it says when Simple Balance is, and how to bring your history across. The
+pages are linked from the footer, and each has a Markdown copy listed in
+`/llms.txt`. On a phone the two apps' answers sit side by side under each
+feature rather than scrolling off the screen.
+
+- A weekly check opens an issue once a comparison is three months old, so a
+  price that moved gets read again.
+
+**Frequently asked questions, in the docs.** Fourteen short answers to what
+people ask about the product itself: which banks and files work, whether
+there's a phone app, sharing, investments and crypto, currencies, AI
+assistants, getting your data out, deleting your account, open source and
+running your own copy. The page marks up its questions for search engines and
+answer engines from its own headings, so the two can't disagree.
+
 **A Learn section, at /learn.** Twelve plain guides to the everyday jobs of
 looking after money: tracking your spending, choosing budget categories,
 making a budget, zero-based and envelope budgeting, sinking funds, budgeting

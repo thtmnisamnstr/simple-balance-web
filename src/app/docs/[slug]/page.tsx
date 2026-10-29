@@ -6,6 +6,7 @@ import {
   allEntries,
   bySection,
   entryBySlug,
+  faqItems,
   neighbors,
   slugify,
   tableOfContents,
@@ -14,7 +15,7 @@ import { editUrl, section } from "@/content/sections";
 import { Prose } from "@/components/prose";
 import { Contents } from "@/components/contents";
 import { Breadcrumbs } from "@/components/breadcrumbs";
-import { DocStructuredData } from "@/components/structured-data";
+import { DocStructuredData, FaqStructuredData } from "@/components/structured-data";
 import { DocsSidebar } from "@/components/docs-sidebar";
 import { ActiveContents } from "@/components/client/active-contents";
 import { DocPager } from "@/components/doc-pager";
@@ -76,6 +77,11 @@ export default async function DocPage({ params }: { params: Promise<{ slug: stri
 
       <article className="docs-article">
         <DocStructuredData entry={entry} />
+        {/* Opted into per page: a questions page is the one place a docs
+            page's headings are the questions somebody types. */}
+        {entry.frontmatter.extra?.faq === true ? (
+          <FaqStructuredData items={faqItems(entry.body)} />
+        ) : null}
         <Breadcrumbs trail={trail} />
 
         <h1 className="entry-heading">{entry.frontmatter.title}</h1>

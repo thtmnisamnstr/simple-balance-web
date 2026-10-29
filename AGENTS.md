@@ -99,9 +99,9 @@ Break one of these and the site is wrong rather than untidy.
   crawler that cannot fetch the page never sees the `noindex`. AI crawlers
   are welcome too, search and training alike, in the one `User-agent: *`
   group: an answer engine can only cite a page its crawler could fetch.
-- **The flag reaches the copies for machines as well.** Every docs page and
-  learn guide has a Markdown copy at `<page>/index.md`, and `/llms.txt` lists
-  them; both are generated from the pages' own sources, served `noindex`, and
+- **The flag reaches the copies for machines as well.** Every docs page,
+  learn guide and comparison has a Markdown copy at `<page>/index.md`, and
+  `/llms.txt` lists them; both are generated from the pages' own sources, served `noindex`, and
   list nothing from an unannounced section. Neither is written by hand,
   because a summary that drifts from the page is their only real cost.
   `content.md` 5.15.
@@ -206,6 +206,15 @@ Break one of these and the site is wrong rather than untidy.
   product moved and opens an issue; it changes nothing, because the work it
   prompts is a rewrite and copy is a judgment. A network call in a test
   would fail on somebody else's outage.
+- **A comparison says nothing about another app without a source and the
+  day it was read.** `/compare/` sets Simple Balance beside YNAB, Monarch,
+  Quicken Simplifi and Actual Budget. Every fact about the other app cites
+  that vendor's own page, every page shows when it was checked, and
+  `.github/workflows/compare-check.yml` keeps an issue open once one is 90
+  days old. Simple Balance's column and every answer are read from the
+  contract like every other price. The pages are in the footer, not the
+  header, and each says when the other app is the better choice.
+  `tests/compare.test.ts`, `content.md` 5.19.
 - **Every claim on this site is true of the shipped application.** Nothing here
   can check that, because the application is a different repository. It is the
   rule that most needs a person.
@@ -249,8 +258,8 @@ Break one of these and the site is wrong rather than untidy.
   author who is not in the byline. It is both a policy violation and a lie.
   The prices in it are read from `app-facts.json`, like every other price
   here, and `tests/structured-data.test.ts` parses it from the built pages.
-- **Every page someone shares previews as itself.** A new or retitled guide or
-  docs page needs `npm run build:images`, which draws its card into
+- **Every page someone shares previews as itself.** A new or retitled guide,
+  docs page or comparison needs `npm run build:images`, which draws its card into
   `public/og/`; the build fails on a card drawn from an old title.
   `content.md` 5.16.
 - **A dynamic route must generate at least one page** under `output: "export"`,

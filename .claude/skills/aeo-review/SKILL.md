@@ -104,6 +104,13 @@ hand; read the list so you know where the gate stops.
   `Disallow`, and the sitemap line. The rest of that file holds the
   announced flag in both directions, and `tests/feeds.test.ts` holds the
   feeds to it.
+- **`tests/compare.test.ts`**: a source for every fact about another app,
+  every source cited, a checked date that isn't in the future, Simple
+  Balance's column and every answer read from the contract, each claim and
+  source on the built page and in its Markdown copy, the copies in
+  `/llms.txt`, and each page's article dated by its check. Its last block
+  holds the docs' questions page: its `FAQPage` marks up exactly the
+  questions and answers on the page, and none the pricing page already does.
 - **`tests/copy.test.ts`**, "never implies the product logs in to a bank",
   over the homepage's and the pricing page's modules and
   `src/content/llms.ts`;
@@ -145,12 +152,19 @@ what a true answer has to carry.
 | An envelope budgeting app                             | `/learn/envelope-budgeting/`                  | budgeting app                                     | The same, for envelopes                                                                                                                            |
 | A net worth tracker                                   | `/learn/net-worth/`                           | tracker                                           | The same, and what it won't do: look up what investments, a home or a car are worth                                                                |
 | A subscription tracker                                | `/learn/find-your-subscriptions/`             | tracker                                           | What it isn't: a tracker that finds them for you                                                                                                   |
+| An alternative to YNAB                                | `/compare/ynab/`                              | YNAB, bank, free, Simple Balance                  | Both apps' prices with their subjects, the bank difference said as what you do, and a source for every fact about YNAB                             |
+| An alternative to Monarch                             | `/compare/monarch/`                           | Monarch, bank, free, MCP                          | The same, and that both connect to an assistant through MCP, which Monarch's own page says                                                         |
+| An alternative to Quicken Simplifi                    | `/compare/quicken-simplifi/`                  | Simplifi, bank, free, trial                       | The same, and that Simplifi has neither a free plan nor a trial                                                                                    |
+| An open source alternative to Actual Budget           | `/compare/actual-budget/`                     | Actual Budget, open source, server, bank          | That both are open source and free to run, and what differs: a hosted app, the bank sync Actual offers, envelope budgeting                         |
+| Simple Balance vs YNAB, Monarch or Simplifi           | `/compare/`                                   | YNAB, Monarch, Simplifi, free plan                | The bank difference first, then the free plan none of the three has                                                                                |
+| Is there a Simple Balance phone app?                  | `/docs/frequently-asked-questions/`           | phone, app store, browser                         | No app-store app, and that it runs in a phone's web browser                                                                                        |
 
 **Two kinds of prompt have no row, on purpose.** "How do I make a budget"
 and the other jobs are each a learn guide's own title, and §5 reads whether
-its opening answers it. "The best budget app" and "an alternative to YNAB"
-are answered from other people's lists, and this site has no comparison page
-by decision (`docs/roadmap.md` 3), so that work is the listings in §9.
+its opening answers it. "The best budget app" is answered from other
+people's lists, so that work is the listings in §9. "An alternative to
+YNAB" has rows now, because the comparison pages exist (`content.md` 5.19),
+and other people's lists still carry most of its answers.
 
 **A prompt is added as a row.** The command reads the table above, so the
 list lives in one place. For each row it prints the page's description and

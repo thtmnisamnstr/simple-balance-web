@@ -3,6 +3,7 @@ import { createHash } from "node:crypto";
 import { existsSync, readFileSync } from "node:fs";
 import { allEntries } from "@/content/collections";
 import { pricing } from "@/content/pricing";
+import { compareIndex, rivals } from "@/content/compare";
 import { section } from "@/content/sections";
 import { hero, site } from "@/content/home";
 import appFacts from "@/content/app-facts.json";
@@ -325,6 +326,12 @@ describe("the page cards", () => {
   };
   const pages = [
     { html: "out/pricing/index.html", file: "pricing", title: pricing.title },
+    { html: "out/compare/index.html", file: "compare", title: compareIndex.heading },
+    ...rivals.map((rival) => ({
+      html: `out/compare/${rival.slug}/index.html`,
+      file: `compare/${rival.slug}`,
+      title: rival.heading,
+    })),
     ...(["learn", "docs"] as const).flatMap((key) => {
       const hub = section(key);
       return [
