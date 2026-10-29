@@ -328,6 +328,13 @@ on a 320px phone. Every table in Markdown is now wrapped in `.prose-table` by
 inside `.table-wrap`. Breaking the names instead would have fit the page and
 split a setting somebody has to copy exactly.
 
+A comparison of two apps is the one table that doesn't scroll on a phone.
+Below `34rem`, `.compare-pair` puts each feature's name on a line of its own
+and the two apps' answers side by side under it, because scrolled, the other
+app's column, which is the reason the page exists, started off the screen.
+The five-app table on `/compare/` can't fit two to a row, so it scrolls like
+the pricing table.
+
 _Checked by:_ `tests/a11y.test.ts`, over every emitted page at 320px and
 390px — the floor and an ordinary phone, because a page can pass at the floor
 and fail just above it. The failure names the element or text run that
@@ -406,7 +413,7 @@ the index is laid out. The two ways of doing it come after the shelf below.
 index rather than a rule a different design breaks. The docs index is a
 shelf per group. The group's picture, its heading, its blurb and its page
 count sit in a column that stays in view while the group's pages scroll past
-beside it as cards (`.docs-group`, `src/styles/site.css:4036`). Below 62rem
+beside it as cards (`.docs-group`, `src/styles/site.css:4039`). Below 62rem
 the column stops sticking and the heading goes beside its picture, over the
 cards. The Self-hosting group sits
 on its own band (`.docs-group-own`), because it's for a different reader and
@@ -416,7 +423,7 @@ gray, and nothing said where one group stopped.
 
 **The lead page can be a feature.** It becomes `DocFeature`, a wider card,
 when it's the group's only page or has steps in `docsIndex.steps`
-(`src/app/docs/page.tsx:112`). "Only page" alone dropped Get started's
+(`src/app/docs/page.tsx:113`). "Only page" alone dropped Get started's
 feature the day it gained a second page, and with it the four steps a new
 reader most needs. A step is a heading id, and its words come from the page's
 own heading, so a renamed heading changes the card too and a removed one
@@ -424,10 +431,10 @@ fails the build rather than linking to nowhere
 (`src/components/docs-art/cards.tsx:49`).
 
 **No holes.** With an odd number of cards the first takes the whole row
-(`src/styles/site.css:4119`), as on the learn index
-(`src/styles/site.css:1620`), and the blog's grid works the same idea out for
+(`src/styles/site.css:4122`), as on the learn index
+(`src/styles/site.css:1623`), and the blog's grid works the same idea out for
 three columns, widening its first cards by what's left over
-(`src/styles/site.css:4902`). A grid with a gap in its last row reads as a
+(`src/styles/site.css:4905`). A grid with a gap in its last row reads as a
 page that lost a card.
 
 **One tab stop per card, named by its title**, which is the House half. Two
@@ -460,8 +467,8 @@ is `human`, at 1280 and 390.
 (`src/components/docs-sidebar.tsx:31`). On a wide screen,
 `@supports selector(::details-content)` hides its summary and undoes the
 closed state's `content-visibility: hidden`, so the list is always shown
-(`src/styles/site.css:2751`). Below 62rem the summary comes back and a closed
-disclosure hides its content again (`src/styles/site.css:2889`), so a phone
+(`src/styles/site.css:2754`). Below 62rem the summary comes back and a closed
+disclosure hides its content again (`src/styles/site.css:2892`), so a phone
 reader gets the article first and one tap to the list.
 
 It was rendered `open`, which cost nothing at twelve pages and put
@@ -566,7 +573,7 @@ second thing to get wrong in every post.
 The social cards are the deliberate exception: `public/og.png` and every
 page's own card in `public/og/` are rendered by platforms that have no theme
 to respect, so they're the light palette and only that
-(`scripts/build-images.mjs:125`, `scripts/build-images.mjs:326`).
+(`scripts/build-images.mjs:126`, `scripts/build-images.mjs:327`).
 
 **Two widths as well as two themes.** Each screenshot also ships at 1200px,
 and `<picture>` carries both candidates with a `sizes` that matches the CSS.
@@ -810,22 +817,22 @@ diagram being used and existing. That the labels clear each other is
 panel's tokens and never the page's. Today's set, which a new panel copies:
 
 - **Eyebrow:** the mint, `--art-bar`, because the page's green measures under
-  3:1 on the base (`src/styles/site.css:3187`).
+  3:1 on the base (`src/styles/site.css:3190`).
 - **Title:** `--art-ink`. **Lede and every muted line:** `--on-art-muted`.
 - **Primary button:** mint with `--art-base` text, turning `--art-ink` on
-  hover (`src/styles/site.css:3214`). The page's green button disappears on
+  hover (`src/styles/site.css:3217`). The page's green button disappears on
   the panel.
 - **Second button:** outlined, so it reads as the second
   (`.home-button-ghost`).
 - **Field:** frosted, `--art-veil` behind an `--art-hairline` border
-  (`src/styles/site.css:3890`). The page's white field was a hole punched in
+  (`src/styles/site.css:3893`). The page's white field was a hole punched in
   the panel in light mode and nearly invisible in dark, where `--surface` is
   almost the panel's own green. Its clear button is the browser's, drawn
   through a mask in the field's own ink (`.docs-search-input`'s cancel-button
   rule), because Chrome and Safari paint it a blue from neither theme.
 - **The stop control** takes the page's colors by default, and today only
   the hero's panel restyles it (`.home-hero .mo-stop`,
-  `src/styles/site.css:3600`). A loop placed on another panel adds the same
+  `src/styles/site.css:3603`). A loop placed on another panel adds the same
   rule for that panel, or its control is a `--surface` pill on the dark
   base. Generalizing the rule to `.art-panel .mo-stop` is the alternative,
   worth taking the day a second panel gets a loop.
@@ -843,12 +850,12 @@ dot grid, which is an absolutely placed `::before` (`.learn-intro-text`,
 **The light goes behind the drawing, never the words.** The app's panel puts
 its brightest glow top left, which is exactly where the words start on a
 panel with text, and the learn intro's eyebrow and lede measured 2.7:1 and
-3.6:1 on it (`src/styles/site.css:1478`). When the panel stacks below 62rem,
-the glow moves down with the drawing (`src/styles/site.css:3687`).
+3.6:1 on it (`src/styles/site.css:1481`). When the panel stacks below 62rem,
+the glow moves down with the drawing (`src/styles/site.css:3690`).
 
 **Hover answers with the border, not a brighter veil, under muted text.** The
 docs starting points' kicker fell under 4.5:1 on a veil lightened for hover
-(`src/styles/site.css:3937`).
+(`src/styles/site.css:3940`).
 
 **`.art-panel` clips its drawing**, so a panel that has to let something hang
 out of it sets `overflow: visible`, as the docs intro does for its search
@@ -1113,7 +1120,7 @@ one inside the block.
 after the page's base layout (`src/styles/site.css:572`): every animation and
 transition cut to 0.01ms and one play. A second reduce block hides the stop
 control, because a reader with nothing moving has nothing to stop
-(`src/styles/site.css:3613`).
+(`src/styles/site.css:3616`).
 
 A global block rather than per-component opt-in, because the failure mode of
 per-component is a new animation that forgot, and nobody tests with the setting
@@ -1126,7 +1133,7 @@ through `both`. For a play-once animation that's right: every play-once keyframe
 moves from somewhere else toward the element's own state, so the held frame
 is the finished picture. A loop is the opposite. Each looping keyframe builds,
 holds and fades, and ends at opacity 0 (loop-rise and the keyframes after it,
-`src/styles/site.css:2272`, and the chat's), so a loop that escaped the
+`src/styles/site.css:2275`, and the chat's), so a loop that escaped the
 no-preference block would be cut to one play and held on its last frame,
 which shows a reduced-motion reader an empty panel. And the global block
 does nothing useful to a scroll-driven animation, which ignores the 0.01ms
@@ -1195,18 +1202,18 @@ who starts it:
 
 1. **Once, on load.** A picture at the top of a page, on a panel.
    `.art-panel .mo` plays each part once, a step of `--s` at a time
-   (`src/styles/site.css:2053`), and the picture is at rest within about
+   (`src/styles/site.css:2056`), and the picture is at rest within about
    three and a half seconds.
 2. **The reader's pointer, after a 250ms rest, or focus.** A picture inside a
    card. Hover sets the registered `--play` property through a transition
    delayed 250ms, and a style query on `--play: 1` starts the motion
-   (`src/styles/site.css:1938`, `src/styles/site.css:2071-2092`). Chrome
+   (`src/styles/site.css:1941`, `src/styles/site.css:2074-2095`). Chrome
    moves `:hover` when the page scrolls under a pointer that hasn't moved, so
    on plain `:hover` a reader scrolling with the mouse parked set off every
    card it crossed, and twelve cards playing on their own are twelve moving
    pictures. The clock has two forms: replay once (the cards), or run while
    held, written `paused` and set running by the query (the closing
-   picture's rings, `src/styles/site.css:3782-3820`). A browser without style
+   picture's rings, `src/styles/site.css:3785-3823`). A browser without style
    queries never plays either, and shows the finished picture, which is the
    right way for this to fail.
 
@@ -1248,7 +1255,7 @@ who starts it:
 3. **Scroll.** A diagram, or anything below the fold. One view timeline is
    named on the container, which doesn't move, and each part's range is set
    by `--s` so the last finishes at `entry 100%`, the moment the whole figure
-   is on screen (`src/styles/site.css:2094`). An element's own `view()`
+   is on screen (`src/styles/site.css:2097`). An element's own `view()`
    measured a box that was itself moving, and jumped. The closing picture
    moved to this clock because, played on load, it was over before anyone
    reached it. **Name the timeline on the drawing, not on what's around
@@ -1256,7 +1263,7 @@ who starts it:
    is taller than the drawing, so the parts finished as the panel's bottom
    edge arrived, and a reader who stopped with the whole drawing on screen
    saw three of its marks still popping in. It's named on `.home-closing-art`
-   now (`src/styles/site.css:3830`), so the picture finishes when the
+   now (`src/styles/site.css:3833`), so the picture finishes when the
    drawing, not the panel, is on screen, the same moment a diagram does.
    **And nothing between the drawing and the page may hide its overflow.**
    A box with `overflow: hidden` is a scroll container even when nothing in
@@ -1264,7 +1271,7 @@ who starts it:
    the move to `.home-closing-art` put the timeline inside the panel, which
    never scrolls, and it held still: the marks sat finished from the first
    frame on every screen until the touch rings, frozen at a tilt, showed it.
-   The panel clips with `overflow: clip` instead (`src/styles/site.css:3649`),
+   The panel clips with `overflow: clip` instead (`src/styles/site.css:3652`),
    which cuts the same corners and scrolls nothing.
    Where scroll-driven animation is unsupported, the panel and diagram rule
    plays the parts once on load instead, and they're long finished by the
@@ -1276,7 +1283,7 @@ who starts it:
 fade in as they scrolled, and a card the reader stopped at, half over the
 bottom edge, held its words at half opacity: axe measured 1.2:1 to 2.9:1 on
 the docs and blog indexes while they were being built
-(`src/styles/site.css:2121`). So a learn card, and the homepage's job cards
+(`src/styles/site.css:2124`). So a learn card, and the homepage's job cards
 with it, rises without fading, and a card that's mostly words, a docs card or
 a post card, has no reveal at all.
 
@@ -1284,9 +1291,9 @@ a post card, has no reveal at all.
 class plus `.mo`, which is equal specificity, so whichever comes later in
 `site.css` wins. The loop rule sits after the play-once and scroll rules on
 purpose, and names its timeline outright, so a loop on a panel or in a
-diagram loops (`src/styles/site.css:2133`). A surface rule written further
+diagram loops (`src/styles/site.css:2136`). A surface rule written further
 down beats it all the same: `.home-closing-art .mo`
-(`src/styles/site.css:3834`) would hand its scroll timeline to any loop
+(`src/styles/site.css:3837`) would hand its scroll timeline to any loop
 nested inside the closing picture. So a new surface's motion rules go above
 the loop rule, or no loop goes inside that surface. The touch block is the
 second kind: it has to come after the card and ring rules it replaces, which
@@ -1315,8 +1322,8 @@ and one effect class, and `--s` sets its place in the order: 120ms a step on
 load, 90ms on a hovered card, a share of the entry range on scroll. That
 share isn't one number: 5% a step over a 35% span for a diagram and the
 closing picture, so steps past 13 bunch at the end, and 7% over a 40% span
-for a docs group picture, so steps past 8 do (`src/styles/site.css:2113`,
-`src/styles/site.css:4351`). A card on a touch screen plays on the clock,
+for a docs group picture, so steps past 8 do (`src/styles/site.css:2116`,
+`src/styles/site.css:4354`). A card on a touch screen plays on the clock,
 at the pointer's 90ms. `--dur`
 changes its length from the default 0.8s, and `--n` its plays, which only
 swing and float set. The typed `css()` helper sets `--s`, `--dur`, a color and
@@ -1324,7 +1331,7 @@ a pivot (`src/components/learn-art/frame.tsx:104`).
 
 **`--s`, `--n` and `--dur` are reset on every `.mo`**, because a custom
 property inherits: a coin inside a swinging pan once took the swing's two
-plays and its 1.4s and dropped twice (`src/styles/site.css:1920`). The effect
+plays and its 1.4s and dropped twice (`src/styles/site.css:1923`). The effect
 itself (`--mo`, `--mo-loop`) isn't reset, so a bare `.mo` inside another part
 runs that part's effect. Give it a class of its own if it should do
 something else.
@@ -1363,7 +1370,7 @@ stroke. A circle is written as two arcs, because a `<circle>` can't be
 dash-drawn the same way in every browser
 (`src/components/docs-art/glyphs.tsx:11`). The gap is twice the dash and the
 start sits just past it, because a dash of no length under a round cap is a
-dot, and every arrow showed one before it drew (`src/styles/site.css:2011`).
+dot, and every arrow showed one before it drew (`src/styles/site.css:2014`).
 On a `<g>`, draw traces every stroke inside it at once.
 
 **A new effect** gets a play-once keyframe that moves toward the element's own
@@ -1380,9 +1387,9 @@ property. Whether an effect suits the drawing is `human`.
 ### 8.5 Sequencing a loop
 
 **Guidance.** A loop's keyframes are in percentages of `--cycle`, which is
-10s on `.mo-loop` (`src/styles/site.css:1934`). A part arrives over 0 to 8%,
+10s on `.mo-loop` (`src/styles/site.css:1937`). A part arrives over 0 to 8%,
 holds to 72%, fades by 78% and stays gone to 100%
-(`src/styles/site.css:2272`). `--s` delays a part's whole cycle, 120ms a step,
+(`src/styles/site.css:2275`). `--s` delays a part's whole cycle, 120ms a step,
 its exit included, so parts leave in the order they arrived.
 
 **Two numbers to keep:**
@@ -1402,7 +1409,7 @@ own wrapper, as the chat does on `.home-chat-loop`.
 a question, a moment's thinking, two tool calls and an answer, so each role
 has its own keyframes on its own 16s cycle, holding to 78.75% and gone by
 83.125%, with the timeline written in seconds in a comment above them ("1% =
-160ms", `src/styles/site.css:2302`). **Its hold is measured from the last
+160ms", `src/styles/site.css:2305`). **Its hold is measured from the last
 word, not from the first part.** The owner asked for the finished picture to
 hold about five seconds, and the chat isn't finished until its answer is:
 whole by about 6.6s, it holds to 12.6s, about six seconds. The formula above
@@ -1415,7 +1422,7 @@ the second tool call, at an `--s` of 9, a second behind the first
 **Two things follow from 8.2's Binding, and aren't optional:**
 
 - **A part that exists only while playing**, the thinking indicator or a
-  spinner, is `opacity: 0` in its base rule (`src/styles/site.css:3487`), so a
+  spinner, is `opacity: 0` in its base rule (`src/styles/site.css:3490`), so a
   stopped loop and a reduced-motion reader see the finished exchange rather
   than something still thinking.
 - **The stop is `animation: none`, never `paused`.** A loop paused where it
@@ -1425,7 +1432,7 @@ the second tool call, at an `--s` of 9, a second behind the first
 **A part with a shorthand of its own** stays less specific than the stop rule,
 or the box stops everything but it. The spinner runs two animations and the
 thinking dots a pulse of their own, so both are written out, and both stay
-below the stop in specificity (`src/styles/site.css:2150`).
+below the stop in specificity (`src/styles/site.css:2153`).
 
 **Only five effects loop**: rise, fade, pop, draw and slide from the left.
 The rest have no `--mo-loop`, so inside a loop such a part either sits
@@ -1453,7 +1460,7 @@ several: `transform` and `opacity`, the dash offset of a stroke that draws,
 The bubble is the worked case. It grows as its contents arrive, the way a
 model's reply does, by a clip rather than by its height, because a height
 that grew would push the rest of the page down twice a cycle
-(`src/styles/site.css:2331`). The clip's stops are fractions of the finished
+(`src/styles/site.css:2334`). The clip's stops are fractions of the finished
 bubble, generous enough that each part is inside before it shows at any
 width, and **each step finishes before the row it uncovers starts to fade
 in**. The steps used to finish just after, and for about 150ms a cycle each
@@ -1463,7 +1470,7 @@ step above it.
 **Two states that replace each other share one cell.** "Thinking" and
 "Thought for 4 seconds", and each tool's spinner and check, sit in
 `grid-area: 1 / 1`, so the larger reserves the space and the swap moves
-nothing (`src/styles/site.css:3474`, `src/styles/site.css:3542`).
+nothing (`src/styles/site.css:3477`, `src/styles/site.css:3545`).
 
 **Assistive technology hears the finished thing once:**
 

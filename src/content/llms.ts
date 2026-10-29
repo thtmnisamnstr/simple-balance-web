@@ -33,11 +33,12 @@ export const llms = {
     "An MCP server at https://app.smpl.money/mcp lets an AI assistant read your records, " +
       "stage entries for you to approve, or, if you allow it, make changes itself. It signs " +
       "in with OAuth, and you can see and revoke each connection in Settings.",
-    `Every page under ${DOCS_TITLE} and ${LEARN_TITLE} has a plain-Markdown copy at the address linked here; the HTML page is the same URL without index.md.`,
+    `Every page under ${DOCS_TITLE}, ${LEARN_TITLE} and the comparisons has a plain-Markdown copy at the address linked here; the HTML page is the same URL without index.md.`,
     "Contact: info@smpl.money",
   ],
   docsTitle: DOCS_TITLE,
   learnTitle: LEARN_TITLE,
+  compareTitle: "Compared with other apps",
   plansTitle: "Plans",
   pricing: "Free, Premium, or run it yourself, and what changes between them.",
   optionalTitle: "Optional",

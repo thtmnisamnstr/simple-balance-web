@@ -11,6 +11,7 @@ import { authors } from "@/content/authors";
 import { homeUpdated, site } from "@/content/home";
 import { pricingUpdated } from "@/content/pricing";
 import { legalUpdated } from "@/content/legal";
+import { compareUpdated, rivals } from "@/content/compare";
 
 const base = `https://${site.domain}`;
 
@@ -58,6 +59,23 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.3,
     },
   ];
+
+  // The comparisons are dated by the day their facts were checked, which is
+  // the day what they say about another app was last known to be true.
+  entries.push({
+    url: `${base}/compare/`,
+    lastModified: day(compareUpdated),
+    changeFrequency: "monthly",
+    priority: 0.7,
+  });
+  for (const rival of rivals) {
+    entries.push({
+      url: `${base}/compare/${rival.slug}/`,
+      lastModified: day(rival.checked),
+      changeFrequency: "monthly",
+      priority: 0.6,
+    });
+  }
 
   for (const announced of announcedSections()) {
     const newest = allEntries(announced.key)

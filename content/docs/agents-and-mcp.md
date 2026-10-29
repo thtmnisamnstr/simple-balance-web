@@ -39,7 +39,7 @@ different class of authority from writing a transaction.
 
 The server speaks MCP over HTTP at `/mcp`, and it's protected by OAuth. Give
 your client the address and nothing else: no token, no header. On
-app.smpl.money the address is `https://app.smpl.money/mcp`. On a copy you run
+[app.smpl.money](https://app.smpl.money/) the address is `https://app.smpl.money/mcp`. On a copy you run
 yourself, it's your own address followed by `/mcp`.
 
 ```json
@@ -128,7 +128,7 @@ look at everything on that list and change none of it. One with
 `ledger:stage` can also add, fix and delete rows on **Staged**, including a
 CSV file's, and change nothing else. Everything else takes `ledger:write`.
 
-The same limits apply as well. On app.smpl.money's free plan, an account that's
+The same limits apply as well. On [app.smpl.money](https://app.smpl.money/)'s free plan, an account that's
 [frozen](/docs/your-account-and-plan/#canceling) refuses an agent's changes
 just as it refuses yours.
 

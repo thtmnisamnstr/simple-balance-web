@@ -1,0 +1,71 @@
+# Whether a comparison page's facts about another app are due to be read
+# again (`docs/standards/content.md` 5.19). Weekly, beside `app-sync.yml`,
+# and for the same reason that one is a schedule rather than a test: what it
+# checks is a date and somebody else's website, and neither belongs in a gate
+# that fails unrelated changes. It changes nothing. It keeps one issue open
+# while a page is due, and closes it when none is.
+name: compare check
+
+on:
+  schedule:
+    - cron: "30 8 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: compare-check
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    env:
+      ISSUE_TITLE: A comparison page is due to be checked again
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+
+      - name: Check the dates
+        id: check
+        run: |
+          set +e
+          node scripts/check-comparisons.mjs > /tmp/report.txt 2>&1
+          echo "code=$?" >> "$GITHUB_OUTPUT"
+          {
+            echo 'report<<REPORT_EOF'
+            cat /tmp/report.txt
+            echo 'REPORT_EOF'
+          } >> "$GITHUB_OUTPUT"
+          cat /tmp/report.txt
+
+      - name: Open or update the issue
+        if: steps.check.outputs.code == '1'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPORT: ${{ steps.check.outputs.report }}
+        run: |
+          EXISTING=$(gh issue list --state open --search "\"$ISSUE_TITLE\" in:title" --json number,title \
+            -q "[.[] | select(.title == \"$ISSUE_TITLE\") | .number] | max // empty")
+          if [ -n "$EXISTING" ]; then
+            gh issue edit "$EXISTING" --body "$REPORT"
+            echo "updated issue #$EXISTING"
+          else
+            gh issue create --title "$ISSUE_TITLE" --body "$REPORT"
+          fi
+
+      - name: Close the issue when nothing is due
+        if: steps.check.outputs.code == '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          EXISTING=$(gh issue list --state open --search "\"$ISSUE_TITLE\" in:title" --json number,title \
+            -q "[.[] | select(.title == \"$ISSUE_TITLE\") | .number] | max // empty")
+          if [ -n "$EXISTING" ]; then
+            gh issue close "$EXISTING" --comment "Every comparison is current again."
+            echo "closed issue #$EXISTING"
+          fi

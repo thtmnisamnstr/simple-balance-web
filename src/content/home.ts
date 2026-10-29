@@ -790,6 +790,10 @@ export const footer: { readonly blurb: string; readonly links: readonly NavLink[
     // somebody has to remember the other half of.
     ...announcedSections().map((section) => ({ label: section.label, href: section.href })),
     { label: "Pricing", href: "/pricing/" },
+    // The footer and not the header: a comparison is for somebody who
+    // already uses another app, and the header is for the reader the
+    // homepage is written for, who doesn't (`content.md` 1.3).
+    { label: "Compare", href: "/compare/" },
     { label: "Privacy", href: "/privacy/" },
     { label: "Terms", href: "/terms/" },
     { label: "Source code", href: site.sourceUrl },

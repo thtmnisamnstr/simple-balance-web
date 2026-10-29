@@ -11,6 +11,7 @@ import { DocsIntroArt, GroupPicture } from "@/components/docs-art/pictures";
 import { DocCard, DocFeature, DocStart } from "@/components/docs-art/cards";
 import { typeset } from "@/lib/typeset";
 import { sectionRobots } from "@/lib/indexing";
+import { AppLinked } from "@/components/app-linked";
 
 const docs = section("docs");
 
@@ -131,7 +132,11 @@ export default function DocsIndex() {
                       </span>
                       {group.section}
                     </h2>
-                    {words ? <p className="docs-group-blurb">{typeset(words.blurb)}</p> : null}
+                    {words ? (
+                      <p className="docs-group-blurb">
+                        <AppLinked text={words.blurb} />
+                      </p>
+                    ) : null}
                     <p className="docs-group-count">{docsIndex.pages(group.entries.length)}</p>
                   </div>
                 </div>

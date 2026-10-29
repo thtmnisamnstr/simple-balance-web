@@ -69,7 +69,7 @@ the example (`content.md` 5.15), and another one takes five things:
 3. Its content type pinned in `netlify.toml` by exact pattern, because of the
    headers above, with `noindex` in the same block if the file repeats a page
    (2.3).
-4. An allowance in `tests/budget.test.ts:96`, which refuses any stray `.md`
+4. An allowance in `tests/budget.test.ts:97`, which refuses any stray `.md`
    or source file in `out/`, and a test that the file exists there, the way
    `tests/markdown.test.ts:22` reads every copy.
 5. 1.4 applies. A section with no entries gives the handler no params, and
@@ -154,8 +154,8 @@ for a fix that was one edit.
 
 _Checked by:_ `tests/export-shape.test.ts`, which parses the redirect blocks
 and refuses a rule only if it could match `/ads.txt` and answers with a 2xx
-or a 3xx (`answersAdsTxt`, `tests/export-shape.test.ts:55`), with fixtures of
-both kinds at `tests/export-shape.test.ts:176`. It reads `netlify.toml` a
+or a 3xx (`answersAdsTxt`, `tests/export-shape.test.ts:56`), with fixtures of
+both kinds at `tests/export-shape.test.ts:177`. It reads `netlify.toml` a
 line at a time with comments dropped, so a commented-out rule is not a rule.
 It accepts both `[[redirects]]` spellings, reads `from` and `status` only
 where they open a line, and counts a missing `status` as 301, which is
@@ -495,14 +495,14 @@ its old name.
 
 **It never deletes a card, and the record can't tell.** The script writes a
 card per page and then rewrites its record whole
-(`scripts/build-images.mjs:410`–`445`), so a page removed or renamed leaves
+(`scripts/build-images.mjs:423`–`445`), so a page removed or renamed leaves
 its old card in `public/og/`, the record stops naming it, and the check that
 the record matches the pages passes while the orphan PNG ships. Delete it by
 hand, in the same commit.
 
 **`public/og.png` is held to its words by the record.** It draws the hero's
 title, the tagline and one price line naming the free plan and the yearly
-price (`scripts/build-images.mjs:114`), each read when the script runs, the
+price (`scripts/build-images.mjs:115`), each read when the script runs, the
 price from `app-facts.json`. Reading them keeps a run from drawing a stale
 price; it doesn't make anybody run it. So the script records the three under
 `site`, with a hash of the file it drew them into, and
@@ -513,7 +513,7 @@ previewing a tagline that appeared nowhere. The colors aren't recorded, so a
 change to `brand.css` or to the script still needs a run and a look.
 
 A card's title wraps at 27 characters, and a fourth line throws, naming the
-title (`scripts/build-images.mjs:336`).
+title (`scripts/build-images.mjs:337`).
 
 _Checked by:_ `human` that it looks right, which for `public/og.png` is
 everything but its words and for a cover is everything but its presence;
@@ -555,7 +555,7 @@ the site's first commit or after today. A date bumped on an unchanged page
 passes it, so `seo-review` reads a branch's dates against what moved.
 
 **Guidance, for a known gap.** The blog's archive and its tag, author and
-page-two-onward indexes are listed with no date (`src/app/sitemap.ts:75`).
+page-two-onward indexes are listed with no date (`src/app/sitemap.ts:93`).
 Nobody sees it while the blog is unannounced, because the sitemap lists
 nothing under it, and announcing it will fail `tests/sitemap.test.ts:104`
 once for each of them, correctly. Date each one from its newest post in the
@@ -606,8 +606,8 @@ Two couplings reach it from other files:
    need a flag.
 2. **It reads `src/content/home.ts` and `src/content/pricing.ts` as text, by
    regex**, taking the first two-space-indented key of each name
-   (`scripts/build-images.mjs:71`–`76` and
-   `scripts/build-images.mjs:380`–`382`).
+   (`scripts/build-images.mjs:72`–`76` and
+   `scripts/build-images.mjs:381`–`382`).
    Moving an object with a `title:` of its own above the hero changes what
    the site card says, and only the record's check in
    `tests/export-shape.test.ts` notices, after a run has drawn it. When it
@@ -638,7 +638,7 @@ owner's half of `seo-review` and `aeo-review`, which name any not yet done.
 | Netlify → Deploy previews                 | On                                                                                                   | The preview is the owner's look at a change on the host that will serve it, before it ships (5).                                                                                                                                                                                                           |
 | GitHub → Branch protection                | Require the `verify` check                                                                           | Otherwise Actions reports a failure nothing acts on.                                                                                                                                                                                                                                                       |
 | Google Search Console                     | A domain property for `smpl.money`, verified by DNS, with `https://smpl.money/sitemap.xml` submitted | Google uses a sitemap it was told about, reports what it couldn't index and why, and is where a page dropped from the index is found. Google's AI Overviews and AI Mode answer from the same index.                                                                                                        |
-| Bing Webmaster Tools                      | The site imported from Search Console, sitemap included                                              | Bing's index feeds Copilot and much of ChatGPT's search; a site Bing hasn't crawled is one neither can cite. IndexNow, which tells Bing a page changed, is a later step that needs a key file and a script, not a setting.                                                                                 |
+| Bing Webmaster Tools                      | The site imported from Search Console, sitemap included                                              | Bing's index feeds Copilot and much of ChatGPT's search; a site Bing hasn't crawled is one neither can cite. IndexNow, which tells Bing a page changed, was decided against by the owner (`docs/roadmap.md` 2.7).                                                                                          |
 | GitHub → the application's repository     | **Website**: `https://smpl.money`                                                                    | The repository is the page most linked to; its website field is the link back.                                                                                                                                                                                                                             |
 | AdSense → Privacy and messaging           | A European regulations message, and a US state regulations message, published for `app.smpl.money`   | The ads are the application's, and so is this setting; it is here because the privacy policy this site publishes says Google's message asks before an advertising cookie in the EEA, the UK and Switzerland, and offers US readers an opt-out. Unpublish either and that page is wrong. `legal-review` §3. |
 

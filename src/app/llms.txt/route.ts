@@ -2,6 +2,7 @@ import { allEntries, bySection } from "@/content/collections";
 import { announcedSections } from "@/content/sections";
 import { site } from "@/content/home";
 import { llms } from "@/content/llms";
+import { rivals } from "@/content/compare";
 
 /**
  * `/llms.txt`, by the llmstxt.org format: an H1, a blockquote, a few notes,
@@ -47,6 +48,13 @@ export function GET(): Response {
       const url = section.key === "blog" ? page : `${page}index.md`;
       lines.push(`- [${entry.frontmatter.title}](${url}): ${entry.frontmatter.description}`);
     }
+  }
+
+  // After the docs and the guides, because a comparison answers a question
+  // about another app, and before the plans its prices come from.
+  lines.push("", `## ${llms.compareTitle}`, "");
+  for (const rival of rivals) {
+    lines.push(`- [${rival.title}](${base}/compare/${rival.slug}/index.md): ${rival.description}`);
   }
 
   lines.push("", `## ${llms.plansTitle}`, "", `- [Pricing](${base}/pricing/): ${llms.pricing}`);

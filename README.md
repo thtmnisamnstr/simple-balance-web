@@ -6,7 +6,10 @@ self-host. That is how the site itself describes it
 (`docs/standards/content.md` 1.3). This line used to say "a self-hosted
 double-entry ledger", which is the vocabulary the homepage was rewritten to
 drop. The homepage, pricing, the learn articles and the documentation are
-announced; the blog is built and deliberately is not.
+announced; the blog is built and deliberately is not. The comparisons with
+YNAB, Monarch, Quicken Simplifi and Actual Budget, at `/compare/`, are linked
+from the footer, and every fact in them about another app names its source
+(`docs/standards/content.md` 5.19).
 
 ## Running it
 
@@ -82,16 +85,16 @@ HTML, CSS and JS with no server. That is deliberate: the artifact runs on
 Netlify today and would run unchanged on any other static host.
 
 ```
-src/app/            routes — /, /pricing, /privacy, /terms, /learn/*, /docs/*, /blog/*
+src/app/            routes — /, /pricing, /compare/*, /privacy, /terms, /learn/*, /docs/*, /blog/*
 src/components/     the components: server components, and three client islands in client/
-src/content/        the homepage copy, the authors, the section flags
+src/content/        the homepage copy, the comparisons, the authors, the section flags
 src/styles/         brand.css (shared with the app) and site.css
 content/blog/       posts, as Markdown with frontmatter
 content/docs/       documentation pages
 content/learn/      guides to everyday money jobs
 docs/standards/     the design, content and code standards
 .claude/skills/     eleven procedures that repeat
-scripts/            images, motion frames, copy acceptance, the app-sync check, the link check
+scripts/            images, motion frames, copy acceptance, the app-sync and comparison checks, the link check
 ```
 
 ## Writing

@@ -1323,7 +1323,8 @@ svg {
 
 /* The series box's surface, because it is the same kind of thing: an aside
    about where to go next, set apart from the article without shouting. */
-.learn-cta {
+.learn-cta,
+.compare-cta {
   margin-top: var(--s-8);
   padding: var(--s-5);
   border: 1px solid var(--green-line);
@@ -1331,13 +1332,15 @@ svg {
   border-radius: var(--radius-lg);
 }
 
-.learn-cta-title {
+.learn-cta-title,
+.compare-cta-title {
   margin: 0 0 var(--s-2);
   font-size: var(--step-1);
   color: var(--ink);
 }
 
-.learn-cta-actions {
+.learn-cta-actions,
+.compare-cta-actions {
   display: flex;
   flex-wrap: wrap;
   gap: var(--s-3);
@@ -5251,4 +5254,96 @@ figure[data-rehype-pretty-code-figure] {
      page at 1280 by 900 both cards sat there, and their titles, dates and
      topics measured between 1.5:1 and 2.9:1. A cover is a picture to read,
      not a drawing to watch build, so there was nothing to reveal. */
+}
+
+/* ---------- comparisons ---------- */
+
+/* The day the other app's facts were read, under the answer it qualifies.
+   As wide as the answer, so the two read as one statement. */
+.compare-checked {
+  margin-top: var(--s-4);
+  max-width: var(--measure);
+}
+
+/* The heading over the table, sized and spaced as the pricing page's heading
+   over its list is (`.included-title`), and its own class for the reason
+   that one has its own. */
+.compare-table-title {
+  font-size: var(--step-2);
+  margin-top: var(--s-7);
+}
+
+/* Six columns on the index rather than three, so it scrolls sooner on a
+   phone instead of squeezing every cell to a word a line. */
+.compare-wide {
+  min-width: 52rem;
+}
+
+/* On a phone, the two-app table is two columns under each feature's name
+   rather than three that scroll inside their box. The other app's column is
+   the reason the page exists, and scrolled, it started off the screen. The
+   index's five apps can't fit two to a row, so it keeps the scroll. */
+@media (max-width: 34rem) {
+  .compare-pair {
+    min-width: 0;
+  }
+
+  .compare-pair tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .compare-pair thead th:first-child {
+    display: none;
+  }
+
+  .compare-pair tbody th {
+    grid-column: 1 / -1;
+    padding-bottom: 0;
+    border-bottom: 0;
+  }
+}
+
+/* A source's number after a fact. Small and raised, and `line-height: 0` so
+   it doesn't push its line apart from the one above it. */
+.compare-cite {
+  font-size: 0.75em;
+  line-height: 0;
+  margin-left: 0.15em;
+}
+
+/* The prose under the table opens a section of its own, and a section's
+   first heading needs no gap above it: the section's padding is the gap. */
+.compare-body {
+  margin-top: 0;
+}
+
+.compare-body > h2:first-child {
+  margin-top: 0;
+}
+
+.compare-sources {
+  font-size: var(--step--1);
+}
+
+/* The closing box and the links after it sit in the page's column, beside a
+   table as wide as the page, so they keep to the prose's measure rather than
+   stretching a two-line box across it. */
+.compare-cta {
+  max-width: var(--measure);
+}
+
+.compare-others {
+  margin-top: var(--s-7);
+}
+
+.compare-others-title {
+  font-size: var(--step-1);
+  color: var(--ink);
+}
+
+.compare-others ul {
+  margin-top: var(--s-3);
+  display: grid;
+  gap: var(--s-2);
 }

@@ -22,6 +22,12 @@ import { css } from "@/components/learn-art/frame";
 export const docGlyphs = {
   // A flag, planted: the first thing you do.
   "getting-started": ["M5.5 21.5V3", "M5.5 4h12.5l-2.75 4.25L18 12.5H5.5"],
+  // A question, asked out loud: a speech bubble with a question mark in it.
+  "frequently-asked-questions": [
+    "M3.5 4h17v12.5H11l-4.5 4v-4h-3z",
+    "M9.5 7.5a2.5 2.5 0 1 1 3.6 2.25c-.7.35-1.1.85-1.1 1.6",
+    "M12 14h.01",
+  ],
   // Something coming down into a tray.
   "importing-a-statement": [
     "M12 3v11",

@@ -6,7 +6,7 @@ order: 5
 updated: 2026-10-26
 ---
 
-This page is for a copy you run yourself. On app.smpl.money, the copy of your
+This page is for a copy you run yourself. On [app.smpl.money](https://app.smpl.money/), the copy of your
 records you can take with you is an export:
 [Taking your data with you](/docs/your-account-and-plan/#taking-your-data-with-you)
 says how.

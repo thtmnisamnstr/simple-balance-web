@@ -8,7 +8,7 @@ updated: 2026-10-25
 
 Simple Balance is open source: its code is public on
 [GitHub](https://github.com/thtmnisamnstr/simple-balance) under the AGPL-3.0
-license, and everything on app.smpl.money is also free to run yourself, with no
+license, and everything on [app.smpl.money](https://app.smpl.money/) is also free to run yourself, with no
 plan, no account limit and no ads. The product is the same. What changes is who
 keeps it running: you install it, you put HTTPS in front of it, and you back it
 up and upgrade it.

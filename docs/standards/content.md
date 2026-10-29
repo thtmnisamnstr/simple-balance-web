@@ -22,7 +22,7 @@ _Checked by:_ `tests/copy.test.ts`, over every string in the content module.
 That Carry".
 
 _Checked by:_ `tests/copy.test.ts`, on the homepage alone
-(`tests/copy.test.ts:168-189`): the section titles, the proof claims and the
+(`tests/copy.test.ts:170-191`): the section titles, the proof claims and the
 feature titles it lists, refused at more than two capitals in one heading.
 Every other page's headings, the docs' and the learn guides' included, are
 `human`. The count can't tell a name from Title Case: widened as it is, it
@@ -858,7 +858,12 @@ _Checked by:_ `tests/blog-features.test.ts`.
 
 **Binding.** `BlogPosting`, `TechArticle`, `Article`, `BreadcrumbList`,
 `FAQPage`, and on the homepage one `@graph` of `Organization`, `WebSite`,
-`WebApplication` and `SoftwareSourceCode`. Every field must be true of
+`WebApplication` and `SoftwareSourceCode`. A comparison page (5.19) is an
+`Article` dated by the day its facts were checked, `about` the application
+and the other app, which is a `Thing` with its name and address rather than a
+`SoftwareApplication`: Google reads any `SoftwareApplication` as a candidate
+for its software result and reports it broken without a rating and an offer,
+and this site has neither to give for somebody else's product. Every field must be true of
 something a reader can see on the page. A learn article is an `Article`: not
 news, so not a `BlogPosting`, and not written for somebody who reads a
 `TechArticle`.
@@ -887,6 +892,14 @@ It's the one field here a reader doesn't see in the article itself; they see
 it wherever the link is shared, and it shows only the title and address the
 page already shows, which is why it passes the rule above rather than bending
 it.
+
+**`FAQPage` on two pages**: the pricing page's questions, and the docs'
+questions page, which opts in with `faq: true` in its frontmatter. The docs
+page's markup is read from its own `##` headings that end in a question mark
+and the text under each (`faqItems` in `src/content/collections/index.ts`),
+so it can't say anything the page doesn't, and it asks nothing the pricing
+page already marks up, because Google asks for a question repeated across a
+site to be marked up once.
 
 **`FAQPage` stays although Google stopped showing it** as a rich result on
 7 May 2026. The questions and answers are visible on the pricing page, Bing
@@ -1044,9 +1057,12 @@ argument the sync doesn't own.
 
 ### 5.15 A plain copy for readers that aren't browsers
 
-**House.** Every docs page and learn guide has a Markdown copy at
+**House.** Every docs page, learn guide and comparison has a Markdown copy at
 `<page>/index.md`, linked from the page as
-`<link rel="alternate" type="text/markdown">`, and `/llms.txt` lists them.
+`<link rel="alternate" type="text/markdown">`, and `/llms.txt` lists them. A
+comparison's is generated from the same module as its page
+(`src/lib/compare-markdown.ts`), with each source as a link in the cell it
+supports, because a copy is often read a table at a time.
 Both are served `noindex`. There is no `llms-full.txt` and no content
 negotiation.
 
@@ -1289,6 +1305,73 @@ _Checked by:_ `tests/content.test.ts` holds the groups to the order
 words and picture. That Self-hosting comes last with its `audience` line,
 where each self-hosted difference sits, and the register of every page, are
 `human`.
+
+### 5.19 A comparison names a source for every fact about another app, and the day it was read
+
+**Binding.** `/compare/` and a page for each app in `src/content/compare.ts`
+(YNAB, Monarch, Quicken Simplifi and Actual Budget when this was written):
+
+- **Every fact about another app cites the page it came from**, the
+  vendor's own pricing page, help center, docs or source code wherever one
+  exists, and the page prints the citation as a numbered link to its list of
+  sources. A plain "No" stands alone, because an absence has no page to cite,
+  and the research that found nothing is in the pull request that wrote it.
+  A third party's page is a source only where the vendor says nothing, and
+  says so in its label.
+- **Every page shows the day its facts were read**, as `checked`, which is
+  also its date in the sitemap and its article's `dateModified`.
+  `scripts/check-comparisons.mjs`, run weekly by
+  `.github/workflows/compare-check.yml`, keeps an issue open once a page is
+  more than 90 days old. Re-checking is reading every source again,
+  correcting what moved, and setting `checked` to that day. A date moved
+  without reading the sources is the one thing here no test can catch.
+- **Simple Balance's column and every answer are the contract's.** `ours()`
+  and each `answer()` take the prices and the free limit from
+  `app-facts.json`, and the copy that speaks for Simple Balance is held to
+  1.4's bank rule. A reader comparing two apps is the reader most likely to
+  assume a bank connection, so the column says there is none, in the present
+  tense.
+- **A "moving from" section says only what's true of any file**, read from
+  the importer at the snapshot's release: every row of a file goes into the
+  one account chosen, and an amount with a currency sign is refused. It
+  names the other app's export from that app's own help page, and promises
+  nothing about how cleanly it imports, because nobody has imported one.
+- **Free hosted and free to run yourself are separate rows**, side by side:
+  what it costs to have it hosted for you, whether there's a free hosted
+  plan, and whether you can run your own copy. One "Free" covered both, and
+  in Actual Budget's column it read as a cloud app Actual Budget hasn't offered
+  since 2024. A "Free" that doesn't say which kind is the finding.
+- **The bank difference is said last, and in the present tense.** Each
+  answer leads with price and hosting, and ends on the other app's bank
+  connection and "Simple Balance has no bank connection today". It's a fact
+  about now, under 1.4, and not the difference that defines the product:
+  bank connections are planned, so an answer that called it the biggest
+  difference would describe a gap as the product.
+- **The other app is named in full**, "Actual Budget" and never "Actual",
+  because the short name is a common word an engine can't tie to the
+  product.
+- **Each page says when the other app is the better choice**, before it says
+  when Simple Balance is. A comparison that can't name one is an
+  advertisement, and reads as one.
+- **The title is the search itself**, "Simple Balance vs. YNAB", set as an
+  absolute title so the layout's template doesn't name the site twice.
+
+The pages are linked from the footer and not the header. The header is for
+the reader 1.3 describes, who has never used another budgeting app; somebody
+leaving one searches for it by name.
+
+The obvious alternative, and the one `docs/roadmap.md` 3 recorded for a
+while, is no comparison pages, with the pricing table as the only
+comparison. It's the safer page to maintain, and it leaves "an alternative to
+YNAB" to other people's lists, which is where answer engines found it.
+
+_Checked by:_ `tests/compare.test.ts`, for a source behind every claim that
+isn't a plain no, every listed source cited, a checked date that isn't in the
+future, the column and the answers read from the contract, every claim and
+source on the built page and in its copy, and each page's article;
+`tests/copy.test.ts` for the bank rule and American English over the copy
+that speaks for Simple Balance. Whether each source still says what its claim
+says is `human`, every 90 days.
 
 ## 6. Pricing and legal copy
 

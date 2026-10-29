@@ -90,10 +90,11 @@ describe("what the site ships", () => {
   });
 
   it("ships no stray development files", () => {
-    // A docs page's or a guide's `index.md` is published on purpose
-    // (`content.md` 5.15), and only at that one depth and name.
+    // A docs page's, a guide's or a comparison's `index.md` is published on
+    // purpose (`content.md` 5.15), and only at that one depth and name.
     const strays = files.filter(
-      (f) => /\.(ts|tsx|md|mdx)$/.test(f) && !/^out\/(docs|learn)\/[^/]+\/index\.md$/.test(f),
+      (f) =>
+        /\.(ts|tsx|md|mdx)$/.test(f) && !/^out\/(docs|learn|compare)\/[^/]+\/index\.md$/.test(f),
     );
     expect(strays).toEqual([]);
   });

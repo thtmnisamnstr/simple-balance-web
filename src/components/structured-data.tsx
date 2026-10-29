@@ -223,7 +223,52 @@ export function DocStructuredData({ entry }: { readonly entry: Entry }) {
 }
 
 /**
- * The pricing page's questions, as an `FAQPage`.
+ * A comparison page. An `Article`, like a learn guide, dated by the day its
+ * facts were checked, because that is when what it says was last true.
+ *
+ * `about` names the two things a reader sees compared: the application, by
+ * reference, and the other app by its name and its own address. The other
+ * app is a `Thing` rather than a `SoftwareApplication` on purpose: Google
+ * reads any `SoftwareApplication` as a candidate for its software result and
+ * reports it as broken without a rating and an offer, and this page has
+ * neither to give for somebody else's product.
+ */
+export function CompareStructuredData({
+  path,
+  title,
+  description,
+  checked,
+  card,
+  others,
+}: {
+  readonly path: string;
+  readonly title: string;
+  readonly description: string;
+  readonly checked: string;
+  readonly card: string;
+  readonly others: readonly { readonly name: string; readonly url: string }[];
+}) {
+  return (
+    <Ld
+      data={{
+        "@context": "https://schema.org",
+        "@type": "Article",
+        headline: title,
+        description,
+        url: `${base}${path}`,
+        image: `${base}/og/${card}.png`,
+        dateModified: checked,
+        inLanguage: "en-US",
+        about: [{ "@id": APP }, ...others.map((other) => ({ "@type": "Thing", ...other }))],
+        publisher,
+      }}
+    />
+  );
+}
+
+/**
+ * The pricing page's questions, and the docs' questions page's, as an
+ * `FAQPage`.
  *
  * Google used to render these as expandable results and has since stopped
  * showing FAQ rich results for sites like this one, so the markup earns no

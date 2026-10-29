@@ -21,6 +21,7 @@ import { mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import matter from "gray-matter";
 import { format, resolveConfig } from "prettier";
 import { sections } from "../src/content/sections.ts";
+import { compareCopy, compareIndex, rivals } from "../src/content/compare.ts";
 
 const W = 1200;
 const H = 630;
@@ -407,6 +408,18 @@ for (const key of ["learn", "docs"]) {
     });
   }
 }
+// The comparisons, under a kicker that says what the page is, so a shared
+// "Simple Balance and YNAB" can't be taken for a page by either of them.
+cardPages.push(
+  { file: "compare", kicker: compareCopy.eyebrow, title: compareIndex.heading, path: "/compare/" },
+  ...rivals.map((rival) => ({
+    file: `compare/${rival.slug}`,
+    kicker: compareCopy.eyebrow,
+    title: rival.heading,
+    path: `/compare/${rival.slug}/`,
+  })),
+);
+mkdirSync("public/og/compare", { recursive: true });
 mkdirSync("public/og/learn", { recursive: true });
 mkdirSync("public/og/docs", { recursive: true });
 const cards = {};

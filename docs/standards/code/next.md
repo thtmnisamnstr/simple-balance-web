@@ -57,7 +57,7 @@ It works for the keys somebody remembered to spread, and misses the next one
 the root adds. A helper is called, so a change to it lands on every route at
 once, and a route that skips it is visible to a test.
 
-_Checked by:_ `tests/copy.test.ts:553` for a route that writes its
+_Checked by:_ `tests/copy.test.ts:582` for a route that writes its
 `openGraph` by hand or writes none, and the locale on every built page;
 `tests/sitemap.test.ts:155` for the preview directive on every listed page;
 `tests/feeds.test.ts:117` for the feeds; `tests/markdown.test.ts:55` for the
@@ -85,14 +85,14 @@ least one route until a test caught it:
 2. **`openGraph()` with the canonical URL**, and the page's own title and
    description.
 3. **`pageCard()` for its image**, an entry in `cardPages`
-   (`scripts/build-images.mjs:383`) and in the card test's list of pages
-   (`tests/export-shape.test.ts:326`), then `npm run build:images`. A learn
+   (`scripts/build-images.mjs:384`) and in the card test's list of pages
+   (`tests/export-shape.test.ts:327`), then `npm run build:images`. A learn
    guide or a docs page gets both entries from its Markdown and needs only
    the run.
 4. **`feedAlternates(canonical)`**, and under a section, `sectionRobots(key)`.
    A page outside every section omits `robots` and inherits the root's, by
    1.1.
-5. **A line in `src/app/sitemap.ts:40`**, dated from the page's own copy
+5. **A line in `src/app/sitemap.ts:41`**, dated from the page's own copy
    module the way `homeUpdated` and `pricingUpdated` are, never from the
    build.
 6. **`Breadcrumbs`**, which writes its own `BreadcrumbList`

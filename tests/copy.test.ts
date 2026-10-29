@@ -9,6 +9,8 @@ import * as sectionsContent from "@/content/sections";
 import * as learnContent from "@/content/learn";
 import * as learnArtContent from "@/content/learn-art";
 import * as llmsContent from "@/content/llms";
+import * as compareContent from "@/content/compare";
+import appFactsForCompare from "@/content/app-facts.json";
 import { formatDate } from "@/lib/format";
 import { openGraph } from "@/app/open-graph";
 import NotFound, { metadata as notFoundMetadata } from "@/app/not-found";
@@ -290,10 +292,27 @@ describe("the claim this site must never make", () => {
     /\bset\s+it\s+and\s+forget\s+it\b/i,
   ];
 
+  /*
+   * The comparisons' half that speaks for Simple Balance: its column, the
+   * points for choosing it, and the words every comparison shares. Not the
+   * other apps' columns, which say "connects to your bank" because theirs
+   * do, and which the first pattern would refuse.
+   */
+  const compareContract = {
+    prices: appFactsForCompare.facts.declared.prices,
+    freeLimit: appFactsForCompare.facts.derived.plans.free.accountLimit,
+  };
+  const comparisonsForUs = {
+    ours: compareContent.ours(compareContract),
+    chooseUs: compareContent.rivals.map((rival) => rival.chooseUs.map((point) => point.text)),
+    movingOurs: compareContent.compareCopy.movingOurs,
+  };
+
   const everything = [
     ...strings(content),
     ...strings(pricingContent, "pricing"),
     ...strings(llmsContent, "llms"),
+    ...strings(comparisonsForUs, "compare"),
   ];
 
   it("has both pages' copy to check", () => {
@@ -418,6 +437,16 @@ describe("the reader is American", () => {
     ...strings(sectionsContent, "sections"),
     ...strings(learnContent, "learn"),
     ...strings(learnArtContent, "learn-art"),
+    ...strings(compareContent, "compare"),
+    ...strings(
+      compareContent.rivals.map((rival) => ({
+        answer: rival.answer({
+          prices: appFactsForCompare.facts.declared.prices,
+          freeLimit: appFactsForCompare.facts.derived.plans.free.accountLimit,
+        }),
+      })),
+      "compare.answers",
+    ),
   ];
 
   function inCopy(pattern: RegExp): readonly string[] {
