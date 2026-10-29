@@ -6,7 +6,7 @@ order: 4
 updated: 2026-10-26
 ---
 
-This page is for a copy you run yourself. On app.smpl.money there's nothing
+This page is for a copy you run yourself. On [app.smpl.money](https://app.smpl.money/) there's nothing
 to configure.
 
 Simple Balance reads its configuration from environment variables, and

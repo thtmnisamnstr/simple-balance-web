@@ -21,6 +21,7 @@ import { ActiveContents } from "@/components/client/active-contents";
 import { DocPager } from "@/components/doc-pager";
 import { formatDate } from "@/lib/format";
 import { sectionRobots } from "@/lib/indexing";
+import { AppLinked } from "@/components/app-linked";
 
 const docs = section("docs");
 
@@ -85,7 +86,9 @@ export default async function DocPage({ params }: { params: Promise<{ slug: stri
         <Breadcrumbs trail={trail} />
 
         <h1 className="entry-heading">{entry.frontmatter.title}</h1>
-        <p className="lede">{entry.frontmatter.description}</p>
+        <p className="lede">
+          <AppLinked text={entry.frontmatter.description} />
+        </p>
 
         <div className="docs-meta">
           {entry.frontmatter.updated ? (

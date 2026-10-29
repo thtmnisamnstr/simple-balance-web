@@ -423,7 +423,7 @@ gray, and nothing said where one group stopped.
 
 **The lead page can be a feature.** It becomes `DocFeature`, a wider card,
 when it's the group's only page or has steps in `docsIndex.steps`
-(`src/app/docs/page.tsx:112`). "Only page" alone dropped Get started's
+(`src/app/docs/page.tsx:113`). "Only page" alone dropped Get started's
 feature the day it gained a second page, and with it the four steps a new
 reader most needs. A step is a heading id, and its words come from the page's
 own heading, so a renamed heading changes the card too and a removed one

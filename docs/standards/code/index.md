@@ -93,7 +93,7 @@ where a child happens to sit. Key by the value that was drawn, composed where
 two parts would share it, the way the emergency fund's card keys a square by
 which row and which month it is
 (`src/components/learn-art/emergency-fund.tsx:86`). Where position really is
-the only honest key, stop producing an array: `src/components/legal-page.tsx:45`
+the only honest key, stop producing an array: `src/components/legal-page.tsx:53`
 passes the parts as variadic children and needs no key at all. Silencing the
 rule would have kept a key that means nothing, plus an entry in §5 arguing
 for it.

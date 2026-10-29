@@ -4,6 +4,7 @@ import { formatDate } from "@/lib/format";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Contents } from "@/components/contents";
 import { slugify } from "@/content/collections";
+import { AppLinked } from "@/components/app-linked";
 import { typeset } from "@/lib/typeset";
 
 /**
@@ -14,6 +15,9 @@ import { typeset } from "@/lib/typeset";
  * That is why the contents list is not optional here the way it is on a post —
  * nobody reads these top to bottom, they arrive looking for "deleting your
  * account".
+ *
+ * The application's address is a link wherever a paragraph names it
+ * (`AppLinked`), so a reader who meets "app.smpl.money" can open it.
  *
  * `**bold**` is honored inside a paragraph, because these documents need
  * emphasis on the sentences that matter — "we never see or store your card
@@ -32,7 +36,11 @@ function Emphasized({ text }: { readonly text: string }) {
   const nodes = text
     .split(/\*\*(.+?)\*\*/g)
     .map((part, index) =>
-      index % 2 === 1 ? createElement("strong", null, typeset(part)) : typeset(part),
+      createElement(
+        index % 2 === 1 ? "strong" : Fragment,
+        null,
+        createElement(AppLinked, { text: part }),
+      ),
     );
 
   /*
@@ -74,7 +82,9 @@ export function LegalPage({
           ]}
         />
         <h1 className="entry-heading">{typeset(title)}</h1>
-        <p className="lede">{typeset(description)}</p>
+        <p className="lede">
+          <AppLinked text={description} />
+        </p>
         <p className="entry-meta">
           Last updated <time dateTime={legalUpdated}>{formatDate(legalUpdated)}</time>
         </p>

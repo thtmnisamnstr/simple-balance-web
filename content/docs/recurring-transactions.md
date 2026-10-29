@@ -237,7 +237,7 @@ There's no pause switch. To stop one, delete it.
 nothing proposed. Whatever runs the schedule has not run recently." It means a
 due date went by and no row arrived.
 
-On app.smpl.money that's ours to fix, and it shouldn't happen. When the
+On [app.smpl.money](https://app.smpl.money/) that's ours to fix, and it shouldn't happen. When the
 schedule runs again, it proposes the rows it missed, each dated its own day.
 On a copy you run yourself, check that the schedule is turned on:
 `RECURRENCE_SCHEDULER` in [Operational settings](/docs/configuration/#operational-settings).

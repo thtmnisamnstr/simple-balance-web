@@ -25,7 +25,7 @@ accounts in use at once, with ads.
 
 ## How is Simple Balance different from YNAB or Monarch?
 
-Simple Balance has a free plan at app.smpl.money, which YNAB, Monarch and
+Simple Balance has a free plan at [app.smpl.money](https://app.smpl.money/), which YNAB, Monarch and
 Quicken Simplifi don't, and it's open source, so you can run your own copy.
 Those three can connect to your bank. Simple Balance has no bank connection
 today, so you download a file from your bank and import it.
@@ -106,7 +106,7 @@ has the steps.
 
 Yes. Its code is public on
 [GitHub](https://github.com/thtmnisamnstr/simple-balance) under the AGPL-3.0
-license, and the copy at app.smpl.money is the same product.
+license, and the copy at [app.smpl.money](https://app.smpl.money/) is the same product.
 
 ## Can I run Simple Balance on my own computer or server?
 
@@ -114,7 +114,7 @@ Yes, for free, with no plan, no account limit and no ads. You install it, put
 HTTPS in front of it, and back it up and upgrade it yourself.
 [Self-hosting](/docs/self-hosting/) starts there, and you can
 [move your transactions](/docs/moving-between-cloud-and-self-hosted/) between
-your copy and app.smpl.money later, in either direction.
+your copy and [app.smpl.money](https://app.smpl.money/) later, in either direction.
 
 ## How do I get help?
 
