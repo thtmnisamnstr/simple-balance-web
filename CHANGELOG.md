@@ -12,9 +12,12 @@ than a contract with readers.
 **Comparisons, at /compare.** Simple Balance beside YNAB, Monarch, Quicken
 Simplifi and Actual Budget, one page each and a table of all five. Each page
 opens on a paragraph that answers the comparison with both apps' prices, then
-a table of what each costs, whether it has a free plan, how transactions get
-in, the files it reads, how it budgets, sharing, open source, running your
-own copy, AI assistants and where you can use it. Every fact about the other
+a table of what each costs hosted for you, whether there's a free hosted
+plan, whether you can run your own copy, how transactions get in, the files
+it reads, how it budgets, sharing, open source, AI assistants and where you
+can use it. Free hosting and free to run yourself are separate rows, because
+they're different things: only Simple Balance has the first, and Actual
+Budget, which has no hosted service of its own, has only the second. Every fact about the other
 app links to the vendor's own page it came from, and every page says the day
 it was checked. Each page says when the other app is the better choice before
 it says when Simple Balance is, and how to bring your history across. The

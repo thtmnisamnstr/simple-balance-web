@@ -1336,6 +1336,11 @@ where each self-hosted difference sits, and the register of every page, are
   one account chosen, and an amount with a currency sign is refused. It
   names the other app's export from that app's own help page, and promises
   nothing about how cleanly it imports, because nobody has imported one.
+- **Free hosted and free to run yourself are separate rows**, side by side:
+  what it costs to have it hosted for you, whether there's a free hosted
+  plan, and whether you can run your own copy. One "Free" covered both, and
+  in Actual Budget's column it read as a cloud app Actual hasn't offered
+  since 2024. A "Free" that doesn't say which kind is the finding.
 - **Each page says when the other app is the better choice**, before it says
   when Simple Balance is. A comparison that can't name one is an
   advertisement, and reads as one.

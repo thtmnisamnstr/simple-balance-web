@@ -23,6 +23,10 @@ export function sourceFiles(dir: string, match = /\.(ts|tsx|css)$/): readonly So
     for (const entry of readdirSync(current)) {
       if (entry === "node_modules" || entry.startsWith(".")) continue;
       const full = join(current, entry);
+      // Claude Code puts a session's git worktree here, a whole second copy
+      // of the repository on another branch, and git ignores it. Walked, a
+      // sibling session's older docs failed this branch's citation checks.
+      if (relative(ROOT, full) === join(".claude", "worktrees")) continue;
       if (statSync(full).isDirectory()) walk(full);
       else if (match.test(entry)) {
         out.push({
