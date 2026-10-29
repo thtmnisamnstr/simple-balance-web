@@ -154,7 +154,7 @@ describe("Simple Balance's own column", () => {
   });
 
   it("says plainly that it doesn't connect to a bank", () => {
-    expect(column.in).toContain("There's no bank connection.");
+    expect(column.in).toContain("There's no bank connection today.");
   });
 });
 

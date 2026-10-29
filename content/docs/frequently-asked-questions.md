@@ -25,11 +25,10 @@ accounts in use at once, with ads.
 
 ## How is Simple Balance different from YNAB or Monarch?
 
-The biggest difference is how your spending gets in. YNAB, Monarch and Quicken
-Simplifi can connect to your bank, and Simple Balance doesn't: you download a
-file from your bank and import it. Simple Balance also has a free plan at
-app.smpl.money, which none of those three has, and it's open source, so you
-can run your own copy.
+Simple Balance has a free plan at app.smpl.money, which YNAB, Monarch and
+Quicken Simplifi don't, and it's open source, so you can run your own copy.
+Those three can connect to your bank. Simple Balance has no bank connection
+today, so you download a file from your bank and import it.
 [How Simple Balance compares](/compare/) puts them side by side, with a source
 for every fact about the other apps.
 

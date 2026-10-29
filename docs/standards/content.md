@@ -1339,12 +1339,21 @@ where each self-hosted difference sits, and the register of every page, are
 - **Free hosted and free to run yourself are separate rows**, side by side:
   what it costs to have it hosted for you, whether there's a free hosted
   plan, and whether you can run your own copy. One "Free" covered both, and
-  in Actual Budget's column it read as a cloud app Actual hasn't offered
+  in Actual Budget's column it read as a cloud app Actual Budget hasn't offered
   since 2024. A "Free" that doesn't say which kind is the finding.
+- **The bank difference is said last, and in the present tense.** Each
+  answer leads with price and hosting, and ends on the other app's bank
+  connection and "Simple Balance has no bank connection today". It's a fact
+  about now, under 1.4, and not the difference that defines the product:
+  bank connections are planned, so an answer that called it the biggest
+  difference would describe a gap as the product.
+- **The other app is named in full**, "Actual Budget" and never "Actual",
+  because the short name is a common word an engine can't tie to the
+  product.
 - **Each page says when the other app is the better choice**, before it says
   when Simple Balance is. A comparison that can't name one is an
   advertisement, and reads as one.
-- **The title is the search itself**, "Simple Balance vs YNAB", set as an
+- **The title is the search itself**, "Simple Balance vs. YNAB", set as an
   absolute title so the layout's template doesn't name the site twice.
 
 The pages are linked from the footer and not the header. The header is for

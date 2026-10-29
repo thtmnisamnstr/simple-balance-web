@@ -47,7 +47,8 @@ export type RowKey =
  * once covered two different things: a plan somebody hosts for you at no
  * charge, which Simple Balance has and none of the others does, and software
  * that costs nothing to run on a server you look after, which Simple Balance
- * and Actual Budget both are. Actual has no hosted service of its own, so a
+ * and Actual Budget both are. Actual Budget has no hosted service of its own,
+ * so a
  * single "Free" in its column read as a cloud app it doesn't offer.
  */
 export const rows: readonly { readonly key: RowKey; readonly label: string }[] = [
@@ -90,7 +91,7 @@ export type Rival = {
   readonly url: string;
   /**
    * The whole title, without the layout's " — Simple Balance": it's
-   * "Simple Balance vs YNAB", the search itself, so the name is already in
+   * "Simple Balance vs. YNAB", the search itself, so the name is already in
    * it once (`tests/sitemap.test.ts` refuses it twice).
    */
   readonly title: string;
@@ -131,9 +132,9 @@ export const spell = (count: number) => WORDS[count] ?? String(count);
  */
 export function ours({ prices, freeLimit }: Contract): Readonly<Record<RowKey, string>> {
   return {
-    cost: `At app.smpl.money: free, or ${dollars(prices.monthly)} a month or ${dollars(prices.yearly)} a year for Premium`,
-    free: `Yes, at app.smpl.money, with every feature, for ${spell(freeLimit)} accounts in use at once and with ads`,
-    in: "You download a CSV file from your bank and import it, or type entries in. There's no bank connection.",
+    cost: `Free, or ${dollars(prices.monthly)} a month or ${dollars(prices.yearly)} a year for Premium`,
+    free: `Yes, with every feature, for ${spell(freeLimit)} accounts in use at once and with ads`,
+    in: "You download a CSV file from your bank and import it, or type entries in. There's no bank connection today.",
     files: "CSV",
     budget: "A budget for each category or group, which can carry what's left into the next month",
     sharing: "No. Each person who signs up has their own books.",
@@ -151,7 +152,7 @@ export const compareCopy = {
   checked: "Checked",
   checkedNote:
     "Prices and features change. Every fact about the other app links to the page it came from, and this page is checked again every three months.",
-  tableTitle: "Side by side.",
+  tableTitle: "Feature comparison.",
   tableCaption: (name: string) => `Simple Balance and ${name}, feature by feature`,
   feature: "Feature",
   sourceLabel: (number: number, label: string) => `Source ${number}: ${label}`,
@@ -224,16 +225,16 @@ export const rivals: readonly Rival[] = [
     slug: "ynab",
     name: "YNAB",
     url: "https://www.ynab.com/",
-    title: "Simple Balance vs YNAB: prices, bank connections and budgets",
-    heading: "Simple Balance and YNAB",
+    title: "Simple Balance vs. YNAB: prices, bank connections and budgets",
+    heading: "Simple Balance vs. YNAB",
     description:
       "YNAB costs $14.99 a month or $109 a year and can connect to your bank. Simple Balance has a free plan, imports your bank's CSV file, and is open source.",
     checked: "2026-10-29",
     answer: (contract) =>
-      "YNAB and Simple Balance are both budget apps, and they differ most in price and in how transactions get in. " +
-      "YNAB costs $14.99 a month or $109 a year after a 34-day free trial, and it can connect to your bank. " +
-      `Simple Balance is ${ourPlans(contract)}, and you import a CSV file you download from your bank instead. ` +
-      "Simple Balance is also open source, so you can run your own copy for free.",
+      "YNAB and Simple Balance are both budget apps. " +
+      "YNAB costs $14.99 a month or $109 a year after a 34-day free trial. " +
+      `Simple Balance is ${ourPlans(contract)}, and it's open source, so you can also run your own copy for free. ` +
+      "YNAB can connect to your bank. Simple Balance has no bank connection today, so you import a CSV file you download from your bank.",
     them: {
       cost: { text: "$14.99 a month, or $109 a year", source: 1 },
       free: { text: "No. A 34-day free trial, with no card needed", source: 1 },
@@ -257,7 +258,7 @@ export const rivals: readonly Rival[] = [
     },
     chooseThem: [
       {
-        text: "You want transactions to arrive without downloading anything. YNAB's Direct Import brings transactions in from your bank, and Simple Balance has no bank connection.",
+        text: "You want transactions to arrive without downloading anything. YNAB's Direct Import brings transactions in from your bank, and Simple Balance has no bank connection today.",
         source: 2,
       },
       {
@@ -320,16 +321,16 @@ export const rivals: readonly Rival[] = [
     slug: "monarch",
     name: "Monarch",
     url: "https://www.monarch.com/",
-    title: "Simple Balance vs Monarch: prices, bank connections and sharing",
-    heading: "Simple Balance and Monarch",
+    title: "Simple Balance vs. Monarch: prices, bank connections and sharing",
+    heading: "Simple Balance vs. Monarch",
     description:
       "Monarch costs $14.99 a month or $99.99 a year and connects to your bank. Simple Balance has a free plan, imports a CSV file instead, and is open source.",
     checked: "2026-10-29",
     answer: (contract) =>
-      "Monarch and Simple Balance are both budget apps, and they differ most in price and in how transactions get in. " +
-      "Monarch costs $14.99 a month or $99.99 a year after a 7-day free trial, and it connects to your bank. " +
-      `Simple Balance is ${ourPlans(contract)}, and you import a CSV file you download from your bank instead. ` +
-      "Both let an AI assistant connect through MCP, and only Simple Balance is open source and free to run yourself.",
+      "Monarch and Simple Balance are both budget apps, and both let an AI assistant connect through MCP. " +
+      "Monarch costs $14.99 a month or $99.99 a year after a 7-day free trial. " +
+      `Simple Balance is ${ourPlans(contract)}, and only Simple Balance is open source and free to run yourself. ` +
+      "Monarch connects to your bank. Simple Balance has no bank connection today, so you import a CSV file you download from your bank.",
     them: {
       cost: { text: "Core: $14.99 a month or $99.99 a year. Plus: $199.99 a year", source: 1 },
       free: { text: "No. A 7-day free trial, with a payment method", source: 1 },
@@ -347,7 +348,7 @@ export const rivals: readonly Rival[] = [
     },
     chooseThem: [
       {
-        text: "You want transactions to arrive from your bank on their own. Monarch connects to your bank, and Simple Balance doesn't.",
+        text: "You want transactions to arrive from your bank on their own. Monarch connects to your bank, and Simple Balance doesn't today.",
         source: 3,
       },
       {
@@ -412,16 +413,16 @@ export const rivals: readonly Rival[] = [
     slug: "quicken-simplifi",
     name: "Quicken Simplifi",
     url: "https://www.quicken.com/products/simplifi/",
-    title: "Simple Balance vs Quicken Simplifi: prices and bank connections",
-    heading: "Simple Balance and Quicken Simplifi",
+    title: "Simple Balance vs. Quicken Simplifi: prices and bank connections",
+    heading: "Simple Balance vs. Quicken Simplifi",
     description:
       "Quicken Simplifi is $6.99 a month, billed yearly, and connects to your bank. Simple Balance has a free plan, imports a CSV file, and is open source.",
     checked: "2026-10-29",
     answer: (contract) =>
-      "Quicken Simplifi and Simple Balance are both budget apps, and they differ most in price and in how transactions get in. " +
-      "Quicken Simplifi costs $6.99 a month, billed once a year, with no free trial, and it connects to your bank. " +
-      `Simple Balance is ${ourPlans(contract)}, and you import a CSV file you download from your bank instead. ` +
-      "Simple Balance is also open source, so you can run your own copy for free.",
+      "Quicken Simplifi and Simple Balance are both budget apps. " +
+      "Quicken Simplifi costs $6.99 a month, billed once a year, with no free plan or trial. " +
+      `Simple Balance is ${ourPlans(contract)}, and it's open source, so you can also run your own copy for free. ` +
+      "Quicken Simplifi connects to your bank. Simple Balance has no bank connection today, so you import a CSV file you download from your bank.",
     them: {
       cost: { text: "$6.99 a month, billed once a year. There's no monthly plan.", source: [1, 2] },
       free: { text: "No, and no free trial. A 30-day money-back guarantee", source: 2 },
@@ -442,7 +443,7 @@ export const rivals: readonly Rival[] = [
     },
     chooseThem: [
       {
-        text: "You want transactions to arrive from your bank on their own. Simplifi connects to your bank, and Simple Balance doesn't.",
+        text: "You want transactions to arrive from your bank on their own. Simplifi connects to your bank, and Simple Balance doesn't today.",
         source: 3,
       },
       {
@@ -504,19 +505,19 @@ export const rivals: readonly Rival[] = [
     slug: "actual-budget",
     name: "Actual Budget",
     url: "https://actualbudget.org/",
-    title: "Simple Balance vs Actual Budget: two open source budget apps",
-    heading: "Simple Balance and Actual Budget",
+    title: "Simple Balance vs. Actual Budget: two open source budget apps",
+    heading: "Simple Balance vs. Actual Budget",
     description:
       "Both are open source and free to run on your own server. Only Simple Balance also has a hosted app with a free plan; Actual Budget has no hosted service.",
     checked: "2026-10-29",
     answer: (contract) =>
       "Actual Budget and Simple Balance are both open source budget apps that are free to run on a server you look after, and they differ most in whether anybody hosts them for you. " +
       "Actual Budget has had no hosted service since 2024: you set up a server, pay a company such as PikaPods about $1.50 a month to run one, or keep your budget in a single browser with no sync. " +
-      `Simple Balance also runs as a hosted app at app.smpl.money, ${ourPlans(contract)}. ` +
-      "Actual Budget uses envelope budgeting and can sync with your bank through a service such as SimpleFIN, and Simple Balance doesn't connect to a bank: you import a CSV file from your bank instead.",
+      `Simple Balance is also a hosted app, ${ourPlans(contract)}. ` +
+      "Actual Budget uses envelope budgeting and can sync with your bank through a service such as SimpleFIN. Simple Balance has no bank connection today, so you import a CSV file you download from your bank.",
     them: {
       cost: {
-        text: "Not by Actual, whose hosted service shut down in 2024. PikaPods hosts it for about $1.50 a month",
+        text: "Not by Actual Budget, whose hosted service shut down in 2024. PikaPods hosts it for about $1.50 a month",
         source: [7, 13],
       },
       free: {
@@ -524,7 +525,7 @@ export const rivals: readonly Rival[] = [
         source: 6,
       },
       self: {
-        text: "Yes, free. A server you set up is the standard way to use Actual",
+        text: "Yes, free. A server you set up is the standard way to use Actual Budget",
         source: [1, 6],
       },
       in: {
@@ -552,7 +553,7 @@ export const rivals: readonly Rival[] = [
     },
     chooseThem: [
       {
-        text: "You want bank sync and don't mind setting it up. Actual's optional sync runs on your own server through a service such as SimpleFIN, and Simple Balance has no bank connection.",
+        text: "You want bank sync and don't mind setting it up. Actual Budget's optional sync runs on your own server through a service such as SimpleFIN, and Simple Balance has no bank connection today.",
         source: 2,
       },
       { text: "You want envelope budgeting, giving out only money you already have.", source: 4 },
@@ -565,14 +566,14 @@ export const rivals: readonly Rival[] = [
     ],
     chooseUs: [
       {
-        text: "You don't want to run a server or pay for one. Simple Balance's cloud app at app.smpl.money has a free plan and nothing to install, and Actual has had no hosted service of its own since 2024.",
+        text: "You don't want to run a server or pay for one. Simple Balance's cloud app has a free plan and nothing to install, and Actual Budget has had no hosted service of its own since 2024.",
         source: 7,
       },
       {
         text: "You keep money in more than one currency. Each account keeps its own, and nothing is converted at an exchange rate.",
       },
       {
-        text: "You want an AI assistant to work in your books through an MCP server that comes with the app. Actual's docs point to ones other people built.",
+        text: "You want an AI assistant to work in your books through an MCP server that comes with the app. Actual Budget's docs point to ones other people built.",
         source: 9,
       },
       {
@@ -581,42 +582,51 @@ export const rivals: readonly Rival[] = [
     ],
     moving: [
       {
-        text: "Actual exports an account's transactions from the menu on that account's page, as a CSV file, so each account arrives in a file of its own.",
+        text: "Actual Budget exports an account's transactions from the menu on that account's page, as a CSV file, so each account arrives in a file of its own.",
         source: [11, 12],
       },
     ],
     sources: [
       { label: "Actual Budget on GitHub", url: "https://github.com/actualbudget/actual" },
-      { label: "Bank sync, Actual docs", url: "https://actualbudget.org/docs/advanced/bank-sync" },
       {
-        label: "Importing transactions, Actual docs",
+        label: "Bank sync, Actual Budget docs",
+        url: "https://actualbudget.org/docs/advanced/bank-sync",
+      },
+      {
+        label: "Importing transactions, Actual Budget docs",
         url: "https://actualbudget.org/docs/transactions/importing",
       },
       { label: "Actual Budget", url: "https://actualbudget.org/" },
-      { label: "Vision, Actual docs", url: "https://actualbudget.org/docs/vision" },
-      { label: "Installing Actual, Actual docs", url: "https://actualbudget.org/docs/install" },
+      { label: "Vision, Actual Budget docs", url: "https://actualbudget.org/docs/vision" },
       {
-        label: "Frequently asked questions, Actual docs",
+        label: "Installing Actual Budget, Actual Budget docs",
+        url: "https://actualbudget.org/docs/install",
+      },
+      {
+        label: "Frequently asked questions, Actual Budget docs",
         url: "https://actualbudget.org/docs/faq",
       },
       {
-        label: "Multi-user support, Actual docs",
+        label: "Multi-user support, Actual Budget docs",
         url: "https://actualbudget.org/docs/config/multi-user",
       },
       {
-        label: "Community projects, Actual docs",
+        label: "Community projects, Actual Budget docs",
         url: "https://actualbudget.org/docs/community-repos",
       },
       {
-        label: "SimpleFIN bank sync, Actual docs",
+        label: "SimpleFIN bank sync, Actual Budget docs",
         url: "https://actualbudget.org/docs/advanced/bank-sync/simplefin",
       },
-      { label: "Accounts, Actual docs", url: "https://actualbudget.org/docs/tour/accounts" },
+      { label: "Accounts, Actual Budget docs", url: "https://actualbudget.org/docs/tour/accounts" },
       {
-        label: "Actual's CSV export, in its source code",
+        label: "Actual Budget's CSV export, in its source code",
         url: "https://github.com/actualbudget/actual/blob/master/packages/loot-core/src/server/transactions/export/export-to-csv.ts",
       },
-      { label: "PikaPods, Actual docs", url: "https://actualbudget.org/docs/install/pikapods" },
+      {
+        label: "PikaPods, Actual Budget docs",
+        url: "https://actualbudget.org/docs/install/pikapods",
+      },
     ],
   },
 ];
@@ -624,20 +634,20 @@ export const rivals: readonly Rival[] = [
 /** The comparisons' own index, `/compare/`. */
 export const compareIndex = {
   crumb: "Compare",
-  title: "Simple Balance vs YNAB, Monarch, Simplifi and Actual Budget",
+  title: "Simple Balance vs. YNAB, Monarch, Simplifi and Actual Budget",
   heading: "How Simple Balance compares with other budget apps.",
   description:
     "Simple Balance beside YNAB, Monarch, Simplifi and Actual Budget: what each costs hosted for you, which you can run yourself, and how transactions get in.",
   answer:
-    "Simple Balance is a free budget app and spending tracker. The biggest difference from YNAB, Monarch and Quicken Simplifi is how transactions get in: all three can connect to your bank, and Simple Balance imports a CSV file you download from your bank instead. Simple Balance is also the only one of the five with a free plan somebody hosts for you, at app.smpl.money. Like Actual Budget, it's open source and free to run on your own server, and Actual has no hosted service of its own.",
+    "Simple Balance is a free budget app and spending tracker, and the only one of these five apps with a free plan somebody hosts for you. Like Actual Budget, it's open source and free to run on your own server, but Actual Budget has no hosted service of its own. YNAB, Monarch and Quicken Simplifi can connect to your bank. Simple Balance has no bank connection today, so you import a CSV file you download from your bank.",
   checkedNote:
     "Prices and features change. Each app's facts link to the pages they came from, and every comparison is checked again every three months.",
-  tableTitle: "Five apps, side by side.",
+  tableTitle: "Feature comparison.",
   tableCaption: "Simple Balance, YNAB, Monarch, Quicken Simplifi and Actual Budget, compared",
-  pagesTitle: "One app at a time.",
+  pagesTitle: "Detailed comparisons.",
   sourcesNote:
     "Each number in the table links to the page that fact came from, listed under Sources on that app's own comparison.",
-  allLink: "Every app, side by side",
+  allLink: "Compare all five apps",
 } as const;
 
 const days = rivals.map((rival) => rival.checked).toSorted();
