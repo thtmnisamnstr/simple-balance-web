@@ -28,6 +28,7 @@ export function SiteFooter() {
         <p className="footer-note">
           {site.name} — {site.domain}
         </p>
+        <p className="footer-note">{footer.operator}</p>
       </div>
     </footer>
   );

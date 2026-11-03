@@ -516,6 +516,14 @@ JSX has it. At 0.2.1 it names that label for real, because the app builds
 the last word from a constant, `next {unitNoun[periodUnit]}`, and §5.5 says
 how to check one of those.
 
+It also names, every run, the labels on /docs/agents-and-mcp/ that are
+Claude's rather than the application's: **Customize**, **Connectors**,
+**Add custom connector**, **Continue**, **Authentication**, **Sign in now**,
+**Register automatically**, **Add** and **Organization settings**. They're
+bold because 5.17 holds a label to the screen that shows it, and that screen
+is Claude's. Check them against Anthropic's help article on custom connectors
+rather than against the application, and dismiss them here.
+
 The third reads the names a reader types rather than clicks, which are in
 code spans rather than bold, so the second can't see them: the environment
 variables on /docs/configuration/ and the scopes on /docs/agents-and-mcp/. A

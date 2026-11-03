@@ -1,9 +1,9 @@
 ---
 title: Connecting an AI assistant (MCP)
-description: "Connect an AI assistant to your records in Simple Balance at app.smpl.money/mcp: what it can read and change, and how staging and scopes keep it in check."
+description: "Connect Claude, Claude Code or another AI assistant to Simple Balance at app.smpl.money/mcp: how to set it up, what it can change, and what to do when it fails."
 section: Your account
 order: 3
-updated: 2026-10-25
+updated: 2026-11-03
 ---
 
 You can connect an AI assistant to Simple Balance through MCP, the Model
@@ -29,8 +29,8 @@ it may carry all need `ledger:write`, wherever they're reached from, including
 a CSV import.
 
 <Callout kind="warning" title="Three things no agent can do">
-Deleting your account, setting a sign-in password, and anything to do with
-billing are reachable from a signed-in session and never from an MCP
+Deleting your account, setting a sign-in password, and paying for or changing
+your plan are reachable from a signed-in session and never from an MCP
 connection. A connection is a credential handed to a program, which is a
 different class of authority from writing a transaction.
 </Callout>
@@ -56,6 +56,11 @@ That's the shape for a client that takes a server's URL in an `mcpServers`
 block in its settings file. A client that adds servers in its own settings
 screen instead takes the same address there.
 
+Claude Code needs one more line in that entry, `"type": "http"`. Without it,
+Claude Code takes the entry for a program to start on your computer, and skips
+it. [Connect Claude Code](#connect-claude-code) has the command that writes
+the entry for you.
+
 The client reads the rest from `/.well-known/oauth-authorization-server`,
 registers itself, and opens a browser. You sign in there the way you sign in to
 the web app, and an **Allow this MCP client?** screen names the client and lists
@@ -78,6 +83,89 @@ So the scopes are decided by the client. One that asks for every scope the
 server advertises gets `ledger:write` along with the rest. If yours lets you
 set what it requests, ask for `ledger:stage`, or `ledger:read` for an assistant
 that only answers questions.
+
+## Connect Claude
+
+On claude.ai and in Claude Desktop, Simple Balance is a custom connector.
+Claude's free plan allows one custom connector.
+
+1. In Claude, open **Customize**, then **Connectors**.
+2. Choose **+ Add**, then **Add custom connector**.
+3. Name it `Simple Balance`, enter `https://app.smpl.money/mcp`, and choose
+   **Continue**.
+4. Claude shows the sign-in settings it found. Choose **Continue** again.
+5. Under **Authentication**, choose **Sign in now**. Under the OAuth client,
+   choose **Register automatically**. Then choose **Add**.
+6. When Claude opens Simple Balance's sign-in, sign in, read what's listed on
+   **Allow this MCP client?**, and choose **Allow access**.
+
+To use it in a chat, press **+** at the bottom left of the message box, choose
+**Connectors**, and switch Simple Balance on.
+
+On a Team or Enterprise plan, an owner adds it under **Organization settings**
+and then **Connectors**. Each person then connects their own Simple Balance
+account from **Customize** and **Connectors**.
+
+<Callout kind="note" title="Claude asks for every kind of access">
+Claude asks for every scope Simple Balance offers, so the approval screen
+lists `ledger:write`. Approving it lets Claude record and change things in
+your books, not only propose them, and the approval screen can't narrow what's
+asked for. Everything it changes is listed on [Activity](/docs/activity-history/), and
+you can [revoke it](#see-and-revoke-connected-agents) at any time.
+</Callout>
+
+## Connect Claude Code
+
+Run this in a terminal:
+
+```bash
+claude mcp add --transport http --scope user simple-balance https://app.smpl.money/mcp
+```
+
+Then type `/mcp` in Claude Code, choose `simple-balance`, and sign in. Here,
+`--scope user` is Claude Code's own setting, for which of your projects can
+use the server. It has nothing to do with what Simple Balance lets it do.
+
+Unless you set them, Claude Code leaves the scopes to Simple Balance, and it
+may ask for every one, `ledger:write` included. To choose, add it with the
+scopes written out instead:
+
+```bash
+claude mcp add-json --scope user simple-balance '{"type":"http","url":"https://app.smpl.money/mcp","oauth":{"scopes":"openid profile email offline_access ledger:read ledger:stage"}}'
+```
+
+That's the staging access [this page suggests](#a-sensible-way-to-use-it).
+Add `ledger:write` to the list to let it commit too.
+
+To write the entry yourself, in a project's `.mcp.json` file, give it
+`"type": "http"` beside the address:
+
+```json
+{
+  "mcpServers": {
+    "simple-balance": {
+      "type": "http",
+      "url": "https://app.smpl.money/mcp"
+    }
+  }
+}
+```
+
+If you've added Simple Balance on claude.ai and you sign in to Claude Code
+with the same Claude subscription, the connector is already in Claude Code,
+and you don't need the command. If you add it with the command too, Claude
+Code uses that one and hides the connector.
+
+## Things to ask it
+
+Once it's connected, try one of these:
+
+- "Where did my money go last month?"
+- "What day did I pay the electric bill last month?"
+- "Add a $42.18 grocery purchase on checking for me to approve."
+
+The first two only read. The third needs `ledger:stage`. It puts a row on
+**Staged**, which changes no balance until you commit it.
 
 ## See and revoke connected agents
 
@@ -108,7 +196,7 @@ password disconnects every client too.
 It reaches the whole ledger, through the same services the web app uses. Apart from the
 three things above, an agent can't reach a capability the browser doesn't
 have, and the browser can't reach one an agent doesn't. That parity is checked
-on every build of the application rather than maintained by hand. So you can
+by the application's own tests rather than maintained by hand. So you can
 ask it to:
 
 - Add, edit, archive and delete accounts, read their balances and register,
@@ -138,6 +226,34 @@ Everything an agent changes is listed on **Activity**, marked with an
 **Agent** badge, beside what you did on the web (**Web**) and what the
 schedule did (**Scheduled**). [Activity history](/docs/activity-history/)
 explains how to read it.
+
+## When it doesn't work
+
+- **No browser window opens.** When Claude Code can't open your browser, it
+  shows the sign-in address instead. Copy it into a browser and sign in there.
+  If the browser then shows a connection error, copy the whole address from
+  its address bar and paste it into Claude Code when it asks.
+- **A tool it needs isn't there.** Simple Balance leaves a tool out of the
+  assistant's list when its scopes don't reach it. So an assistant with only
+  `ledger:read` sees no tool that stages, and may say it can't find one. Ask it to run `whoami`, which lists the scopes it holds, or
+  look under **Connected agents** in **Settings**.
+- **It needs a wider scope.** Connect it again, asking for more. In Claude
+  Code, run `claude mcp remove simple-balance`, add it again with the wider
+  list of scopes, then type `/mcp` and sign in. If an assistant calls a tool
+  by name that its scopes don't reach, Simple Balance refuses and names the
+  scope it needs. Claude on claude.ai then asks you to sign in again and
+  approve it. Each time, the approval screen lists what's asked for, and
+  nothing widens until you choose **Allow access**.
+- **You want to cut it off.** Revoke it under
+  [Connected agents](#see-and-revoke-connected-agents). It loses access at
+  once, whatever the assistant still holds.
+- **It says an account is frozen.** On the free plan, an account over the
+  limit is frozen. Simple Balance refuses an assistant's changes to what it
+  holds, just as it refuses yours, and trying again won't get past it. Use an account that's
+  still in use, or
+  [choose which accounts stay usable](/docs/your-account-and-plan/#choose-which-accounts-stay-usable).
+  Subscribing again unfreezes them all, and only you can do that, from the web
+  app.
 
 ## A sensible way to use it
 

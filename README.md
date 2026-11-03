@@ -155,7 +155,7 @@ and linked it from nowhere.
 
 ## Deployment
 
-Netlify, publishing `out/`, Node 24. Its build command is `npm run verify`,
+Netlify, publishing `out/`, Node 26. Its build command is `npm run verify`,
 not `npm run build` — a deploy preview whose tests fail is a preview somebody
 approves. GitHub Actions runs the two things Netlify's image cannot: the
 accessibility audit, which needs Chromium, and the internal link check.

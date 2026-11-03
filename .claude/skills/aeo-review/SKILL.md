@@ -275,10 +275,16 @@ out of the page, and ask five things of the one that answers.
    about tomorrow (`content.md` 1.4). An assistant is named only once
    somebody has connected it to that release, because naming one tells the
    next reader it works. So on the MCP row, "nothing on this page says
-   Claude" and the same for ChatGPT are correct until the owner's item in §9
-   is done, and they're how the report knows that item is still open. Once
-   it's done, the same lines are a finding: the page names each client that
-   was connected, with its own steps.
+   ChatGPT" is correct until the owner's item in §9 is done for it, and it's
+   how the report knows that item is still open. Once it's done, the same
+   line is a finding: the page names each client that was connected, with
+   its own steps. **Claude and Claude Code are named ahead of that check**,
+   at the owner's request in November 2026, because Claude's directory
+   requires setup steps, example prompts and troubleshooting on the listed
+   docs page before a submission. Their steps were written from Anthropic's
+   documentation and the application's source, and the live sign-in that
+   confirms them is the connectors repository's item 11 in
+   `submissions/prerequisites.md`; a failure there is a fix to the page.
 4. **Is it current?** A date, a version number, "new", "soon" or "coming"
    is true on the day it's written. A sentence naming a release names the
    snapshot's (`content.md` 2.6).
@@ -693,12 +699,14 @@ Report it.
   refuse an entry an agent drafted or submitted, so the owner writes that
   one. A price or limit change makes every listing that states one stale.
 - **The MCP Registry**, for the server at `https://app.smpl.money/mcp`. The
-  entry comes from the application's repository.
+  entry is published by the [connectors repository](https://github.com/thtmnisamnstr/simple-balance-mcp-connectors)'s
+  release workflow, with the directory listings beside it.
 - **Connecting Claude and ChatGPT**, and any other client the docs'
   configuration block is shaped for, to app.smpl.money at the snapshot's
   release, noting what each needed. Until somebody has, the docs name no
-  assistant (§3, check 3), and "How do I connect Simple Balance to Claude or
-  ChatGPT?" gets a generic answer. Once it's done, `/docs/agents-and-mcp/`
+  assistant but Claude and Claude Code, which §3 check 3 says were named
+  ahead of the check, and for Claude those two are the live confirmation
+  still owed. Once it's done, `/docs/agents-and-mcp/`
   names each client that was connected, with its own steps, and the
   homepage could say "such as Claude or ChatGPT", which is a proposal
   (§10). A release that changes the MCP server makes this due again.

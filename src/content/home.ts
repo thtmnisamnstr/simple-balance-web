@@ -128,6 +128,7 @@ export type Feature = {
   readonly icon: "wallet" | "split" | "target" | "copy" | "layers" | "list";
 };
 
+import { operator } from "@/content/legal";
 import { announcedSections } from "@/content/sections";
 
 /**
@@ -781,9 +782,21 @@ export const contact = {
   address: "info@smpl.money",
 } as const;
 
-export const footer: { readonly blurb: string; readonly links: readonly NavLink[] } = {
+export const footer: {
+  readonly blurb: string;
+  readonly operator: string;
+  readonly links: readonly NavLink[];
+} = {
   blurb:
     "Simple Balance keeps track of your money in one place, and lets you follow any number back to what actually happened.",
+  /**
+   * Who runs the site, on every page, because the footer is the one thing
+   * every page carries. OpenAI's directory review requires each public URL a
+   * listing gives to identify its publisher, and the homepage and the FAQ
+   * named nobody. The name is the privacy policy's `operator`, so the footer,
+   * the terms and the policy can't name three different people.
+   */
+  operator: `Run by ${operator.name}.`,
   links: [
     // The same derivation as `primaryNav`, because `sections.ts` promises the
     // header *and* the footer, and a flag that moves one of them is a flag

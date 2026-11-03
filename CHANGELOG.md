@@ -145,6 +145,29 @@ that release, then checked again against it.
 
 ### Changed
 
+**Who runs the site, on every page, and Claude in the assistant docs.** Made
+for Simple Balance's listings in the AI assistant directories, whose reviews
+check the pages a listing links to.
+
+- The footer of every page now says the site is run by Gavin Johnson, and the
+  terms name him in their Contact section. Only the privacy policy did before,
+  and a listing's homepage, help and terms pages have to name the same
+  publisher as the listing.
+- Connecting an AI assistant has a section for Claude, with the steps to add
+  Simple Balance as a custom connector, and one for Claude Code, with the
+  command that adds it and the line a hand-written entry needs, which Claude
+  Code otherwise skips. It also has three things to ask once it's connected,
+  and what to do when no browser opens, a tool is missing, an assistant needs
+  more access, you want it cut off, or an account is frozen. It says that
+  Claude asks for every kind of access, so approving lets it record changes
+  and not only propose them.
+- The privacy policy says the application keeps a copy of its reply to many
+  changes, so a request sent twice gets the same answer instead of being done
+  twice, and that those copies are kept until the account is deleted.
+
+**Built on Node 26**, which became the long-term support release in October
+2026, here and on Netlify alike.
+
 **A shorter top of the homepage, and a shorter header on a phone.**
 
 - The line under the headline is one sentence now: "See where your money
