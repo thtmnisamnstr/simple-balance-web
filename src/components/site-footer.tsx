@@ -26,9 +26,8 @@ export function SiteFooter() {
 
       <div className="page footer-legal">
         <p className="footer-note">
-          {site.name} — {site.domain}
+          {site.name} — {site.domain} · {footer.copyright}
         </p>
-        <p className="footer-note">{footer.operator}</p>
       </div>
     </footer>
   );

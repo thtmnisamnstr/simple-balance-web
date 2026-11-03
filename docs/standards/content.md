@@ -1587,9 +1587,9 @@ _Checked by:_ `tests/legal.test.tsx`, which asserts:
   answered from, are disclosed where collection is, from the web app as well
   as from an assistant, and kept until the account is deleted, which is true
   while app.smpl.money sets no `IDEMPOTENCY_RETENTION_HOURS`;
-- that one person is named as running the site, from the policy's
+- that one person is named as the site's publisher, from the policy's
   `operator`: in the policy, in the terms' Contact section, and in the
-  footer of every built page. OpenAI's directory review requires every URL a
+  copyright notice in the footer of every built page. OpenAI's directory review requires every URL a
   listing gives to identify the same publisher, and until November 2026 only
   the policy did;
 - the nightly backups, with the 14 kept and the two weeks that makes, where

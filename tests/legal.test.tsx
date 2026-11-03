@@ -1564,12 +1564,12 @@ describe("both documents", () => {
      * four, and the terms name the operator in their own words, because a
      * reviewer reads the document rather than the footer under it.
      *
-     * The footer's line is derived from `operator`, and that is asserted as
-     * well: a name typed into the footer passes every page below and starts
-     * the drift the shared constant is there to stop.
+     * The footer's notice is derived from `operator`, and that is asserted
+     * as well: a name typed into the footer passes every page below and
+     * starts the drift the shared constant is there to stop.
      */
-    expect(footer.operator, "the footer doesn't take its name from the policy's operator").toBe(
-      `Run by ${operator.name}.`,
+    expect(footer.copyright, "the footer doesn't take its name from the policy's operator").toBe(
+      `© 2026 ${operator.name}`,
     );
     const pages = (dir: string): readonly string[] =>
       readdirSync(dir).flatMap((entry) => {
@@ -1579,7 +1579,7 @@ describe("both documents", () => {
       });
     const built = pages("out");
     expect(built.length, "found no built pages").toBeGreaterThan(50);
-    const unnamed = built.filter((path) => !readFileSync(path, "utf8").includes(footer.operator));
+    const unnamed = built.filter((path) => !readFileSync(path, "utf8").includes(footer.copyright));
     expect(unnamed, "these pages don't name who runs the site").toEqual([]);
     expect(section(terms, /^contact$/i), "the terms don't name the operator").toContain(
       operator.name.toLowerCase(),

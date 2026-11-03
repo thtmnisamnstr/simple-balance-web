@@ -274,17 +274,15 @@ out of the page, and ask five things of the one that answers.
    and the bank mechanism is said in the present tense with no promise
    about tomorrow (`content.md` 1.4). An assistant is named only once
    somebody has connected it to that release, because naming one tells the
-   next reader it works. So on the MCP row, "nothing on this page says
-   ChatGPT" is correct until the owner's item in §9 is done for it, and it's
-   how the report knows that item is still open. Once it's done, the same
-   line is a finding: the page names each client that was connected, with
-   its own steps. **Claude and Claude Code are named ahead of that check**,
-   at the owner's request in November 2026, because Claude's directory
-   requires setup steps, example prompts and troubleshooting on the listed
-   docs page before a submission. Their steps were written from Anthropic's
-   documentation and the application's source, and the live sign-in that
-   confirms them is the connectors repository's item 11 in
-   `submissions/prerequisites.md`; a failure there is a fix to the page.
+   next reader it works. **ChatGPT, Claude, Gemini, Codex and Claude Code
+   are named ahead of that**, at the owner's request in November 2026, for
+   the directory listings, whose reviews read setup steps, example prompts
+   and troubleshooting on the listed docs page. Their steps were written from
+   each vendor's own documentation and the application's source, and the
+   live sign-in that confirms them is the connectors repository's item 11 in
+   `submissions/prerequisites.md`; a failure there is a fix to the page. A
+   client the page doesn't name stays unnamed until somebody has connected
+   it.
 4. **Is it current?** A date, a version number, "new", "soon" or "coming"
    is true on the day it's written. A sentence naming a release names the
    snapshot's (`content.md` 2.6).
@@ -703,13 +701,11 @@ Report it.
   release workflow, with the directory listings beside it.
 - **Connecting Claude and ChatGPT**, and any other client the docs'
   configuration block is shaped for, to app.smpl.money at the snapshot's
-  release, noting what each needed. Until somebody has, the docs name no
-  assistant but Claude and Claude Code, which §3 check 3 says were named
-  ahead of the check, and for Claude those two are the live confirmation
-  still owed. Once it's done, `/docs/agents-and-mcp/`
-  names each client that was connected, with its own steps, and the
-  homepage could say "such as Claude or ChatGPT", which is a proposal
-  (§10). A release that changes the MCP server makes this due again.
+  release, noting what each needed. The docs name five clients ahead of
+  that, as §3 check 3 says, so for those five this is the live confirmation
+  still owed. Once it's done, the homepage could say "such as Claude or
+  ChatGPT", which is a proposal (§10). A release that changes the MCP server
+  makes this due again.
 - **The application's own pages**: titles that say what they are, a link
   back to smpl.money, a 404 for an address that isn't a page, and `noindex`
   on every screen, so the sign-in page doesn't answer for the product. Read
