@@ -18,9 +18,16 @@
  */
 
 /** Bumped whenever either document changes materially. Rendered on both. */
-export const legalUpdated = "2026-10-25";
+export const legalUpdated = "2026-11-03";
 
-const operator = {
+/**
+ * Who runs smpl.money and app.smpl.money, and the one place the name is
+ * written. Exported because the site footer and the terms name the same
+ * person: OpenAI's directory review requires every public URL a listing gives
+ * (the homepage, the FAQ, the terms, this policy) to identify the same
+ * publisher as the submission, and the policy alone said who that was.
+ */
+export const operator = {
   /** Who is responsible for the hosted deployment, in the legal sense. */
   name: "Gavin Johnson",
   contact: "info@smpl.money",
@@ -172,6 +179,31 @@ export const privacy = {
         "**Operational records.** Server logs, which include IP addresses and request paths, " +
           "kept briefly for security and debugging. Sign-up and sign-in attempts are counted " +
           "per IP address, so nobody can guess at passwords one after another.",
+        /*
+         * `idempotency_record`, one row per (user, operation, key), holding
+         * the whole `response` as JSON: the transaction, account, category or
+         * budget the write returned. In the web app only some writes keep
+         * one: adding a transaction, staging, committing, an import, the
+         * merges and the bulk edits and deletes. Adding an account or a
+         * category from the web keeps none, so "when something is created"
+         * was false of the web half. Most assistant tools that change
+         * something keep one, an update or a delete included, and a few
+         * don't, `set_active_accounts` among them at 0.2.1.
+         *
+         * Nothing prunes the rows unless the deployment sets
+         * `IDEMPOTENCY_RETENTION_HOURS`, and app.smpl.money doesn't, so their
+         * lifetime is the account's: the row cascades from the user. Setting
+         * it in production is a change to the retention paragraph below,
+         * which would then give the period instead.
+         */
+        "**Copies of the replies to your changes.** Many changes keep a copy of the " +
+          "application's reply to the request that made them: in the web app, adding a " +
+          "transaction, staging or committing transactions, importing a file, merging " +
+          "categories or payees, and changing or deleting many things at once; and most " +
+          "changes an assistant you connected makes. If the same request arrives a second " +
+          "time, say because a connection dropped and it was sent again, it gets the same " +
+          "reply back instead of the change being made twice. A copy holds what the reply " +
+          "held, such as the transaction or account that was created.",
         /*
          * `audit_event`, written by `writeAudit` in the application's
          * `services/helpers.ts`: every service that changes a record stores
@@ -621,7 +653,8 @@ export const privacy = {
          */
         "Your ledger is kept until you delete your account. Deleting something in it doesn't " +
           "erase it before then: a deleted transaction stays where you can restore it, and the " +
-          "history of changes keeps a copy of anything you delete. Server logs are kept " +
+          "history of changes keeps a copy of anything you delete. The copies of the replies to " +
+          "your changes are kept until you delete your account too. Server logs are kept " +
           "for a short operational period. Deleting your account deletes the billing records " +
           "the application keeps and your customer record at Stripe. Those records are the " +
           "ones listed under Payments, such as Stripe's identifiers and your subscription's " +
@@ -1138,7 +1171,13 @@ export const terms = {
     },
     {
       heading: "Contact",
-      paragraphs: ["info@smpl.money."],
+      // Named here as well as in the privacy policy, for the reason
+      // `operator` gives: a directory checks that the terms identify the
+      // publisher, and "info@smpl.money." alone identified nobody.
+      paragraphs: [
+        `Simple Balance is run by ${operator.name}. Write to ${operator.contact} about ` +
+          "anything in these terms.",
+      ],
     },
   ] satisfies readonly Section[],
 } as const;

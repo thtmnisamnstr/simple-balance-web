@@ -1583,6 +1583,15 @@ _Checked by:_ `tests/legal.test.tsx`, which asserts:
   as long as the account rather than until something in it is deleted, with
   a deleted transaction restorable; held to the application's contract too,
   so a snapshot that stops declaring an append-only history fails it;
+- that the copies of the replies to changes, which a retried request is
+  answered from, are disclosed where collection is, from the web app as well
+  as from an assistant, and kept until the account is deleted, which is true
+  while app.smpl.money sets no `IDEMPOTENCY_RETENTION_HOURS`;
+- that one person is named as the site's publisher, from the policy's
+  `operator`: in the policy, in the terms' Contact section, and in the
+  copyright notice in the footer of every built page. OpenAI's directory review requires every URL a
+  listing gives to identify the same publisher, and until November 2026 only
+  the policy did;
 - the nightly backups, with the 14 kept and the two weeks that makes, where
   retention is and where deleting is; a deletion that reaches the database
   and no further; and the short version listing what outlasts a deletion,

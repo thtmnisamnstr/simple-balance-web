@@ -145,6 +145,29 @@ that release, then checked again against it.
 
 ### Changed
 
+**Who publishes the site, on every page, and five assistants in the
+assistant docs.** Made for Simple Balance's listings in the AI assistant
+directories, whose reviews check the pages a listing links to.
+
+- The footer of every page ends with a copyright notice naming Gavin Johnson,
+  and the terms name him in their Contact section. Only the privacy policy did
+  before, and a listing's homepage, help and terms pages have to name the
+  same publisher as the listing.
+- Connecting an AI assistant has steps for ChatGPT, Claude, Gemini (the app
+  and Gemini CLI), Codex and Claude Code, each with which plans can use it and
+  what it asks for. Claude and Codex ask for every kind of access, so
+  approving lets them record changes and not only propose them, and the page
+  says how to ask for less in Codex and Claude Code. It also has three things
+  to ask once it's connected, and what to do when no browser opens, a tool is
+  missing, an assistant needs more access, you want it cut off, or an account
+  is frozen.
+- The privacy policy says the application keeps a copy of its reply to many
+  changes, so a request sent twice gets the same answer instead of being done
+  twice, and that those copies are kept until the account is deleted.
+
+**Built on Node 26**, which became the long-term support release in October
+2026, here and on Netlify alike.
+
 **A shorter top of the homepage, and a shorter header on a phone.**
 
 - The line under the headline is one sentence now: "See where your money

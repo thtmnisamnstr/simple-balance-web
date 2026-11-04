@@ -1,11 +1,12 @@
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync, statSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { comparison, faq, pricing, pricingMeta, tiers } from "@/content/pricing";
-import { privacy as privacySection } from "@/content/home";
+import { footer, privacy as privacySection } from "@/content/home";
 import { render } from "@testing-library/react";
 import PrivacyPage from "@/app/privacy/page";
 import TermsPage from "@/app/terms/page";
-import { legalUpdated, privacy, terms, type Section } from "@/content/legal";
+import { legalUpdated, operator, privacy, terms, type Section } from "@/content/legal";
 import { slugify } from "@/content/collections";
 import appFacts from "@/content/app-facts.json";
 
@@ -813,6 +814,35 @@ describe("the privacy policy", () => {
     );
   });
 
+  it("says it keeps a copy of the reply to each change, and until when", () => {
+    /*
+     * `idempotency_record` holds the whole response of the web app's
+     * transaction creates, stagings, commits, imports, merges and bulk
+     * writes, and of most changes an assistant makes, so a retried request is answered from it. Nothing prunes it on
+     * app.smpl.money, which doesn't set `IDEMPOTENCY_RETENTION_HOURS`, and
+     * it cascades from the user. The policy named the logs, the history of
+     * changes and the billing requests and not these copies, while the MCP
+     * directory listings' data-handling answer did.
+     *
+     * Production setting a window makes the second half false: that's a
+     * change to the retention paragraph and to this assertion together.
+     */
+    const collects = section(privacy, /^what the application collects/i);
+    expect(collects, "the stored replies are not disclosed where collection is").toMatch(
+      /\bkeep a copy of the application's reply to the request that made them\b/,
+    );
+    expect(collects, "what the copies are for is not said").toMatch(
+      /\bgets the same reply back instead of the change being made twice\b/,
+    );
+    expect(collects, "the copies are said to come from an assistant alone").toMatch(
+      /\bin the web app, adding a transaction\b[^.]*\bmost changes an assistant you connected makes\b/,
+    );
+    const held = section(privacy, /^where it is held/i);
+    expect(held, "how long the stored replies are kept is not said").toMatch(
+      /\bthe copies of the replies to your changes are kept until you delete your account\b/,
+    );
+  });
+
   it("says where the other providers hold what they receive, the Gmail copies included", () => {
     /*
      * The section said where Oracle holds the data and what the transfer
@@ -1523,6 +1553,38 @@ describe("both documents", () => {
       expect(html).toContain('href="/privacy/"');
       expect(html).toContain('href="/terms/"');
     }
+  });
+
+  it("names one publisher on every page, the one the policy names", () => {
+    /*
+     * OpenAI's directory review: "Public URLs must be accessible and identify
+     * the same publisher as the submission." The listing gives the homepage,
+     * the FAQ, the terms and this policy, and only the policy named anybody.
+     * The footer is on every page, so every page is checked rather than those
+     * four, and the terms name the operator in their own words, because a
+     * reviewer reads the document rather than the footer under it.
+     *
+     * The footer's notice is derived from `operator`, and that is asserted
+     * as well: a name typed into the footer passes every page below and
+     * starts the drift the shared constant is there to stop.
+     */
+    expect(footer.copyright, "the footer doesn't take its name from the policy's operator").toBe(
+      `© 2026 ${operator.name}`,
+    );
+    const pages = (dir: string): readonly string[] =>
+      readdirSync(dir).flatMap((entry) => {
+        const full = join(dir, entry);
+        if (statSync(full).isDirectory()) return entry === "_next" ? [] : pages(full);
+        return entry.endsWith(".html") ? [full] : [];
+      });
+    const built = pages("out");
+    expect(built.length, "found no built pages").toBeGreaterThan(50);
+    const unnamed = built.filter((path) => !readFileSync(path, "utf8").includes(footer.copyright));
+    expect(unnamed, "these pages don't name who runs the site").toEqual([]);
+    expect(section(terms, /^contact$/i), "the terms don't name the operator").toContain(
+      operator.name.toLowerCase(),
+    );
+    expect(section(privacy, /^who is responsible$/i)).toContain(operator.name.toLowerCase());
   });
 
   it("keeps somebody from doing a thing, the American way", () => {

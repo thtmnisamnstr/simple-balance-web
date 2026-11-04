@@ -6,7 +6,7 @@ import { learnArt } from "@/components/learn-art/registry";
 import { allDiagrams } from "@/components/learn-art/pieces";
 import { glyphs } from "@/components/learn-art/glyphs";
 import { authors } from "@/content/authors";
-import { site } from "@/content/home";
+import { footer, site } from "@/content/home";
 import { sourceFiles } from "./support/source";
 
 /**
@@ -288,7 +288,14 @@ describe("a learn article, as built", () => {
       expect(page).not.toContain('"@type":"Person"');
       expect(page).not.toContain('"author"');
       expect(page).not.toContain('class="byline-name"');
-      expect(page).not.toContain(authors.gavin.name);
+      // Anywhere but the footer's copyright notice, which names who
+      // publishes the site on every page: that's the publisher, not a credit for the
+      // guide. Narrowed rather than dropped, per
+      // `docs/standards/code/testing.md` 2.5. The line is removed wherever it
+      // occurs, because React's payload carries the footer a second time, and
+      // it has to be found first, or removing it would remove nothing.
+      expect(page).toContain(footer.copyright);
+      expect(page.replaceAll(footer.copyright, "")).not.toContain(authors.gavin.name);
     }
     expect(html).toContain('"@type":"BreadcrumbList"');
   });

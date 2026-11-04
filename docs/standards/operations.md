@@ -432,12 +432,12 @@ _Checked by:_ `tests/repo-references.test.ts` — every `0.x` dependency in
 
 ### 6.3 Node is pinned to the LTS Netlify supports
 
-**House.** `24`, in both `.nvmrc` and `netlify.toml`.
+**House.** `26`, in both `.nvmrc` and `netlify.toml`.
 
-Netlify supports 22, 24 and 26. Node 26 is Current and becomes LTS in October
-2026; a marketing site is not where a pre-LTS runtime earns its risk. The two
-files carry the same number so a developer using nvm builds on what Netlify
-builds on.
+Netlify supports 22, 24 and 26. Node 26 became LTS on October 28, 2026, and
+the site moved to it in November; until then it was Current, and a marketing
+site is not where a pre-LTS runtime earns its risk. The two files carry the
+same number so a developer using nvm builds on what Netlify builds on.
 
 `sharp` and `playwright` are native and dev-only, and neither runs on
 Netlify: `sharp` draws the images a developer commits, and the browser suite
