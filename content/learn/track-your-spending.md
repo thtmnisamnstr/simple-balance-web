@@ -2,7 +2,7 @@
 title: How to track your spending
 description: Gather a month or two of bank and card statements, give every purchase a category, and add up each one, in a notebook, a spreadsheet or Simple Balance.
 date: 2026-10-24
-updated: 2026-10-26
+updated: 2026-11-04
 section: Start here
 order: 1
 ---
@@ -114,7 +114,7 @@ type** on **Amount owed**.
 
 <Shot
   name="accounts"
-  alt="The accounts page: a search box and sort controls, then accounts grouped by type. Under Checking, a euro account at €1,621.10 and Everyday Checking at $7,663.45. Under Savings, Savings at $20,200.00. Under Credit card, a card named Travel Card."
+  alt="The accounts page: a search box, sort controls and a box for showing archived accounts, then accounts grouped by type. Under Checking, Euro Account at €1,121.10 and Everyday Checking at $8,108.30. Under Savings, Savings at $20,200.00. Under Credit card, a card named Travel Card."
   width="1600"
   height="1000"
 />
@@ -135,7 +135,7 @@ example spending._
 
 <Shot
   name="import"
-  alt="The import screen before a file is picked: a step headed Choose a CSV file, an empty drop target reading Drop in a file or browse, and a preview panel saying no file has been chosen yet."
+  alt="The Import and export page before a file is picked: under Import a CSV, a step headed Choose a CSV file with an empty drop target reading Drop in a file or browse, beside a file preview saying No file yet. Below it, Import a Simple Balance file, with a drop target of its own."
   width="1600"
   height="1000"
 />
@@ -180,7 +180,7 @@ of money you spent**.
 
 <Shot
   name="transactions"
-  alt="A list of transactions, newest first, each with who it was with, which account it was in, its category and its amount, all in dollars. Most are spending on groceries, a lunch, cinema tickets and a transit pass. One is a $750 freelance payment coming in, and one is $600 moved from checking to savings, which shows both accounts and no category."
+  alt="A list of transactions, newest first, each with who it was with, which account it was in, its category and its amount, all in dollars. Most are spending: groceries, a dental check-up, a subscription, a transit pass and cinema tickets. One is a $750 freelance payment coming in, and one is $600 moved from checking to savings, which shows both accounts and no category."
   width="1600"
   height="1000"
 />
@@ -196,7 +196,7 @@ never shows up as spending.
 
 <Shot
   name="dashboard"
-  alt="The Simple Balance overview for one month: a dollar total with balance, deposits, withdrawals and net cash flow across the top, then a checking account, a savings account and a credit card with their balances, beside spending by category as bars from rent down to subscriptions."
+  alt="The Simple Balance overview for one month: an Include archived accounts checkbox, a dollar total with balance, deposits, withdrawals and net cash flow across the top, then a checking account, a savings account and a credit card with their balances, beside spending by category as bars from rent down to subscriptions."
   width="1600"
   height="1000"
 />

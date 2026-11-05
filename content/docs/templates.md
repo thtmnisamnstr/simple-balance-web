@@ -3,7 +3,7 @@ title: Transaction templates
 description: Save a transaction you enter often as a template, fill in the next one with one pick, and get an email reminder when it's due.
 section: Using Simple Balance
 order: 7
-updated: 2026-10-25
+updated: 2026-11-04
 ---
 
 A template is a saved starting point for a transaction you type in by hand
@@ -28,7 +28,7 @@ For things that come on a schedule, see
 
 <Shot
   name="templates"
-  alt="The templates page before any are saved: a New template button, and a note that you can also choose Save as template from any transaction's menu."
+  alt="The templates page with four saved templates, each with its type, payee, account and category: Dinner out, Freelance invoice, Rail fare and Weekly groceries."
   width="1600"
   height="1000"
 />
@@ -54,6 +54,10 @@ category or split, description and notes. It leaves out three things:
 - The bank's own reference on an imported row, so a later import of the same
   statement isn't mistaken for something you already have.
 - The amount received on a transfer between two currencies.
+
+From a row on **Staged**, one more thing can go: a category that doesn't exist
+yet, which committing the row would create, is dropped unless the row is
+split. Type it into **Category** before you save to keep it.
 
 ## Make a template from scratch
 
@@ -99,7 +103,10 @@ A few things worth knowing:
 - If the template names an account you've since archived or deleted, the form
   leaves that field for you and says so: "This template's account is no longer
   available. Choose again before saving." It does the same for a category
-  that's no longer there.
+  you've deleted. A category you've archived only gets that note on
+  **Overview**. Everywhere else it's filled in like any other, and the entry
+  can't be committed with it: "That category is archived or was not found.
+  Choose another, or restore it first."
 - Changing the transaction never changes the template. The form says so:
   "Anything you change here stays here; the template is not touched."
 - The transaction remembers which template it started from. That's what the
@@ -134,7 +141,7 @@ save.
 | Option                                      | What it does                                                                                                                                                                                                                    |
 | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Repeats**                                 | **Daily**, **Weekly**, **Monthly** or **Yearly**.                                                                                                                                                                               |
-| **Every N months**, or days, weeks or years | 1 to 366, where 1 means every one. **Monthly** every 3 is once a quarter.                                                                                                                                                       |
+| **Every N months**, or days, weeks or years | 1 to 366, where 1 means every one, and so does leaving it blank. **Monthly** every 3 is once a quarter.                                                                                                                         |
 | **Starting**                                | The first date, and the one every later date is counted from. A weekly reminder repeats on this date's day of the week.                                                                                                         |
 | Day of the month                            | Monthly and yearly only. **On day N of the month** uses the day of **Starting**. **On a relative day** asks for **Which one to remind on** (**First**, **Second**, **Third**, **Fourth** or **Last**) and **Day to remind on**. |
 | **When the month is too short**             | With **On day N of the month**, for a day some months don't have, such as the 31st. **Use the last day of that month** or **Skip that month**.                                                                                  |

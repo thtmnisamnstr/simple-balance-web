@@ -144,7 +144,7 @@ export type NavLink = { readonly label: string; readonly href: string };
  * nothing else knows when a sentence moved; `tests/sitemap.test.ts` refuses a
  * date in the future or one older than the snapshot the copy describes.
  */
-export const homeUpdated = "2026-10-27";
+export const homeUpdated = "2026-11-04";
 
 export const site = {
   name: "Simple Balance",
@@ -219,7 +219,7 @@ export const site = {
 
 export const heroShot = {
   name: "dashboard",
-  alt: "The Simple Balance overview for one month: a dollar total with balance, deposits, withdrawals and net cash flow across the top, then a checking account, a savings account and a credit card with their balances, beside spending by category as bars from rent down to subscriptions.",
+  alt: "The Simple Balance overview for one month: an Include archived accounts checkbox, a dollar total with balance, deposits, withdrawals and net cash flow across the top, then a checking account, a savings account and a credit card with their balances, beside spending by category as bars from rent down to subscriptions.",
 } as const;
 
 export const hero = {
@@ -445,7 +445,7 @@ export const proofs: readonly Proof[] = [
   {
     shot: {
       name: "transactions",
-      alt: "A list of transactions, newest first, each with who it was with, which account it was in, its category and its amount, all in dollars. Most are spending on groceries, a lunch, cinema tickets and a transit pass. One is a $750 freelance payment coming in, and one is $600 moved from checking to savings, which shows both accounts and no category.",
+      alt: "A list of transactions, newest first, each with who it was with, which account it was in, its category and its amount, all in dollars. Most are spending: groceries, a dental check-up, a subscription, a transit pass and cinema tickets. One is a $750 freelance payment coming in, and one is $600 moved from checking to savings, which shows both accounts and no category.",
       caption:
         "Everything you've entered, in one list you can search or narrow down to one account.",
     },
@@ -471,7 +471,7 @@ export const proofs: readonly Proof[] = [
   {
     shot: {
       name: "import",
-      alt: "The import screen before a file is picked: a step headed Choose a CSV file, an empty drop target reading Drop in a file or browse, and a preview panel saying no file has been chosen yet.",
+      alt: "The Import and export page before a file is picked: under Import a CSV, a step headed Choose a CSV file with an empty drop target reading Drop in a file or browse, beside a file preview saying No file yet. Below it, Import a Simple Balance file, with a drop target of its own.",
       caption:
         "Where the file goes. It figures out the columns itself, and shows you every row before any of them count.",
     },
@@ -528,7 +528,8 @@ export const features: readonly Feature[] = [
     body:
       "Checking, savings, credit cards, cash, a car loan. All of them on one page, for any date " +
       "you pick. If you hold more than one currency, each keeps its own totals instead of being " +
-      "blended at a rate that will be wrong tomorrow.",
+      "blended at a rate that will be wrong tomorrow. Close an account you've stopped using and " +
+      "its history stays, and one checkbox counts it back in.",
   },
   {
     icon: "target",
@@ -629,7 +630,8 @@ export const agents = {
     "the electric bill, or what a store has cost you this year. You decide how far it goes: " +
     "reading only, or allowed to queue things up for you to approve, or allowed to make the " +
     "change itself. Settings lists what each assistant can do, and cuts an assistant off when " +
-    "you want it gone.",
+    "you want it gone. It can also explain the basics, like balancing a checking account or " +
+    "building an emergency fund, from the same guides you can read here.",
   /** Who is speaking, on each side of the exchange. */
   you: "You",
   assistant: "Assistant",
@@ -644,7 +646,7 @@ export const agents = {
    * The tools it calls, by their names on Simple Balance's MCP server, in the
    * order a model would need them: the payees first, to learn who the
    * electric company is, then that payee's transactions. Both are read-only
-   * tools in the application's `src/server/mcp.ts` at 0.2.1; a tool renamed
+   * tools in the application's `src/server/mcp.ts` at 0.2.2; a tool renamed
    * there makes this picture describe something the product can't do.
    */
   connector: "Simple Balance",
@@ -670,9 +672,11 @@ export const agents = {
  * promise about the future, and this product may yet pull transactions on a
  * schedule. What replaces it is the part that does not depend on how the data
  * arrives: where the record lives, who can reach it, and that every
- * transaction can leave with you. Every transaction, not "everything": the
- * export is transactions only, so budgets, templates and recurrences stay
- * behind, and a privacy promise is the worst place to round that up.
+ * transaction can leave with you. It said "every transaction, not
+ * everything" while the only export was a spreadsheet of transactions and
+ * budgets, templates and recurrences stayed behind. From 0.2.2 the Simple
+ * Balance file carries those too (`own-your-data`, `move-a-ledger`), so the
+ * point names both exports, each for what it holds.
  *
  * Every sentence is scoped, because the honest answer differs between the
  * version we run and the version you run. A privacy promise that one of the
@@ -680,7 +684,7 @@ export const agents = {
  */
 export const privacy = {
   /** As `Proof["covers"]`. */
-  covers: ["own-your-data"],
+  covers: ["own-your-data", "move-a-ledger"],
   eyebrow: "Your records",
   title: "Your records stay yours.",
   /*
@@ -702,8 +706,8 @@ export const privacy = {
     "cloud app, your records live with us, and our privacy policy spells out exactly what we " +
     "keep and who can reach it.",
   points: [
-    "Pull every transaction out as a spreadsheet any time you want. We never hold your records back to keep you paying.",
-    "No analytics in the product itself. On the free plan the ads bring Google's script with them. Premium and your own copy have neither.",
+    "Pull every transaction out as a spreadsheet any time you want, or everything, budgets and repeating payments included, as one file another copy of Simple Balance can take in. We never hold your records back to keep you paying.",
+    "No analytics in the product itself, and the free plan's one ad is our own, so it loads nothing from anybody else. Premium and your own copy have no ad at all.",
     "Nothing you put in is used to sell you anything, here or anywhere else.",
     "Anyone can read the code, and that isn't going to change.",
   ],

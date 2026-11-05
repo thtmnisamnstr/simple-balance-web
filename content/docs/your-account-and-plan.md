@@ -3,26 +3,27 @@ title: Your account and plan
 description: Sign in and reset your password, upgrade to Premium or cancel, take your data with you, and delete your account on app.smpl.money.
 section: Your account
 order: 4
-updated: 2026-10-25
+updated: 2026-11-04
 ---
 
 You manage your Simple Balance account and plan on our cloud app at
 [app.smpl.money](https://app.smpl.money/), mostly under **Settings**, which has
 two tabs: **Preferences** and **Plan and billing**. That's where you change
 your password, upgrade to Premium or cancel it, and delete your account.
-Resetting a forgotten password starts from the sign-in form, and exporting
-your transactions from **Transactions**. The theme, timezone and default
-currency on **Preferences** have their own page,
+Resetting a forgotten password starts from the sign-in form, exporting your
+transactions from **Transactions**, and exporting everything from
+**Import/Export**. The theme, timezone and default currency on
+**Preferences** have their own page,
 [Theme, timezone and currency](/docs/preferences/).
 
 ## Signing in
 
 **Forgot your password?** is under the sign-in form. Give it your email
-address and you get a link to choose a new one. The link works once and lasts
-an hour.
+address, press **Send reset link**, and you get a link to choose a new one.
+The link works once and lasts an hour.
 
 To change a password you know, open **Settings** and use the **Password**
-card. A Google-only account sees **Set a password** there instead, and can
+card. A Google-only account sees **Set password** there instead, and can
 add one within 15 minutes of signing in. A password is 12 to 128 characters.
 
 Changing or resetting your password signs you out everywhere else and
@@ -36,14 +37,32 @@ use the same email address. Until you do, pressing
 
 ## The free plan and Premium
 
-| Plan        | Price                     | What you get                                                             |
-| ----------- | ------------------------- | ------------------------------------------------------------------------ |
-| **Free**    | $0                        | Every feature, with up to 3 accounts in use at once and ads on the page. |
-| **Premium** | $3 a month, or $30 a year | Every feature, as many accounts as you like, and no ads.                 |
+| Plan        | Price                     | What you get                                                               |
+| ----------- | ------------------------- | -------------------------------------------------------------------------- |
+| **Free**    | $0                        | Every feature, with up to 3 accounts in use at once and an ad for Premium. |
+| **Premium** | $3 a month, or $30 a year | Every feature, as many accounts as you like, and no ads.                   |
 
 The two plans have the same features. Premium lifts the account limit and
-removes the ads, and that's all it changes. An archived account doesn't count
-toward the free plan's 3, so archiving one you no longer use frees a place.
+removes the ad, and that's all it changes. An archived account doesn't count
+toward the free plan's 3, so archiving one in use that you no longer need frees
+a place. Archiving a [frozen](#canceling) one frees none.
+
+### The ad on the free plan
+
+On the free plan, a bar across the foot of the window advertises Premium. It's
+Simple Balance's own ad, for its own plan, and no other company's. It says "As
+many accounts as you need, and no ads", beside **Upgrade to Premium**, which
+opens **Plan and billing**. On a screen wider than a phone's, it also shows the
+word Premium and a small drawing.
+
+- **It stays in view as you scroll.** At the end of a page it rests below the
+  last of it. On a window that's both narrow and short, it sits below the page
+  instead.
+- **It can't be dismissed.** Upgrading to Premium is what takes it away.
+- **It isn't shown everywhere.** It's not on **Plan and billing**, on the
+  sign-in screen, or on a page you print.
+- **Its drawing moves once.** It plays when a page loads, and not at all if
+  your device is set to reduce motion.
 
 ## Upgrading
 
@@ -67,10 +86,10 @@ Once you're on Premium, the same tab shows **Change your plan**.
 - **Monthly to annual** happens now. Press **Annual**, and
   **Switch to the annual plan now?** explains that what's left of the month is
   credited against the annual price and the difference is charged now. Press
-  **Switch and pay the difference**.
+  **Switch and pay difference**. While a payment is owed, the switch waits for
+  your next renewal instead, and **Stay on monthly plan** cancels it.
 - **Annual to monthly** waits for your next renewal, and nothing changes
-  before then. Until it happens, **Stay on the annual plan** cancels the
-  switch.
+  before then. Until it happens, **Stay on annual plan** cancels the switch.
 
 **Change payment method** is on the same tab.
 
@@ -127,15 +146,24 @@ Refunds, and the exact rules for which accounts stay usable, are in
 
 **Export CSV** is on the **Transactions** page and on each account's own
 page. It saves every transaction that matches the page's dates and filters as
-a spreadsheet file, up to 100,000 rows at a time.
+a spreadsheet file, up to 100,000 rows at a time. Deleted transactions are
+never in it, even with **Show deleted** on.
 
 The page starts on **This month**, so set the dates to **All time** first if
 you want everything. An export holds transactions. Budgets, templates and
 recurring transactions aren't in it, and neither is each account's opening
 balance.
 
+To take the rest too, open **Import/Export** and use
+**Export a Simple Balance file**. **Everything** saves your whole ledger as one
+file: accounts with their opening balances, categories and groups,
+transactions, templates, recurring transactions, budgets, staged rows, and your
+regional defaults and theme, any of which you can leave out. **Some accounts**
+saves only the accounts you pick. Press **Export file**. Another copy of Simple
+Balance can add the file to its ledger, or move it into a new one.
+
 [Moving between the cloud app and your own copy](/docs/moving-between-cloud-and-self-hosted/)
-uses the same export to bring your transactions into a copy you run yourself.
+covers taking your ledger to a copy you run yourself.
 
 ## Deleting your account
 

@@ -3,7 +3,7 @@ title: Adding and editing transactions
 description: Add a deposit, withdrawal or transfer, split a receipt across categories, find any entry, and edit, delete, restore or copy it.
 section: Using Simple Balance
 order: 3
-updated: 2026-10-25
+updated: 2026-11-04
 ---
 
 A transaction is one movement of money: a **Deposit** coming into one of your
@@ -13,7 +13,7 @@ committed, and it's where you add, find, change, delete and copy them.
 
 <Shot
   name="transactions"
-  alt="A list of transactions, newest first, each with who it was with, which account it was in, its category and its amount, all in dollars. Most are spending on groceries, a lunch, cinema tickets and a transit pass. One is a $750 freelance payment coming in, and one is $600 moved from checking to savings, which shows both accounts and no category."
+  alt="A list of transactions, newest first, each with who it was with, which account it was in, its category and its amount, all in dollars. Most are spending: groceries, a dental check-up, a subscription, a transit pass and cinema tickets. One is a $750 freelance payment coming in, and one is $600 moved from checking to savings, which shows both accounts and no category."
   width="1600"
   height="1000"
 />
@@ -24,7 +24,8 @@ example spending._
 ## Add a transaction
 
 1. Press **Add transaction** on **Transactions** or **Overview**. The button
-   stays off until you have an account, and says "Create an account first."
+   stays off until you have an account that isn't archived, and says "Create
+   an account first."
 2. Choose the type: **Withdrawal** for money spent or removed, **Deposit** for
    money received or added, or **Transfer** to move money between two of your
    accounts. A new entry starts on **Withdrawal**.
@@ -82,9 +83,13 @@ Choosing categories for your own spending is its own question.
   **Staged**, where it waits until you commit it.
 
 Stage one when you aren't sure of it yet, such as a pending card charge whose
-amount might change. Imported rows, recurring transactions and anything an AI
-assistant prepares all arrive on **Staged** too.
-[Staged transactions](/docs/staged-transactions/) covers the queue.
+amount might change. Imported rows and recurring transactions arrive on
+**Staged** too, and so does what an AI assistant prepares, unless it's
+connected with **Read, stage, and commit**: that lets it write a transaction
+straight into your books.
+[Staged transactions](/docs/staged-transactions/) covers the queue, and
+[Connecting an AI assistant](/docs/agents-and-mcp/) covers what each kind of
+access allows.
 
 ## Enter several in a row
 
@@ -112,10 +117,16 @@ different template, or **No template**, first puts back whatever the last one
 filled in.
 
 Anything you change in the form stays in this transaction. The template isn't
-touched. If the template names an account or a category you've since
-archived or deleted, the form doesn't use it and says so, for example
+touched. If the template names an account you've since archived or deleted,
+or a category you've deleted, the form doesn't use it and says so, for example
 _This template's account is no longer available. Choose again before saving_.
 Check that field and pick what you want before you save.
+
+A category you've archived is different. Only the form on **Overview** leaves
+it out and says so. Everywhere else it's filled in like any other, with no
+note, and the entry can't be committed with it: "That category is archived or
+was not found. Choose another, or restore it first." Pick another category,
+or restore that one on **Categories**.
 
 The picker is on the edit form as well, so you can fill an existing entry in
 from a template. [Templates](/docs/templates/) covers making them.
@@ -152,7 +163,7 @@ partly groceries and partly household supplies.
    appears.
 3. In each row, choose a category, enter how much of the total it gets, and
    add a note if you like.
-4. Press **Add a category** for another row, or **Remove** to drop one.
+4. Press **Add category** for another row, or **Remove** to drop one.
 5. Save when the line under the rows says **The split adds up.**
 
 The line keeps count as you type. It reads "$12.50 left to assign." while some
@@ -162,7 +173,7 @@ each category." until there's an amount to divide. The save button stays off
 until it adds up, and says "The split has to add up before this can be
 saved."
 
-- A split can name up to 50 categories. At 50, **Add a category** turns off.
+- A split can name up to 50 categories. At 50, **Add category** turns off.
 - Removing rows until only one is left turns the split back into a single
   category.
 - A transfer can't be split, because it has no category.
@@ -181,14 +192,17 @@ beside it move between pages.
   **All time** to see everything, or pick a start and end date.
   [Finding your way around](/docs/finding-your-way-around/) covers the date
   bar.
-- **Search transactions** finds text anywhere in the payee, the description or
-  the notes, ignoring capitalization. It only looks inside the dates you're
+- The search box, "Search payee, description, or notes", finds text anywhere
+  in the payee, the description or the notes, ignoring capitalization. It only looks inside the dates you're
   viewing, so choose **All time** to search everything.
 - The type menu, which starts on **All types**, narrows the list to
   **Deposits**, **Withdrawals** or **Transfers**.
 - The account menu, which starts on **All accounts**, narrows it to one
   account.
 - **Show deleted** adds the transactions you've deleted, marked **Deleted**.
+
+If the page can't read something the list needs, one red line says what
+didn't load, such as "Your transactions did not load.", and then why.
 
 Click a column heading, **Date**, **Payee**, **Account**, **Category** or
 **Amount**, to sort by it, and click it again to reverse the order.
@@ -311,7 +325,10 @@ says what a file holds and what it leaves out.
 Each account, category, payee and template has its own page, and each has
 this same list, narrowed to that one thing, with the same search, filters,
 row buttons and **Export CSV**. **Add transaction** there starts with that
-account, category or payee already filled in.
+account, category or payee already filled in. On a template's page it takes
+nothing from the template but its starting type, **Deposit** for a deposit
+template and **Withdrawal** for any other. Pick the template in
+**Start from a template** to fill in the rest.
 
 Category, payee and template pages also list matching staged rows above the
 others, marked **Staged**, with a **Review** link that opens **Staged**. They

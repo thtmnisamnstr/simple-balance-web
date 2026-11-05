@@ -43,18 +43,21 @@ checked out here was a picture nobody could reproduce.
 Break one of these and the site is wrong rather than untidy.
 
 - **Never add a catch-all rewrite.** `smpl.money/ads.txt` authorizes the
-  advertising inventory running on app.smpl.money. A `/* -> /index.html 200`
+  AdSense inventory on app.smpl.money whenever it runs AdSense. A `/* -> /index.html 200`
   rule turns every unknown path into a 200 of HTML, and Google reads an
   `ads.txt` that does not name the publisher id as an instruction to stop
   monetizing the domain. Every symptom is invisible: the file is served, the
   build is green, the ads render, the revenue is zero.
 
-  **This site shows no ads, and the file stays.** The ads run in the
+  **This site shows no ads, and the file stays.** Ads run in the
   application alone, and Google reads the root domain's `ads.txt` for a
-  subdomain's inventory, so this file is what the application's ads rest on.
-  The file and these three rules look like leftovers of an ad integration,
-  and removing them is the tidy-looking mistake —
-  `docs/standards/operations.md` 2.
+  subdomain's inventory, so this file is what the application's AdSense rests
+  on. Since 2026-11-04 production shows its own house ad instead, with AdSense
+  unset and its own `/ads.txt` answering 404, and the owner kept this file: it
+  still verifies the domain to the AdSense account, and AdSense configured
+  again needs it there already. The file and these three rules look like
+  leftovers of an ad integration, and removing them is the tidy-looking
+  mistake — `docs/standards/operations.md` 2.
 
 - **`ads.txt` names the publisher id and nothing else.** A missing file is
   ignored and costs nothing; a well-formed one that does not name the id is
@@ -65,7 +68,7 @@ Break one of these and the site is wrong rather than untidy.
 - **The root `ads.txt` carries the DIRECT record, not a `subdomain=`
   referral.** Google requires a referral only when the publisher id differs
   between root and subdomain, and here it does not — this file and the
-  application's `ADSENSE_CLIENT_ID` name the same account. A referral would
+  application's `ADSENSE_CLIENT_ID`, whenever it's set, name the same account. A referral would
   hand the authorization chain to a file the application only serves while
   ads are configured.
 - **A color outside `brand.css` cannot re-theme.** A literal looks right in
@@ -122,7 +125,14 @@ Break one of these and the site is wrong rather than untidy.
   how to opt out — for the application's ads, because app.smpl.money links
   this policy from every page. A generic policy is a false statement about
   somebody's data, and a missing disclosure is a breach whose penalty is
-  suspension.
+  suspension. **Which ad runs is production's configuration**, so the policy
+  says which: since 2026-11-04 the free plan's ad is the application's own
+  house ad, and by the owner's decision the AdSense disclosures stay as a
+  dormant section saying what applies if Google's ads return, rather than
+  being deleted. `freePlanAd` in `src/content/legal.ts` records the one that
+  runs, `tests/legal.test.tsx` holds the policy, the pricing answer and the
+  homepage to it, and changing it back is a rewrite of all three, through
+  `legal-review`, before the setting changes.
 - **A marketing claim is never stronger than the privacy policy it links to.**
   The pricing page said ads were "requested without anything about you
   attached" while the policy disclosed rough location and a cookie; the

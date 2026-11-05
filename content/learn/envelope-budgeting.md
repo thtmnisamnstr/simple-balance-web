@@ -2,7 +2,7 @@
 title: What is envelope budgeting?
 description: Cash in labeled envelopes, and when one is empty you stop. How the envelope method works, how to do it without cash, and how to keep track of cash you do spend.
 date: 2026-10-24
-updated: 2026-10-25
+updated: 2026-11-04
 section: Budgeting
 order: 2
 ---
@@ -138,7 +138,7 @@ no category.
 
 <Shot
   name="transactions"
-  alt="A list of transactions, newest first, each with who it was with, which account it was in, its category and its amount, all in dollars. Most are spending on groceries, a lunch, cinema tickets and a transit pass. One is a $750 freelance payment coming in, and one is $600 moved from checking to savings, which shows both accounts and no category."
+  alt="A list of transactions, newest first, each with who it was with, which account it was in, its category and its amount, all in dollars. Most are spending: groceries, a dental check-up, a subscription, a transit pass and cinema tickets. One is a $750 freelance payment coming in, and one is $600 moved from checking to savings, which shows both accounts and no category."
   width="1600"
   height="1000"
 />
@@ -156,7 +156,7 @@ leave the amount blank, it asks you for one each time.
 
 <Shot
   name="templates"
-  alt="The templates page before any are saved: a New template button, and a note that you can also choose Save as template from any transaction's menu."
+  alt="The templates page with four saved templates, each with its type, payee, account and category: Dinner out, Freelance invoice, Rail fare and Weekly groceries."
   width="1600"
   height="1000"
 />

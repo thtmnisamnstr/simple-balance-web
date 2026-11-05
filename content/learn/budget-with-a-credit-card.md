@@ -2,7 +2,7 @@
 title: How to budget with a credit card
 description: A card purchase is spending the day you make it, though the money leaves later. How to budget so the bill is never a surprise, and why to pay it in full.
 date: 2026-10-24
-updated: 2026-10-25
+updated: 2026-11-04
 section: Keeping it accurate
 order: 2
 ---
@@ -94,7 +94,7 @@ because that's money you owe, not money you have.
 
 <Shot
   name="accounts"
-  alt="The accounts page: a search box and sort controls, then accounts grouped by type. Under Checking, a euro account at €1,621.10 and Everyday Checking at $7,663.45. Under Savings, Savings at $20,200.00. Under Credit card, a card named Travel Card."
+  alt="The accounts page: a search box, sort controls and a box for showing archived accounts, then accounts grouped by type. Under Checking, Euro Account at €1,121.10 and Everyday Checking at $8,108.30. Under Savings, Savings at $20,200.00. Under Credit card, a card named Travel Card."
   width="1600"
   height="1000"
 />
@@ -118,7 +118,7 @@ category, like the $600 one here.
 
 <Shot
   name="transactions"
-  alt="A list of transactions, newest first, each with who it was with, which account it was in, its category and its amount, all in dollars. Most are spending on groceries, a lunch, cinema tickets and a transit pass. One is a $750 freelance payment coming in, and one is $600 moved from checking to savings, which shows both accounts and no category."
+  alt="A list of transactions, newest first, each with who it was with, which account it was in, its category and its amount, all in dollars. Most are spending: groceries, a dental check-up, a subscription, a transit pass and cinema tickets. One is a $750 freelance payment coming in, and one is $600 moved from checking to savings, which shows both accounts and no category."
   width="1600"
   height="1000"
 />

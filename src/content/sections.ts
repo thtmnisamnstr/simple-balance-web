@@ -164,7 +164,7 @@ export const docsIndex = {
     "Self-hosting": {
       audience: "For people who run their own copy",
       blurb:
-        "Simple Balance also runs on machines you control. Try it on your own computer, run it for real on a server, keep it backed up, and move your transactions between your copy and the cloud app.",
+        "Simple Balance also runs on machines you control. Try it on your own computer, run it for real on a server, keep it backed up, and move your whole ledger between your copy and the cloud app.",
     },
   } as Readonly<Record<string, { readonly blurb: string; readonly audience?: string }>>,
 } as const;

@@ -3,7 +3,7 @@ title: Theme, timezone and currency
 description: Switch between light and dark, set the timezone that decides what today is, and pick the currency new accounts and budgets start in.
 section: Your account
 order: 1
-updated: 2026-10-25
+updated: 2026-11-04
 ---
 
 **Settings** opens on **Preferences**, where you choose whether Simple Balance
@@ -96,6 +96,15 @@ This only happens until a choice is saved, so it never replaces one you made.
 If your device already matches where an account starts, UTC and US dollars,
 nothing is saved, and it looks again the next time you open Simple Balance.
 After that, only you change them, or an AI assistant you've allowed to.
+
+## Brought in from a Simple Balance file
+
+A Simple Balance file exported from another copy can carry its timezone,
+default currency and theme. When you import one on **Import/Export**, and this
+copy has none of its own yet, it takes the file's and says so. If it has its
+own and the file's are different, the import asks you to choose between
+**Use the file's** and **Keep this copy's**. Settings saved from your browser
+the first time you signed in count as this copy's own.
 
 ## Changes an AI assistant can make
 

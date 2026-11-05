@@ -145,6 +145,48 @@ that release, then checked again against it.
 
 ### Changed
 
+**The site describes 0.2.2, and the free plan's ad is the app's own.** The
+application's 0.2.2 release moves a whole ledger in one file and renames its
+import page, and since 4 November 2026 app.smpl.money shows its own ad in
+place of Google's. Everything below was checked against the release's code,
+and every claim the docs make about it was then argued against.
+
+- Moving between the cloud app and your own copy takes one Simple Balance file
+  now: the whole ledger or the accounts you choose, with their starting
+  balances, every transaction, budgets, saved entries and repeating payments,
+  and the balances checked against the file. Both sides need 0.2.2 or later.
+  The pricing page lists it in every plan, its answer on moving says how, and
+  the moving guide was rewritten for it.
+- Statements come in on the Import/Export page, and the docs and the import
+  guide say so.
+- An AI assistant can export, preview, add and move a Simple Balance file, and
+  read the money guides, and the assistant docs say which access each needs.
+- Every screenshot is the release's capture, of a demo ledger moved into the
+  month it was taken, and every description of one was read again against its
+  new picture.
+- The privacy policy says the free plan's one ad is the app's own: it loads
+  nothing from anybody else, sets no cookie and records nothing about who sees
+  it. What it said about Google's ads stays, as a section saying what applies
+  if they come back, and the policy will say so before they do. The pricing
+  page's answer on ads and the homepage's privacy points say the same, and no
+  longer name Google.
+- The policy also says the app shows your Google picture when you sign in with
+  Google, and that you can take your whole ledger with you as a Simple Balance
+  file, and the terms' advice on keeping your own copy names both kinds of
+  file. The policy and the terms carry a new date. Nobody is emailed about it,
+  because the change narrows what leaves for advertising and was already in
+  effect.
+- Reading the docs against the release's code turned up sentences that had
+  been wrong since before it, and they were corrected along the way.
+
+**The procedures for a release follow 0.2.2, the deployment and the assistant
+listings.** The written steps for pulling a release, reviewing the policy and
+preparing a merge read which ad production serves from the deployment's
+configuration rather than from any diff, hold the guides' Markdown copies to
+the shape the app's assistant server reads them in, and treat the pages,
+icons and words the assistant directory listings use as fixed, so a change to
+one is reported to the owner rather than found later by a reviewer.
+
 **Who publishes the site, on every page, and five assistants in the
 assistant docs.** Made for Simple Balance's listings in the AI assistant
 directories, whose reviews check the pages a listing links to.

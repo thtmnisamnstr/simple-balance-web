@@ -3,7 +3,7 @@ title: Frequently asked questions
 description: Short answers about the free budget app, Simple Balance. Which banks and files work, phones, sharing, currencies, AI assistants and your data.
 section: Get started
 order: 3
-updated: 2026-10-29
+updated: 2026-11-04
 faq: true
 ---
 
@@ -36,16 +36,18 @@ for every fact about the other apps.
 
 Any bank that lets you download your transactions as a CSV file. Simple
 Balance doesn't connect to your bank. You download the file from your bank's
-website and bring it in on **Import CSV**, and nothing in it counts until
+website and bring it in on **Import/Export**, and nothing in it counts until
 you've checked it on **Staged**. [Importing a statement](/docs/importing-a-statement/)
 has the steps.
 
 ## Can I import an OFX, QFX or QIF file?
 
-No. Simple Balance reads CSV files only, so if your bank offers a choice, take
+No. From your bank, Simple Balance reads CSV files only, so if it offers a choice, take
 the CSV. Any CSV with a header row and a date, a payee and an amount works, in
-any column order, as long as its amounts are plain numbers. A figure with a
-currency sign in it, such as $12.50, isn't read.
+any column order, as long as its amounts are plain numbers and its dates are
+written YYYY-MM-DD, MM/DD/YYYY or DD/MM/YYYY, with a four-digit year. A figure
+with a currency sign in it, such as $12.50, isn't read, and neither is a date
+such as 03/04/26.
 
 ## Is there a phone app?
 
@@ -79,10 +81,12 @@ separate total for each currency instead of one combined figure.
 ## Can an AI assistant use Simple Balance?
 
 Yes, through MCP, the Model Context Protocol. Simple Balance has an MCP server
-at `https://app.smpl.money/mcp` that an assistant signs in to with OAuth, and
-you choose what each connection may do: read your records, propose entries for
-you to approve on **Staged**, or make changes itself. No assistant can delete
-your account, set a password or touch billing.
+at `https://app.smpl.money/mcp` that an assistant signs in to with OAuth. You
+approve each connection on a screen that lists what it's asking to do: read
+your records, propose entries for you to approve on **Staged**, or make changes
+itself. It can also read the money guides on this site. No assistant can delete
+your account, set or change its password, connect Google to it, or pay for or
+change your plan.
 [Connecting an AI assistant (MCP)](/docs/agents-and-mcp/) has the details.
 
 ## How do I get my data out?
@@ -90,8 +94,13 @@ your account, set a password or touch billing.
 Press **Export CSV** on the **Transactions** page or on an account's own page.
 It works on every plan, and saves the transactions that match the page's dates
 and filters as a spreadsheet file, so set the dates to **All time** first to
-get everything. Budgets, templates and recurring transactions aren't in an
-export. [Your account and plan](/docs/your-account-and-plan/#taking-your-data-with-you)
+get everything. Deleted transactions are never in it, even with
+**Show deleted** on. Budgets, templates and recurring transactions aren't in a
+CSV.
+To take those too, open **Import/Export** and press **Export file** under
+**Export a Simple Balance file**. It saves your whole ledger as one file that
+another copy of Simple Balance can read.
+[Your account and plan](/docs/your-account-and-plan/#taking-your-data-with-you)
 has the rest.
 
 ## How do I delete my account?
@@ -112,9 +121,15 @@ license, and the copy at [app.smpl.money](https://app.smpl.money/) is the same p
 
 Yes, for free, with no plan, no account limit and no ads. You install it, put
 HTTPS in front of it, and back it up and upgrade it yourself.
-[Self-hosting](/docs/self-hosting/) starts there, and you can
-[move your transactions](/docs/moving-between-cloud-and-self-hosted/) between
-your copy and [app.smpl.money](https://app.smpl.money/) later, in either direction.
+[Self-hosting](/docs/self-hosting/) starts there. You can
+[move your books](/docs/moving-between-cloud-and-self-hosted/) between your copy
+and [app.smpl.money](https://app.smpl.money/) later, in either direction, as a
+Simple Balance file: export it on one, and on the other choose **Move it into
+this ledger** before you add any transactions there. Your accounts, categories,
+budgets, templates, recurring transactions and transactions come along, with
+deleted transactions and archived accounts as they were. Both need Simple
+Balance 0.2.2 or later, and your sign-in, your connected assistants and your
+plan stay where they were.
 
 ## How do I get help?
 

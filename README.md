@@ -186,10 +186,13 @@ what waits on an account or asset only the owner has, and what was decided
 against with the argument.
 
 This site shows no ads and loads no script from anybody else. The ads run in
-the application, and the one thing this site owns of them is `public/ads.txt`,
-which makes it responsible for revenue earned on a different domain:
-[`docs/standards/operations.md`](docs/standards/operations.md) 2 says why it
-stays.
+the application, which since 4 November 2026 shows its own house ad, with
+AdSense unset. What this site owns of them is `public/ads.txt`, which makes it
+responsible for revenue earned on a different domain whenever the application
+runs AdSense, and the privacy policy's disclosures, kept as a dormant section
+for the day it does again:
+[`docs/standards/operations.md`](docs/standards/operations.md) 2 says why the
+file stays either way.
 
 ## Staying in sync with the application
 

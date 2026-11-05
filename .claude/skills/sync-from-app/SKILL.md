@@ -39,7 +39,10 @@ so §1 lists each learn guide whose steps name a label or quote a message that
 the application's code had at the last sync and has nowhere now, §4 adds each
 one that shows a screenshot it refreshed, and the report carries that list
 unedited. The one edit a sync makes under `content/learn/` is the alt text
-under a screenshot §4 replaced, because the picture is the sync's.
+under a screenshot §4 replaced, because the picture is the sync's. Even that
+one leaves the owner an item, because the application's MCP server serves
+the guides from a copy of their published Markdown: `write-content` §3 has
+that copy's contract and the item, and §9 carries it.
 
 **§5 is also the docs procedure on its own**, with no release to pull:
 documenting a feature properly, covering the whole app, or answering whether
@@ -247,11 +250,12 @@ changed" and "I could not reach it" must never look alike. A 2 is either the
 kit not being published anywhere yet or a failure to look, and §0 says how to
 tell them apart.
 
-**Eight things are checked, and the script's verdict covers five of them**:
+**Nine things are checked, and the script's verdict covers five of them**:
 the contract, the features, the screenshots, where the snapshots say they
 came from, and which ref the site's links into the application name. The
-brand tokens, what the release changed (its changelog, its labels, and any
-screen it added), and which learn guides it touched are checked only here.
+brand tokens, what the release changed (its changelog, its labels and any
+screen it added), what production runs, which no release shows, and which
+learn guides it touched are checked only here.
 Run every check below whatever the script said: a check that is skipped
 reports nothing, and nothing is what "in sync" looks like. The script names
 what moved; these show what it moved to.
@@ -316,7 +320,10 @@ site's own token, which `brand.css` explains where it declares it. Anything
 else it prints is a value the application has changed; copy the new one into
 `brand.css`, in the theme block it belongs to, and let
 `tests/brand-tokens.test.ts` hold the structure. A failed `curl` says so and
-compares nothing.
+compares nothing. A moved `--green` is also an owner item for the
+[connectors repository](https://github.com/thtmnisamnstr/simple-balance-mcp-connectors),
+whose `plugin/plugin.json` repeats both greens as `brandColor` and
+`brandColorDark` (§9).
 
 **The newlines are flattened before anything is matched**, because Prettier
 wraps a declaration too long for one line, and the dark `--shadow` in
@@ -403,7 +410,10 @@ fi
 
 That prints every section after the one the site describes, an `Unreleased`
 one included when the ref is ahead of a release, and the upgrade note for each
-release since.
+release since. The upgrades file keeps a heading for the next release from
+the day the last one is cut, written as work lands, so the first note it
+prints names a version that isn't out yet: read it as that file's
+`Unreleased`, and an empty one says so in its first line.
 
 **The commit can move without a release**, and once `main` carries the kit
 that's most weeks: whatever merged since the tag sits under `Unreleased`, and
@@ -416,12 +426,19 @@ without one was never read and never recorded. **Each entry is applied or
 deferred, and the report says which, with the reason.** Applied is the
 default for anything app.smpl.money now does, on every page that follows
 `$SHA` (§5.1). Deferred is for what only a copy somebody runs would show,
-which waits for the tag the Self-hosting pages name, and for anything the
-owner says app.smpl.money doesn't run yet. An entry that's neither is one
-nobody decided. As this is written, `main` is three `Unreleased` fixes past
-0.2.1, every one of them to the deploy programs under `deploy/pulumi/`, so
-all three are deferred: the Self-hosting pages follow v0.2.1, and nothing a
-reader of app.smpl.money sees has changed.
+which waits for the tag the Self-hosting pages name, and for anything
+app.smpl.money doesn't run yet. An entry that's neither is one nobody
+decided. **Which release app.smpl.money runs is read, not assumed.** Its
+public half needs no access: `curl -s https://app.smpl.money/health/live`
+answers with the version production runs. When it doesn't answer, make
+`legal-review` §6's production read now rather than at §6 here, whose run
+then reuses it. When neither answers, ask the owner, and never take silence
+for the release. The version moves only
+when a release is cut, so it can't tell `$SHA` from the tag before it:
+production runs a release's images, and runs `$SHA` only when `$SHA` is
+`$REL` (§5.1). When 0.2.1 was current, `main` sat three `Unreleased` fixes
+past it, every one of them to the deploy programs under `deploy/pulumi/`,
+so all three were deferred until 0.2.2 shipped them.
 
 Take each entry under **Changed**, and each **Fixed** entry a person would
 notice, and ask where this site states the old behavior:
@@ -458,6 +475,35 @@ notice, and ask where this site states the old behavior:
   product doesn't do (`docs/standards/content.md` 3.3).
 - **The alt text**, which §4 already re-reads against the pictures.
 
+**Some of what this site says about the product is production's
+configuration, not the application's code**, and no changelog, kit or run of
+`scripts/check-app-sync.mjs` can show it. Which ad the free plan shows is
+the one that bit: the kit's `advertising: true` is a literal, true of
+Google's ads and of the application's own Premium bar alike, so every check
+here passes whichever runs. When production stopped serving AdSense and
+turned the house ad on, on 2026-11-04 per the private deployment
+repository, the pricing FAQ and the homepage's privacy points went on naming
+Google's ads and Google's script with nothing to say so. So read the ad
+production serves from the live check, which from 0.2.2 on answers 200 only
+while AdSense is configured, and leave the full read of production's
+settings to `legal-review` §6, which §6 here runs:
+
+```sh
+curl -s -o /dev/null -w '%{http_code}\n' https://app.smpl.money/ads.txt
+```
+
+Then hold every sentence in `src/content/pricing.ts` and
+`src/content/home.ts` that names Google, a consent message or an
+advertising cookie to it. With AdSense configured, they stand as written.
+With the house ad or no ad, each one that says Google's ads run is false,
+and with no ad at all so is every "with ads" on the site, which the
+contract's literal goes on saying. Neither is fixed ahead of the privacy
+policy, which a marketing claim never outpromises (`AGENTS.md`), and the
+policy waits on the owner's decision `legal-review` §2 describes. So the
+disagreement is the first item in the report (§9), and `legal-review` makes
+the policy, the pricing answer and the homepage true together once it's
+decided.
+
 Four sweeps do the part a search can, and a fifth, below, does the learn
 guides. Each takes its names with `read`, `for` or `process.argv`, never a
 positional parameter, for the reason §0 gives.
@@ -477,7 +523,8 @@ grep -rnF -- "$FROM" content src/content | grep -vE 'app-fea|app-fac|copy-source
 The second finds every bold phrase in the docs that the application's code
 doesn't contain. Most are emphasis rather than a label, and dismissing them
 takes a minute; a label the application renamed is the one that matters. All
-of `src/client/`, `src/shared/` and `src/server/` is read: the account types
+of `src/client/`, `src/shared/` and `src/server/` is read (all but
+`src/server/learn/`, for the reason under the block): the account types
 the docs name, **Credit card** and **Loan** among them, are spelled in the
 shared code, and the reports' groups, **Between your own accounts** and
 **Opening balances** among them, are named on the server, as is every
@@ -490,6 +537,7 @@ node -e '
 const fs = require("node:fs");
 const flat = (text) => text.replace(/\s+/g, " ");
 const app = flat(fs.globSync(process.argv[1] + "/src/{client,shared,server}/**/*.{ts,tsx}")
+  .filter((file) => !file.includes("/src/server/learn/"))
   .map((file) => fs.readFileSync(file, "utf8")).join(" "));
 const bold = new Set(fs.globSync("content/docs/*.md").flatMap((file) =>
   [...flat(fs.readFileSync(file, "utf8")).matchAll(/\*\*([^*]+)\*\*/g)].map(([, phrase]) => phrase.trim())));
@@ -498,6 +546,23 @@ const missing = [...bold].filter((phrase) =>
 console.log(missing.sort().map((phrase) => "not in the app: " + phrase).join("\n") ||
   "every bold phrase is in the app");' "/tmp/app-$SHA"
 ```
+
+**The application's `src/server/learn/` is left out, because it quotes this
+site back.** It's where the application keeps the learn guides it serves to
+assistants, and `in-simple-balance.ts` there maps each guide's steps to
+tools. While a guide still names a page by a label the application dropped,
+that file carries a stand-in sentence naming the old label, and the
+application's own test keeps the sentence there until the guide is fixed. So
+0.2.2's rename of **Import CSV** to **Import/Export** left the old label "in
+the app", and with that folder read, the sweep passes every docs page that
+still names it.
+
+**And it names a label only once the old words are gone from the code
+everywhere.** A label renamed on its screen and still spelled the old way
+somewhere else, as a dialog's title, a field's label or a comment, isn't
+named, and 0.2.2 renamed several of those; the learn sweep below lists them.
+The changelog read above is what catches them, which is why it comes first
+and this sweep after it.
 
 **Whitespace is collapsed on both sides before anything is matched, and the
 asterisks are paired before the length is checked.** This was a `grep`, line
@@ -512,9 +577,9 @@ after it isn't read either. The cap is now 80 characters, applied after
 pairing, and past it a bold phrase is a sentence of emphasis. Proved on a
 fixture with that label wrapped in both the page and the JSX: the sweep
 names it when the JSX says something else, and prints its all-clear when the
-JSX has it. At 0.2.1 it names that label for real, because the app builds
-the last word from a constant, `next {unitNoun[periodUnit]}`, and §5.5 says
-how to check one of those.
+JSX has it. At 0.2.1 and 0.2.2 it names that label for real, because the
+app builds the last word from a constant, `next {unitNoun[periodUnit]}`, and
+§5.5 says how to check one of those.
 
 It also names, every run, the labels under "Connect your assistant" on
 /docs/agents-and-mcp/: **Add custom connector**, **Create as a plugin**,
@@ -522,7 +587,12 @@ It also names, every run, the labels under "Connect your assistant" on
 Gemini's and Codex's, not the application's. They're bold because 5.17 holds
 a label to the screen that shows it, and those screens are the vendors'.
 Check them against each vendor's own help rather than against the
-application, and dismiss them here.
+application, and dismiss them here. The
+[connectors repository](https://github.com/thtmnisamnstr/simple-balance-mcp-connectors)'s
+README gives steps for these clients and more, so a disagreement between the
+two is settled against the vendor's help: fixed here through §5, or reported
+for the owner when it's the README. What this page may take from that README
+is `write-content` §3's to say.
 
 The third reads the names a reader types rather than clicks, which are in
 code spans rather than bold, so the second can't see them: the environment
@@ -543,11 +613,11 @@ grep -ohE '`[a-z]+:[a-z]+`' content/docs/agents-and-mcp.md | tr -d '`' | sort -u
   done
 ```
 
-At 0.2.1 it prints three names, all of them right: `SMTP_PASSWORD_FILE`,
-`STRIPE_SECRET_KEY_FILE` and `STRIPE_WEBHOOK_SECRET_FILE`. The application
-builds a `_FILE` name at runtime from the list in its
-`src/server/config-files.ts`, so one of those is right when the name without
-`_FILE` is on that list.
+At 0.2.1 and 0.2.2 alike it prints three names, all of them right:
+`SMTP_PASSWORD_FILE`, `STRIPE_SECRET_KEY_FILE` and
+`STRIPE_WEBHOOK_SECRET_FILE`. The application builds a `_FILE` name at
+runtime from the list in its `src/server/config-files.ts`, so one of those
+is right when the name without `_FILE` is on that list.
 
 The fourth holds the homepage chat's tool names to the release's MCP server,
 whose `TOOL_SCOPES` map names each tool beside the scope it needs. The map is
@@ -578,8 +648,8 @@ and that is why the terms say "like any other".
 what this site never said.** A release that adds a page, a settings tab, an
 email, an assistant tool or a setting leaves every sentence here true and
 the docs one screen short, and nothing above reports it. Every screen the
-application had at 0.2.1 has a docs page (`docs/roadmap.md` 4), and this is
-what keeps that true.
+application had at the release the snapshots record has a docs page
+(`docs/roadmap.md` 4), and this is what keeps that true.
 
 List what a person can reach in each of §0's trees, and diff them, once for
 what app.smpl.money runs and once for what a copy somebody runs has. They
@@ -596,6 +666,9 @@ surface() {
     grep -oE '^  \["[a-z_]+", "ledger:[a-z]+"\]' "$root/src/server/mcp.ts"
     grep -oE 'env\.[A-Z][A-Z0-9_]+|readSecret\("[A-Z][A-Z0-9_]+"\)' "$root/src/server/config.ts" |
       sed -E 's/readSecret\("([A-Z0-9_]+)"\)/env.\1/' | sort -u
+    grep -hoE '^(# *)?[A-Z][A-Z0-9_]+=' "$root/deploy/compose/.env.example" "$root/deploy/compose/single/.env.example" \
+      "$root/deploy/compose/single/.env.postgres.example" "$root/deploy/systemd/simple-balance.env" |
+      sed -E 's/^# *//; s/=$//; s/^/env file: /' | sort -u
   done | sort
 }
 echo "app.smpl.money, $OLD to $SHA:"; diff <(surface "/tmp/app-$OLD") <(surface "/tmp/app-$SHA")
@@ -603,18 +676,32 @@ echo "a copy you run yourself, $OLDREL to $REL:"; diff <(surface "/tmp/app-$OLDR
 ```
 
 That is the page components, the routes wherever the client declares them
-(`src/client/App.tsx` at 0.2.1; `src/client/router.tsx` is the router that
-reads them, not the list), the settings tabs (the `href:` list in
+(`src/client/App.tsx` at 0.2.1 and 0.2.2; `src/client/router.tsx` is the
+router that reads them, not the list), the settings tabs (the `href:` list in
 `src/client/components.tsx`), each email `mail.ts` builds, each assistant
-tool with the scope it needs, and each setting `src/server/config.ts` reads,
+tool with the scope it needs, each setting `src/server/config.ts` reads,
 as `env.` and its name whether it's read from the environment or as a secret
-through `readSecret`. **The routes are matched by `path="/`, not by
-`<Route path=`**, because a route whose element is long is written over
-several lines: at 0.2.1 `/settings/plan` is one, with its `<Route` and its
-`path=` on different lines, and the shorter pattern never saw it. Read the
+through `readSecret`, and each name the deploy recipes' environment files
+set, as `env file:` and its name. **The second list of settings is there
+because the server isn't the only program that reads settings.** 0.2.2's metrics
+collector takes `SB_METRICS_EXPORT_ENDPOINT` and the other `SB_METRICS_`
+names, which `config.ts` never reads, so a list of the server's settings
+alone printed none of them. The Pulumi programs' own copy of the collector's
+names is the `COLLECTOR_SETTINGS` list in
+`deploy/pulumi/common/app-settings.ts`, and the Helm chart's are keys in
+`deploy/helm/simple-balance/values.yaml`; neither is in this list, and
+§5.2's `deploy/` diff is what shows a change to either.
+
+**The routes are matched by `path="/`, not by `<Route path=`**, because a
+route whose element is long is written over several lines: at 0.2.1
+`/settings/plan` is one, with its `<Route` and its `path=` on different
+lines, and the shorter pattern never saw it. Read the
 changelog's **Added** beside the diff, because a screen can also arrive
 inside a page that already existed, as a new dialog, section or bulk action,
-and no list of names shows that.
+and no list of names shows that. 0.2.2's were all that kind: it added no
+page, client route, settings tab or email, and added the Import/Export page's
+Simple Balance file sections, the Overview's **Include archived accounts**
+and the house ad's bar.
 
 **Every line the diff adds gets a docs page or a section of one, or a reason
 in the report.** A new route or page component is usually a page of its own;
@@ -622,13 +709,18 @@ a settings tab, an email or a tool is usually a section of the page that
 covers its neighbors; and **a setting is a row on /docs/configuration/**.
 Until the settings were in this list nothing reported one, and a new
 variable would have reached every copy somebody runs with no row saying what
-it does. Configuration is a Self-hosting page, so the second diff's settings
-are the ones it takes; one only the first diff prints is merged and not yet
-tagged, and waits, deferred in the report. The writing is §5, in this pull:
-from the release's code, then refuted against it. The pictures, a docs mark
-or a group picture, are `draw-and-animate`'s. A line the diff removes is a
-page or a section here describing something that's gone, which is the
-changelog read's kind of finding and is fixed the same way.
+it does. A name only the environment files print is read by a deploy
+program rather than the server, and belongs on the deploy page for that
+program, with a row on /docs/configuration/ as well when it changes what a
+reader's copy does. Configuration is a Self-hosting page, so the second
+diff's settings are the ones it takes; one only the first diff prints is
+merged and not yet tagged, and waits, deferred in the report. The writing
+is §5, in this pull: from the release's code, then refuted against it. The
+pictures, a docs mark or a group picture, are `draw-and-animate`'s. A line
+the diff removes is a page or a section here describing something that's
+gone, which is the changelog read's kind of finding and is fixed the same
+way. A page that goes or moves takes `seo-review` §4's rule for its old
+address, pinned pages included.
 
 ### The learn guides it touched, reported rather than rewritten
 
@@ -643,7 +735,9 @@ node -e '
 const fs = require("node:fs");
 const flat = (text) => text.replace(/\s+/g, " ");
 const [before, after] = process.argv.slice(1).map((root) =>
-  flat(fs.globSync(root + "/src/{client,shared,server}/**/*.{ts,tsx}").map((file) => fs.readFileSync(file, "utf8")).join(" ")));
+  flat(fs.globSync(root + "/src/{client,shared,server}/**/*.{ts,tsx}")
+    .filter((file) => !file.includes("/src/server/learn/"))
+    .map((file) => fs.readFileSync(file, "utf8")).join(" ")));
 const product = (text) => {
   const from = text.search(/^## .*in Simple Balance *$/m);
   if (from < 0) return "";
@@ -671,7 +765,8 @@ somewhere in the code wasn't removed by it. A step names a label in bold and
 quotes a message, so those are what's read, from the heading ending "in
 Simple Balance" to the next one, which is `## Sources`; a quoted value after
 an `=` is a component's attribute and is skipped. The server is read as well
-as the client and the shared code, because a refusal a step quotes is the
+as the client and the shared code, all but its `src/server/learn/` (the
+label sweep above says why), because a refusal a step quotes is the
 server's. Whitespace is collapsed and the pairs found before the length is
 checked, for the reasons the label sweep above gives: the version this
 replaced matched line by line with a cap inside the pattern, so a label
@@ -686,14 +781,23 @@ names a guide that quotes words the code had at `$OLD` and has nowhere at
 else in the code, a comment included, isn't named, and neither is a step
 that still reads right and now leads somewhere else; the changelog read
 above is what catches those, and a guide it implicates goes in the same
-list. Nor does it look at the pictures: §4 adds every guide that shows a
-screenshot it refreshed, because the steps around it now sit under a new
-picture.
+list. 0.2.2 was full of the first kind: the sign-in screen's **Create an
+account** became **Sign up** and lives on as the Accounts dialog's title;
+the Overview's empty **Create your first account** is **No accounts yet**
+and survives in a comment; **Set a password** became **Set password** and
+stays a field's label; and an empty report's **Add a transaction** went,
+while two dialogs kept it as their title. This sweep, and the label sweep,
+print their all-clear over every one of them. Nor does it look at the
+pictures: §4 adds every guide that shows a screenshot it refreshed, because
+the steps around it now sit under a new picture.
 
 **Report each line, and edit none of them.** The report names the guide, the
 words, and what the application says now where its changelog or code makes
 that plain. The fix is `write-content`'s, in its own pull or this one, and
 the owner decides which. Most releases print the all-clear.
+
+**Each one also leaves the application's half of the fix**, the owner
+item `write-content` §3 describes, and the report says so beside the guide.
 
 ### When to stop
 
@@ -712,10 +816,10 @@ Only when all of these hold:
   read, and each was either applied or deferred, with the reason.
 - The tool sweep prints read-only for every tool, and the name sweep prints
   nothing but `_FILE` names whose name without `_FILE` is on the list in the
-  release's `src/server/config-files.ts`, which at 0.2.1 is the three above.
-  These used to count only through the changelog bullet, so a tool renamed
-  or moved behind a wider scope in a commit that didn't move the version
-  stopped nothing.
+  release's `src/server/config-files.ts`, which at 0.2.1 and 0.2.2 is the
+  three above. These used to count only through the changelog bullet, so a
+  tool renamed or moved behind a wider scope in a commit that didn't move
+  the version stopped nothing.
 - Every phrase the label sweep prints is emphasis rather than a label, or a
   label the app builds from a constant whose fixed parts are in its code
   (§5.5).
@@ -724,6 +828,9 @@ Only when all of these hold:
   report with the reason it isn't.
 - The learn sweep prints its all-clear, or every guide it names is in the
   report.
+- What pricing and the homepage say about the free plan's ad is true of the
+  ad the `/ads.txt` check says production serves, or the disagreement is the
+  report's first item, for the owner.
 
 Then the product has not changed in any way a reader could see, and
 `tests/app-facts.test.ts` already proves this site agrees with its snapshot
@@ -760,6 +867,16 @@ That writes the kit's version over `facts.derived.appVersion`, which is where
 rather than from this file. The snapshot's `source` block is §7's, which
 writes it for both snapshots at once.
 
+**A capability the contract adds is a line the pricing page owes.**
+`tests/app-facts.test.ts` holds `included` in `src/content/pricing.ts`, the
+list of what every plan includes, to within three of the contract's
+`declared.capabilities`, either way. So a contract that adds capabilities
+fails it the moment the snapshot moves, until the page has a line in a
+reader's words for what was added. 0.2.2 took the capabilities from 14 to
+16, the Simple Balance file's export and import, with `included` at 12, so
+the refresh alone fails it by one. That's the order this section asks for:
+the line first, then the refresh.
+
 **Three places read the prices from the snapshot, not one**, so they move
 with it and need no edit: the pages, the structured data's `offers`
 (`tests/structured-data.test.ts`), and `/llms.txt`'s summary. The social card
@@ -768,7 +885,11 @@ draws its price line from it too, but it's a committed picture, so **run
 with it, though: a price or a limit that changed changes what the pricing
 page and the homepage's plans say, so `pricingUpdated` and `homeUpdated`
 move to the day, though no word in their files did
-(`docs/standards/operations.md` 7.3).
+(`docs/standards/operations.md` 7.3). It also makes every listing that
+states a price or the free plan's limit stale, the
+[connectors repository](https://github.com/thtmnisamnstr/simple-balance-mcp-connectors)'s
+included, which repeats the homepage's plans line word for word, and the
+report names that for the owner (§9, `aeo-review` §9).
 
 **Never refresh the snapshot to make a test go green.** It is the external
 referent; moving it to match the site turns the check green and leaves the
@@ -816,9 +937,9 @@ feature **as it was when the copy here was written**. That test compares it
 against the new pull and fails for each feature whose description moved,
 showing the old sentence and the new one.
 
-So a release that changes three features prompts three rewrites. The other
-fourteen keep wording somebody already agreed was good, and the homepage does
-not quietly become a different homepage every quarter for no reason a reader
+So a release that changes three features prompts three rewrites. The rest
+keep wording somebody already agreed was good, and the homepage does not
+quietly become a different homepage every quarter for no reason a reader
 could name.
 
 When the copy is updated:
@@ -835,11 +956,18 @@ same trap as refreshing the facts snapshot, and both files say so at the top.
 **A rewrite moves `homeUpdated` to the day.** It's the homepage's date in the
 sitemap (`docs/standards/operations.md` 7.3), and words that changed under
 an old date are the inconsistency that makes Google ignore every date there.
-An acceptance that left the page alone moves nothing.
+An acceptance that left the page alone moves nothing. A rewrite of
+`titleTagline`, the description, the agents section, the import card or the
+plans line also leaves the
+[connectors repository](https://github.com/thtmnisamnstr/simple-balance-mcp-connectors)'s
+listings describing the old words, because its `submissions/copy.md` reuses
+them, so the report names it for the owner (§9).
 
 A feature the application **added** also fails that test, because taking it
 or declining it must be a decision rather than an oversight. Declining is
-fine: accept it to note it as seen, and leave the page alone.
+fine: accept it to note it as seen, and leave the page alone. Taking it is
+words on the page and its id in the `covers` of the section that says it,
+which `tests/app-features.test.ts` reads.
 
 A feature **re-tiered** fails too. Tier decides where a feature belongs on
 the page, so a promotion from C to A that the site ignores is the
@@ -999,6 +1127,15 @@ any more is deleted, with its `1200/` copy, because an unused screenshot is
 one that goes stale unnoticed and `build:images` never deletes
 (`docs/standards/operations.md` 7.1).
 
+**Seven of the `1200/` light copies are pinned** by the connectors
+repository's directory guides, which download them (`seo-review` §4 names
+them). A pull that would stop showing one doesn't delete it on its own:
+keeping the file fails `tests/learn.test.ts` or `tests/home-page.test.tsx`,
+and deleting it 404s a step those guides run, so the report puts it to the
+owner. A refresh of any of the seven is an owner item too, since what each
+shows decides where that repository uses it: its `submissions/copy.md`
+leaves import out because "it shows an empty upload step".
+
 **Not the blog.** A post's picture is part of what was true the day it went
 out, like its words, and a sync leaves posts alone. This list read all of
 `content/` once, so a screenshot in a dated post would have been swapped for
@@ -1039,6 +1176,16 @@ budgets shot described as a comparison when it is the form. Alt text is what a
 reader who cannot see the picture gets instead of it, so a screenshot that
 changes under its sentence is a silent lie. `web.md` 5.4.
 
+**A recapture can change what a picture shows, not only how it's laid
+out.** The application's kit is captured from a committed demo ledger now,
+which replaced the seed it used to load, and it carries what the seed
+didn't: 0.2.2's capture shows saved templates and recurring transactions
+where the pictures before it showed empty pages, activity brought in from a
+Simple Balance file, and an import page with two more sections. Every alt
+text that said "before any are saved" or "before anything is set up", or
+named only the CSV step, went false at once, with nothing in the screens'
+layout to suggest it.
+
 **One picture has many sentences.** A screenshot can be on the homepage,
 several docs pages and several guides, each with its own alt text, and
 reading only `src/content/home.ts` leaves the rest describing the old
@@ -1060,7 +1207,8 @@ other way. A learn guide's alt text is the one thing in `content/learn/` a
 sync does fix, because the picture under it is the sync's. **The steps
 around it aren't**, and they now sit under a new picture, so every learn
 guide this prints goes in the report beside the learn sweep's, for
-`write-content` to read against the new screen.
+`write-content` to read against the new screen, and a learn alt text
+changed here is the owner item §9 lists.
 
 The application captures **every** screen; this site ships the handful it
 uses, because an unused screenshot is a file that goes stale unnoticed.
@@ -1069,12 +1217,12 @@ uses, because an unused screenshot is a file that goes stale unnoticed.
 ## 5. The docs
 
 The docs describe a product this repository can't run, at a release it didn't
-write. Every page under `content/docs/` was checked against the application's
-source at 0.2.1, and the checking kept finding what the writing had missed.
-`CHANGELOG.md` records the configuration page giving a failed payment a
-seven-day grace period against the app's 15, and five pages that disagreed
-with the app or with each other, one of them about whether a free account's
-three usable accounts can be chosen more than once. That's what a page
+write. When every page under `content/docs/` was first checked against the
+application's source, at 0.2.1, the checking kept finding what the writing
+had missed. `CHANGELOG.md` records the configuration page giving a failed
+payment a seven-day grace period against the app's 15, and five pages that
+disagreed with the app or with each other, one of them about whether a free
+account's three usable accounts can be chosen more than once. That's what a page
 written from anything but the code collects: a neighboring page's figure, an
 older release's behavior, or the app's own guide where it has drifted from
 the code.
@@ -1093,23 +1241,34 @@ runs:
 One page's frontmatter and wiring are `write-content` §3, "A docs page". That
 section is how a page is built; this one is how its claims are made true.
 
+**Two docs pages are also listings' addresses**: /docs/agents-and-mcp/ is
+the documentation and the FAQ the support address the
+[connectors repository](https://github.com/thtmnisamnstr/simple-balance-mcp-connectors)'s
+listings give, so a rewrite of either keeps what `write-content` §3 lists
+for it, and a move takes `seo-review` §4's 301 and owner item. That repository describes the
+same server in its own files and keeps its own list of the server's tools
+and their count, so a change here to what the server does, asks for or
+shows, or a release that adds or renames a tool, leaves the owner an item
+for it (`aeo-review` §9), which the report carries.
+
 ### 5.1 Pin the source
 
 **Which commit a page is written from depends on who runs the program it
 describes.** Until this was written down, every page followed `$SHA`, while
-the Self-hosting pages tell a reader to clone a release tag. `main` is ahead
-of v0.2.1 as this is written, with changes to the deploy programs in it, so
-a sync would have had those pages describe programs nobody on the release
-runs.
+the Self-hosting pages tell a reader to clone a release tag. When it was
+written, `main` was ahead of v0.2.1 with changes to the deploy programs in
+it, so a sync would have had those pages describe programs nobody on the
+release ran.
 
 - **Every page outside Self-hosting follows the commit app.smpl.money
-  runs**, which is `$SHA`, the commit §0 pinned, unless the owner says
-  otherwise. If you aren't sure the cloud runs it, as when `$REF` is a pull
-  request's branch, ask before writing. It's the tree every sweep in §1
-  checked, and §7 records it in both snapshots, so these pages are written
-  from the code the site will say it describes. Not from the release tag:
-  `main` sits ahead of its tag whenever something merged since, and a
-  release still on its pull request has no tag yet.
+  runs**, which is `$SHA`, the commit §0 pinned, once production runs it.
+  Production runs a release's images, so it runs an older commit whenever
+  it reports a version before `$TO`, `$SHA` is past the last tag, or `$REF`
+  is a pull request's branch, and what it doesn't run yet is deferred (§1).
+  When neither `/health/live` nor `legal-review` §6's read says which
+  release it runs (§1), ask the owner before writing. It's the tree every
+  sweep in §1 checked, and §7 records it in both snapshots, so these pages
+  are written from the code the site will say it describes.
 - **The Self-hosting pages follow the tag they tell a reader to clone**, `v`
   and `facts.derived.appVersion`, which is the program a reader running
   their own copy has, whose image the deploy programs pin, and which
@@ -1122,8 +1281,8 @@ runs.
 
 When the two are one commit, as on the day `main` is tagged, none of this
 matters. When they aren't, a change merged since the tag goes on the cloud
-pages now and waits for the release on the Self-hosting ones, and §1's
-changelog read records it as deferred there.
+pages once production runs it and on the Self-hosting ones once it's
+tagged, and §1's changelog read records it as deferred until then.
 
 **On its own**, with no sync, read the commit the snapshots already record,
 which is the code the site describes now, and its tag. Write it as both
@@ -1162,19 +1321,34 @@ exist:
   empty states, and every message a refusal shows. Labels also live in the
   pieces the pages share (`src/client/TransactionBrowser.tsx`,
   `src/client/forms.tsx`, `src/client/bulk-edit.tsx`,
-  `src/client/components.tsx`): **Save as template** is in two of them as
-  well as on two pages, and the settings tabs are in the last.
+  `src/client/components.tsx`, `src/client/ads.tsx`, whose house ad from
+  0.2.2 has words of its own and its drawing in `src/client/house-ad-art.tsx`,
+  and from 0.2.2 `src/client/LedgerFileImport.tsx`, the Simple Balance file's
+  import): **Save as
+  template** is in two of them as well as on two pages, and the settings tabs
+  are in `components.tsx`.
 - **Email.** `src/server/mail.ts`, one function per message, each with its
   subject.
 - **The assistant connection.** Every tool `src/server/mcp.ts` registers, and
   the scope it needs, which is the `if` block it's registered inside
-  (`ledger:read`, then `ledger:stage` or `ledger:write`).
-- **Limits.** The `MAX_` constants in `src/shared/domain.ts` and
-  `src/server/config-limits.ts`, and the server code that refuses past each
-  one, which is where the message a reader sees comes from.
+  (`ledger:read`, then `ledger:stage` or `ledger:write`), and from 0.2.2
+  `src/server/services/learn.ts`, the money guides two of those tools serve.
+- **Limits.** Every constant that caps something in `src/shared/` and
+  `src/server/`, and the server code that refuses past each one, which is
+  where the message a reader sees comes from. Most are spelled `MAX_` first,
+  and not all: `CSV_EXPORT_MAX_ROWS`, and 0.2.2's `MCP_REGISTER_MAX_ENTRIES`
+  and `LEDGER_FILE_CONTENT_MAX_BYTES`, have it in the middle, and the Simple
+  Balance file's own limits are in `src/shared/ledger-file.ts` and
+  `src/shared/ledger-file-import.ts`, outside the two files this read once
+  covered. A limit can also be another one reused, as the CSV import's
+  default row cap is the bulk selection's, so the refusal says what it is,
+  not the name.
 - **Plans, billing, import, export and deletion.** `src/server/services/`
-  (`billing.ts`, `import-export.ts`, `staging.ts`, `account-deletion.ts`),
-  `src/server/stripe.ts` and `src/client/pages/PlanPage.tsx`.
+  (`billing.ts`, `import-export.ts`, `staging.ts`, `account-deletion.ts`,
+  and from 0.2.2 `ledger-file.ts` for the Simple Balance file's export, add
+  and move), the shared `src/shared/ledger-file.ts`, `ledger-file-import.ts`
+  and `ledger-file-move.ts`, `src/server/stripe.ts` and
+  `src/client/pages/PlanPage.tsx`.
 
 ```sh
 . /tmp/app-sync.env
@@ -1183,13 +1357,20 @@ grep -nE 'path="/' "$SRC/src/client/App.tsx"
 ls "$SRC/src/client/pages"
 grep -n 'subject:' "$SRC/src/server/mail.ts"
 grep -A1 'registerTool($' "$SRC/src/server/mcp.ts" | grep -oE '^ *"[a-z_]+"' | tr -d ' "'
-grep -n 'export const MAX_' "$SRC/src/shared/domain.ts" "$SRC/src/server/config-limits.ts"
+grep -rnE '^(export )?const [A-Z0-9_]*(MAX|LIMIT)[A-Z0-9_]* *=' "$SRC/src/shared" "$SRC/src/server"
 ```
 
 The routes by `path="/` for the reason §1's screen diff gives: a route
-written over several lines has its `path=` on a line of its own. The
-Self-hosting pages' inventory is `deploy/` and the settings
-`src/server/config.ts` reads, at `/tmp/app-$REL` (§5.1).
+written over several lines has its `path=` on a line of its own. The limits
+by any constant with `MAX` or `LIMIT` in its name, anywhere under both
+directories, which also prints request body sizes and internal caps nobody
+meets; that's the noise of finding all of them. The `grep` this replaced
+read two files for names starting `MAX_`, and it printed nothing new
+between 0.2.1 and 0.2.2, a release that added the Simple Balance file's
+limits and the caps on one call from an assistant. The Self-hosting pages'
+inventory is `deploy/`, the settings `src/server/config.ts` reads and the
+names the deploy recipes' environment files set (§1's screen diff), at
+`/tmp/app-$REL` (§5.1).
 
 **For a release**, the inventory is what moved: the lines §1's screen diffs
 printed, and every file under `src/` and `deploy/` that changed between §0's
@@ -1414,6 +1595,9 @@ paragraphs false.
   Give its diff the two commits, `$OLD` and `$SHA`, in place of the tags it
   shows: a release still on its pull request has no tag yet, and the two
   trees are on disk already at `/tmp/app-$OLD` and `/tmp/app-$SHA`.
+- **Its §6 also reads what production runs**, the ad, mail, backups and
+  metrics export, which no release diff shows. §1's two live checks are a
+  tripwire from its public half, and nothing here repeats the rest.
 
 **Then read the docs that state data handling beside the policy**, because
 nothing else holds them together: what deleting an account removes, what an
@@ -1421,9 +1605,12 @@ export holds, which emails go out, what a downgrade or a failed renewal does,
 and what a connected assistant can read and change.
 `content/docs/your-account-and-plan.md`, `content/docs/agents-and-mcp.md`,
 `content/docs/activity-history.md`, `content/docs/limits.md` and
-`content/docs/configuration.md` say most of it. `tests/legal.test.tsx` reads
-the policy, the terms and the marketing pages, and none of the docs. For
-every page §5 changed that states one of those things, read the policy's
+`content/docs/configuration.md` say most of it, and since 0.2.2, whose
+Simple Balance file carries a whole ledger and can carry its activity
+history, so do `content/docs/moving-between-cloud-and-self-hosted.md` and
+`content/docs/importing-a-statement.md`. `tests/legal.test.tsx` reads the
+policy, the terms and the marketing pages, and none of the docs. For every
+page §5 changed that states one of those things, read the policy's
 sentence on the same thing beside it, and fix whichever of the two is wrong
 of the code at `$SHA`.
 
@@ -1544,6 +1731,10 @@ new and deleted files as well, so a new docs page, its card and a screenshot
 The report is the one `merge-prep` ends with, so keep these for the top of
 it, and its pull request's body:
 
+- **first, any decision only the owner can make**: when the ad production
+  serves and what this site says about it disagree (§1), that's the first
+  line, as the decision `AGENTS.md` has to record before `legal-review` can
+  make the policy, the pricing answer and the homepage true together;
 - the ref and commit you pulled from, and when the ref came from a pull
   request, which one (an `APP_REF` override says so instead), and the release
   and commit the site described before;
@@ -1552,7 +1743,9 @@ it, and its pull request's body:
 - the source both snapshots now record, and which links were moved to it;
 - which changelog entries changed a sentence here, and where, and when the
   commit moved without a release, each `Unreleased` entry applied or
-  deferred, with the reason;
+  deferred, with the reason, and which release app.smpl.money runs and what
+  said so, its `/health/live`, `legal-review` §6's read or the owner, stated
+  as a release rather than copied from that repository (`legal-review` §6);
 - the commit the Self-hosting pages now follow, `$REL`, and whether it's the
   tag `v$TO` or `$SHA` because the release has no tag yet;
 - which screens the release added, and the page or section that now covers
@@ -1566,6 +1759,17 @@ it, and its pull request's body:
 - **every learn guide §1's sweep named**, with the words the release
   changed, and every one §4 found under a screenshot it refreshed, for
   `write-content`;
+- **the owner item** every learn copy this pull changed leaves, an alt text
+  included, and every guide above leaves once it's fixed: the application's
+  `product-kit` §6 after this deploys (`write-content` §3), with any
+  stand-in sentence the application has for the guide removed in the commit
+  that refreshes it;
+- **the connectors repository's owner items**: a pinned page or screenshot
+  this pull refreshed, would have dropped or moved (`seo-review` §4), and
+  whatever its listings repeat that this pull changed, the agents page, the
+  FAQ's help answer, the homepage strings §3 names, a price or a limit, a
+  moved `--green` (§1), a tool the release added, each with the files there
+  that repeat it (`aeo-review` §9);
 - anything in the application's list you deliberately left off the site.
 
 Then, after a sync of a release or a moved commit (not §5 run on its own,

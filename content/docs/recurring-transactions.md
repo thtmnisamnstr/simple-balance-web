@@ -3,7 +3,7 @@ title: Recurring transactions
 description: Set up rent, pay or a subscription once. On each due date a row waits on Staged for you to check and commit, with an email if you want one.
 section: Using Simple Balance
 order: 8
-updated: 2026-10-25
+updated: 2026-11-04
 ---
 
 A recurring transaction is a rule for money that moves on a schedule, like
@@ -24,7 +24,7 @@ quietly going missing from your books.
 
 <Shot
   name="recurrences"
-  alt="The recurring page before anything is set up: a New recurring transaction button, and a note that each due date puts a row on Staged transactions for you to check."
+  alt="The recurring page with five recurring transactions, each with its schedule, amount and next date: a $4,200.00 salary on day 1 of each month, $1,850.00 rent on day 2, an electricity bill whose amount is filled in each time, a $17.99 subscription on day 5 and $600.00 moved to savings on day 17."
   width="1600"
   height="1000"
 />
@@ -83,7 +83,7 @@ has to add up, and every leg needs a category."
 | Option                                      | What it does                                                                                                                                                                                                        |
 | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Repeats**                                 | **Daily**, **Weekly**, **Monthly** or **Yearly**.                                                                                                                                                                   |
-| **Every N months**, or days, weeks or years | How far apart, from 1 to 366. 1 means every one. **Weekly** every 2 is every other week, and **Monthly** every 3 is once a quarter.                                                                                 |
+| **Every N months**, or days, weeks or years | How far apart, from 1 to 366. 1 means every one, and so does leaving it blank. **Weekly** every 2 is every other week, and **Monthly** every 3 is once a quarter.                                                   |
 | **Starting**                                | The date the schedule starts from, and the one every later date is counted from. A weekly schedule repeats on this date's day of the week, and a yearly one on its month and day.                                   |
 | Day of the month                            | Monthly and yearly only. **On day N of the month** uses the day of **Starting**. **On a relative day** asks for **Which one** (**First**, **Second**, **Third**, **Fourth** or **Last**) and a **Day** of the week. |
 | **When the month is too short**             | With **On day N of the month**, for a day some months don't have, such as the 31st. **Use the last day of that month** or **Skip that month**.                                                                      |
@@ -212,7 +212,7 @@ page, soonest first.
 | **Schedule** | The schedule as a sentence, such as "Every month, on day 1", "Every 2 weeks, on Friday" or "Every month, on the last Friday".                                               |
 | **Amount**   | The amount, or "each time" when it's left blank.                                                                                                                            |
 | **Next**     | The next date. **Posts** and a date means a weekend rule will move it, **Skipped** means that one won't be proposed, and **Past due** means it should have been and wasn't. |
-| **Proposed** | How many of its rows are waiting on **Staged**, as a link to them. Under it, how many were committed and how many were discarded.                                           |
+| **Proposed** | How many of its rows are waiting on **Staged**, as a link to them, or 0. Under it, how many were committed and how many were discarded, once there are any.                 |
 | **Notifies** | **Email** when it emails you, or "No".                                                                                                                                      |
 
 Click a column heading to sort by it, and click again to reverse.

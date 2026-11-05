@@ -3,14 +3,14 @@ title: Staged transactions and duplicates
 description: Staged is the review queue. Imported, recurring and hand-staged rows wait there, count toward nothing, and post only when you commit them.
 section: Using Simple Balance
 order: 5
-updated: 2026-10-25
+updated: 2026-11-04
 ---
 
-**Staged** is the review queue. Rows from a CSV import, a recurring
-transaction, a copy you cloned or an AI assistant wait there, and they don't
-count toward any balance, budget or report until you commit them. You use it
-to check each row, fix what the importer couldn't read, drop duplicates, and
-then commit.
+**Staged** is the review queue. Rows from a CSV import, a Simple Balance file
+you added, a recurring transaction, a copy you cloned or an AI assistant wait
+there, and they don't count toward any balance, budget or report until you
+commit them. You use it to check each row, fix what the importer couldn't
+read, drop duplicates, and then commit.
 
 <Shot
   name="staged"
@@ -24,8 +24,15 @@ example spending._
 
 ## What lands on Staged
 
-- Every row from **Import CSV**.
+- Every row from **Import a CSV**, on **Import/Export**.
   [Importing a statement](/docs/importing-a-statement/) covers the importer.
+- The transactions in a Simple Balance file you bring in with
+  **Add it to this ledger**, with both sides of every transfer already filled
+  in, and the staged rows the file carried. A file brought in with
+  **Move it into this ledger** goes straight into your books instead, and only
+  its staged rows land here.
+  [Moving between the cloud app and your own copy](/docs/moving-between-cloud-and-self-hosted/)
+  covers both.
 - A transaction you add with **Stage for review** chosen under
   **What should happen next?**, or with **Stage transaction** on this screen.
 - A copy made with **Clone transaction** from any row's **⋯** menu. Its form
@@ -62,13 +69,17 @@ Under the dates are the filters:
 - The account filter: **All accounts**, or one account.
 - The import filter: **All batches**, or one import. Each import is named by
   its file, when it arrived, and how many of its rows are still waiting, such
-  as "checking.csv · Oct 6, 2026, 9:14 AM · 40 of 212 rows staged". Only
-  imports with rows still waiting are listed, and **Load older batches** shows
-  more.
+  as "checking.csv · Oct 6, 2026, 9:14 AM · 40 of 212 rows staged". A batch
+  from a Simple Balance file says so after its name, as in
+  "simple-balance-2026-11-04.json (Simple Balance file)", and a file brought
+  in parts has a batch for each part. Only imports with rows still waiting are
+  listed, and **Load older batches** shows more.
 
-Two links open Staged already filtered. **Review these N rows**, at the end of
-an import, opens that import with **All time** chosen. The waiting count on
-**Recurring** opens the rows from one recurring transaction, and
+Some links open Staged already filtered. **Review these N rows**, at the end of
+a CSV import, opens that import with **All time** chosen, and
+**Review N staged rows**, at the end of adding a Simple Balance file, does the
+same for the file. The waiting count on **Recurring** opens the rows from one
+recurring transaction, and
 **Showing one recurring transaction · show everything** takes that filter off.
 
 Click a column heading, **Date**, **Payee**, **Account**, **Category**,
@@ -95,6 +106,10 @@ Some problems that put a row in **Needs attention**:
 - "This recurring transaction does not set an amount. Fill one in before
   committing.", for a recurring transaction you left the amount off on
   purpose, like an electric bill.
+- "One or more of those accounts is archived or was not found. Choose an
+  account you are using.", when the row's account is archived, such as one a
+  Simple Balance file brought in archived. Restore the account, or give the
+  rows another one with **Edit selected**.
 - An account that's frozen, because the free plan keeps 3 accounts in use.
   [Your account and plan](/docs/your-account-and-plan/) explains frozen
   accounts.
@@ -255,8 +270,8 @@ counts the whole queue, whatever dates and filters you're viewing.
    - **Two real payments, one of them wrong.** Fix it in its own form and
      press **Save changes**. If they no longer look alike, the screen says
      **Nothing repeats this anymore**, with **Next duplicate** to go on, or
-     **Back to the queue** after the last pair.
-   - **Two real payments, both right.** Press **Back to the queue** and commit
+     **Back to queue** after the last pair.
+   - **Two real payments, both right.** Press **Back to queue** and commit
      the staged row there. It asks **Commit this anyway?** first.
 4. **Previous** and **Next** move between pairs, and the top of the screen
    says where you are, such as "Possible duplicate 2 of 7". When there's

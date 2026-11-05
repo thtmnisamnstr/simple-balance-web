@@ -3,7 +3,7 @@ title: Budgets
 description: Set a budget for a category or a group, compare it with what you spent each month, change one month on its own, and carry what's left over.
 section: Budgets and reports
 order: 1
-updated: 2026-10-25
+updated: 2026-11-04
 ---
 
 A budget is the most you plan to spend on a category, or on a group of
@@ -105,7 +105,7 @@ It reads like this, and the middle parts only appear when they apply:
 
 - "$1,450.00 budgeted across the categories." The category budgets added
   up. A group's own budget isn't in it, so no money is counted twice.
-- "$80.00 carried in, $1,530.00 available." Only when a budget
+- "$80.00 carried in, $1,530.00 available." Only when a category's budget
   [carries](#carry-whats-left-over-into-the-next-month).
 - "$1,312.40 spent in total, budgeted or not."
 - "$3,000.00 came in, leaving $0.00 of the budget unfunded." Only when a
@@ -120,7 +120,7 @@ It reads like this, and the middle parts only appear when they apply:
 | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
 | **Category**                     | The category, linked to its own page for the same dates. Spending with no category is **Uncategorized**, at the bottom. |
 | **Budget**                       | This period's amount. A dash means there's no budget.                                                                   |
-| **Carried in** and **Available** | Only when something carries. What earlier periods left this one, and this period's budget plus that.                    |
+| **Carried in** and **Available** | Only when a category's budget carries. What earlier periods left this one, and this period's budget plus that.          |
 | **Funded**                       | Only when something has a **Funded first** number. How much of the budget this period's income covers.                  |
 | **Spent**                        | What the category spent this period. Refunds lower it.                                                                  |
 | **Remaining**                    | What's left to spend. It's red when you've gone over.                                                                   |
@@ -152,7 +152,9 @@ Both sit beside **Budgeting by** and both start on.
 - **Count spending through archived accounts** keeps spending from accounts
   you've since archived. A budget was never about one account, so money spent
   on a card you've closed is still money the budget covered. Reports work the
-  other way and leave archived accounts out until you ask.
+  other way and leave archived accounts out until you ask. Clearing it is kept
+  in the page's address, as `?archived=0`, so a reload or a saved link keeps
+  it.
 
 ## Change, end or delete a budget
 
@@ -170,12 +172,12 @@ length:
 - **Runs**: for example "October 2026 onward", "October 2026 to March 2027"
   or "October 2026 only".
 
-Each row ends with a pencil button to change the budget and a trash button to
-delete it.
+Each row ends with a **⋯** menu holding **Edit**, to change the budget, and
+**Delete**.
 
 ### Change a budget
 
-1. Press the pencil on the budget's row.
+1. Open the budget's **⋯** menu and choose **Edit**.
 2. In **Budget for Groceries**, change what you need: **Amount**,
    **Carry what is left over into the next month**, **Most to carry**,
    **Funded first** (categories only) or **Ends after**.
@@ -194,8 +196,8 @@ start a new one instead.
 
 ### Change a budget from next month on
 
-1. Press the pencil, set **Ends after** to any day in the last month the old
-   amount should cover, and press **Save budget**.
+1. Choose **Edit** from the budget's **⋯** menu, set **Ends after** to any day
+   in the last month the old amount should cover, and press **Save budget**.
 2. Under **Set a budget**, set the new amount with **Starting** in the month
    after.
 
@@ -204,7 +206,7 @@ from the old one into the new one.
 
 ### Delete a budget
 
-1. Press the trash button on the budget's row.
+1. Open the budget's **⋯** menu and choose **Delete**.
 2. The box asks **Delete the Groceries budget?** and says "It wrote nothing to
    the books, so deleting it changes no balance and no report." Press
    **Delete budget**.
@@ -234,7 +236,7 @@ The row then says **This month only**, and every other month still follows the
 standing budget. Every one-period amount is listed under **Single periods**,
 with its **Category**, **Amount** and **Period**, and the trash button there
 removes it. You can also press the calendar button again and choose
-**Use the standing budget**.
+**Use standing budget**.
 
 A few things to know:
 
@@ -256,18 +258,23 @@ overspending is taken off it. The $50 you didn't spend on groceries in March is
 $50 more to spend in April. [What is envelope budgeting?](/learn/envelope-budgeting/)
 explains the idea.
 
-Once any budget in a period carries, two columns appear:
+Once a category's budget in a period carries, two columns appear in the
+category table:
 
 - **Carried in**: what earlier months left this one. A negative number is
   overspending carried forward.
 - **Available**: this month's budget plus what was carried in. **Remaining**,
   the badge and the bar all measure against it.
 
+The group table never adds them. A group whose own budget carries, or whose
+categories' budgets do, counts the carry in its **Remaining** without showing
+how much it was.
+
 **Most to carry** caps the carry in both directions. With a $100 cap, at most
 $100 of unspent money moves forward, and at most $100 of overspending does.
 Leave it blank for no limit.
 
-You can switch carrying either way at any time with the pencil. Nothing is stored
+You can switch carrying either way at any time with **Edit**. Nothing is stored
 month by month: the figures are worked out from your budgets and your spending
 each time you look. So turning it off leaves nothing behind, and a receipt you
 enter late for March changes April and every month after it.
@@ -355,7 +362,7 @@ Things to know:
 
 The **Overview** has a **Budget** panel for each currency, with a
 **See budgets** link back here. It uses your monthly budgets. Each month in the
-date range that has a budget gets a line, and the month the range ends in is
-broken down into every budgeted group and category, with what was spent
+date range that has a budget above zero gets a line, and the last month with a
+line is broken down into every budgeted group and category, with what was spent
 against the budget, a bar and the same badges. [The overview](/docs/the-overview/)
 covers the rest of that page.

@@ -3,7 +3,7 @@ title: "Self-hosting: running your own copy"
 description: Simple Balance is open source and free to run yourself, with no plan, no account limit and no ads. What it needs, how to try it, and how to run it for real.
 section: Self-hosting
 order: 1
-updated: 2026-10-25
+updated: 2026-11-04
 ---
 
 Simple Balance is open source: its code is public on
@@ -15,7 +15,7 @@ up and upgrade it.
 
 If that isn't what you want, [sign up at app.smpl.money](https://app.smpl.money/)
 instead. [Getting started](/docs/getting-started/) walks through it, and you
-can [move your transactions between the two](/docs/moving-between-cloud-and-self-hosted/)
+can [move your whole ledger between the two](/docs/moving-between-cloud-and-self-hosted/)
 later, in either direction.
 
 ## What it needs
@@ -27,7 +27,8 @@ later, in either direction.
   database, a server you already run, or a machine set aside for it. Use a
   standard build rather than an Alpine one, which sorts names differently.
 - **HTTPS, for anybody but you to reach it.** The server accepts plain
-  `http://` only at `localhost`. Anywhere else, something in front of it has to
+  `http://` only at `localhost` or a loopback address such as `127.0.0.1`.
+  Anywhere else, something in front of it has to
   handle the certificate, such as Caddy, nginx or a cloud load balancer.
 
 Nothing else. There's no queue, no cache and no object store, and the server
@@ -82,8 +83,10 @@ usually `host.docker.internal` instead. If the database the string names
 doesn't exist yet, it's created, as long as the role connecting has
 `CREATEDB` and can connect to the server's `postgres` database.
 
-The same three settings are the only ones a real deployment needs too:
-`DATABASE_URL`, `AUTH_SECRET` and `APP_BASE_URL`. For a copy you keep,
+A real deployment needs the same three settings, `DATABASE_URL`,
+`AUTH_SECRET` and `APP_BASE_URL`, and behind a proxy `TRUST_PROXY=true` as
+well, or every visitor shares one allowance of sign-in attempts.
+[Behind a proxy](/docs/configuration/#behind-a-proxy) says when. For a copy you keep,
 generate `AUTH_SECRET` once and keep it, because changing it signs everybody
 out. [Configuration](/docs/configuration/) lists everything else the server
 reads.
@@ -143,7 +146,7 @@ is where `ha` starts.
 ## Keeping it running
 
 - **Back it up.** Both guides set up a nightly backup, but a backup on the
-  same machine goes with the machine. [Backups](/docs/backups/) says what to
+  app machine goes when that machine's disk does. [Backups](/docs/backups/) says what to
   copy off it, and how to check that a backup is one you could restore.
 - **Set up mail.** Without it nobody can reset a forgotten password, and the
   fix is editing the database.
@@ -151,3 +154,6 @@ is where `ha` starts.
 - **Upgrade on purpose.** Back up first, move to the new release's image, and
   never run two versions against one database. Each guide has the steps for
   its own machines.
+- **Watch it, if you want to.** From 0.2.2 both guides can turn on a metrics
+  collector that sends the app's figures and the machines' to a backend such as
+  New Relic. It's off until you set it up.

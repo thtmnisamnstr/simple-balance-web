@@ -1,15 +1,16 @@
 ---
 title: Importing a statement
-description: Download a CSV from your bank, match its columns on Import CSV, and check every row on Staged before any of it counts toward a balance.
+description: Download a CSV from your bank, match its columns on Import/Export, and check every row on Staged before any of it counts toward a balance.
 section: Using Simple Balance
 order: 4
-updated: 2026-10-25
+updated: 2026-11-04
 ---
 
-**Import CSV** brings in the transactions from a statement you've downloaded
-from your bank as a CSV file. It reads the file, works out its shape, asks you
-the two things a file can't say for itself, and puts every row on **Staged**.
-Nothing it brings in affects a balance until you commit it.
+**Import a CSV**, at the top of the **Import/Export** page, brings in the
+transactions from a statement you've downloaded from your bank as a CSV file.
+It reads the file, works out its shape, asks you the two things a file can't
+say for itself, and puts every row on **Staged**. Nothing it brings in affects
+a balance until you commit it.
 
 Simple Balance doesn't connect to your bank. You download the file from your
 bank's website and bring it in yourself.
@@ -17,11 +18,12 @@ bank's website and bring it in yourself.
 ## Import a CSV file
 
 1. Download your transactions from your bank's website as a CSV file.
-2. Open **Import CSV** and choose the file, or drop it on
-   **Drop in a file or browse**.
-3. Under **Map the columns**, choose the **Account** the rows belong to. If
-   you have more than one account, nothing is chosen for you. Archived and
-   frozen accounts aren't offered.
+2. Open **Import/Export** and, under **Import a CSV**, choose the file, or
+   drop it on **Drop in a file or browse**. The file's name takes the place
+   of those words straight away, while it's read.
+3. Under **Map the columns**, choose the **Account** the rows belong to.
+   Archived and frozen accounts aren't offered, and if that leaves just one,
+   it's chosen for you. Otherwise nothing is.
 4. Check which column is the **Date**, the **Payee** and the amount, and set
    **Date format**.
 5. Press **Dry run** to see how the first rows will be read. Nothing is saved.
@@ -29,9 +31,13 @@ bank's website and bring it in yourself.
 7. Follow **Review these N rows** to the rows on **Staged**, fix anything that
    needs it, and commit them.
 
+While **Dry run** and **Stage all rows** are grayed out, the line under them
+names the one thing still missing, such as "Choose the account to post the
+rows to." or "Map the date column."
+
 <Shot
   name="import"
-  alt="The import screen before a file is picked: a step headed Choose a CSV file, an empty drop target reading Drop in a file or browse, and a preview panel saying no file has been chosen yet."
+  alt="The Import and export page before a file is picked: under Import a CSV, a step headed Choose a CSV file with an empty drop target reading Drop in a file or browse, beside a file preview saying No file yet. Below it, Import a Simple Balance file, with a drop target of its own."
   width="1600"
   height="1000"
 />
@@ -67,7 +73,9 @@ go down.
 
 ## What it works out for itself
 
-- **The delimiter**: comma, semicolon or tab.
+- **The delimiter**, which is usually a comma, semicolon or tab. Under
+  **Map the columns** it says what it found in words, such as "Detected a
+  comma delimiter and 6 columns."
 - **Which column is which.** It suggests the **Date**, **Payee**,
   **Signed amount**, **Debit**, **Credit**, **Category**, **Description** and
   **Notes** columns from the header row, and you can change any of them. The
@@ -83,26 +91,16 @@ go down.
   whatever its capitalization or spacing. A category name that's new is created
   when you stage the file, and one you'd archived comes back.
 
-A file exported from Simple Balance itself needs none of this: choose the
-account and stage it. Every row goes into the one account you pick on the
-import screen, so export each account from its own page and bring that file
-back into the matching account. **Export CSV** exports what the page is
-showing, and an account's page opens on the dates you were already viewing,
-or on **This month**, so set its dates to **All time** first. Export an account with more than ten thousand transactions
-a date range at a time. An account's opening balance is set on the account
-rather than carried in the file.
+A CSV exported from Simple Balance itself, with **Export CSV**, needs none of
+this: choose the account and stage it. Every row goes into the one account you
+pick. The file carries transactions and nothing else, so an account's opening
+balance, its budgets and its recurring transactions don't come with it.
 
 A transfer between two of your accounts arrives marked **Needs attention**,
 because an import picks one account and a transfer needs two: choose both on
 Staged before you commit it. The same transfer is in both accounts' exports,
 so once you've chosen its accounts on the second import, it's flagged as a
 duplicate of the one you already committed.
-
-Moving a whole ledger between the cloud app and a copy you host yourself, in
-either direction, is this same mechanism applied account by account, plus
-setting up by hand what no export carries.
-[Moving between the cloud app and your own copy](/docs/moving-between-cloud-and-self-hosted/)
-is the procedure.
 
 ## What it asks you
 
@@ -128,7 +126,10 @@ is the procedure.
   with the other mark or a space, and an optional minus sign in front or
   parentheses around it. A currency symbol or code, like $12.50 or 12.50 USD,
   a plus sign, or a minus sign anywhere but the front gets "Amount must be a
-  number. Check the decimal and thousands separators."
+  number. Check the decimal and thousands separators." in a **Signed amount**
+  column. In a debit or a credit column it gets "Debit must be a number. Check
+  the decimal and thousands separators." or "Credit must be a number. Check
+  the decimal and thousands separators."
 - **A date** is written exactly in the order you chose. YYYY-MM-DD has to be
   just that; MM/DD/YYYY and DD/MM/YYYY can use /, . or - between the parts.
   The year needs four digits, and nothing can follow the date, so 03/04/26 or
@@ -173,10 +174,14 @@ from earlier months aren't hidden. For 50 rows or more, a bar counts the rows
 as they go. If the stage is refused partway, the message ends "Nothing was
 staged."
 
-If every account you have is frozen, because the free plan keeps 3 accounts in
-use, the screen says **Every account is frozen** instead, since a frozen
-account accepts no rows. [Your account and plan](/docs/your-account-and-plan/)
-explains how one comes back into use.
+With no account to put the rows in, **Import a CSV** says
+**No account to import into** instead, and **Go to Accounts** takes you to
+make one. If every account you have is frozen, because the free plan keeps 3
+accounts in use, it says **Every account is frozen**, with the same button,
+since a frozen account accepts no rows.
+[Your account and plan](/docs/your-account-and-plan/) explains how one comes
+back into use. Either way, the Simple Balance file sections below it still
+work.
 
 ## Staging, and why nothing counts yet
 
@@ -226,3 +231,20 @@ edit or mass delete covers, so a whole import always fits in one commit.
 starts from an imported statement and checks your records against your bank's,
 line by line. [How to track your spending](/learn/track-your-spending/) walks
 through a first statement from your bank's website to the rows you commit.
+
+## A file from another copy of Simple Balance
+
+Below **Import a CSV**, the same page has **Import a Simple Balance file** and
+**Export a Simple Balance file**. A Simple Balance file is your whole ledger
+in one file that **Export file** makes: accounts with their opening balances,
+categories, every transaction with both sides of every transfer, templates,
+recurring transactions, budgets and staged rows. It can hold just some of your
+accounts instead. It's the way to move between the cloud app and a copy you
+run yourself, rather than a CSV for each account.
+
+Choose one under **Import a Simple Balance file** and the page says what it
+would do before anything is written. **How should this file come in?** offers
+**Move it into this ledger**, for a new ledger, and **Add it to this ledger**,
+which sends the file's transactions to **Staged** like a CSV.
+[Moving between the cloud app and your own copy](/docs/moving-between-cloud-and-self-hosted/)
+covers both.

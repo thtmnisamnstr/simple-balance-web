@@ -3,7 +3,7 @@ title: Changing many transactions at once
 description: Select transactions, then change their category, date, payee, account or type, or delete them, up to 10,000 in one step, all or nothing.
 section: Using Simple Balance
 order: 9
-updated: 2026-10-25
+updated: 2026-11-04
 ---
 
 You can change or delete many transactions in one step on **Transactions**.
@@ -17,7 +17,7 @@ show the same list narrowed to that one thing.
 ## Select the transactions
 
 1. Narrow the list until it shows what you want to change: the dates under
-   **Viewing**, **Search transactions**, the type menu and the account menu.
+   **Viewing**, the search box, the type menu and the account menu.
    [Adding and editing transactions](/docs/transactions/#find-a-transaction)
    covers each one.
 2. Check the box at the start of each row you want. The box in the heading
@@ -99,11 +99,15 @@ nothing in the selection changes.
   way when the new direction runs against the categories the transactions
   already have. Use the type menu to select only deposits or only
   withdrawals, or change those few by hand.
-- **Duplicates.** If the change would make two selected transactions match
-  each other exactly, or make one match another transaction you have, it's
-  refused with "Two selected transactions appear to be duplicates" or "A
-  selected transaction matches another transaction". Press **Apply anyway** if
-  they really are separate payments.
+- **Duplicates.** If, once changed, two selected transactions would match
+  each other, or one would match another transaction you have, it's refused
+  with "Two selected transactions appear to be duplicates" or "A selected
+  transaction matches another transaction". A match is the same type, date,
+  payee, account and amount, or the same bank reference, whatever field you
+  changed, so two that already matched are refused even when you change only
+  their notes. Press **Apply anyway** if they really are separate payments.
+  Two transactions that each came in from a Simple Balance file as an entry of
+  their own are never taken for each other.
 - **Frozen accounts.** If a selected transaction touches an account the free
   plan has frozen, **Edit selected** and **Delete selected** are off, with the
   reason, or the change is refused with it.
@@ -151,7 +155,8 @@ Say every purchase at Corner Market went under Dining out and belongs under
 Groceries.
 
 1. Open **Transactions** and set **Viewing** to **All time**.
-2. Type Corner Market in **Search transactions**.
+2. Type Corner Market in the search box, the one that reads "Search payee,
+   description, or notes".
 3. Check one row. If there's more than one page, press
    **Select all … matching**.
 4. Look down the list, page by page. The search also matches descriptions and

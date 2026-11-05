@@ -108,9 +108,23 @@ together. The description names every number drawn, and a sum adds up:
 a tool the chat calls, has to be true at the snapshot's release
 (`content.md` 3.3), and an invented one is plainly an example.
 
+**The chat is also somebody else's.** The
+[connectors repository](https://github.com/thtmnisamnstr/simple-balance-mcp-connectors)'s
+plugin offers the chat's question as a starter prompt, and its
+`submissions/copy.md` lists the chat's two tools beside it as the homepage's
+own example, so changing the question or a tool is an owner item for that
+repository (`aeo-review` §9).
+
 Write the caption and the description before the drawing. If the caption
 can't say what to notice in one sentence, the diagram is showing two things,
 and it's cheaper to find that out in a sentence than in an SVG.
+
+**A learn diagram's caption and description leave the page.** The guide's
+Markdown copy carries both in place of the drawing, the words a screen
+reader hears (`src/lib/markdown.ts`), and the application carries that copy
+for assistants, so changing either in `src/content/learn-art/<slug>.ts`
+leaves the owner item `write-content` §3 describes. A diagram's labels and a
+hero's words never reach the copy.
 
 ## 4. Draw it
 
@@ -571,3 +585,9 @@ how you got here:
   comes next, and when that's `merge-prep`, its §11 runs `guides-update` once,
   last, over everything. Running `merge-prep` from here would mean a second
   commit and a second push, and every push is a Netlify build.
+
+Either way, carry the owner items §3 names when they apply: the app's
+`product-kit` §6 for a learn diagram whose caption or description changed,
+and the connectors repository for a changed chat question or tool. They go
+in `merge-prep` §13's report, back to the skill that sent you, or in your
+own report when you stop short of a merge.

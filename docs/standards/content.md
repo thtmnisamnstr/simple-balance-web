@@ -224,7 +224,7 @@ a forecast is, and the label is how they find it.
 **A quoted message is the app's sentence.** Quote it exactly as the app
 shows it, contracted or not, plain or not: "This recurring transaction does
 not set an amount. Fill one in before committing." stays uncontracted, and
-"CSV exceeds the 10485760-byte limit" keeps its number, because a reader
+"CSV exceeds the 10,485,760-byte limit" keeps its number, because a reader
 searching the docs for the message they're looking at searches for those
 words. So no contraction pass, spelling pass or rewrite for 1.3's reader
 touches one. If the app's sentence breaks a rule here, the owner is told,
@@ -1544,6 +1544,20 @@ serving it is the application, and this is the policy its
 application and sit where a reader looks for them: under Advertising and
 again under Cookies.
 
+**Which ad runs is production's configuration, and the policy says which.**
+Since 4 November 2026 the free plan's ad is the application's own house ad,
+with AdSense unset, and by the owner's decision (`AGENTS.md`) the three
+disclosures stay as a dormant section, saying what applies if Google's ads
+return, rather than being deleted. `freePlanAd` in `src/content/legal.ts`
+records the ad that runs. The obvious alternative was to delete the AdSense
+paragraphs once nothing served them, and it was turned down because the
+disclosures have to be in place before the first ad fills: a policy rewritten
+after the setting changes is a breach for every day in between. So changing
+the ad back is a rewrite of the policy, the pricing answer and the
+homepage's privacy points, through `legal-review`, before the setting
+changes, and `freePlanAd` moves with it. Which ad production serves is
+`legal-review` §6's read, since no diff here or in the application shows it.
+
 **And it says what this website does, which is nothing of anybody
 else's.** A script that reaches another origin is a disclosure, and the
 website loads nothing from another origin and sets no cookie, so the policy
@@ -1558,6 +1572,11 @@ _Checked by:_ `tests/legal.test.tsx`, which asserts:
 - the three AdSense disclosures for the application, under Advertising and
   under Cookies, with the website said to show no ad and load no advertising
   script; and that non-personalized ads are not described as cookie-free;
+- that the policy, the pricing page's answer on ads and the homepage's
+  privacy points say which ad a free account sees, the one `freePlanAd`
+  records, in both directions: while it's the house ad, the policy says
+  today's ad is the application's own and the AdSense paragraphs apply only
+  if Google's ads return, and neither marketing page names Google;
 - that the website loads nothing from another origin and sets no cookie, in
   the short version, the website's section and the cookies section, with the
   hosts and the cookie it used to disclose held gone; that `netlify.toml`'s

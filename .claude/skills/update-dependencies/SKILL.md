@@ -101,7 +101,23 @@ Next.js majors actually bite.
   `robots.txt` and `llms.txt`; a directory per post, per doc and per guide;
   each doc's and guide's Markdown copy at `docs/<slug>/index.md` and
   `learn/<slug>/index.md`; and the page cards under `og/`.
-  `tests/export-shape.test.ts` covers the config; this is the artifact.
+  `tests/export-shape.test.ts` covers the config; this is the artifact. No
+  test holds the icons or the `screenshots/1200/` copies in `out/`, and a
+  major that changes `trailingSlash` or how `public/` is copied moves a path
+  the directory listings pin: run the `out/` checks in `seo-review` §4, which
+  print nothing while every pinned file is built at its size.
+- **The learn copies and `/llms.txt` still read the way the application
+  parses them.** They have a reader that isn't a crawler: the application
+  builds the guides its MCP server carries from those two files on
+  smpl.money, byte for byte (`write-content` §3). Run the shape check in
+  `aeo-review` §7 on this build: a header or a link that changed shape
+  breaks the application's sync outright, so fix it here. Short of that, an
+  upgrade can change a copy's bytes under an intact header, and the
+  application compares them by hash, so its copy goes stale. `gray-matter`,
+  which hands `src/lib/markdown.ts` every guide's frontmatter and body, and a
+  Next major, which writes the copies, are the ones that can: remark, rehype
+  and Shiki render the pages, not the copies. Either one moving is an owner
+  item in §7.
 - **`noindex` is still on the unannounced sections, and only there.** A
   metadata change in Next would break this silently, and it is the difference
   between a staged section and a published one. Don't grep a page for it.
@@ -147,8 +163,10 @@ that isn't the site's:
   green:
 
   ```sh
-  ls out/llms.txt out/docs/backups/index.md out/docs/search-index.json out/blog/feed.xml
+  ls out/llms.txt out/docs/backups/index.md out/learn/track-your-spending/index.md out/docs/search-index.json out/blog/feed.xml
   ```
+
+  A copy that's there but changed shape is the learn-copies check above.
 
 - **A byte-for-byte match on Next's output is narrowed, not reverted.**
   `tests/sitemap.test.ts:155` matches the robots tag character for character
@@ -191,6 +209,9 @@ The four that go stale on an update:
 - What moved, by major and minor, and what you deliberately did not take.
 - What broke and how you fixed it.
 - What you checked in §5, naming the commands.
+- If `gray-matter` moved, or Next by a major (§5), the owner item: run the
+  application's `product-kit` §6 once this deploys. Nothing `merge-prep` §1
+  marks names a package, so this line is how it reaches the owner.
 - Whether Node or the Netlify image moved, and whether the two files agree.
 - Any upgrade that needs a decision rather than a fix, held back with
   `--reject` (§3) and named with the version you're on and the newest, what

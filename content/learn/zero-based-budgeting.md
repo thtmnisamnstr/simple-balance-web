@@ -2,7 +2,7 @@
 title: What is zero-based budgeting?
 description: Zero-based budgeting means deciding what every dollar you have is for, until no money is left without a plan. Your bank balance doesn't go to zero.
 date: 2026-10-24
-updated: 2026-10-25
+updated: 2026-11-04
 section: Budgeting
 order: 1
 ---
@@ -124,7 +124,7 @@ type. The box is in each account's form.
 
 <Shot
   name="accounts"
-  alt="The accounts page: a search box and sort controls, then accounts grouped by type. Under Checking, a euro account at €1,621.10 and Everyday Checking at $7,663.45. Under Savings, Savings at $20,200.00. Under Credit card, a card named Travel Card."
+  alt="The accounts page: a search box, sort controls and a box for showing archived accounts, then accounts grouped by type. Under Checking, Euro Account at €1,121.10 and Everyday Checking at $8,108.30. Under Savings, Savings at $20,200.00. Under Credit card, a card named Travel Card."
   width="1600"
   height="1000"
 />

@@ -3,7 +3,7 @@ title: Backing up and restoring a self-hosted copy
 description: Back up the PostgreSQL database with pg_dump, restore it with pg_restore, and check that a backup is one you could actually use.
 section: Self-hosting
 order: 5
-updated: 2026-10-26
+updated: 2026-11-04
 ---
 
 This page is for a copy you run yourself. On [app.smpl.money](https://app.smpl.money/), the copy of your
@@ -18,6 +18,11 @@ container. Both deployment guides,
 [Oracle Cloud or AWS](/docs/deploying-to-oracle-cloud-or-aws/#backups), set up
 a backup every night and say how to restore one. This page is the same thing
 by hand, for anywhere else.
+
+A Simple Balance file, the export on **Import/Export** from 0.2.2, isn't a
+backup. It's one person's ledger, or some of its accounts, for moving them into
+another copy of Simple Balance. A backup is the whole database, with everybody
+on your copy and every sign-in, and it's put back with `pg_restore`.
 
 ## Taking one
 

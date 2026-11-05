@@ -196,6 +196,8 @@ describe("the learn articles", () => {
       Accounts: "accounts",
       Transactions: "transactions",
       Staged: "staged-transactions",
+      "Import/Export": "importing-a-statement",
+      // The menu's name until 0.2.2, kept while a guide still says it.
       "Import CSV": "importing-a-statement",
       Budgets: "budgets",
       Reports: "reports",
