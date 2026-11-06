@@ -2,7 +2,7 @@
 title: How to track your spending
 description: Gather a month or two of bank and card statements, give every purchase a category, and add up each one, in a notebook, a spreadsheet or Simple Balance.
 date: 2026-10-24
-updated: 2026-11-04
+updated: 2026-11-05
 section: Start here
 order: 1
 ---
@@ -101,9 +101,8 @@ you can still remember what most of the charges were.
 ## How to do it in Simple Balance
 
 Simple Balance is an expense tracker: it keeps your accounts, purchases and
-categories in one place and does the adding up for you. It doesn't pull anything from your bank today.
-You download the file your bank gives you and bring it in, or type in a
-purchase yourself.
+categories in one place and does the adding up for you. You download the file
+your bank gives you and bring it in, or type in a purchase yourself.
 
 ### Set up your accounts
 
@@ -126,7 +125,8 @@ example spending._
 
 1. Download your statement from your bank's website as a CSV file, a simple
    spreadsheet file that many banks offer.
-2. Open **Import CSV**, choose the file, and pick the account it belongs to.
+2. Open **Import/Export**, choose the file under **Import a CSV**, and pick the
+   account it belongs to.
 3. Check which column is the date, which is the payee and which is the amount.
    Check the date order too. Many US banks put the month first, so 03/04/2026
    means March 4.

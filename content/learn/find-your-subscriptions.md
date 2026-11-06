@@ -2,7 +2,7 @@
 title: How to find and keep track of your subscriptions
 description: Go through a year of bank and card statements and list every charge that repeats. Then decide on each one, and keep the list from growing back.
 date: 2026-10-24
-updated: 2026-11-04
+updated: 2026-11-05
 section: Keeping it accurate
 order: 3
 ---
@@ -73,10 +73,8 @@ every few months.
 
 ## How to do it in Simple Balance
 
-Simple Balance isn't a subscription tracker that finds them for you, and it
-can't cancel anything.
-What it does give you is one place to see every payment, and a way to keep the
-subscriptions you keep in plain view.
+Simple Balance gives you one place to see every payment you've made, and a
+way to keep the subscriptions you decide to keep in plain view.
 
 ### Start with your payees
 

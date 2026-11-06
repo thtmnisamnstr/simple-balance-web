@@ -316,7 +316,7 @@ export const included: readonly string[] = [
   "Changing thousands of lines at once",
   "As many payments and as many currencies as you like",
   "Letting an AI assistant do the filing",
-  "Email reminders, where there's a mail server to send them",
+  "Email reminders when a payment is due",
 ];
 
 export type FaqItem = {

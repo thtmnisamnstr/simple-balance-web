@@ -293,7 +293,8 @@ pricing page, read it too against the reader those pages are for, who has
 never used a finance product (`content.md` 1.3), and against the
 bank-connection rule (`content.md` 1.4): a title or description is the worst
 place to imply a connection and the wrong place to disclaim one, since the
-disclosure goes after the value, inside the import copy. A docs page under
+disclosure goes in the pricing page's questions, and neither page names a
+weakness anywhere else (`content.md` 1.7). A docs page under
 Self-hosting may use an operator's words (`content.md` 5.18), and that's
 where "self-hosted" and "open source" earn their place.
 

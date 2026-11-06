@@ -165,19 +165,33 @@ Break one of these and the site is wrong rather than untidy.
   part.
 
 - **Nothing on the homepage or the pricing page may imply a bank connection,
-  nothing may promise there will never be one, and both pages must say once
-  that there is not one today.** There is none: no bank login, no background
-  refresh, nothing that can go stale without saying so, so copy describing one
-  would be false. But the page also spent a while leading on "we never ask for
-  your bank password", which is a promise about a future this page does not
-  decide, and unwinding it cost the hero, the tagline, the social card, a
-  comparison row and two FAQ answers. The third half was added after both
-  earlier mistakes had been fixed and the page still said nothing either way:
-  every hosted competitor pulls transactions, so silence is read as a
-  connection, and the reader finds out on their first afternoon. The
-  disclosure goes after the value and inside the import copy, never in the
-  hero. `docs/standards/content.md` 1.4 carries all three and the trigger to
+  nothing may promise there will never be one, and the pricing page's
+  questions must say plainly that there is not one today.** There is none: no
+  bank login, no background refresh, nothing that can go stale without saying
+  so, so copy describing one would be false. But the page also spent a while
+  leading on "we never ask for your bank password", which is a promise about a
+  future this page does not decide, and unwinding it cost the hero, the
+  tagline, the social card, a comparison row and two FAQ answers. The third
+  half was added after both earlier mistakes had been fixed and the page still
+  said nothing either way: every hosted competitor pulls transactions, so
+  silence is read as a connection, and the reader finds out on their first
+  afternoon. It sat in the homepage's import card too, until the owner moved
+  it on 2026-11-05 under the next rule: the homepage now says the mechanism as
+  a step, download the bank's file and drag it in, and the pricing page's
+  answer to "Does Simple Balance connect to my bank?" says "not today".
+  `docs/standards/content.md` 1.4 carries all three and the trigger to
   revisit.
+- **The homepage, the learn guides and the pricing page outside its questions
+  name no weakness of Simple Balance.** They say what it does, and leave what
+  it doesn't do unsaid: no "there's no automatic pull from your bank", no
+  "Simple Balance can't" or "isn't". The owner's decision of 2026-11-05. Honesty
+  isn't given up, it's placed: the pricing page's questions, the docs, the
+  docs' questions page and the comparisons answer every "can it" in full, and
+  nothing on the three surfaces may imply what the product doesn't do (`content.md`
+  2.1), so the cost is a sentence left out, never a sentence that's false. A
+  plan's terms aren't a weakness: the free plan's three accounts and its ad
+  are stated on every surface that names a price. `docs/standards/content.md`
+  1.7, and `tests/copy.test.ts` refuses the constructions that name one.
 - **Those two pages are written for somebody who has never used a personal
   finance product.** No accounting vocabulary, no operations vocabulary, and
   nothing that presumes a budgeting app they already abandoned. The copy this

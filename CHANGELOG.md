@@ -145,6 +145,21 @@ that release, then checked again against it.
 
 ### Changed
 
+**A shorter homepage, and three surfaces that say what Simple Balance does.**
+Every homepage section from the jobs down to the AI assistant says its piece in
+about half the words, which shows most on a phone.
+
+- The homepage, the learn guides and the pricing page outside its questions no
+  longer list what Simple Balance doesn't do. The import card's "no automatic
+  pull from your bank today" is gone, and so are four guides' sentences about
+  what it can't see, isn't, or doesn't look up. The pricing page's questions
+  still answer "Does Simple Balance connect to my bank?" plainly, and the docs
+  and the comparisons still say what each screen does and doesn't.
+- The two guides that sent you to Import CSV name the Import/Export page, as
+  0.2.2 does.
+- The pricing page's email reminders line says what they're for, rather than
+  what a copy you run yourself needs to send them.
+
 **The site describes 0.2.2, and the free plan's ad is the app's own.** The
 application's 0.2.2 release moves a whole ledger in one file and renames its
 import page, and since 4 November 2026 app.smpl.money shows its own ad in

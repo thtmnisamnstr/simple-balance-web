@@ -2,7 +2,7 @@
 title: How to balance your checking account
 description: Match your record to your bank's statement line by line, allow for what's still on its way, and track down any difference. It takes about ten minutes a month.
 date: 2026-10-24
-updated: 2026-11-04
+updated: 2026-11-05
 section: Keeping it accurate
 order: 1
 ---
@@ -94,7 +94,8 @@ the month. Once it's a habit, it takes about ten minutes.
 ### Bring in the statement
 
 Download the statement period from your bank as a CSV file, then open
-[**Import CSV**](/docs/importing-a-statement/). Rows that look like something
+[**Import/Export**](/docs/importing-a-statement/) and choose it under
+**Import a CSV**. Rows that look like something
 you've already entered get flagged as possible duplicates. Each one is shown
 side by side with the entry it looks like, so bringing in purchases you already
 typed won't count them twice. Check the rows on
@@ -168,11 +169,11 @@ erasing it. The history of the mistake stays, and
 _The money in this picture is made up. It's the real product, filled with
 example spending._
 
-<Callout kind="note" title="What Simple Balance can't see">
-Simple Balance doesn't pull anything from your bank today, so it only knows
-what you've brought in or typed. It doesn't know about holds, pending charges,
-or what your bank calls your available balance. And money you date in the
-future doesn't count toward any balance until that date comes.
+<Callout kind="note" title="Which balance to compare">
+Your balance in Simple Balance is built from what you've brought in or typed,
+so compare it with your statement's ending balance. Holds, pending charges and
+what your bank calls your available balance are kept by the bank, and a
+transaction you date in the future counts from that date.
 </Callout>
 
 ## Sources

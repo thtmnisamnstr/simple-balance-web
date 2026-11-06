@@ -103,14 +103,21 @@ arriving from one assumes this does too, and the first thing that corrects
 them is their own first afternoon. That is the worst place to learn it and the
 most expensive.
 
-The disclosure goes **after the value and inside the import copy**, never in
-the hero and never as a positioning line. "There's no automatic pull from your
-bank today. You download the file and bring it in yourself" is a description of
-the present that survives the day a scheduled pull ships, which is the whole
-test a sentence here has to pass. The homepage carries it in the import card
-and the pricing page in the answer to "does Simple Balance connect to my bank".
-Leading on
-it is the mistake above, wearing a different coat.
+The disclosure goes **in the pricing page's answer to "Does Simple Balance
+connect to my bank?"**, never in the hero and never as a positioning line.
+"Not automatically, today" is a description of the present that survives the
+day a scheduled pull ships, which is the whole test a sentence here has to
+pass. Leading on it is the mistake above, wearing a different coat.
+
+**The homepage says the mechanism as a step instead.** Its import card said
+"there's no automatic pull from your bank today" too, until 5 November 2026,
+when the owner decided the homepage names no weakness of the product (1.7).
+What it says now, "download the file your bank gives you and drag it in", is
+the same fact as something the reader does, so it still doesn't leave the
+silence this paragraph was written against: a reader told to download a file
+isn't told the bank sends it. The obvious alternative, keeping the denial in
+the card, was the owner's to weigh, and the questions on the pricing page, one
+click from every price, are where a reader asking it gets the plain answer.
 
 This is 2.1 applied to the one claim this page is most likely to make by
 accident, which is why it is written down separately.
@@ -239,6 +246,51 @@ every page instead of two.
 _Checked by:_ `human`. A word list could find "instance", and would fire on
 the Self-hosting pages that are right to say it; whether a quote is exact can
 only be read against the application's source.
+
+### 1.7 The homepage, the guides and the pricing page say what it does
+
+**Binding.** The homepage, every learn guide and the pricing page outside its
+questions name no weakness of Simple Balance: no "there's no automatic pull
+from your bank", "Simple Balance can't", "isn't a", "doesn't look up". They say
+what the product does and leave the rest unsaid. The owner's decision of 5
+November 2026.
+
+It's a decision about placement, not about honesty. Each of these sentences
+was true and is still true, and each still has a page: the pricing page's
+questions answer the bank question plainly, the docs and their questions page
+say what every screen does and doesn't, and the comparisons say when another
+app is the better choice. What these three surfaces do is make the case, and a
+page that makes it by listing what the product lacks reads as an apology to a
+reader who hasn't yet decided whether it's for them. The guides say so last of
+all, after the method that works with any tool, so a reader who needs what
+Simple Balance doesn't do has already been served by the first two parts.
+
+**Leaving a sentence out is never permission to imply it.** 2.1 still holds,
+and so does 1.4's word list: a step that reads as if the product fetches,
+finds, cancels or values something for you, where it doesn't, is the false
+claim this rule must not be bought with. "Simple Balance gives you one place to
+see every payment" replaced "isn't a subscription tracker that finds them for
+you", and it doesn't say it finds them.
+
+**A plan's terms aren't a weakness.** The free plan's three accounts and its
+ad are what the plan is, stated wherever a price is, and so is what the
+reader's own bank keeps that a ledger doesn't, holds and pending charges among
+them, when a guide explains which balance to compare.
+
+The obvious alternative is the rule this replaced: the import card's "not
+today", and a guide naming what it isn't (5.16), because silence on a
+competitor's feature is read as having it. That argument still governs where
+the answer goes, which is 1.4; this rule decides only that these three
+surfaces aren't where.
+
+_Checked by:_ `tests/copy.test.ts`, "names no weakness of the product", over
+the homepage's module, the pricing page's module without its questions, the
+learn guides' closing box and every learn guide's Markdown, refusing the
+constructions with Simple Balance as the subject of what it doesn't, can't or
+won't do, and "no automatic" anything. Narrow, as 1.4's list is: "a budget
+never changes your balances" is a promise, and "you don't have to set up
+categories first" is about the reader. Whether a sentence names a weakness in
+other words is `human`.
 
 ## 2. Claims
 
@@ -1175,11 +1227,12 @@ The script runs by hand and its output is committed (`operations.md` 6.3), so
 
 **Guidance: naming the tool in a guide.** Where a learn guide's job has a
 name people search for the tool that does it, the guide's product section
-says once, in plain words, that Simple Balance works as one, or says what it
-isn't. Five of the twelve did when this was written: an expense tracker, a
-zero-based budgeting app, a net worth tracker ("works as a net worth
-tracker"), an envelope budgeting app, and what it isn't, a subscription
-tracker that finds them for you. Where no such name exists, as for an
+says once, in plain words, that Simple Balance works as one. Four of the
+twelve do: an expense tracker, a zero-based budgeting app, a net worth tracker
+("works as a net worth tracker") and an envelope budgeting app. The
+subscriptions guide said what it isn't, a subscription tracker that finds them
+for you, until 1.7 took weaknesses off the guides; it now says what Simple
+Balance gives you instead, and doesn't claim the name. Where no such name exists, as for an
 emergency fund, the guide says nothing, because a category invented for the
 job is a phrase nobody searches and reads as the advertisement 5.14 keeps out
 of the first two parts. It never claims more than the product does. This was
