@@ -6,7 +6,7 @@ import { footer, privacy as privacySection } from "@/content/home";
 import { render } from "@testing-library/react";
 import PrivacyPage from "@/app/privacy/page";
 import TermsPage from "@/app/terms/page";
-import { legalUpdated, operator, privacy, terms, type Section } from "@/content/legal";
+import { freePlanAd, legalUpdated, operator, privacy, terms, type Section } from "@/content/legal";
 import { slugify } from "@/content/collections";
 import appFacts from "@/content/app-facts.json";
 
@@ -78,7 +78,10 @@ describe("the privacy policy", () => {
   it("discloses everything Google requires of a site serving AdSense", () => {
     // Google's program policies: third-party cookies, the vendors that set
     // them, and how to opt out. Missing any of the three is a breach, and the
-    // penalty is suspension rather than the ads not rendering.
+    // penalty is suspension rather than the ads not rendering. Held whichever
+    // ad runs: while production shows the house ad they are the policy's
+    // dormant section, kept by the owner's decision so that AdSense
+    // configured again never runs a day without them.
     for (const required of ["adsense", "cookies", "non-personalized", "opt out"]) {
       expect(text, `the policy never mentions "${required}"`).toContain(required);
     }
@@ -129,9 +132,12 @@ describe("the privacy policy", () => {
     );
     const role = others.find((sentence) => /\bdecides for itself\b/.test(sentence));
     expect(role, "Google's own role is not said").toBeDefined();
-    expect(role, "Google's role is not said for advertising and sign-in").toMatch(
-      /\bfor advertising and for sign-in, google decides for itself\b/,
+    // Sign-in first while the free plan's ad is the house ad, because that's
+    // the role Google has today; advertising stays named, for when it returns.
+    expect(role, "Google's role is not said for sign-in").toMatch(
+      /\bsign-in\b[^.]*\bgoogle decides for itself\b/,
     );
+    expect(role, "Google's role is not said for advertising").toMatch(/\badvertising\b/);
     expect(role, "Google's role is said for Gmail too, which nothing shows").not.toContain("gmail");
     expect(role, "Google's own policy is not named").toContain("policies.google.com/privacy");
   });
@@ -381,7 +387,7 @@ describe("the privacy policy", () => {
     expect(
       cookies,
       "the cookies section does not say Google sets cookies in the application",
-    ).toMatch(/\bon the free plan, google sets cookies for advertising\b/);
+    ).toMatch(/\bgoogle sets cookies for advertising\b/);
     for (const way of ["myadcenter.google.com", "youradchoices.com", "youronlinechoices.eu"]) {
       expect(ads, `the advertising section does not say you can opt out at ${way}`).toContain(way);
       expect(cookies, `the cookies section does not say you can opt out at ${way}`).toContain(way);
@@ -394,6 +400,45 @@ describe("the privacy policy", () => {
     expect(text, "the policy still points at a consent message on the website").not.toMatch(
       /\bmessage the website shows\b|\bmessage on both the website\b|\bon this website as well\b/,
     );
+  });
+
+  it("says which ad a free account sees today, the one freePlanAd records", () => {
+    /*
+     * Which ad runs is production's configuration (`legal-review` §6), so no
+     * release diff shows it, and the policy went on describing AdSense to a
+     * production that had stopped serving it on 2026-11-04. `freePlanAd` is
+     * where the answer is written down, and the policy, the pricing answer
+     * and the homepage are held to it here, in both directions.
+     */
+    const ads = section(privacy, /^advertising/i);
+    const summary = section(privacy, /^the short version/i);
+    const pricingAds = faq.find((item) => /\bads\b/i.test(item.q))?.a.toLowerCase() ?? "";
+    const points = privacySection.points.join(" ").toLowerCase();
+    if (freePlanAd === "house") {
+      expect(ads, "today's ad is not said to be the application's own").toMatch(
+        /\btoday the free plan's only ad is our own\b/,
+      );
+      expect(ads, "the house ad is not said to load nothing and set no cookie").toMatch(
+        /\bloads nothing from anywhere else, sets no cookie\b/,
+      );
+      expect(ads, "the AdSense paragraphs are not said to apply only if they return").toMatch(
+        /\bgoogle's ads, if they come back\b/,
+      );
+      expect(summary, "the summary still names Google as the advertising network").not.toMatch(
+        /\badvertising network\b/,
+      );
+      for (const [where, said] of [
+        ["the pricing page's ad answer", pricingAds],
+        ["the homepage's privacy points", points],
+      ] as const) {
+        expect(said, `${where} still has Google's ads running`).not.toMatch(/\bgoogle\b/);
+      }
+    } else {
+      expect(ads, "Google's ads are not said to run today").toMatch(/\bgoogle adsense\b/);
+      expect(ads, "the policy still says the free plan's only ad is our own").not.toMatch(
+        /\btoday the free plan's only ad is our own\b/,
+      );
+    }
   });
 
   it("says who is asked first, region by region, and that elsewhere nobody is", () => {
@@ -1351,7 +1396,13 @@ describe("the marketing pages, against the policy", () => {
     }
   });
 
-  it("names the two things the policy names", () => {
+  /*
+   * The AdSense answer's rules, run only while `freePlanAd` says AdSense is
+   * what a free account sees. The house ad is asked nothing and personalizes
+   * nothing, so an answer naming either would be the one describing a
+   * different product; the test above holds that half.
+   */
+  it.runIf(freePlanAd === "adsense")("names the two things the policy names", () => {
     // Personalization and consent. The policy turns on both, so a pricing
     // page that mentions neither is describing a different product.
     const answer = ads!.a.toLowerCase();
@@ -1359,29 +1410,34 @@ describe("the marketing pages, against the policy", () => {
     expect(answer).toMatch(/agreed|consent|asked before/);
   });
 
-  it("promises to ask only where the policy says Google's message asks", () => {
-    /*
-     * The other direction of the same invariant, and the one that shipped
-     * once: "in the UK, the EEA and Switzerland you get asked before any
-     * advertising cookie is set" sat on the page selling the paid plan while
-     * the policy said nobody was asked. The messages are published now, so
-     * the pricing page may say somebody is asked, and the check is the one
-     * the policy is held to: no "asked before" without the region, and the
-     * US opt-out said beside it, because "only personalized if you agreed"
-     * is the stronger claim the policy does not make.
-     */
-    const answer = ads!.a.toLowerCase();
-    const sentences = answer.split(/(?<=[.!?;])\s+/);
-    const promises = sentences.filter((s) => /\basks?\b[^.]*\bbefore\b|\basked\b/.test(s));
-    expect(promises.length, "the pricing page no longer says anybody is asked").toBeGreaterThan(0);
-    for (const promise of promises) {
-      expect(promise, "the pricing page promises asking without saying where").toMatch(/\beea\b/);
-    }
-    expect(answer, "the US opt-out is missing beside the promise").toMatch(/\bopt out\b/);
-    expect(answer, "the pricing page claims more consent than the policy does").not.toMatch(
-      /\bonly personali[sz]ed if you\b/,
-    );
-  });
+  it.runIf(freePlanAd === "adsense")(
+    "promises to ask only where the policy says Google's message asks",
+    () => {
+      /*
+       * The other direction of the same invariant, and the one that shipped
+       * once: "in the UK, the EEA and Switzerland you get asked before any
+       * advertising cookie is set" sat on the page selling the paid plan while
+       * the policy said nobody was asked. The messages are published now, so
+       * the pricing page may say somebody is asked, and the check is the one
+       * the policy is held to: no "asked before" without the region, and the
+       * US opt-out said beside it, because "only personalized if you agreed"
+       * is the stronger claim the policy does not make.
+       */
+      const answer = ads!.a.toLowerCase();
+      const sentences = answer.split(/(?<=[.!?;])\s+/);
+      const promises = sentences.filter((s) => /\basks?\b[^.]*\bbefore\b|\basked\b/.test(s));
+      expect(promises.length, "the pricing page no longer says anybody is asked").toBeGreaterThan(
+        0,
+      );
+      for (const promise of promises) {
+        expect(promise, "the pricing page promises asking without saying where").toMatch(/\beea\b/);
+      }
+      expect(answer, "the US opt-out is missing beside the promise").toMatch(/\bopt out\b/);
+      expect(answer, "the pricing page claims more consent than the policy does").not.toMatch(
+        /\bonly personali[sz]ed if you\b/,
+      );
+    },
+  );
 
   /*
    * What saying no to ad consent does, which both surfaces describe.
@@ -1479,10 +1535,14 @@ describe("the marketing pages, against the policy", () => {
       policyDeclines.filter((passage) => MENTIONS_ADS.test(passage)),
       "the policy says nothing about what declining does to the ads",
     ).not.toEqual([]);
-    expect(
-      pricingDeclines.filter((passage) => MENTIONS_ADS.test(passage)),
-      "the pricing page's ad answer says nothing about it",
-    ).not.toEqual([]);
+    // The pricing half only while Google's ads run: the house ad has no
+    // consent to decline, and its answer rightly says nothing about declining.
+    if (freePlanAd === "adsense") {
+      expect(
+        pricingDeclines.filter((passage) => MENTIONS_ADS.test(passage)),
+        "the pricing page's ad answer says nothing about it",
+      ).not.toEqual([]);
+    }
   });
 
   it("never says declining ad consent means no ads", () => {
@@ -1615,10 +1675,10 @@ describe("both documents", () => {
   });
 
   it("promises no export larger than the one the product has", () => {
-    // The application exports the transaction CSV and nothing else: no
-    // budgets, templates or recurring entries. "Export everything" in a
-    // policy is a portability claim, and somebody moving to their own copy
-    // on the strength of it loses what the file never held.
+    // From 0.2.2 a Simple Balance file carries budgets, templates and
+    // recurring transactions beside the transactions, and still not the
+    // history of changes back in, so "export everything" stays a portability
+    // claim larger than the product, and each export is said for what it holds.
     for (const doc of [privacy, terms]) {
       const text = doc.sections
         .flatMap((s) => s.paragraphs)
@@ -1630,37 +1690,34 @@ describe("both documents", () => {
     }
   });
 
-  it("says how the export goes back in, not only that it can", () => {
+  it("says what each export holds, and what takes one back in", () => {
     /*
-     * An import puts every row into the one account picked for it, so a
-     * whole-ledger export loaded as it stands lands in one account. The
-     * terms made size sound like the only obstacle, while the pricing page's
-     * answer about moving to your own copy already said one account at a
-     * time, so the binding document was the less careful of the two.
-     *
-     * "One account at a time" alone left out where the file comes from: the
-     * Transactions page's export holds every account, and loading that file
-     * into each account in turn is what the words literally said. And an
-     * account's opening balance is set on the account, not written to the
-     * file, so a copy that leaves it unsaid is a copy that restores wrong.
-     *
-     * And the account page's Export CSV exports the date range on screen,
-     * which starts at This month. "Export each account from its own page",
-     * followed as written, moved one month of each account and dropped
-     * everything older, so the step names the range by the date bar's own
-     * label. "It holds every transaction" was true only of a range that
-     * covers them, so it holds every transaction you ask it for.
+     * The terms carried the CSV route in full, one account at a time with the
+     * dates set to All time, because the CSV was the only export and every
+     * step of it existed because the importer does something nobody would
+     * guess. 0.2.2's Simple Balance file is the copy that goes back in whole,
+     * so the paragraph names it and what it holds, and leaves the procedure
+     * to the docs' moving guide. "Some accounts" carries accounts, categories
+     * and their transactions only (`CHOSEN_ACCOUNT_KINDS` in the
+     * application's `src/shared/ledger-file.ts`), so the two files are held
+     * apart, and the release a copy needs is said because an older one can't
+     * read the file.
      */
     const availability = section(terms, /^availability/i);
-    expect(availability).toContain("one account at a time");
-    expect(availability).toMatch(
-      /export each account from its own page with the dates set to all time, and bring that file into the matching account/,
+    expect(availability, "the Simple Balance file is not offered as the copy to keep").toContain(
+      "simple balance file",
     );
-    expect(availability).not.toMatch(/it holds every transaction,/);
-    expect(availability).toMatch(/10,000 transactions[^.]*a date range at a time/);
-    expect(availability).toMatch(/not what sits around them[^.]*opening balance/);
-    // Both accounts' exports carry a transfer between them, and the second
-    // import badges it. Said, so it is expected rather than committed twice.
-    expect(availability).toMatch(/transfer[^.]*in both files[^.]*flags it as a duplicate/);
+    expect(availability, "what a whole-ledger file holds is not said").toMatch(
+      /whole ledger holds[^.;]*opening balances[^.;]*budgets, templates and recurring transactions/,
+    );
+    expect(availability, "a file of chosen accounts is said to hold more than it does").toMatch(
+      /accounts you choose holds those accounts and their transactions/,
+    );
+    expect(availability, "the release a copy of your own needs is not said").toMatch(
+      /\b0\.2\.2 or later\b/,
+    );
+    expect(availability, "the CSV is said to hold more than the transactions").toMatch(
+      /csv export holds the transactions you ask it for and nothing around them/,
+    );
   });
 });

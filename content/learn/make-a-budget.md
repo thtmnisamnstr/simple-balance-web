@@ -2,7 +2,7 @@
 title: How to make a budget
 description: Start from what you take home, list your fixed bills, and set a number for each category from what you really spent. Then check your budget every week.
 date: 2026-10-24
-updated: 2026-10-26
+updated: 2026-11-04
 section: Start here
 order: 3
 ---
@@ -113,7 +113,7 @@ category, so you can see what each one really costs.
 
 <Shot
   name="dashboard"
-  alt="The Simple Balance overview for one month: a dollar total with balance, deposits, withdrawals and net cash flow across the top, then a checking account, a savings account and a credit card with their balances, beside spending by category as bars from rent down to subscriptions."
+  alt="The Simple Balance overview for one month: an Include archived accounts checkbox, a dollar total with balance, deposits, withdrawals and net cash flow across the top, then a checking account, a savings account and a credit card with their balances, beside spending by category as bars from rent down to subscriptions."
   width="1600"
   height="1000"
 />

@@ -2,7 +2,7 @@
 title: A list of budget categories, with examples
 description: "Home, food, getting around, health, family and fun: the budget categories most households need, what goes in each one, and why to start with about ten."
 date: 2026-10-24
-updated: 2026-10-26
+updated: 2026-11-04
 section: Start here
 order: 2
 ---
@@ -161,7 +161,7 @@ category, type a **Category name** and choose what it **Applies to**:
 
 <Shot
   name="categories"
-  alt="The categories page: a form for a new category with its name, what it applies to and its group, a panel for making groups with no groups yet, and the list of categories below, each with its type, how many transactions use it and a group picker, starting with Dining out, Freelance and Groceries."
+  alt="The categories page: a form for a new category with its name, what it applies to and its group, a panel for making groups that holds one, Essentials, with three categories in it, and the list of categories below, each with its type, how many transactions use it and a group picker, starting with Dining out, Freelance and Groceries."
   width="1600"
   height="1000"
 />
@@ -193,7 +193,7 @@ categories** in the transaction form and give each part its own amount.
 
 <Shot
   name="transactions"
-  alt="A list of transactions, newest first, each with who it was with, which account it was in, its category and its amount, all in dollars. Most are spending on groceries, a lunch, cinema tickets and a transit pass. One is a $750 freelance payment coming in, and one is $600 moved from checking to savings, which shows both accounts and no category."
+  alt="A list of transactions, newest first, each with who it was with, which account it was in, its category and its amount, all in dollars. Most are spending: groceries, a dental check-up, a subscription, a transit pass and cinema tickets. One is a $750 freelance payment coming in, and one is $600 moved from checking to savings, which shows both accounts and no category."
   width="1600"
   height="1000"
 />
@@ -213,7 +213,7 @@ because they don't have a category.
 
 <Shot
   name="dashboard"
-  alt="The Simple Balance overview for one month: a dollar total with balance, deposits, withdrawals and net cash flow across the top, then a checking account, a savings account and a credit card with their balances, beside spending by category as bars from rent down to subscriptions."
+  alt="The Simple Balance overview for one month: an Include archived accounts checkbox, a dollar total with balance, deposits, withdrawals and net cash flow across the top, then a checking account, a savings account and a credit card with their balances, beside spending by category as bars from rent down to subscriptions."
   width="1600"
   height="1000"
 />

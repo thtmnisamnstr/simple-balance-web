@@ -126,6 +126,18 @@ role.
 **§5 Images.** Do the screenshots match the current application? Do they load
 without shifting the page? Is the dark variant actually being served?
 
+What a screenshot shows is the application's. Since 0.2.2 its kit
+photographs a committed demo ledger moved into the capture's month, with
+anything dated past the capture day dated that day, so a recapture can change
+what a picture shows, not only its layout, and a list's latest rows can all
+carry the capture day. Pictures older than the kit's (`sync-from-app` §1
+compares the two capture dates) are an application release for
+`sync-from-app` to bring in, its alt-text re-read (`web.md` 5.4) included,
+not a defect here. One that reads wrong in itself is the owner's to ask of
+the application, whose `product-kit` takes the pictures. Never crop, retouch
+or re-date one here: a picture changed in this repository is one nobody can
+reproduce (`web.md` 5.1).
+
 **§5.9 Words on the panel.** The panel is dark in both themes, so everything
 on it takes the panel's colors. A page token there is dark text on a dark
 base in light mode, which is the mode that looks fine in the source. Look at
@@ -194,6 +206,18 @@ also took the pages out from under any other agent working in the tree.
 
 A disagreement with one of these is a change to the guide, through
 `guides-update`, not a fix in the stylesheet.
+
+**Two things in the shared frame are held from outside this repository**, by
+the directory listings the
+[connectors repository](https://github.com/thtmnisamnstr/simple-balance-mcp-connectors)
+publishes. The copyright notice ending the footer's last line names the
+privacy policy's operator on every page, because OpenAI's directory requires
+every URL a listing gives to identify its publisher, so a footer fix keeps it
+on every page and readable: `tests/legal.test.tsx` finds the words in each
+built page and can't see them hidden or clipped. The three icons
+`src/app/layout.tsx` names are hotlinked, and two are byte-identical copies of
+the application's (`operations.md` 7.2), so a design fix never redraws,
+renames or re-encodes one. `seo-review` §4 lists the pinned paths.
 
 ## 4. Motion
 

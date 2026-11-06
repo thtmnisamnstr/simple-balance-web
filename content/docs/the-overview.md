@@ -3,7 +3,7 @@ title: The overview
 description: What the Overview shows for the dates you pick, from your balance and money in and out to each account, top spending and your budget.
 section: Using Simple Balance
 order: 1
-updated: 2026-10-25
+updated: 2026-11-04
 ---
 
 **Overview** is the first screen you see when you sign in. It shows where your
@@ -13,7 +13,7 @@ budget is going.
 
 <Shot
   name="dashboard"
-  alt="The Simple Balance overview for one month: a dollar total with balance, deposits, withdrawals and net cash flow across the top, then a checking account, a savings account and a credit card with their balances, beside spending by category as bars from rent down to subscriptions."
+  alt="The Simple Balance overview for one month: an Include archived accounts checkbox, a dollar total with balance, deposits, withdrawals and net cash flow across the top, then a checking account, a savings account and a credit card with their balances, beside spending by category as bars from rent down to subscriptions."
   width="1600"
   height="1000"
 />
@@ -76,8 +76,17 @@ negative number.
 Click an account to open its own page for the same dates.
 [Accounts](/docs/accounts/) covers what's there.
 
-Archived accounts aren't listed, and money that went through them isn't counted
-in **Deposits**, **Withdrawals** or **Spending by category**.
+Archived accounts aren't listed or counted: their balances aren't in
+**Balance**, and money that went through them isn't in **Deposits**,
+**Withdrawals** or **Spending by category**. To count them, check
+**Include archived accounts**, under the dates. Each one is then listed,
+marked "(archived)", and the money that went through it counts in
+**Deposits**, **Withdrawals** and **Spending by category**. Its balance is
+zero from the day you archived it, so it only adds to **Balance** when your
+dates end before that day. With dates that end today, like **This month**, it
+adds nothing. The choice is kept in the page's address, so a reload or a saved
+link keeps it. The **Budget** panel counts spending through archived accounts
+either way.
 
 ## Spending by category
 
@@ -103,12 +112,15 @@ look for here.
 The **Budget** panel shows how your monthly budgets are going. **See budgets**
 opens the Budgets screen on the same dates.
 
-Each month in your dates that has a budget gets its own line: the month, what
-you spent out of what you had to spend, a bar, and a word for how it's going.
-What you had to spend is the budget plus anything carried over from earlier
-months. A month that isn't over yet says **(so far)** after its name.
+Each month in your dates gets its own line when its category budgets add up to
+more than zero or one of its groups has a budget. The line shows the month,
+what you spent out of what you had to spend, a bar, and a word for how it's
+going. What you had to spend is your categories' budgets plus anything they
+carried over from earlier months. When that's zero or less, as it is in a month
+budgeted only by a group, the line shows the month's name alone. A month that
+isn't over yet says **(so far)** after its name.
 
-Only the last month in your dates is broken down, into every group and
+Only the last month with a line is broken down, into every group and
 category you've budgeted. A group is marked **Adds up** when its budget is the
 total of its categories' budgets, or **Own budget** when it has an amount of its
 own. A group covers the same spending as the categories in it, so don't add a
@@ -140,12 +152,13 @@ reasons:
 
 - **The Budget panel counts whole months.** Spending by category counts only
   your dates. With **Last 30 days** picked, Spending by category covers those
-  30 days, while the Budget panel shows all of last month and this month so
-  far.
+  30 days, while the Budget panel shows every month they touch in full:
+  usually all of last month and this month so far, and on the 30th or 31st,
+  only this month.
 - **The Budget panel counts spending through archived accounts**, the way the
   Budgets screen does unless you clear
   **Count spending through archived accounts** there. Spending by category
-  leaves archived accounts out.
+  leaves archived accounts out unless you check **Include archived accounts**.
 
 ## Add a transaction from here
 
@@ -154,15 +167,20 @@ form as on Transactions. You can commit it now or stage it for review.
 [Transactions](/docs/transactions/) walks through the form.
 
 The button is grayed out, with "Create an account first." beside it, until you
-have an account.
+have an account that isn't archived.
 
 ## When it's empty
 
-- **Create your first account** means you have no accounts yet. Press
-  **Create an account** to go to Accounts and make one.
-  [Getting started](/docs/getting-started/) walks through it.
+- **No accounts in this view** means there's no account to show: you haven't
+  made one yet, or every one you have is archived. Press **Go to Accounts** to
+  make one, or check **Include archived accounts** to count archived ones. With
+  the box checked, it reads **No accounts yet**.
+  [Getting started](/docs/getting-started/) walks through making one.
 - **No spending in this range** usually means the dates are too narrow. Try
-  **All time**, or check [Staged](/docs/staged-transactions/) for
-  transactions you haven't committed yet, since those don't count anywhere.
+  **All time**, check **Include archived accounts** if the spending went
+  through an account you've archived, or check
+  [Staged](/docs/staged-transactions/) for transactions you haven't committed
+  yet, since those don't count anywhere.
 - **No budget in this range** means no month in your dates has a monthly
-  budget. [Budgets](/docs/budgets/) covers setting one.
+  budget other than a category budget of zero. [Budgets](/docs/budgets/)
+  covers setting one.

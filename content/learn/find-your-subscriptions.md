@@ -2,7 +2,7 @@
 title: How to find and keep track of your subscriptions
 description: Go through a year of bank and card statements and list every charge that repeats. Then decide on each one, and keep the list from growing back.
 date: 2026-10-24
-updated: 2026-10-25
+updated: 2026-11-05
 section: Keeping it accurate
 order: 3
 ---
@@ -73,10 +73,8 @@ every few months.
 
 ## How to do it in Simple Balance
 
-Simple Balance isn't a subscription tracker that finds them for you, and it
-can't cancel anything.
-What it does give you is one place to see every payment, and a way to keep the
-subscriptions you keep in plain view.
+Simple Balance gives you one place to see every payment you've made, and a
+way to keep the subscriptions you decide to keep in plain view.
 
 ### Start with your payees
 
@@ -103,7 +101,7 @@ repeats under slightly different names.
 
 <Shot
   name="transactions"
-  alt="A list of transactions, newest first, each with who it was with, which account it was in, its category and its amount, all in dollars. Most are spending on groceries, a lunch, cinema tickets and a transit pass. One is a $750 freelance payment coming in, and one is $600 moved from checking to savings, which shows both accounts and no category."
+  alt="A list of transactions, newest first, each with who it was with, which account it was in, its category and its amount, all in dollars. Most are spending: groceries, a dental check-up, a subscription, a transit pass and cinema tickets. One is a $750 freelance payment coming in, and one is $600 moved from checking to savings, which shows both accounts and no category."
   width="1600"
   height="1000"
 />
@@ -121,7 +119,7 @@ they cost together.
 
 <Shot
   name="categories"
-  alt="The categories page: a form for a new category with its name, what it applies to and its group, a panel for making groups with no groups yet, and the list of categories below, each with its type, how many transactions use it and a group picker, starting with Dining out, Freelance and Groceries."
+  alt="The categories page: a form for a new category with its name, what it applies to and its group, a panel for making groups that holds one, Essentials, with three categories in it, and the list of categories below, each with its type, how many transactions use it and a group picker, starting with Dining out, Freelance and Groceries."
   width="1600"
   height="1000"
 />
@@ -139,7 +137,7 @@ due, for you to check and approve, and it can send you an email when it does.
 
 <Shot
   name="recurrences"
-  alt="The recurring page before anything is set up: a New recurring transaction button, and a note that each due date puts a row on Staged transactions for you to check."
+  alt="The recurring page with five recurring transactions, each with its schedule, amount and next date: a $4,200.00 salary on day 1 of each month, $1,850.00 rent on day 2, an electricity bill whose amount is filled in each time, a $17.99 subscription on day 5 and $600.00 moved to savings on day 17."
   width="1600"
   height="1000"
 />

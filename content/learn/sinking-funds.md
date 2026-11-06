@@ -2,7 +2,7 @@
 title: What are sinking funds?
 description: A sinking fund is money you set aside a little each month for a bill you know is coming, like car insurance in June or gifts in December.
 date: 2026-10-24
-updated: 2026-10-25
+updated: 2026-11-04
 section: Budgeting
 order: 3
 ---
@@ -133,7 +133,7 @@ this account** turned on for that account, so its money still counts.
 
 <Shot
   name="transactions"
-  alt="A list of transactions, newest first, each with who it was with, which account it was in, its category and its amount, all in dollars. Most are spending on groceries, a lunch, cinema tickets and a transit pass. One is a $750 freelance payment coming in, and one is $600 moved from checking to savings, which shows both accounts and no category."
+  alt="A list of transactions, newest first, each with who it was with, which account it was in, its category and its amount, all in dollars. Most are spending: groceries, a dental check-up, a subscription, a transit pass and cinema tickets. One is a $750 freelance payment coming in, and one is $600 moved from checking to savings, which shows both accounts and no category."
   width="1600"
   height="1000"
 />

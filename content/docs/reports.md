@@ -3,7 +3,7 @@ title: Reports
 description: Net worth, income and expenses, spending by category, cash flow, a balance sheet and a trial balance, for any dates, by week, month, quarter or year.
 section: Budgets and reports
 order: 3
-updated: 2026-10-25
+updated: 2026-11-04
 ---
 
 **Reports** shows your money six ways for any dates you pick: what your
@@ -21,8 +21,8 @@ nothing on the page changes anything.
    **Trial balance**.
 3. Set the dates with the **Viewing** bar. It starts on **This month**, and
    **All time** starts from the earliest date in your books.
-4. Under **Options**, choose a **Group by** and whether to
-   **Include archived accounts**.
+4. Under **Options**, choose a grouping from the menu that starts on
+   **Default grouping**, and whether to **Include archived accounts**.
 
 The dates, the grouping and the archived setting are all in the page address,
 so a bookmark or a link opens the same report, and switching tabs keeps them.
@@ -44,7 +44,7 @@ example spending._
 | Report                  | The question it answers                         | Rows                                        | Grouped by default |
 | ----------------------- | ----------------------------------------------- | ------------------------------------------- | ------------------ |
 | **Net worth**           | What did my accounts hold, period by period?    | Each account, then **Total held**           | Monthly            |
-| **Income and expenses** | Did more come in than went out?                 | **Income**, **Expenses**, then **Net**      | Monthly            |
+| **Income and expenses** | Did more come in than went out?                 | **Income** and **Expenses**, then **Net**   | Monthly            |
 | **Categories**          | Where did the money go, and where from?         | Each category, then **Total filed**         | One column         |
 | **Cash flow**           | How did cash move through my everyday accounts? | Up to seven kinds of movement, then **Net** | Monthly            |
 | **Balance sheet**       | What does each account hold on one date?        | Each account, then **Total held**           | One column         |
@@ -62,10 +62,12 @@ one column, a line chart is drawn above the table.
 ### Income and expenses
 
 "What came in and what went out over each period." Two rows, **Income** and
-**Expenses**, with expenses shown as negative, and **Net** at the bottom: what
-you kept, or how much you overspent. The **Total** column adds up the periods.
-A refund lowers **Expenses**, and a transfer between your own accounts is in
-neither row. Grouped by month, it's drawn as bars.
+**Expenses**, which can come in either order, with expenses shown as negative,
+and **Net** at the bottom: what you kept, or how much you overspent. The
+**Total** column adds up the periods. A refund lowers **Expenses**, and a
+transfer between your own accounts is in neither row. With more than one
+column, it's drawn as bars, so **This month** grouped by month is just the
+table.
 
 ### Categories
 
@@ -80,8 +82,8 @@ last.
   **Uncategorized** can show twice the same way.
 - **Total filed** adds up every row on screen, income and spending together, so
   it isn't what you kept. **Income and expenses** answers that.
-- It's one column by default. Group it by month to see each category over time,
-  drawn as bars.
+- It's one column by default. Group it by month, over dates that reach into
+  more than one month, to see each category over time, drawn as bars.
 - This is the only report where you can
   [leave a category out of the view](#leave-a-category-out-of-the-view).
 
@@ -137,7 +139,8 @@ restore.
 
 ## Group by and charts
 
-**Group by**, under **Options**, decides the columns:
+The grouping menu under **Options**, which starts on **Default grouping**,
+decides the columns:
 
 - **Default grouping**: each report's own, from the table above.
 - **One column**: the whole date range at once.
@@ -153,7 +156,8 @@ the start and end dates for the other reports.
 
 The last column is **Closing** on the three balance reports, which is what each
 account held at the end, and **Total** on the others, which adds up the
-columns.
+columns. The bottom row totals that column too, so on a balance report its last
+figure is what everything held at the end.
 
 A report can draw at most 600 columns. Weekly over twelve years is too many,
 and the page says "That range needs more than 600 week columns, which is the
@@ -188,7 +192,7 @@ with. [More than one currency](/docs/multiple-currencies/) covers the rest.
 One huge category, like rent or a tax bill, can flatten every other bar on the
 chart. On **Categories**, you can set it aside for a moment:
 
-1. Press the **⋯** button on the category's row.
+1. Press the **⋯** button at the end of the category's row.
 2. Choose **Exclude from this view**.
 
 The row and its part of the chart go, and the totals are worked out again from
@@ -196,8 +200,9 @@ the rows still on screen. A line above the report says "Left out of this view:"
 and names each one. Press a name to put it back, or **Put all back** for all of
 them.
 
-This changes nothing stored. Switching to another report or leaving the page
-forgets it, and an AI assistant you've connected still sees every category.
+This changes nothing stored. Switching to another report and back keeps it,
+leaving **Reports** or reloading the page forgets it, and an AI assistant
+you've connected still sees every category.
 
 ## From a figure to what's behind it
 
@@ -217,5 +222,6 @@ With nothing to show for your dates, the page says
 **Nothing in this view to report** and suggests turning on
 **Include archived accounts**, in case the money went through an account you've
 archived. With that box on, it says **Nothing to report yet** instead. Either
-way it offers **Add a transaction**. Dates that start after today show nothing,
-because that money hasn't moved yet.
+way it offers **Go to Transactions**, or **Go to Accounts** if you don't have an
+account yet. Dates that start after today show nothing, because that money
+hasn't moved yet.

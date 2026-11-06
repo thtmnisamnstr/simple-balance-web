@@ -1,11 +1,11 @@
 {
   "$comment": "The application descriptions this site's copy was written from. Updated only by `npm run copy:accept`, which is the explicit act of saying the words here have been re-read against the words there. Never edited by hand and never refreshed to make a test pass.",
-  "acceptedFor": "01c80a6c2f3a89f2ed0ecd4cf928d4cdd24856e2",
-  "acceptedAt": "2026-10-07",
+  "acceptedFor": "4b20aeed57a44aada8a60b51d120f4d93b328a14",
+  "acceptedAt": "2026-11-05",
   "entries": {
     "all-accounts-one-page": {
       "name": "Every account in one place",
-      "plain": "See what you have across every bank account, card, and wallet on a single page, in whatever currency each one is in.",
+      "plain": "See what you have across every bank account, card, and wallet on a single page, in whatever currency each one is in. Close an account and its history stays; tick a box to count it back in.",
       "why": "Most people's money is spread across five or six logins and nobody adds it up. Table stakes rather than a reason to choose this: eight competitors lead on it, so it belongs on the page and not at the top of it.",
       "tier": "A",
       "rank": 2
@@ -26,7 +26,7 @@
     },
     "own-your-data": {
       "name": "Your records stay yours",
-      "plain": "Run it on your own machine and nobody else has a copy. Export every transaction to a spreadsheet whenever you want.",
+      "plain": "Run it on your own machine and nobody else has a copy. Export every transaction to a spreadsheet whenever you want, or the whole ledger, budgets and templates included, as one Simple Balance file another copy can take in whole.",
       "why": "It is a record of everything somebody spends money on.",
       "tier": "A",
       "rank": 4
@@ -85,14 +85,14 @@
       "plain": "Change or delete up to ten thousand transactions at once, after seeing exactly what it will touch.",
       "why": "One mis-mapped import can put a year of entries in the wrong category.",
       "tier": "C",
-      "rank": 2
+      "rank": 3
     },
     "templates": {
       "name": "Templates for repeat entries",
       "plain": "Save the transactions you type over and over and reuse them in a click.",
       "why": "Cash spending is the part nobody imports, and typing it is the part nobody keeps up.",
       "tier": "C",
-      "rank": 3
+      "rank": 4
     },
     "register": {
       "name": "A running balance for every account",
@@ -110,17 +110,24 @@
     },
     "agents": {
       "name": "Let an AI assistant do the filing",
-      "plain": "Connect an assistant and let it import statements and clean up categories. When you connect it you see exactly what it is asking to do and can refuse; an assistant limited to suggesting queues entries for you to approve, and Settings shows what each connected assistant can do and lets you cut it off.",
+      "plain": "Connect an assistant and let it import statements and clean up categories. When you connect it you see exactly what it is asking to do and can refuse; an assistant limited to suggesting queues entries for you to approve, and Settings shows what each connected assistant can do and lets you cut it off. It can also explain the basics, like balancing an account or building an emergency fund, from the same money guides smpl.money publishes.",
       "why": "It is genuinely useful and genuinely alarming, so the limits matter more than the capability. It is not a reason to choose this over anything else: PocketSmith shipped the same idea, down to the permission levels, and a capability two products share decides nothing.",
       "tier": "C",
-      "rank": 4
+      "rank": 5
     },
     "payees": {
       "name": "Everyone you have paid",
       "plain": "A list of everyone you have paid, and everything you have paid them.",
       "why": "It is how you notice the subscription you forgot about.",
       "tier": "C",
-      "rank": 5
+      "rank": 6
+    },
+    "move-a-ledger": {
+      "name": "Move your books to another copy",
+      "plain": "Moving from the hosted app to your own computer, or back? Export one file and move it into the new copy: every transaction, deleted ones and closed accounts included, goes straight into the books, and each balance is checked against the file. Into a ledger that already has entries, the file is added instead, and its transactions wait for you to review.",
+      "why": "Changing where your books live is where people lose them: a spreadsheet carries the transactions and nothing else, so every account, budget and recurring payment had to be built again by hand.",
+      "tier": "C",
+      "rank": 2
     }
   }
 }

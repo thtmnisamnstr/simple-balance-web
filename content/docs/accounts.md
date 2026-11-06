@@ -3,7 +3,7 @@ title: Accounts
 description: Add checking, savings, credit card, loan, cash and crypto accounts, read each one's balances and register, and archive or delete old ones.
 section: Using Simple Balance
 order: 2
-updated: 2026-10-25
+updated: 2026-11-04
 ---
 
 An account in Simple Balance is anywhere your money sits or anything you owe:
@@ -93,21 +93,29 @@ accounts of is left out.
 Each card shows the account's type, name and institution, its balance as of
 today, and its currency. Click a card to open the account's own page.
 
-- **Search accounts** narrows the list to names containing what you type.
+- The search box, "Search by name", narrows the list to names containing what
+  you type.
 - **Sort by** orders the accounts inside each heading by **Name**,
   **Currency**, **Balance** or **Status**. The arrow button beside it reverses
   the order. **Balance** starts with the largest.
 - **Show archived accounts** adds the accounts you've archived, which are
-  hidden until you check it. They carry an **Archived** badge.
+  hidden until you check it. They carry an **Archived** badge. The choice is
+  kept in the page's address, so it's still checked when you come back from an
+  account's page, and **Open Accounts** after importing a Simple Balance file
+  checks it for you when the import has just told you to restore one.
 - An account marked **Frozen** is one the free plan has put out of use. See
   [the free plan](#on-the-free-plan-choose-which-accounts-stay-usable) below.
+- With no account to show, the page reads **No accounts match this view** when
+  a search finds nothing, **No accounts in this view** while archived accounts
+  are hidden, or **No accounts yet** with the box checked, and offers
+  **New account**, the same as the button at the top.
 
 Each card's **⋯** menu has **Edit**, **Archive** (or **Restore**) and
 **Delete if unused**.
 
 <Shot
   name="accounts"
-  alt="The accounts page: a search box and sort controls, then accounts grouped by type. Under Checking, a euro account at €1,621.10 and Everyday Checking at $7,663.45. Under Savings, Savings at $20,200.00. Under Credit card, a card named Travel Card."
+  alt="The accounts page: a search box, sort controls and a box for showing archived accounts, then accounts grouped by type. Under Checking, Euro Account at €1,121.10 and Everyday Checking at $8,108.30. Under Savings, Savings at $20,200.00. Under Credit card, a card named Travel Card."
   width="1600"
   height="1000"
 />
@@ -144,7 +152,9 @@ same dates, with the same search, type filter and **Show deleted** box as the
 
 - **Add transaction** opens the form with this account already chosen. It
   isn't there on an archived or frozen account, because neither takes new
-  transactions.
+  transactions. With nothing listed, an archived account says "This account is
+  archived. Restore it from Accounts to add to it.", and a frozen one says why
+  it's frozen and what brings it back into use.
 - **Export CSV** saves this account's transactions for the dates shown, up to
   100,000 rows. Set the dates to **All time** first if you want everything.
 
@@ -194,7 +204,8 @@ old figure; it records the difference instead.
    it doesn't, the difference is in something dated before the statement.
 3. Read down the **After** column beside the statement's running balance.
 4. The first row where they disagree is the one to fix. Click **Transaction**
-   on that row to open it.
+   on that row to open that day's transactions in this account, and edit it
+   there.
 
 [Balance your checking account](/learn/balance-your-checking-account/) walks
 through the whole habit.

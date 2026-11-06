@@ -3,15 +3,15 @@ title: Connecting an AI assistant (MCP)
 description: "Connect ChatGPT, Claude, Gemini, Codex or Claude Code to Simple Balance at app.smpl.money/mcp: setup for each, what it can change, and what to do when it fails."
 section: Your account
 order: 3
-updated: 2026-11-03
+updated: 2026-11-04
 ---
 
 You can connect an AI assistant to Simple Balance through MCP, the Model
 Context Protocol, which is a standard way for an assistant to use another app.
-Once it's connected, it can do what the web app does, such as importing a
-statement, tidying categories, chasing duplicates and answering questions about
-your money. Three account-management tasks are kept from it, and they're
-listed below.
+Once it's connected, it can do almost everything the web app does, such as
+importing a statement, tidying categories, chasing duplicates and answering
+questions about your money. Four account-management tasks are kept from it,
+and they're listed below.
 
 ## What keeps it from doing damage
 
@@ -26,13 +26,16 @@ An agent holding `ledger:stage` can propose and can't commit; committing takes
 `ledger:read` can't write. `ledger:stage` can propose and can't decide:
 creating a category, restoring an archived one or widening what kind of entry
 it may carry all need `ledger:write`, wherever they're reached from, including
-a CSV import.
+a CSV import. So does adding or moving a Simple Balance file: adding one
+creates its accounts, categories and other records at once, and moving one
+writes its transactions straight into your books.
 
-<Callout kind="warning" title="Three things no agent can do">
-Deleting your account, setting a sign-in password, and paying for or changing
-your plan are reachable from a signed-in session and never from an MCP
-connection. A connection is a credential handed to a program, which is a
-different class of authority from writing a transaction.
+<Callout kind="warning" title="Four things no agent can do">
+Deleting your account, setting or changing its password, connecting Google to
+sign in with, and paying for or changing your plan are reachable from a
+signed-in session and never from an MCP connection. A connection is a
+credential handed to a program, which is a different class of authority from
+writing a transaction.
 </Callout>
 
 ## Connecting one
@@ -62,8 +65,10 @@ each client.
 
 The client learns the rest from what Simple Balance publishes about its
 sign-in, registers itself, and opens a browser. You sign in there the way you
-sign in to the web app, unless that browser is signed in already, and an **Allow this MCP client?** screen names the client and lists
-the scopes it asked for, each with a plain description:
+sign in to the web app, unless that browser is signed in already, and an **Allow this MCP client?** screen names the client, the email
+address of the Simple Balance account that browser is signed in to, and where
+approving sends you back to. It lists the scopes the client asked for, each
+with a plain description:
 
 | Scope            | What the screen says                                           |
 | ---------------- | -------------------------------------------------------------- |
@@ -79,9 +84,23 @@ Choose **Allow access** or **Deny access**. The screen grants what was asked or
 nothing; it doesn't narrow the request.
 
 So the scopes are decided by the client. One that asks for every scope the
-server advertises gets `ledger:write` along with the rest. If yours lets you
-set what it requests, ask for `ledger:stage`, or `ledger:read` for an assistant
-that only answers questions.
+server advertises gets `ledger:write` along with the rest. Simple Balance's
+first answer to a client that hasn't signed in yet names every scope in the
+table, so a client that takes its scopes from that answer asks for all of them
+too. If yours lets you set what it requests, ask for `ledger:stage`, or
+`ledger:read` for an assistant that only answers questions.
+
+Two more things on the screen are worth checking before you choose. The
+client's name is whatever the client calls itself, so the site it sends you
+back to is the one to check, and the screen says "Allow access only if you
+recognize it." When that site is your own computer, it says instead "That
+address is this computer, so the client is a program running on your own
+machine." The email is the account whose books you're granting, which matters
+when the browser is still signed in to a different Simple Balance account from
+the one you meant.
+
+An assistant sees your name only with `profile` and your email address only
+with `email`. Without them, `whoami` gives it neither.
 
 ## Connect your assistant
 
@@ -276,11 +295,21 @@ password disconnects every client too.
 
 ## What it can do
 
-It reaches the whole ledger, through the same services the web app uses. Apart from the
-three things above, an agent can't reach a capability the browser doesn't
-have, and the browser can't reach one an agent doesn't. That parity is checked
-by the application's own tests rather than maintained by hand. So you can
-ask it to:
+It reaches the whole ledger, through the same services the web app uses. The
+application's own tests compare the two, route by route and field by field,
+and name each difference with its reason. Leaving aside the four things above,
+the differences are these. The web app downloads a Simple
+Balance file of up to 100,000 rows, where an assistant takes 10,000 at a time,
+so more than 10,000 staged rows or budget amounts, which have no date to split
+them by, leave only through **Export file**. An assistant can move a budget's
+start, or retune a saving goal's target or date, an average's months, or a
+step's or a share's percentage, where the web app has you delete the budget and
+set it again. It can set a date, a split, a category typed by name or the
+amount received across many templates at once, which **Edit selected** on
+**Templates** doesn't offer, and it can narrow transactions or a CSV export to
+one currency. And it reads the money guides from a copy inside Simple Balance,
+where you read the same guides here on smpl.money, under [Learn](/learn/). So
+you can ask it to:
 
 - Add, edit, archive and delete accounts, read their balances and register,
   and choose which accounts stay usable on the free plan.
@@ -291,13 +320,22 @@ ask it to:
   duplicates, and commit what's ready.
 - Set up and change recurring transactions and templates.
 - Set budgets, and read the budget report, the six reports and the forecast.
+- Export your transactions as a CSV file, or your whole ledger or some of its
+  accounts as a Simple Balance file, and preview a Simple Balance file and add
+  or move one into your books.
 - Read your activity history, change your preferences, and list or disconnect
   connected agents.
+- Read the money guides, so it can explain how to make a budget or balance a
+  checking account. Reading one touches nothing in your books, and the copy
+  comes with each release of Simple Balance, so a guide changed here since then
+  reads to an assistant as it was.
 
 Each of those still needs the scope for it. An agent with `ledger:read` can
-look at everything on that list and change none of it. One with
-`ledger:stage` can also add, fix and delete rows on **Staged**, including a
-CSV file's, and change nothing else. Everything else takes `ledger:write`.
+look at everything on that list and change none of it, and that includes
+exporting either kind of file, previewing a Simple Balance file and reading
+the guides. One with `ledger:stage` can also add, fix and delete rows on
+**Staged**, including a CSV file's, and change nothing else. Everything else
+takes `ledger:write`.
 
 The same limits apply as well. On [app.smpl.money](https://app.smpl.money/)'s free plan, an account that's
 [frozen](/docs/your-account-and-plan/#canceling) refuses an agent's changes
@@ -333,6 +371,19 @@ explains how to read it.
   scope it needs. Claude on claude.ai then asks you to sign in again and
   approve it. Each time, the approval screen lists what's asked for, and
   nothing widens until you choose **Allow access**.
+- **It has to sign in again after a while.** Each time an assistant renews its
+  access, Simple Balance hands it a new refresh token, which is what it renews
+  with, and the old one stops working in the same answer. An assistant that
+  keeps using an old one is turned away until it signs in again. Connecting it
+  again gets it going. If it keeps happening, the assistant isn't keeping the
+  new token, and that's for whoever makes the assistant to fix.
+- **It says a date range is too long.** One request from an assistant lists at
+  most 200 of an account's postings, exports at most 100 transactions and
+  60,000 characters of CSV, and carries at most 10,000 rows of a Simple Balance
+  file. Past that, Simple Balance turns the whole request down, rather than
+  handing back part of it, and says what to narrow, usually the dates. The web
+  app's own register and downloads go further, and
+  [Limits](/docs/limits/#one-request-from-an-ai-assistant) lists each.
 - **You want to cut it off.** Revoke it under
   [Connected agents](#see-and-revoke-connected-agents). It loses access at
   once, whatever the assistant still holds.

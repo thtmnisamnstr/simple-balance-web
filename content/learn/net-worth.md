@@ -2,7 +2,7 @@
 title: What is net worth, and how do you calculate it?
 description: Net worth is what you own minus what you owe. How to add yours up, what to leave out, why it can start below zero, and why the trend matters most.
 date: 2026-10-24
-updated: 2026-10-25
+updated: 2026-11-05
 section: The bigger picture
 order: 1
 ---
@@ -103,7 +103,7 @@ it counts toward your net worth.
 
 <Shot
   name="accounts"
-  alt="The accounts page: a search box and sort controls, then accounts grouped by type. Under Checking, a euro account at €1,621.10 and Everyday Checking at $7,663.45. Under Savings, Savings at $20,200.00. Under Credit card, a card named Travel Card."
+  alt="The accounts page: a search box, sort controls and a box for showing archived accounts, then accounts grouped by type. Under Checking, Euro Account at €1,121.10 and Everyday Checking at $8,108.30. Under Savings, Savings at $20,200.00. Under Credit card, a card named Travel Card."
   width="1600"
   height="1000"
 />
@@ -133,12 +133,11 @@ If you have money in more than one currency, Simple Balance totals each one
 separately and never converts between them. Any exchange rate it picked would
 be out of date by tomorrow.
 
-### Things it can't put a price on
+### Investments, a home or a car
 
-Simple Balance doesn't look up what investments, a home or a car are worth.
-You can keep them as accounts of type **Investment** or **Other asset**, but
-their balances are only as up to date as the last value you entered. You can
-also track just your cash and debts here and leave the rest out. That's a fine
+Keep them as accounts of type **Investment** or **Other asset**. Each one
+counts at the last value you entered. You can also track just your cash and
+debts here and leave the rest out. That's a fine
 net worth to watch, as long as you count it the same way every time.
 
 ### Accounts you've closed

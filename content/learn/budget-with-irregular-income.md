@@ -2,7 +2,7 @@
 title: How to budget with irregular income
 description: When your pay changes from month to month, from freelance work, tips or commission, plan around your lowest month and the money you already have.
 date: 2026-10-24
-updated: 2026-10-25
+updated: 2026-11-04
 section: Budgeting
 order: 4
 ---
@@ -93,7 +93,7 @@ the real amount.
 
 <Shot
   name="transactions"
-  alt="A list of transactions, newest first, each with who it was with, which account it was in, its category and its amount, all in dollars. Most are spending on groceries, a lunch, cinema tickets and a transit pass. One is a $750 freelance payment coming in, and one is $600 moved from checking to savings, which shows both accounts and no category."
+  alt="A list of transactions, newest first, each with who it was with, which account it was in, its category and its amount, all in dollars. Most are spending: groceries, a dental check-up, a subscription, a transit pass and cinema tickets. One is a $750 freelance payment coming in, and one is $600 moved from checking to savings, which shows both accounts and no category."
   width="1600"
   height="1000"
 />

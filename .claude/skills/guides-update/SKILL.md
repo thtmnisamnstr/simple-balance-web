@@ -53,7 +53,23 @@ Then sort each into exactly one of:
 | A skill added or renamed                                                         | AGENTS.md's list (tested), the counts in `docs/standards/index.md` and README (not)   |
 | A skill's order, its scope, or what it calls                                     | README's "Which skill to run", AGENTS.md's "Recurring tasks", the skills that call it |
 | A source comment that says what the code does                                    | `code/comments.md` 4                                                                  |
+| What production runs: the ad app.smpl.money serves, its mail, its backups        | AGENTS.md's ad rules, `operations.md` 2 and 8, `content.md` 6.4, `docs/roadmap.md`    |
+| A learn guide's slug, title, steps or shape, its Markdown copy, `/llms.txt`      | `content.md` 5.14 and 5.15, and the application's learn pack (below)                  |
+| A page, an icon or a string the assistant listings use                           | `operations.md` 2.1 and 7.2, `seo-review` §4, and the connectors repository (below)   |
 | Something that would make the site _wrong_                                       | `AGENTS.md`                                                                           |
+
+**Three of those rows reach past this repository**, and nothing here fails
+when one goes stale. What production runs is the private deployment
+repository's configuration, which no diff shows: `legal-review` §6 reads it,
+and §6 below says what to do with a guide written while production served
+AdSense. The application reads each guide's Markdown copy
+(`write-content` §3), and the
+[connectors repository](https://github.com/thtmnisamnstr/simple-balance-mcp-connectors)'s
+listings use the pages, icons and strings in `seo-review` §4 and
+`aeo-review` §9; the owner items they leave are `merge-prep` §13's. None of
+the three repositories is this skill's to edit, and a guide that mentions a
+listing points at that repository's `submissions/README.md` for its state
+rather than restating it.
 
 Then find every mention, because a rule is stated once and cited several times,
 and a comment in the source describes the same behavior with nothing to hold it
@@ -118,6 +134,31 @@ matters to them. **An entry naming a file or a function has failed.**
 Only for something that makes the site _wrong_ rather than untidy — the
 `ads.txt` rules, the announced flag, the brand contract. It is the top of the
 hierarchy and every guide defers to it.
+
+**Its `ads.txt` and AdSense rules rest on a setting no diff here can
+show.** The `ads.txt` rules and the three AdSense disclosures were written
+while app.smpl.money served AdSense, and which ad it serves is production
+configuration the owner controls in the private deployment repository. Which
+one it serves now is `legal-review` §6's read, and §2 there has the day it
+last changed. None of those rules is this skill's to settle. Keeping
+`public/ads.txt`, and keeping the disclosures `tests/legal.test.tsx` holds or
+making them conditional, is the owner's decision, and `AGENTS.md` records it
+before the file, the disclosures or their tests move. A guide sentence that
+states production's ad as today's fact (`operations.md` 2 and 8,
+`content.md` 6.4, `docs/roadmap.md`, the README's paragraph on ads) doesn't
+wait: it's written for both states, AdSense configured and not, keeping the
+rule and its argument, and where that leaves it saying less than `AGENTS.md`
+it records the disagreement rather than quietly losing it. The report puts
+the decision at its top.
+
+**If `AGENTS.md`'s table still names only this site and the
+application**, two repositories that matter are missing from it: the private
+deployment repository, which decides what production runs
+(`legal-review` §6 says how it's read), and the
+[connectors repository](https://github.com/thtmnisamnstr/simple-balance-mcp-connectors),
+whose listings link this site's pages and icons and quote its words, read by
+URL like the application. Adding them is a change to the top of the
+hierarchy, so it waits for the owner, and the report asks.
 
 ## 7. Recount and repoint
 

@@ -3,7 +3,7 @@ title: Configuration
 description: Every environment variable the server reads, what it defaults to, and which ones it refuses to start without.
 section: Self-hosting
 order: 4
-updated: 2026-10-26
+updated: 2026-11-04
 ---
 
 This page is for a copy you run yourself. On [app.smpl.money](https://app.smpl.money/) there's nothing
@@ -24,17 +24,18 @@ exception: they warn, name the value, and run on the default.
 
 ## Required in production
 
-| Variable       | What it is                                                                                                                                                                                                                |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `NODE_ENV`     | `production`. The container image sets it for you. A host running `npm start` doesn't, and unset reads as development. Only `production`, `development` and `test` are accepted.                                          |
-| `DATABASE_URL` | A PostgreSQL 15 or later connection string, and the only persistent dependency. If the database it names doesn't exist yet it's created, which needs a role with `CREATEDB`.                                              |
-| `AUTH_SECRET`  | At least 32 random characters, for example from `openssl rand -base64 32`. Keep it: changing it signs everybody out. A value published in the project's own files, including whatever `.env.example` carried, is refused. |
-| `APP_BASE_URL` | Your public origin, exactly as the browser sees it, with no path. HTTPS anywhere but localhost.                                                                                                                           |
+| Variable       | What it is                                                                                                                                                                                                                        |
+| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `NODE_ENV`     | `production`. The container image sets it for you. A host running `npm start` doesn't, and unset reads as development. Only `production`, `development` and `test` are accepted.                                                  |
+| `DATABASE_URL` | A PostgreSQL 15 or later connection string, and the only persistent dependency. If the database it names doesn't exist yet it's created, which needs a role with `CREATEDB` that can connect to the server's `postgres` database. |
+| `AUTH_SECRET`  | At least 32 random characters, for example from `openssl rand -base64 32`. Keep it: changing it signs everybody out. A value published in the project's own files, including whatever `.env.example` carried, is refused.         |
+| `APP_BASE_URL` | Your public origin, exactly as the browser sees it, with no path. HTTPS anywhere but localhost or a loopback address such as `127.0.0.1`.                                                                                         |
 
 `NODE_ENV` matters more than it looks. Outside production the first-run setup
 code isn't asked for, sign-in attempts aren't rate limited, and cookies aren't
 marked secure. A process that isn't in production and has been given an
-`APP_BASE_URL` naming anything but localhost refuses to start, because that
+`APP_BASE_URL` naming anything but localhost or a loopback address refuses to
+start, because that
 setting is the one only a real deployment has.
 
 `APP_BASE_URL` matters as much. Secure cookies, the OAuth issuer, redirect
@@ -45,18 +46,22 @@ terminating TLS, and then [`TRUST_PROXY`](#behind-a-proxy).
 
 A database on another host should be reached over TLS. Put `sslmode=no-verify`
 in `DATABASE_URL` for a server with a certificate it signed itself, or
-`sslmode=verify-full` for one with a certificate from a CA the container already
-trusts, such as a managed database. Don't use `sslmode=require`: the driver
+`sslmode=verify-full` for one with a certificate from a public CA, which the
+container already trusts. A managed database such as Amazon RDS signs with its
+own CA, so `verify-full` there also needs `sslrootcert` naming that CA's
+certificate, as
+[Deploying with Docker Compose](/docs/deploying-with-docker-compose/#a-database-you-already-have)
+shows. Don't use `sslmode=require`: the driver
 checks the certificate anyway, so against a self-signed server it fails, and the
 server refuses to start and says which setting to use instead.
 
 ## Sign-in and registration
 
-| Variable         | Default   | What it does                                                                                                                                                                                                                               |
-| ---------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `AUTH_MODE`      | `local`   | Which sign-in methods are offered: `local`, `google`, or `both`. Changing it on a copy that has accounts takes the dropped method away from them; see below.                                                                               |
-| `ALLOWED_EMAILS` | unset     | Who may create an account. Unset admits nobody but the first account. Required, and must admit somebody, when `AUTH_MODE` is `google` or `both`.                                                                                           |
-| `SETUP_TOKEN`    | generated | The one-time code that claims a fresh instance. At least 16 characters if you set it; a shorter one refuses to start. Left unset, one is generated and, where password sign-in is on, printed to the startup log. It also takes a `_FILE`. |
+| Variable         | Default   | What it does                                                                                                                                                                                                                                                                                                                                                                                     |
+| ---------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `AUTH_MODE`      | `local`   | Which sign-in methods are offered: `local`, `google`, or `both`. Changing it on a copy that has accounts takes the dropped method away from them; see below.                                                                                                                                                                                                                                     |
+| `ALLOWED_EMAILS` | unset     | Who may create an account. Unset admits nobody but the first account. Required, and must admit somebody, when `AUTH_MODE` is `google` or `both`.                                                                                                                                                                                                                                                 |
+| `SETUP_TOKEN`    | generated | The one-time code that claims a fresh instance. At least 16 characters if you set it. A shorter one refuses to start a production server with password sign-in on, no account yet and an `ALLOWED_EMAILS` other than `*`, and anywhere else a production server only warns. Left unset, one is generated and, where password sign-in is on, printed to the startup log. It also takes a `_FILE`. |
 
 **Changing `AUTH_MODE` once people have accounts takes the method you drop
 away from them**, on the web and over MCP, and an account that has only that
@@ -163,12 +168,28 @@ spelled out (`proxy_set_header X-Forwarded-For $remote_addr`, not
 `$proxy_add_x_forwarded_for`, which appends), and the application's reference
 has the block to copy.
 
+A proxy of your own has two more jobs. **It has to let large requests
+through.** From 0.2.2, adding or moving a Simple Balance file sends parts of up
+to 54,103,968 bytes, about 52 MiB, to `/api/v1/ledger-file:preview`,
+`/api/v1/ledger-file:add`, `/api/v1/ledger-file:move` and `/mcp`, whatever
+`CSV_MAX_BYTES` is. So keep its body limit at 52 MiB or more, written `52m` for
+nginx and `52MiB` for Caddy, not `52MB`, or those requests get a bare 413 from
+the proxy. The Caddy and nginx the project ships allow 61 MiB, for a CSV at the
+default size. Those three paths carry a literal colon, and a proxy that rewrites
+it as `%3A` turns each into a 404. **It shouldn't pass `/metrics` on.** Answer it
+with a 404 instead, as the `single` profile's Caddyfile does from 0.2.2: with
+[`METRICS_ENABLED`](#operational-settings) on and no `METRICS_TOKEN`, a proxy
+that forwards it shows the numbers to anybody. The app itself answers only that
+exact path from 0.2.2, so a request that merely resolves to it, such as
+`/api/..\metrics`, is a 404 whatever is in front.
+
 ## Mail
 
-Set `SMTP_HOST` and `MAIL_FROM` together and three things switch on: people can
-reset a forgotten password, a new account has to confirm its address before it
-works, and scheduled reminders can be delivered. Leave both unset and none of
-it happens. Setting only one of them refuses to start.
+Set `SMTP_HOST` and `MAIL_FROM` together and scheduled reminders can be
+delivered. With password sign-in on, `AUTH_MODE` `local` or `both`, two more
+things switch on: people can reset a forgotten password, and a new account has
+to confirm its address before it works. Leave both unset and none of it
+happens. Setting only one of them refuses to start.
 
 The scheduled ones are the two emails a person turns on for themselves:
 [template reminders](/docs/templates/#email-reminders), and the notice a
@@ -176,15 +197,15 @@ The scheduled ones are the two emails a person turns on for themselves:
 row on **Staged**. Without a mail server, both settings still save, and the
 form says nothing will be sent until one is configured.
 
-| Variable        | Default                                 | What it is                                                                                                                                        |
-| --------------- | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `SMTP_HOST`     | unset                                   | The submission server. Setting it turns mail on.                                                                                                  |
-| `MAIL_FROM`     | unset                                   | The address messages come from: `balance@example.com`, or `Simple Balance <balance@example.com>`. Required alongside `SMTP_HOST`.                 |
-| `MAIL_REPLY_TO` | unset                                   | Where a reply should go, if not to `MAIL_FROM`. Same two forms.                                                                                   |
-| `SMTP_PORT`     | `587`, or `465` when `SMTP_SSL` is true | The submission server's port.                                                                                                                     |
-| `SMTP_SSL`      | `false`                                 | `true` for a connection encrypted from the first byte, which is what 465 expects. `false` starts on 587 and upgrades with STARTTLS.               |
-| `SMTP_USERNAME` | unset                                   | Set with `SMTP_PASSWORD` or not at all.                                                                                                           |
-| `SMTP_PASSWORD` | unset                                   | Never sent unencrypted: with `SMTP_SSL` off and credentials set, the STARTTLS upgrade is required rather than attempted. It also takes a `_FILE`. |
+| Variable        | Default                                 | What it is                                                                                                                                          |
+| --------------- | --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SMTP_HOST`     | unset                                   | The submission server. Setting it turns mail on.                                                                                                    |
+| `MAIL_FROM`     | unset                                   | The address messages come from: `balance@example.com`, or `Simple Balance <balance@example.com>`. Required alongside `SMTP_HOST`.                   |
+| `MAIL_REPLY_TO` | unset                                   | Where a reply should go, if not to `MAIL_FROM`. Same two forms.                                                                                     |
+| `SMTP_PORT`     | `587`, or `465` when `SMTP_SSL` is true | The submission server's port. A `single` machine's `compose.yml` passes `587` when it's unset, so there set `SMTP_PORT=465` beside `SMTP_SSL=true`. |
+| `SMTP_SSL`      | `false`                                 | `true` for a connection encrypted from the first byte, which is what 465 expects. `false` starts on 587 and upgrades with STARTTLS.                 |
+| `SMTP_USERNAME` | unset                                   | Set with `SMTP_PASSWORD` or not at all.                                                                                                             |
+| `SMTP_PASSWORD` | unset                                   | Never sent unencrypted: with `SMTP_SSL` off and credentials set, the STARTTLS upgrade is required rather than attempted. It also takes a `_FILE`.   |
 
 Use a submission service, not the MX host your domain publishes. An MX record
 says where mail to your domain is delivered; it doesn't accept authenticated
@@ -223,14 +244,14 @@ The server reads these settings from 0.2.0 on. An older image has no billing
 and ignores them.
 </Callout>
 
-| Variable                  | Default | What it does                                                                                                                                                                                                                                                                                                                                              |
-| ------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `SB_BILLING_ENABLED`      | `false` | Whether this deployment sells a plan and holds a free account to three financial accounts in use. `true` or `false`. Setting it without the five Stripe settings below refuses to start.                                                                                                                                                                  |
-| `STRIPE_SECRET_KEY`       | unset   | The key this process charges, refunds and cancels with: `sk_…`, or a restricted `rk_…`. A restricted key needs Write on PaymentIntents and on PaymentMethods. Without the second, replacing a card fails, and a test account rarely gets far enough to show it. A live key while `NODE_ENV` isn't `production` refuses to start. It also takes a `_FILE`. |
-| `STRIPE_PUBLISHABLE_KEY`  | unset   | The key the browser loads Stripe's payment form with, `pk_…`. It's published to every visitor, so it's a setting rather than a secret. A live key beside a test secret key, or the reverse, refuses to start.                                                                                                                                             |
-| `STRIPE_WEBHOOK_SECRET`   | unset   | What a delivery from Stripe is verified against, `whsec_…`. It also takes a `_FILE`.                                                                                                                                                                                                                                                                      |
-| `STRIPE_PRICE_MONTHLY_ID` | unset   | The monthly price, `price_…`. A product id here is the usual mistake and is refused at startup.                                                                                                                                                                                                                                                           |
-| `STRIPE_PRICE_YEARLY_ID`  | unset   | The annual price, `price_…`. Both prices belong to one product.                                                                                                                                                                                                                                                                                           |
+| Variable                  | Default | What it does                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| ------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SB_BILLING_ENABLED`      | `false` | Whether this deployment sells a plan and holds a free account to three financial accounts in use. `true` or `false`. Setting it without the five Stripe settings below refuses to start.                                                                                                                                                                                                                                                                                                                                                                                   |
+| `STRIPE_SECRET_KEY`       | unset   | The key this process charges, refunds and cancels with: `sk_…`, or a restricted `rk_…`. A restricted key needs Write on Customers, Subscriptions, Subscription schedules, SetupIntents, Invoices, PaymentIntents and PaymentMethods, and Read on Prices. The startup log names any of them but PaymentMethods that the key can't read, and never a missing Write: without Write on PaymentMethods, replacing a card fails, and a test account rarely gets far enough to show it. A live key while `NODE_ENV` isn't `production` refuses to start. It also takes a `_FILE`. |
+| `STRIPE_PUBLISHABLE_KEY`  | unset   | The key the browser loads Stripe's payment form with, `pk_…`. It's published to every visitor, so it's a setting rather than a secret. A live key beside a test secret key, or the reverse, refuses to start.                                                                                                                                                                                                                                                                                                                                                              |
+| `STRIPE_WEBHOOK_SECRET`   | unset   | What a delivery from Stripe is verified against, `whsec_…`. It also takes a `_FILE`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| `STRIPE_PRICE_MONTHLY_ID` | unset   | The monthly price, `price_…`. A product id here is the usual mistake and is refused at startup.                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| `STRIPE_PRICE_YEARLY_ID`  | unset   | The annual price, `price_…`. Both prices belong to one product.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 
 **The five Stripe settings are set together or not at all.** Setting only some
 of them refuses to start. Set none and this process never opens a connection to
@@ -263,7 +284,7 @@ Anything else is acknowledged and ignored, so subscribing to more costs only
 noise. Subscribing to less is the failure that's hard to see.
 
 A test delivery from Stripe's dashboard answering `200` with
-`{"received": true}` proves the signature verified and nothing else. To prove a
+`{"received": true, "acted": …}` proves the signature verified and nothing else. To prove a
 subscription works end to end, make a real test-mode subscription and watch the
 plan tab change.
 
@@ -290,10 +311,13 @@ ignores it.
 
 ## Advertising
 
-<Callout kind="note" title="From 0.2.0">
-The server reads these settings from 0.2.0 on. An older image shows no ads and
-ignores them.
+<Callout kind="note" title="AdSense from 0.2.0, the house ad from 0.2.2">
+The server reads the AdSense settings from 0.2.0 on, and `SB_HOUSE_AD` from
+0.2.2 on. An older image ignores the settings it doesn't read.
 </Callout>
+
+There are two kinds, and a free account is shown one at most: this product's
+own ad for Premium, called the house ad, or Google AdSense.
 
 | Variable                  | Default | What it does                                                                                                                                                                                                                            |
 | ------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -301,6 +325,7 @@ ignores them.
 | `ADSENSE_BANNER_SLOT_ID`  | unset   | The ad unit shown once in the application shell. Ten digits. Set with the client id or not at all.                                                                                                                                      |
 | `ADSENSE_FOOTER_SLOT_ID`  | unset   | A second unit at the foot of the page. An addition to the banner rather than a replacement, so setting it alone refuses to start.                                                                                                       |
 | `ADSENSE_CONSENT_MANAGED` | `false` | Whether a certified consent platform decides which ads are personalized. Off, every ad request asks for non-personalized ads. Turn it on only if you want personalized ads, and read [the consent message](#the-consent-message) first. |
+| `SB_HOUSE_AD`             | `false` | Shows a free account the house ad, this product's own ad for Premium, in place of any AdSense unit. [The house ad](#the-house-ad) says what it is and when it stands down.                                                              |
 
 AdSense also needs
 [`PRIVACY_POLICY_URL`](#your-privacy-policy-and-terms), because Google's
@@ -308,15 +333,47 @@ program policies require a privacy policy on any site serving their ads. The
 server refuses to start with the AdSense settings and without it.
 
 **An ad is shown only where a limited plan is in force**: a free account on a
-deployment that's selling one. Configuring AdSense with `SB_BILLING_ENABLED`
-off shows no ads to anybody. Ads are never shown to a paid account, and never
-on the plan and billing tab.
+deployment that's selling one. Configuring either kind with `SB_BILLING_ENABLED`
+off shows no ads to anybody, and a production server says so at every start.
+Ads are never shown to a paid account, and never on the plan and billing tab.
 
-Know what it costs before turning it on. AdSense publishes no list of the hosts
+Know what AdSense costs before turning it on. It publishes no list of the hosts
 it loads from, so serving it widens the app's content security policy on every
 page that shows your balances, including allowing scripts to be evaluated at
-runtime. A deployment that sets none of these keeps the `default-src 'self'`
-policy the container ships with.
+runtime. A deployment that sets none of the AdSense settings keeps the
+`default-src 'self'` policy the container ships with, whether or not it shows
+the house ad.
+
+### The house ad
+
+With `SB_HOUSE_AD=true`, a free account sees a bar across the foot of the
+window that says "As many accounts as you need, and no ads", with an **Upgrade
+to Premium** button that opens the plan tab. It's never on the plan and billing
+tab, and never printed. It loads nothing from any other site, so it
+needs no `PRIVACY_POLICY_URL`, serves no `/ads.txt`, widens no policy, and needs
+nothing on a split deployment's frontend.
+
+**It stands down while the plan can't be bought.** Like AdSense it needs a plan
+for sale, and it also needs the two Stripe prices to fit the plans. While the
+server's check of them finds a problem, such as a price Stripe doesn't have for
+your key or a monthly price that bills yearly, the plan tab says the deployment
+isn't selling, and nobody is shown the house ad until the prices are put right.
+
+**With AdSense configured too, the house ad wins.** A free account shown it is
+shown no AdSense unit, banner or footer, and while it stands down over the
+prices, the same account is shown your AdSense units instead. The AdSense
+settings go on widening the content security policy and serving `/ads.txt` for
+as long as they're set, whether or not a unit is ever shown, and a production
+server warns at every start while both are set. To move from AdSense to the
+house ad, set `SB_HOUSE_AD=true` and unset all four `ADSENSE_*` settings
+together, because `ADSENSE_FOOTER_SLOT_ID` left on its own refuses to start.
+
+**On a `single` machine set up before 0.2.2, copy this release's `compose.yml`
+first.** That file names every setting the container is given, and 0.2.1's
+doesn't name `SB_HOUSE_AD`, so the setting reaches `.env` and never the app,
+with nothing to say why. Each guide has the step:
+[Docker Compose](/docs/deploying-with-docker-compose/#machines-set-up-before-022)
+and [Oracle Cloud or AWS](/docs/deploying-to-oracle-cloud-or-aws/#machines-built-before-022).
 
 ### ads.txt
 
@@ -349,21 +406,22 @@ the software can check that the message exists.
 
 ## Operational settings
 
-| Variable                      | Default              | What it does                                                                                                                                                                |
-| ----------------------------- | -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `PORT`                        | `3000`               | The port inside the container. Change it and your published port mapping has to follow.                                                                                     |
-| `LOG_LEVEL`                   | `info`               | `debug`, `info`, `warn`, or `error`. A refusal at startup is reported whatever it's set to, and so is the first-run setup code.                                             |
-| `DATABASE_POOL_SIZE`          | `10`                 | Connections held open, per process. Ceiling 100.                                                                                                                            |
-| `DIRECT_DATABASE_URL`         | `DATABASE_URL`       | A second connection string that bypasses a transaction pooler such as PgBouncer. Only needed when one sits in front. It also takes a `_FILE`.                               |
-| `CSV_MAX_BYTES`               | `10485760`           | Largest CSV accepted for import, 10 MB. Ceiling 104857600.                                                                                                                  |
-| `CSV_MAX_ROWS`                | `10000`              | Most rows accepted from one CSV. Ceiling 10000, the same number one mass edit, commit or delete covers.                                                                     |
-| `RECURRENCE_SCHEDULER`        | `true`               | Whether this process runs the schedule: proposing recurring transactions and sending reminders. Turn it off only where another container runs it.                           |
-| `RECURRENCE_TICK_SECONDS`     | `300`                | How often it looks for work that's come due. Ceiling 3600.                                                                                                                  |
-| `RECURRENCE_CATCH_UP_LIMIT`   | `50`                 | Most occurrences one recurrence catches up in one tick. Ceiling 500.                                                                                                        |
-| `RECURRENCE_CLAIM_LIMIT`      | `500`                | Most recurrences examined in one tick. Ceiling 5000.                                                                                                                        |
-| `IDEMPOTENCY_RETENTION_HOURS` | `0`, meaning forever | How long a used idempotency key keeps replaying. Nothing prunes the stored responses unless you set it, and the pruning rides the scheduler's tick. Ceiling 8760, one year. |
-| `METRICS_ENABLED`             | `false`              | Whether this process answers `GET /metrics` in Prometheus' text format. With it off there's no such route.                                                                  |
-| `METRICS_TOKEN`               | unset                | A bearer token `GET /metrics` demands before it answers. Unset means anybody who can reach the port can scrape it. It also takes a `_FILE`.                                 |
+| Variable                      | Default              | What it does                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| ----------------------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `PORT`                        | `3000`               | The port inside the container. A `single` machine's `compose.yml` fixes it at 3000, so it can't be changed there. Anywhere else, change it and your published port mapping has to follow.                                                                                                                                                                                                                                                                                |
+| `LOG_LEVEL`                   | `info`               | `debug`, `info`, `warn`, or `error`. A refusal at startup is reported whatever it's set to, and so is the first-run setup code.                                                                                                                                                                                                                                                                                                                                          |
+| `DATABASE_POOL_SIZE`          | `10`                 | Connections held open, per process. Ceiling 100.                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| `DIRECT_DATABASE_URL`         | `DATABASE_URL`       | A second connection string that bypasses a transaction pooler such as PgBouncer. Only needed when one sits in front. It also takes a `_FILE`.                                                                                                                                                                                                                                                                                                                            |
+| `CSV_MAX_BYTES`               | `10485760`           | Largest CSV accepted for import, 10 MB. Ceiling 104857600. A `single` machine's `compose.yml` fixes it at the default.                                                                                                                                                                                                                                                                                                                                                   |
+| `CSV_MAX_ROWS`                | `10000`              | Most rows accepted from one CSV. Ceiling 10000, the same number one mass edit, commit or delete covers. Fixed at the default on a `single` machine, the same way.                                                                                                                                                                                                                                                                                                        |
+| `RECURRENCE_SCHEDULER`        | `true`               | Whether this process runs the schedule: proposing recurring transactions and sending reminders. Turn it off only where another container runs it. A `single` machine's `compose.yml` doesn't pass it, so there the schedule always runs.                                                                                                                                                                                                                                 |
+| `RECURRENCE_TICK_SECONDS`     | `300`                | How often it looks for work that's come due. Ceiling 3600. Fixed at the default on a `single` machine.                                                                                                                                                                                                                                                                                                                                                                   |
+| `RECURRENCE_CATCH_UP_LIMIT`   | `50`                 | Most occurrences one recurrence catches up in one tick. Ceiling 500. Fixed at the default on a `single` machine.                                                                                                                                                                                                                                                                                                                                                         |
+| `RECURRENCE_CLAIM_LIMIT`      | `500`                | Most recurrences examined in one tick. Ceiling 5000. Fixed at the default on a `single` machine.                                                                                                                                                                                                                                                                                                                                                                         |
+| `IDEMPOTENCY_RETENTION_HOURS` | `0`, meaning forever | How long a used idempotency key keeps replaying. Nothing prunes the stored responses unless you set it, and the pruning rides the scheduler's tick. Ceiling 8760, one year.                                                                                                                                                                                                                                                                                              |
+| `METRICS_ENABLED`             | `false`              | Whether this process answers `GET /metrics` in Prometheus' text format, at exactly that path. With it off there's no such route, and the server answers `/metrics` with a 404. A machine `aws-single` or `oci-single` built turns it on when the stack [exports metrics](#exporting-metrics).                                                                                                                                                                            |
+| `METRICS_TOKEN`               | unset                | A bearer token `GET /metrics` demands before it answers, and the one the metrics collector sends. Unset means anybody who can reach the port can scrape it. It also takes a `_FILE`.                                                                                                                                                                                                                                                                                     |
+| `SB_OPENAI_APPS_CHALLENGE`    | unset                | From 0.2.2, the token OpenAI's app portal shows when you connect this deployment's MCP server to an app. Set, `GET /.well-known/openai-apps-challenge` answers with exactly this value as plain text; unset, it answers 404. A published value rather than a secret, so it has no `_FILE` form. Read at startup, so a new token needs a restart. A `single` machine set up before 0.2.2 needs this release's `compose.yml` first, as [the house ad](#the-house-ad) does. |
 
 The schedule is what makes a
 [recurring transaction](/docs/recurring-transactions/) put its row on
@@ -380,7 +438,10 @@ warns and keeps everything rather than pruning on a typo.
 
 Every `true` or `false` setting accepts those two words and nothing else, and
 anything else refuses to start, because a misspelling would otherwise read as
-the default with no symptom at all. `PORT` has to be a whole number from 1 to
+the default with no symptom at all. The exceptions are `SMTP_SSL` and
+`ADSENSE_CONSENT_MANAGED`, which are read only while mail or AdSense is
+configured: a misspelling in either is ignored until then, and refuses to start
+once it is. `PORT` has to be a whole number from 1 to
 65535 and `LOG_LEVEL` one of its four words, or the server refuses to start.
 
 Running the app split into separate containers, under Kubernetes or Compose,
@@ -389,7 +450,7 @@ in 0.2.0:
 
 - `SB_BILLING_CONFIGURED` and `SB_ADS_CONFIGURED` have to agree with the
   server's Stripe and AdSense settings, because nginx decides the content
-  security policy those pages arrive with.
+  security policy those pages arrive with. The house ad needs neither.
 - `SB_CSP_REPORT_ONLY` goes on the frontend as well as the server when a split
   deployment rehearses the plan and billing tab's policy.
 - `SB_TRUSTED_PROXY_CIDR` decides whose word nginx takes for a visitor's
@@ -404,6 +465,41 @@ in 0.2.0:
 
 The application's reference covers all of them, along with what the containers
 have to agree about.
+
+## Exporting metrics
+
+<Callout kind="note" title="From 0.2.2">
+These settings arrived in 0.2.2, with the metrics collector that reads them.
+</Callout>
+
+Every shape the project ships can run an OpenTelemetry Collector beside the
+app, off until you give it an endpoint. It scrapes the app's `/metrics`, and
+under Compose the machine as well, the `single` profile's database machine
+included, then sends it all to one backend, such as New Relic, over OTLP or
+Prometheus remote write. The deployment guides say how to turn it on, in
+[Docker Compose](/docs/deploying-with-docker-compose/#exporting-metrics) and
+[Oracle Cloud or AWS](/docs/deploying-to-oracle-cloud-or-aws/#exporting-metrics).
+
+The collector reads these, and the server doesn't. `COMPOSE_PROFILES` is
+Compose's own.
+
+| Variable                      | Default      | What it does                                                                                                                                                                                                                                                                                                                                             |
+| ----------------------------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SB_METRICS_EXPORT_ENDPOINT`  | unset        | Where everything goes. For OTLP a base URL, such as New Relic's `https://otlp.nr-data.net`; for remote write the whole write URL. On a machine `aws-single` or `oci-single` built it's the one setting that turns export on. By hand under Compose it isn't: `COMPOSE_PROFILES=metrics` and `METRICS_ENABLED=true` go beside it, as below.               |
+| `SB_METRICS_EXPORT_HEADERS`   | unset        | The backend's credential, as a JSON object of header names to values, such as `{"api-key":"<license key>"}`. On a Pulumi stack it goes under `secrets`, and in a `.env` it's single-quoted, so a `$` in it survives Compose. Unset sends no headers.                                                                                                     |
+| `SB_METRICS_EXPORT_PROTOCOL`  | `otlp`       | `otlp`, which is OTLP over HTTP, gzipped, or `prometheus_remote_write`. Anything else stops the collector at startup.                                                                                                                                                                                                                                    |
+| `SB_METRICS_SCRAPE_INTERVAL`  | `30s`        | How often, in minutes and seconds, such as `1m30s`. Keep it under five minutes: New Relic forgets a counter that's been silent that long, and every rate built on it. The Pulumi programs refuse `5m` or more, and Compose doesn't check.                                                                                                                |
+| `SB_METRICS_ENVIRONMENT`      | `production` | `deployment.environment.name` on every series, which tells two deployments apart in one account.                                                                                                                                                                                                                                                         |
+| `SB_METRICS_DATABASE_TARGET`  | unset        | The `single` profile's database machine, as `host:9100`. It's scraped over TLS and checked against the CA `compose.db-tls.yml` mounts, so the host has to be one the database's certificate names. `aws-single` and `oci-single` set it themselves for a database machine they built, and won't take it from the stack. Unset, nothing is scraped there. |
+| `SB_METRICS_DATABASE_CA_FILE` | derived      | Never set by hand. `compose.db-tls.yml` sets it to the database's CA certificate when `SB_METRICS_DATABASE_TARGET` is set, and leaves it empty when it isn't.                                                                                                                                                                                            |
+| `COMPOSE_PROFILES`            | unset        | `metrics` starts the collector and node-exporter, which the compose files run only under that profile.                                                                                                                                                                                                                                                   |
+
+The collector also reads `METRICS_TOKEN`, and sends it with every scrape of
+the app. **By hand, set `METRICS_ENABLED=true` beside the endpoint.** Compose
+can't work it out from the endpoint, and with it off the collector sends the
+machine's figures and none of the app's, saying so only in its own log. A
+machine `aws-single` or `oci-single` built derives `COMPOSE_PROFILES=metrics`
+from the endpoint, and `METRICS_ENABLED=true` too unless the stack sets it.
 
 ## Secrets from files
 
@@ -437,3 +533,7 @@ file it's ignoring. One trailing newline is stripped and nothing more. A file
 that's empty, or that the process can't read, refuses to start, and that
 includes `SMTP_PASSWORD_FILE`: a mail secret the server can't read stops the
 whole server, not only the mail.
+
+On a `single` machine none of the `_FILE` forms works, because its
+`compose.yml` passes the app none of them. A secret goes in `.env` there, or
+under the stack's `secrets` on a machine `aws-single` or `oci-single` built.

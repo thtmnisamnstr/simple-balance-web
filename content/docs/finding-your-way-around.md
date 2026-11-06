@@ -3,7 +3,7 @@ title: Finding your way around
 description: What each screen in the sidebar is for, how to choose the dates a screen shows, and the search, sort and row menus every list shares.
 section: Get started
 order: 2
-updated: 2026-10-25
+updated: 2026-11-04
 ---
 
 Simple Balance has 13 screens, listed in the sidebar down the left side of the
@@ -12,21 +12,21 @@ shows, and how the searches, menus and buttons that every list shares work.
 
 ## The sidebar
 
-| Screen           | What it's for                                                                             | Read more                                                                                                    |
-| ---------------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| **Overview**     | Your balance, money in and out, and spending by category for the dates you pick.          | [The overview](/docs/the-overview/)                                                                          |
-| **Accounts**     | Every checking, savings, credit card, loan, cash or crypto account you track.             | [Accounts](/docs/accounts/)                                                                                  |
-| **Transactions** | Everything you've recorded, to search, edit, delete or export.                            | [Transactions](/docs/transactions/)                                                                          |
-| **Staged**       | Transactions waiting for you to check them. Nothing here counts until you commit it.      | [Staged transactions](/docs/staged-transactions/)                                                            |
-| **Categories**   | The labels you sort income and spending into, like Groceries or Rent, and groups of them. | [Categories and payees](/docs/categories-and-payees/)                                                        |
-| **Payees**       | The people and businesses you pay or get paid by.                                         | [Categories and payees](/docs/categories-and-payees/)                                                        |
-| **Templates**    | Saved starting points for a transaction you enter often, with an optional email reminder. | [Templates](/docs/templates/)                                                                                |
-| **Recurring**    | Rules that put a transaction on Staged on a schedule, like rent or a paycheck.            | [Recurring transactions](/docs/recurring-transactions/)                                                      |
-| **Budgets**      | How much each category is allowed to spend, and how it's going.                           | [Budgets](/docs/budgets/)                                                                                    |
-| **Reports**      | Six reports, from your net worth to where your money came from and went.                  | [Reports](/docs/reports/)                                                                                    |
-| **Import CSV**   | Bring in transactions from a file your bank lets you download.                            | [Importing a statement](/docs/importing-a-statement/)                                                        |
-| **Activity**     | Every change made to your books, newest first.                                            | [Activity history](/docs/activity-history/)                                                                  |
-| **Settings**     | Theme, timezone and currency, how you sign in, connected AI assistants, and your plan.    | [Theme, timezone and currency](/docs/preferences/) and [Your account and plan](/docs/your-account-and-plan/) |
+| Screen            | What it's for                                                                             | Read more                                                                                                                                               |
+| ----------------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Overview**      | Your balance, money in and out, and spending by category for the dates you pick.          | [The overview](/docs/the-overview/)                                                                                                                     |
+| **Accounts**      | Every checking, savings, credit card, loan, cash or crypto account you track.             | [Accounts](/docs/accounts/)                                                                                                                             |
+| **Transactions**  | Everything you've recorded, to search, edit, delete or export.                            | [Transactions](/docs/transactions/)                                                                                                                     |
+| **Staged**        | Transactions waiting for you to check them. Nothing here counts until you commit it.      | [Staged transactions](/docs/staged-transactions/)                                                                                                       |
+| **Categories**    | The labels you sort income and spending into, like Groceries or Rent, and groups of them. | [Categories and payees](/docs/categories-and-payees/)                                                                                                   |
+| **Payees**        | The people and businesses you pay or get paid by.                                         | [Categories and payees](/docs/categories-and-payees/)                                                                                                   |
+| **Templates**     | Saved starting points for a transaction you enter often, with an optional email reminder. | [Templates](/docs/templates/)                                                                                                                           |
+| **Recurring**     | Rules that put a transaction on Staged on a schedule, like rent or a paycheck.            | [Recurring transactions](/docs/recurring-transactions/)                                                                                                 |
+| **Budgets**       | How much each category is allowed to spend, and how it's going.                           | [Budgets](/docs/budgets/)                                                                                                                               |
+| **Reports**       | Six reports, from your net worth to where your money came from and went.                  | [Reports](/docs/reports/)                                                                                                                               |
+| **Import/Export** | Bring in a statement from your bank, or move your whole ledger in or out as one file.     | [Importing a statement](/docs/importing-a-statement/) and [Moving between the cloud app and your own copy](/docs/moving-between-cloud-and-self-hosted/) |
+| **Activity**      | Every change made to your books, newest first.                                            | [Activity history](/docs/activity-history/)                                                                                                             |
+| **Settings**      | Theme, timezone and currency, how you sign in, connected AI assistants, and your plan.    | [Theme, timezone and currency](/docs/preferences/) and [Your account and plan](/docs/your-account-and-plan/)                                            |
 
 Under the list are your name and email address and two buttons. The moon or
 sun switches between light and dark, and the arrow beside it signs you out.
@@ -115,7 +115,8 @@ arrows to move between pages. Activity history shows 100 lines and has a
 **Some rows are hidden until you ask for them.** A deleted transaction shows
 only with **Show deleted** checked on Transactions. Archived accounts show with
 **Show archived accounts** on Accounts, and archived categories with
-**Show archived** on Categories.
+**Show archived** on Categories. On **Overview** and **Reports**,
+**Include archived accounts** puts archived accounts back into the totals.
 
 ## Buttons and menus on a row
 

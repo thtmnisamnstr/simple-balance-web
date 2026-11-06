@@ -51,16 +51,18 @@
  * was distinctive). It is a reason to stay rather than a reason a stranger
  * reads on, and the market has stopped letting it be more than that.
  *
- * **The page must not imply a bank connection, must not promise there will
- * never be one, and must say plainly that there is not one today.** All three,
- * and the third is new. There is no automatic transfer of transactions, so
+ * **The page must not imply a bank connection, and must not promise there
+ * will never be one.** There is no automatic transfer of transactions, so
  * copy describing one would be false (1.4). Leading on the refusal is the
  * mistake that cost a whole rewrite once, because pulling transactions on a
- * schedule is a thing this product may yet do. But saying nothing is its own
- * failure: every hosted competitor works the other way, so a reader assumes a
- * connection unless told, and finds out on their first afternoon. The
- * disclosure therefore sits inside the import card, after the value, in the
- * present tense.
+ * schedule is a thing this product may yet do. So the import card says what
+ * a reader does, download the bank's file and drag it in, which is the
+ * mechanism stated as a step rather than as a lack.
+ *
+ * It said "there's no automatic pull from your bank today" in that card
+ * until 5 November 2026, when the owner decided this page names no weakness
+ * of the product (1.4): the plain "not today" lives in the pricing page's
+ * questions, which answer "Does Simple Balance connect to my bank?" in full.
  */
 
 export type Proof = {
@@ -144,7 +146,7 @@ export type NavLink = { readonly label: string; readonly href: string };
  * nothing else knows when a sentence moved; `tests/sitemap.test.ts` refuses a
  * date in the future or one older than the snapshot the copy describes.
  */
-export const homeUpdated = "2026-10-27";
+export const homeUpdated = "2026-11-04";
 
 export const site = {
   name: "Simple Balance",
@@ -219,7 +221,7 @@ export const site = {
 
 export const heroShot = {
   name: "dashboard",
-  alt: "The Simple Balance overview for one month: a dollar total with balance, deposits, withdrawals and net cash flow across the top, then a checking account, a savings account and a credit card with their balances, beside spending by category as bars from rent down to subscriptions.",
+  alt: "The Simple Balance overview for one month: an Include archived accounts checkbox, a dollar total with balance, deposits, withdrawals and net cash flow across the top, then a checking account, a savings account and a credit card with their balances, beside spending by category as bars from rent down to subscriptions.",
 } as const;
 
 export const hero = {
@@ -365,9 +367,8 @@ export const jobsSection = {
    * `content.md` 1.6 gives the two ways to use it.
    */
   lede:
-    "Simple Balance is a free budget app and spending tracker. Use our cloud app in your " +
-    "browser, or self-host it, on a computer you control. Pick the job you came to do: each " +
-    "one has a plain guide that works with any tool, and ends with how to do it here.",
+    "Simple Balance is a free budget app and spending tracker, in your browser or on a " +
+    "computer you control. Pick a job below: each has a plain guide.",
   /** Before the guide's own title, under each card. */
   guideLabel: "The guide:",
 } as const;
@@ -378,48 +379,48 @@ export const jobs: readonly Job[] = [
     covers: ["categories"],
     title: "See where your money actually goes",
     body:
-      "Bring in your statements and give each payment a category. Overview then shows what " +
-      "every category cost you, biggest first.",
+      "Bring in your statements and give each payment a category. Overview shows what each " +
+      "one cost, biggest first.",
   },
   {
     guide: "make-a-budget",
     covers: ["budgets"],
     title: "Make a budget you'll keep",
     body:
-      "Set an amount for each category and watch what's left as the month goes. What you don't " +
-      "spend can carry into next month, so a careful month isn't wasted.",
+      "Set an amount for each category and watch what's left. What you don't spend can carry " +
+      "into next month.",
   },
   {
     guide: "sinking-funds",
     covers: ["recurring"],
     title: "Get ready for the bills you can see coming",
     body:
-      "Car insurance in June, gifts in December. A budget can save toward a date a little each " +
-      "month, and a bill that repeats turns up when it's due, waiting for you to okay it.",
+      "Car insurance in June, gifts in December. A budget can save toward a date, and a " +
+      "repeating bill turns up when it's due.",
   },
   {
     guide: "find-your-subscriptions",
     covers: ["payees"],
     title: "Find the subscriptions you forgot",
     body:
-      "Everyone you've paid is on one list, with everything you've paid them. That's where a " +
-      "renewal you forgot about shows up.",
+      "Everyone you've paid is on one list, with every payment. A forgotten renewal shows up " +
+      "there.",
   },
   {
     guide: "budget-with-a-credit-card",
     covers: [],
     title: "Use a credit card without the surprise",
     body:
-      "A card purchase counts the day you make it. Paying the card off is a transfer between two " +
-      "of your own accounts, so the same groceries never count twice.",
+      "A card purchase counts the day you make it, and paying the card off is a transfer, so " +
+      "nothing counts twice.",
   },
   {
     guide: "net-worth",
     covers: ["all-accounts-one-page"],
     title: "Know whether you're getting ahead",
     body:
-      "Add up what you own, take away what you owe, across every account, and watch that one " +
-      "number month by month in Reports.",
+      "Add up what you own, take away what you owe, and watch that number month by month in " +
+      "Reports.",
   },
 ] as const;
 
@@ -445,47 +446,40 @@ export const proofs: readonly Proof[] = [
   {
     shot: {
       name: "transactions",
-      alt: "A list of transactions, newest first, each with who it was with, which account it was in, its category and its amount, all in dollars. Most are spending on groceries, a lunch, cinema tickets and a transit pass. One is a $750 freelance payment coming in, and one is $600 moved from checking to savings, which shows both accounts and no category.",
+      alt: "A list of transactions, newest first, each with who it was with, which account it was in, its category and its amount, all in dollars. Most are spending: groceries, a dental check-up, a subscription, a transit pass and cinema tickets. One is a $750 freelance payment coming in, and one is $600 moved from checking to savings, which shows both accounts and no category.",
       caption:
         "Everything you've entered, in one list you can search or narrow down to one account.",
     },
     covers: ["numbers-that-tie-out", "register"],
     claim: "Follow a total back to the payments behind it",
     body: [
-      "Open any account and you get every payment in the order it happened, with the balance " +
-        "after each one beside it. When a figure is wrong, that column is where you find the row " +
-        "that made it wrong.",
-      "Underneath, every dollar that leaves one place has to arrive somewhere else, and the two " +
-        "sides have to agree before anything is saved. That's the reason the totals hold up.",
+      "Open any account to see every payment in order, with the balance after each one. A " +
+        "wrong figure leads you straight to the row behind it.",
+      "Every dollar that leaves one place has to arrive somewhere else, so the totals hold up.",
     ],
   },
   {
     covers: ["history"],
     claim: "A correction doesn't erase what it corrected",
     body: [
-      "When you fix something, what it used to say stays with it. You can see the old figure and " +
-        "the day it changed, so a correction is something you can go and look at rather than " +
-        "something you take on trust.",
+      "When you fix something, the old figure stays with it, with the day it changed, so you can " +
+        "always look back at what was corrected.",
     ],
   },
   {
     shot: {
       name: "import",
-      alt: "The import screen before a file is picked: a step headed Choose a CSV file, an empty drop target reading Drop in a file or browse, and a preview panel saying no file has been chosen yet.",
+      alt: "The Import and export page before a file is picked: under Import a CSV, a step headed Choose a CSV file with an empty drop target reading Drop in a file or browse, beside a file preview saying No file yet. Below it, Import a Simple Balance file, with a drop target of its own.",
       caption:
         "Where the file goes. It figures out the columns itself, and shows you every row before any of them count.",
     },
     covers: ["import-statements", "duplicates"],
     claim: "Nothing counts until you've looked at it",
     body: [
-      "Download the file your bank gives you and drag it in. Simple Balance works out which " +
-        "column is the date, which is the amount and who you paid, and it recognizes the names " +
-        "it has seen before.",
-      "Anything that looks like a payment you already have is put beside the payment it resembles, " +
-        "and nothing reaches your accounts until you say so.",
-      "There's no automatic pull from your bank today: you download the file and bring it in " +
-        "yourself. That's slower than it could be, and it's also why nothing lands in your " +
-        "accounts without you seeing it first.",
+      "Download the file your bank gives you and drag it in. Simple Balance works out the " +
+        "columns and recognizes names it's seen before.",
+      "A likely duplicate is shown beside the payment it resembles, and nothing reaches your " +
+        "accounts until you say so.",
     ],
   },
 ] as const;
@@ -526,53 +520,46 @@ export const features: readonly Feature[] = [
     covers: ["all-accounts-one-page", "multi-currency"],
     title: "Every account on one page",
     body:
-      "Checking, savings, credit cards, cash, a car loan. All of them on one page, for any date " +
-      "you pick. If you hold more than one currency, each keeps its own totals instead of being " +
-      "blended at a rate that will be wrong tomorrow.",
+      "Checking, savings, cards, cash and loans, on one page for any date you pick. Each " +
+      "currency keeps its own totals.",
   },
   {
     icon: "target",
     covers: ["budgets", "categories"],
     title: "Budgets that carry what you don't spend",
     body:
-      "Set an amount for groceries, gas, or whatever you actually watch. Anything left at the " +
-      "end of the month can carry into the next one, and a refund goes back to the budget it " +
-      "came out of instead of looking like income.",
+      "Set an amount for whatever you watch. What's left can carry into next month, and a " +
+      "refund goes back to the budget it came from.",
   },
   {
     icon: "copy",
     covers: ["recurring", "payees"],
     title: "Set a repeating payment once",
     body:
-      "Rent, payday, a subscription that renews once a year. Set it up and it turns up when it's " +
-      "due, waiting for you to okay it. There's also a list of everyone you've ever paid, which " +
-      "is usually where you spot a subscription you forgot about.",
+      "Rent, payday, a yearly renewal. It turns up when it's due, for you to okay, and everyone " +
+      "you've paid is on one list.",
   },
   {
     icon: "split",
     covers: ["splits"],
     title: "Split one purchase across categories",
     body:
-      "A grocery run that was half food and half things for the house counts as both, in the " +
-      "right amounts, from a single line. Change the split later and the money moves rather " +
-      "than doubling.",
+      "A grocery run that was half food and half household counts as both, from a single " +
+      "line.",
   },
   {
     icon: "list",
     covers: ["templates"],
     title: "Templates for what you enter every week",
-    body:
-      "The grocery run, the cash you take out, the transfer you make every payday. Save one once " +
-      "and pick it off a list next time.",
+    body: "The grocery run, the payday transfer. Save it once and pick it off a list next time.",
   },
   {
     icon: "layers",
     covers: ["bulk-edits"],
     title: "Fix thousands of transactions at once",
     body:
-      "Say a file came in with a year of groceries filed under the wrong category. Fix all of it " +
-      "in a single step, up to ten thousand rows, after seeing exactly what will change. It all " +
-      "changes or none of it does.",
+      "Recategorize up to ten thousand rows in one step, after seeing exactly what will " +
+      "change.",
   },
 ] as const;
 
@@ -625,11 +612,9 @@ export const agents = {
   eyebrow: "If you use an AI assistant",
   title: "Ask a question instead of hunting for the answer.",
   body:
-    "Connect an AI assistant to Simple Balance and it reads the same records you do. Ask it when you last paid " +
-    "the electric bill, or what a store has cost you this year. You decide how far it goes: " +
-    "reading only, or allowed to queue things up for you to approve, or allowed to make the " +
-    "change itself. Settings lists what each assistant can do, and cuts an assistant off when " +
-    "you want it gone.",
+    "Connect an AI assistant to Simple Balance and it reads the same records you do. Ask it " +
+    "when you last paid the electric bill. You decide whether it only reads, queues changes " +
+    "for your okay, or makes them. Settings shows what each assistant can do.",
   /** Who is speaking, on each side of the exchange. */
   you: "You",
   assistant: "Assistant",
@@ -644,7 +629,7 @@ export const agents = {
    * The tools it calls, by their names on Simple Balance's MCP server, in the
    * order a model would need them: the payees first, to learn who the
    * electric company is, then that payee's transactions. Both are read-only
-   * tools in the application's `src/server/mcp.ts` at 0.2.1; a tool renamed
+   * tools in the application's `src/server/mcp.ts` at 0.2.2; a tool renamed
    * there makes this picture describe something the product can't do.
    */
   connector: "Simple Balance",
@@ -670,9 +655,11 @@ export const agents = {
  * promise about the future, and this product may yet pull transactions on a
  * schedule. What replaces it is the part that does not depend on how the data
  * arrives: where the record lives, who can reach it, and that every
- * transaction can leave with you. Every transaction, not "everything": the
- * export is transactions only, so budgets, templates and recurrences stay
- * behind, and a privacy promise is the worst place to round that up.
+ * transaction can leave with you. It said "every transaction, not
+ * everything" while the only export was a spreadsheet of transactions and
+ * budgets, templates and recurrences stayed behind. From 0.2.2 the Simple
+ * Balance file carries those too (`own-your-data`, `move-a-ledger`), so the
+ * point names both exports, each for what it holds.
  *
  * Every sentence is scoped, because the honest answer differs between the
  * version we run and the version you run. A privacy promise that one of the
@@ -680,7 +667,7 @@ export const agents = {
  */
 export const privacy = {
   /** As `Proof["covers"]`. */
-  covers: ["own-your-data"],
+  covers: ["own-your-data", "move-a-ledger"],
   eyebrow: "Your records",
   title: "Your records stay yours.",
   /*
@@ -702,8 +689,8 @@ export const privacy = {
     "cloud app, your records live with us, and our privacy policy spells out exactly what we " +
     "keep and who can reach it.",
   points: [
-    "Pull every transaction out as a spreadsheet any time you want. We never hold your records back to keep you paying.",
-    "No analytics in the product itself. On the free plan the ads bring Google's script with them. Premium and your own copy have neither.",
+    "Pull every transaction out as a spreadsheet any time you want, or everything, budgets and repeating payments included, as one file another copy of Simple Balance can take in. We never hold your records back to keep you paying.",
+    "No analytics in the product itself, and the free plan's one ad is our own, so it loads nothing from anybody else. Premium and your own copy have no ad at all.",
     "Nothing you put in is used to sell you anything, here or anywhere else.",
     "Anyone can read the code, and that isn't going to change.",
   ],

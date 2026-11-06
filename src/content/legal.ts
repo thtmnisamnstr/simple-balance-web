@@ -18,7 +18,19 @@
  */
 
 /** Bumped whenever either document changes materially. Rendered on both. */
-export const legalUpdated = "2026-11-03";
+export const legalUpdated = "2026-11-04";
+
+/**
+ * Which ad a free account sees on app.smpl.money: the application's own bar
+ * for Premium (`SB_HOUSE_AD`), or Google AdSense. It is production's
+ * configuration, not the application's code, so no release diff shows it;
+ * `legal-review` §6 reads it. Since 2026-11-04 production runs the house ad.
+ * By the owner's decision the AdSense paragraphs stay below as what applies if
+ * Google's ads return, and `tests/legal.test.tsx` reads this to hold the
+ * policy, the pricing answer and the homepage to the one that runs today.
+ * Switching it back is a rewrite of all three, which `AGENTS.md` records.
+ */
+export const freePlanAd = "house" as "house" | "adsense";
 
 /**
  * Who runs smpl.money and app.smpl.money, and the one place the name is
@@ -95,13 +107,14 @@ export const privacy = {
         "The application holds the ledger you put into it, the account you signed in with, and " +
           "the operational records needed to run a service. It shares them with nobody except " +
           "the providers that run the service: the host, Oracle Cloud Infrastructure; the " +
-          "payment processor, Stripe; the advertising network on the free plan, Google; and " +
-          "the email service, Gmail, which Google also runs. Each is described below. An AI " +
+          "payment processor, Stripe; Google, if you sign in with a Google account; and the " +
+          "email service, Gmail, which Google also runs. Each is described below. The free " +
+          "plan's one ad is our own, and nothing about you goes anywhere because of it. An AI " +
           "assistant sees your ledger only if you connect one.",
-        // "Every transaction", not "everything": the export is the transaction
-        // CSV and nothing else. Budgets, templates and recurring entries have
-        // no export, and a policy that promised them would be promising a
-        // portability the product does not provide.
+        // Two exports, each said for what it holds: the transaction CSV, and
+        // from 0.2.2 the Simple Balance file, which carries budgets,
+        // templates and recurring transactions as well. "Everything" stays
+        // unsaid, because neither carries the history of changes back in.
         //
         // What outlasts a deletion, said beside the deletion, and all of it:
         // this said "two things" while the long version already had a third,
@@ -109,7 +122,8 @@ export const privacy = {
         // newest 14 (`SB_BACKUP_KEEP`, from the stack's `backupKeep`), each
         // one the whole database. No count, so the next thing added cannot
         // leave a number behind that is wrong.
-        "You can export every transaction as CSV at any time, and deleting your account deletes " +
+        "You can export every transaction as CSV, or your whole ledger as one Simple Balance " +
+          "file, at any time, and deleting your account deletes " +
           "your data. Some of it outlasts a deleted account: it stays in the database's nightly " +
           "backups for about two weeks, and in the server logs for the short time they're kept; " +
           "Stripe keeps its own record of any payments you made, as tax law requires; and a " +
@@ -154,7 +168,7 @@ export const privacy = {
           "refuse to load anything from another origin. There's no advertising on it, no " +
           "third-party script and nothing embedded from another company. Signing up or signing " +
           "in takes you to the application at app.smpl.money, which is covered below, and " +
-          "which carries advertising on its free plan.",
+          "which carries an ad of its own on its free plan.",
         "Our hosting provider, Netlify, processes the technical information any web server " +
           "receives in order to serve a page (your IP address, the page requested, your browser " +
           "and the time) and retains it briefly for operational and security purposes. We do " +
@@ -188,7 +202,7 @@ export const privacy = {
          * category from the web keeps none, so "when something is created"
          * was false of the web half. Most assistant tools that change
          * something keep one, an update or a delete included, and a few
-         * don't, `set_active_accounts` among them at 0.2.1.
+         * don't, `set_active_accounts` among them at 0.2.1 and 0.2.2.
          *
          * Nothing prunes the rows unless the deployment sets
          * `IDEMPOTENCY_RETENTION_HOURS`, and app.smpl.money doesn't, so their
@@ -242,8 +256,8 @@ export const privacy = {
           "service to provide; **legitimate interests**, for security logging and fraud " +
           "prevention, balanced against your rights and kept to what is necessary; **legal " +
           "obligation**, for the payment records tax law requires to be kept; and " +
-          "**consent**, for personalized advertising and for optional emails, which you may " +
-          "withdraw at any time.",
+          "**consent**, for optional emails, and for personalized advertising whenever Google's " +
+          "ads are on, which you may withdraw at any time.",
         /*
          * The basis for Google's advertising cookies, said rather than left
          * to be inferred. Under ePrivacy a non-essential cookie needs consent
@@ -254,9 +268,9 @@ export const privacy = {
          * the application" while smpl.money carried AdSense; the website now
          * sets no cookie at all, so there is nothing there to ask about.
          */
-        "In the EEA, the UK and Switzerland, Google's message in the application asks for " +
-          "that consent before an advertising cookie is set, and Cookies says how to change " +
-          "your answer.",
+        "When they are, in the EEA, the UK and Switzerland, Google's message in the application " +
+          "asks for that consent before an advertising cookie is set, and Cookies says how to " +
+          "change your answer. Today the free plan's ad is our own, and it has nothing to ask.",
       ],
     },
     {
@@ -275,10 +289,31 @@ export const privacy = {
         "**Advertising is in the hosted application only.** This website shows none and loads " +
           "no advertising script, whatever plan you're on, so everything below is about the " +
           "application.",
-        "The hosted application shows advertising to accounts on the free plan, supplied by " +
-          "**Google AdSense**. Paid accounts are shown no advertising, and a paid account " +
-          "doesn't load Google's script in the application at all, because the server decides " +
-          "and the browser is never told the rule.",
+        /*
+         * The application's `HouseAd` (`ads.tsx`), shown while `SB_HOUSE_AD`
+         * is set and AdSense is not: drawn by the page, no request, no cookie,
+         * no impression or click recorded, never to a subscriber, on the plan
+         * tab, at sign-in or in print (`freePlanAd` above).
+         */
+        "**Today the free plan's only ad is our own.** A free account in the hosted " +
+          "application sees one advertisement, for Simple Balance's own Premium plan: a bar " +
+          "along the bottom of the window, with a button that opens the plan page. The " +
+          "application draws it itself, so it loads nothing from anywhere else, sets no cookie " +
+          "and records nothing about who saw it, and there's nothing in it to ask your consent " +
+          "for. Paid accounts don't see it.",
+        /*
+         * Kept, by the owner's decision of 2026-11-04, rather than deleted:
+         * the AdSense account, the consent messages and `ads.txt` are still
+         * there, and the application can be set to show Google's ads again.
+         * Each paragraph after this one carries its condition, so a sentence
+         * lifted alone doesn't say Google's ads run today.
+         */
+        "**Google's ads, if they come back.** Until 4 November 2026 the free plan's ads were " +
+          "supplied by **Google AdSense**, and the application can be set to show them again. " +
+          "If it is, this page will say so first, and what follows is how they work. Paid " +
+          "accounts would still be shown no advertising, and a paid account wouldn't load " +
+          "Google's script in the application at all, because the server decides and the " +
+          "browser is never told the rule.",
         // CalOPPA, Bus. & Prof. Code 22575(b)(6): whether another party may
         // collect information about somebody's activity over time and across
         // other sites. Google's advertising cookies are its own and are read on
@@ -290,12 +325,12 @@ export const privacy = {
          * longer does: the operator set `ADSENSE_CONSENT_MANAGED`, so
          * Google's consent message decides.
          */
-        "Google and its partners use cookies and similar technologies to serve ads, and through " +
-          "the cookies it sets for advertising, Google may collect information about what you " +
-          "do over time and across other websites. **In the application, an ad can be " +
-          "personalized**: chosen partly from a profile Google keeps of your browsing. An ad " +
-          "that isn't personalized is chosen from the page and your rough location instead. " +
-          "Neither kind is chosen from the figures in your ledger.",
+        "When Google's ads are on, Google and its partners use cookies and similar technologies " +
+          "to serve ads, and through the cookies it sets for advertising, Google may collect " +
+          "information about what you do over time and across other websites. **An ad from " +
+          "Google can be personalized**: chosen partly from a profile Google keeps of your " +
+          "browsing. One that isn't personalized is chosen from the page and your rough " +
+          "location instead. Neither kind is chosen from the figures in your ledger.",
         /*
          * What declining does, and it is not "no ads". This said "Declining
          * means no ads are served to you" while the pricing page said saying
@@ -326,16 +361,16 @@ export const privacy = {
          * no longer loads the script, so the application is where
          * `legal-review` §5 has to look, from inside each region.
          */
-        "**Where you are decides how you're asked.** In the EEA, the UK and Switzerland, " +
-          "Google shows a message asking for your consent before any advertising cookie is set " +
+        "**Where you are decides how you're asked.** With Google's ads on, in the EEA, the UK " +
+          "and Switzerland, Google shows a message asking for your consent before any advertising cookie is set " +
           "or any ad is personalized. In the US states whose privacy laws give you the right " +
           "to opt out of the sale or sharing of your personal information, it shows a link to " +
           "do that instead, and an ad there can be personalized until you use it. Anywhere " +
           "else there's no message, an ad can be personalized, and the controls further down " +
           "are how to stop it. The messages are published from the advertising account and " +
           "shown by Google's script in the application, not by the application's own code.",
-        "**Non-personalized is not the same as cookie-free.** Even an ad that isn't " +
-          "personalized sets cookies, for frequency capping and fraud prevention, which is why " +
+        "**Non-personalized is not the same as cookie-free.** Even an ad from Google that " +
+          "isn't personalized sets cookies, for frequency capping and fraud prevention, which is why " +
           "consent is required in the EEA, the UK and Switzerland before any advertising " +
           "cookie, not only before personalization. If you decline there, or opt out in the US, " +
           "that doesn't remove the ads. It keeps them from being personalized, and in Europe " +
@@ -344,13 +379,15 @@ export const privacy = {
         /*
          * The application's setting, said as one: with
          * `ADSENSE_CONSENT_MANAGED` on, its code stops forcing
-         * non-personalized ads and the message decides. One sentence covered
-         * both surfaces while the website carried ads too.
+         * non-personalized ads and the message decides. Production unset it
+         * with the rest of AdSense on 2026-11-04, so which way it would be set
+         * again is said as the last state rather than as today's.
          */
-        "The application doesn't force an ad to be non-personalized: it leaves that to " +
-          "Google's message, by where you are, as set out above.",
+        "The application can force every ad from Google to be non-personalized, or leave that " +
+          "to Google's message, by where you are, as set out above. When Google's ads were last " +
+          "on, it left it to the message.",
         /*
-         * Checked against the application's own headers at v0.2.1, over the
+         * Checked against the application's own headers at v0.2.2, over the
          * network: `securityHeaderOptions` in `http-security.ts` gives Hono's
          * `secureHeaders` no `permissionsPolicy`, whose default is empty and
          * sends no header, and neither the nginx include nor the Caddyfile
@@ -366,7 +403,8 @@ export const privacy = {
         "**Your browser may tell Google what you're interested in.** Chrome and some other " +
           "browsers keep a short list of topics inferred from the sites you visit, and offer " +
           "it to advertisers through what Google calls the Topics API. The application doesn't " +
-          "block that, so an ad shown there may be chosen partly from it. This website tells " +
+          "block that, so when Google's ads are on, an ad shown there may be chosen partly from " +
+          "it. This website tells " +
           "your browser not to offer the list to anything on its pages. The list is your " +
           "browser's rather than ours: we never see it, it's built from the sites you visit and " +
           "not from anything in your ledger, and your browser settings control it. In Chrome " +
@@ -378,7 +416,8 @@ export const privacy = {
         // than it is (`content.md` 2.4). The referrer limit is the
         // application's `strict-origin-when-cross-origin` on the pages that
         // carry ads, which sends the origin and never the path.
-        "**What Google receives.** What any site your browser loads something from receives: " +
+        "**What Google receives.** When Google's ads are on, what any site your browser loads " +
+          "something from receives: " +
           "your IP address and your browser's details, with Google's own cookies where they're " +
           "allowed. From us, it receives our publisher id and the address of the page the ad " +
           "sits on. That address is not nothing: pages in the application carry record " +
@@ -514,12 +553,14 @@ export const privacy = {
          */
         "**Nobody, other than the providers needed to run the service**, and an AI assistant " +
           "if you connect one yourself. Simple Balance doesn't sell your data or rent it to " +
-          "anyone, though under the California Consumer Privacy Act and similar laws in other " +
-          "states, letting Google's advertising cookies personalize the ads on a free account " +
-          "can count as selling or sharing personal information, which Opting out of sale or " +
-          "sharing, under Your rights, tells you how to stop. What leaves for advertising is " +
-          "what Google receives to show an ad to a free account in the application, set out " +
-          "under Advertising. This website sends Google nothing about you.",
+          "anyone, though whenever Google's ads are on, under the California Consumer Privacy " +
+          "Act and similar laws in other states, letting Google's advertising cookies " +
+          "personalize the ads on a free account can count as selling or sharing personal " +
+          "information, which Opting out of sale or sharing, under Your rights, tells you how " +
+          "to stop. Today the free plan's ad is our own, and nothing leaves for advertising at " +
+          "all. When Google's ads are on, what leaves is what Google receives to show an ad to " +
+          "a free account in the application, set out under Advertising. This website sends " +
+          "Google nothing about you.",
         /*
          * Named, not "our providers" (`legal-review` §5). Oracle is the
          * application's host and holds the database, so it is the provider
@@ -543,13 +584,24 @@ export const privacy = {
          * copies included, reaches us through it.
          */
         "Those providers are: **Oracle Cloud Infrastructure**, which hosts the application and " +
-          "stores its database; **Stripe**, for payments; **Google**, for advertising to a free " +
-          "account in the application, for Google sign-in if you use it, and through " +
-          "**Gmail**, which carries the email the application sends; and **Cloudflare**, which " +
-          "receives the mail you send " +
-          "to info@smpl.money and forwards it to us. For advertising and for sign-in, Google " +
+          "stores its database; **Stripe**, for payments; **Google**, for Google sign-in if you " +
+          "use it, and through **Gmail**, which carries the email the application sends; and " +
+          "**Cloudflare**, which receives the mail you send to info@smpl.money and forwards it " +
+          "to us. Google would also supply advertising to free accounts if Google's ads came " +
+          "back, as Advertising says. For sign-in, and for advertising whenever it's on, Google " +
           "decides for itself how it uses what it receives, under its own privacy policy at " +
           "policies.google.com/privacy.",
+        /*
+         * The sidebar draws `session.user.image` (the application's
+         * `App.tsx`), which a Google sign-in fills with the Google account's
+         * picture, an address on Google's image host. The browser fetches it
+         * from Google on every page; the application's same-origin referrer
+         * policy keeps the page out of that request.
+         */
+        "**Your Google picture.** If you sign in with Google, the application shows the " +
+          "picture on your Google account, and your browser fetches it from Google, which " +
+          "receives what any site you load something from receives: your IP address and your " +
+          "browser's details. It doesn't learn which page of the application you're on.",
         /*
          * Message by message, from the builders in the application's
          * `mail.ts`. Each goes to `user.email` alone, with no name on it. The
@@ -734,10 +786,11 @@ export const privacy = {
           "to have it erased, to restrict or object to how it is used, and to receive it in a " +
           "portable form. The California Consumer Privacy Act gives California residents " +
           "comparable rights, including the right not to be discriminated against for exercising " +
-          "them. What leaves for advertising is what Google receives, set out under What " +
-          "Google receives, to show an ad to a free account in the application. Premium takes " +
-          "the advertising out of the application, Google's script with it, and this website " +
-          "sends Google nothing about you on any plan.",
+          "them. Today nothing leaves for advertising: the free plan's ad is our own. When " +
+          "Google's ads are on, what leaves for advertising is what Google receives, set out " +
+          "under What Google receives, to show an ad to a free account in the application. " +
+          "Premium takes the advertising out of the application, Google's script with it when " +
+          "it's there, and this website sends Google nothing about you on any plan.",
         /*
          * Not a conclusion about whether we sell or share, which the check
          * above refuses without restricted data processing named beside it,
@@ -751,11 +804,13 @@ export const privacy = {
           "similar laws in other states, letting Google's advertising cookies collect " +
           "information to personalize ads can count as selling or sharing personal " +
           "information, even though no money changes hands for it and nothing from your ledger " +
-          "is involved. If you live in one of those states, Google's message in the application " +
-          "carries a link to opt out, and using it keeps Google from personalizing ads for you " +
-          "there.",
+          "is involved. That arises only while Google's ads are on, and then, if you live in " +
+          "one of those states, Google's message in the application carries a link to opt out, " +
+          "and using it keeps Google from personalizing ads for you there. While the free " +
+          "plan's ad is our own, there's nothing to opt out of.",
         "Most of these you can exercise yourself and immediately: the product has CSV export of " +
-          "your transactions for portability, editing for correction, and account deletion for " +
+          "your transactions, and a Simple Balance file of your whole ledger, for portability, " +
+          "editing for correction, and account deletion for " +
           "erasure. For anything else, write to the address below and we will answer within " +
           "one month.",
         "If you are not satisfied, you may complain to your data protection authority: in the " +
@@ -833,8 +888,11 @@ export const privacy = {
          * The website's were named only once they had been measured, and the
          * first measurement named the wrong one.
          */
-        "**On the free plan, Google sets cookies for advertising**, and those are the ones " +
-          "that do require your consent. Who is asked first depends on where you are. In the " +
+        "**The free plan's ad sets no cookie.** It's our own, drawn by the application, and it " +
+          "asks nothing of your browser.",
+        "**When Google's ads are on, Google sets cookies for advertising** on the free plan, " +
+          "and those are the ones that do require your consent. Who is asked first depends on " +
+          "where you are. In the " +
           "EEA, the UK and Switzerland, Google's message asks before any of them are set, and " +
           "you can change or withdraw your answer from it later. In the US states whose " +
           "privacy laws give you the right to opt out, nothing asks before they're set, and the " +
@@ -867,9 +925,9 @@ export const privacy = {
         // rather than implying the message does on our behalf.
         "**Do Not Track and Global Privacy Control.** Neither smpl.money nor the application " +
           "responds to a browser's Do Not Track or Global Privacy Control signal, because " +
-          "neither one reads them. smpl.money loads no script from anybody else, so Google's " +
-          "is only in the application, and what it makes of them is Google's to say rather " +
-          "than ours.",
+          "neither one reads them. smpl.money loads no script from anybody else, and the " +
+          "application loads Google's only while Google's ads are on, so what that script makes " +
+          "of them is Google's to say rather than ours.",
       ],
     },
     {
@@ -1072,7 +1130,7 @@ export const terms = {
       heading: "Your data",
       paragraphs: [
         "Your ledger is yours. We claim no ownership of it, and you can export every " +
-          "transaction in it as CSV at any time.",
+          "transaction in it as CSV, or the whole of it as one Simple Balance file, at any time.",
         "How it is handled is set out in the privacy policy, which forms part of these terms.",
       ],
     },
@@ -1083,41 +1141,28 @@ export const terms = {
           "and it is offered **without a guaranteed level of availability**. Planned maintenance " +
           "will be announced where we can.",
         /*
-         * What the export holds, said where somebody is told to rely on it.
-         * It is the transaction CSV: an account's opening balance is set on
-         * the account rather than written to the file, and budgets, templates
-         * and recurring entries are not in it either. Size was not the only
-         * thing standing between the file and a deployment of your own: an
-         * import names one account and puts every row there (the
-         * application's `csv.md` §8 lists accounts as not preserved), and the
-         * export follows the list's filters, so the Transactions page's,
-         * unfiltered, holds every account and loaded whole lands in one of
-         * them. What goes back is each account's own export, from its own
-         * page, into the matching account, and the importer takes ten
-         * thousand rows, so an account past that goes a date range at a time
-         * too. Where the file comes from is said outright, because "one
-         * account at a time" alone reads as loading the one file repeatedly.
-         *
-         * The date range is one of those filters, and the one that is never
-         * empty. `TransactionBrowser` builds the Export CSV link from the
-         * range on screen, and the date bar starts at This month
-         * (`presetFromParam` falls back to it), so an export taken as the
-         * page opens holds one month. Said as the bar's own label, All time,
-         * in the paragraph that opens "keep your own copy", because following
-         * it without that dropped everything older. A transfer is in both
-         * accounts' files, and the second import flags it as a duplicate;
-         * said so the reader expects the flag rather than committing it twice.
+         * What each export holds, said where somebody is told to rely on it.
+         * From 0.2.2 the Simple Balance file is the copy that goes back in
+         * whole: "Everything" carries accounts with their opening balances,
+         * categories and groups, transactions, templates, recurring
+         * transactions, budgets, staged rows and settings, and "Some
+         * accounts" only accounts, categories and their transactions
+         * (`CHOSEN_ACCOUNT_KINDS` in the application's
+         * `src/shared/ledger-file.ts`). A copy of the software takes one in
+         * from 0.2.2 on, so the release is said. The CSV stays what it was,
+         * the transactions and nothing around them, and this paragraph used
+         * to carry its whole one-account-at-a-time procedure, which the file
+         * made the wrong way to move; the docs' moving guide has the steps.
          */
-        "**Keep your own copy of anything you cannot afford to lose.** CSV export exists for " +
-          "exactly this. It holds every transaction you ask it for, but not what sits around " +
-          "them, such as an account's opening balance, budgets, templates and recurring " +
-          "entries. Because the software is open source, you can load your transactions into a " +
-          "deployment of your own one account at a time: export each account from its own page " +
-          "with the dates set to All time, and bring that file into the matching account. An " +
-          "account past 10,000 transactions goes in a date range at a time, one export per " +
-          "range. Each import puts every row into the one account you pick, so a file holding " +
-          "several accounts lands in one of them. A transfer between two of your accounts is " +
-          "in both files, and the second import flags it as a duplicate.",
+        "**Keep your own copy of anything you cannot afford to lose.** The exports exist for " +
+          "exactly this. A Simple Balance file of your whole ledger holds your accounts with " +
+          "their opening balances, your transactions, budgets, templates and recurring " +
+          "transactions; one of the accounts you choose holds those accounts and their " +
+          "transactions. Because the software is open source, a deployment of your own running " +
+          "0.2.2 or later can take that file in, and the guide to moving between the cloud app " +
+          "and your own copy has the steps. A CSV export holds the transactions you ask it for " +
+          "and nothing around them, such as an account's opening balance, and is for a " +
+          "spreadsheet or another tool.",
       ],
     },
     {

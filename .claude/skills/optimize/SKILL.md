@@ -76,7 +76,20 @@ npm run build:images
 
 **It never deletes**, and `operations.md` 7.1 says what that leaves shipping
 with every test green. Delete a removed or renamed page's card by hand in the
-same change, and a removed screenshot's `1200/` copy with it.
+same change, and a removed screenshot's `1200/` copy with it, unless it's one
+of the seven `seo-review` §4 pins, which stays until the owner decides
+(`sync-from-app` §4).
+
+**Some of these files are pinned elsewhere.** The [connectors repository](https://github.com/thtmnisamnstr/simple-balance-mcp-connectors)'s
+listings download seven of the 1200px light screenshot copies and hotlink
+the three icons, so each one's path, pixel size, format and Content-Type are
+fixed, and `seo-review` §4 has the list. A re-encode that keeps all four is
+this skill's to make. One that would change any of them, a `NARROW` other
+than 1200 in `scripts/build-images.mjs` among them, or delete one waits for
+the owner's decision, and goes in the report as an owner item for that
+repository. The icons aren't re-encoded here at all:
+`favicon.svg` and `apple-touch-icon.png` are byte-identical copies of the
+application's (`operations.md` 7.2).
 
 ## 3. Fonts
 
@@ -95,9 +108,9 @@ curl -fsSL "https://raw.githubusercontent.com/thtmnisamnstr/simple-balance/$REF/
 ```
 
 **Not a ref typed by hand.** The site is kept in step with whichever ref
-that script chooses: `main` once a release has merged, and the release
-branch while one is open. A stack checked against any other ref is checked
-against a stylesheet the site is not following. A `null` ref or a 404 is a
+that script chooses: `main` whenever it carries the kit, and an open pull
+request's head only while it doesn't. A stack checked against any other ref
+is checked against a stylesheet the site is not following. A `null` ref or a 404 is a
 failed check, not a match, and `sync-from-app` §0 says how to tell why.
 
 The sans stacks are byte-identical. The **monospace** stacks are not, on
@@ -167,7 +180,9 @@ look where to go.
 Report the before and after as numbers, and say plainly where you found
 nothing. "Images were already right" is a result. Then what changed, by kind:
 
-- **Each picture this changed**, re-encoded, resized or redrawn, by file.
+- **Each picture this changed**, re-encoded, resized or redrawn, by file,
+  with the owner item for any `seo-review` §4 lists as pinned whose path,
+  pixel size, format or Content-Type changed, or that was deleted.
 - **Any words this rewrote**, by page, with the old beside the new. A pass
   about weight rarely touches one, and under `merge-prep` one it did lands
   after `merge-prep` §3 read the claims and `merge-prep` §6 the policy, so

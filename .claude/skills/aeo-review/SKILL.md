@@ -23,6 +23,9 @@ The other reader is an agent: a coding tool or an assistant told to read the
 docs and then set up the MCP connection, import a file or install a copy. It
 reads `/llms.txt` and the Markdown copy beside each docs page and guide
 (`content.md` 5.15), so those get read here the way the agent gets them.
+Since 0.2.2 the application is one of those readers too: its MCP server hands
+the learn guides to every assistant connected to it, from a copy built out of
+those same files, so their shape is a contract with another repository (§7).
 
 **Run by `merge-prep` §9**, between `seo-review` and `optimize`, it reads
 what the branch changed (§1). **Run on its own**, before a launch or when
@@ -43,7 +46,10 @@ that §3 holds every privacy answer to.
 Then decide what to read from that list:
 
 - **A docs page or a learn guide**, changed or new: its opening (§5), its
-  Markdown copy (§7), and any prompt in §3 it answers.
+  Markdown copy (§7), and any prompt in §3 it answers. A guide's copy is also
+  the application's, so §7's part on what the application reads runs too,
+  and it runs for a change under `src/content/learn-art/` as well, since a
+  learn picture's caption and description are in the copy.
 - **The words every surface of the product's description draws on**:
   `src/content/home.ts`, `src/content/pricing.ts`, `src/content/llms.ts`,
   `src/content/legal.ts` or `src/content/app-facts.json`. Read every surface
@@ -140,9 +146,9 @@ what a true answer has to carry.
 | Does Simple Balance connect to my bank?               | `/pricing/`                                   | bank                                              | No automatic connection today: you download a file from your bank and bring it in. Present tense, and no promise about tomorrow (`content.md` 1.4) |
 | Can I self-host Simple Balance? Is it open source?    | `/docs/self-hosting/`                         | open source, source code, license, AGPL, yourself | Yes to both: free to run yourself, with no plan, no limit and no ads, from public source code under its license                                    |
 | Does Simple Balance sell my data?                     | `/privacy/`                                   | sell, rent                                        | What the policy says, and no more (below)                                                                                                          |
-| How do I import a CSV into Simple Balance?            | `/docs/importing-a-statement/`                | CSV                                               | Download the statement as a CSV, choose it on Import CSV, and check the rows on Staged before any of them count                                    |
-| How do I connect Simple Balance to Claude or ChatGPT? | `/docs/agents-and-mcp/`                       | MCP, assistant, Claude, ChatGPT                   | The address, the OAuth sign-in, and what an assistant can and can't do                                                                             |
-| How do I move from the cloud app to my own copy?      | `/docs/moving-between-cloud-and-self-hosted/` | export, move                                      | Either direction, one account at a time as spreadsheets, and what doesn't travel                                                                   |
+| How do I import a CSV into Simple Balance?            | `/docs/importing-a-statement/`                | CSV, Import/Export                                | Download the statement as a CSV, choose it under Import a CSV on Import/Export, and check the rows on Staged before any of them count              |
+| How do I connect Simple Balance to Claude or ChatGPT? | `/docs/agents-and-mcp/`                       | MCP, assistant, Claude, ChatGPT                   | The address, the OAuth sign-in, and what an assistant can and can't do, the Simple Balance file and the money guides included                      |
+| How do I move from the cloud app to my own copy?      | `/docs/moving-between-cloud-and-self-hosted/` | export, move, Simple Balance file                 | Either direction, the whole ledger or chosen accounts as one Simple Balance file, both copies on 0.2.2 or later, and what stays behind             |
 | A free budget app                                     | `/`                                           | free, budget app                                  | The category and "free" together, with the free plan's limit close by                                                                              |
 | A budget app without linking my bank                  | `/pricing/`                                   | bank, file                                        | The same mechanism as the bank question, said as what you do                                                                                       |
 | A budget app that works with ChatGPT or Claude        | `/`                                           | assistant                                         | That an assistant can connect, and what it can do once it has                                                                                      |
@@ -150,8 +156,8 @@ what a true answer has to carry.
 | An expense tracker, or a spending tracker             | `/learn/track-your-spending/`                 | tracker                                           | The guide's product section saying Simple Balance is one (`content.md` 5.16)                                                                       |
 | A zero-based budgeting app                            | `/learn/zero-based-budgeting/`                | budgeting app                                     | The same, for zero-based budgeting                                                                                                                 |
 | An envelope budgeting app                             | `/learn/envelope-budgeting/`                  | budgeting app                                     | The same, for envelopes                                                                                                                            |
-| A net worth tracker                                   | `/learn/net-worth/`                           | tracker                                           | The same, and what it won't do: look up what investments, a home or a car are worth                                                                |
-| A subscription tracker                                | `/learn/find-your-subscriptions/`             | tracker                                           | What it isn't: a tracker that finds them for you                                                                                                   |
+| A net worth tracker                                   | `/learn/net-worth/`                           | tracker                                           | The same, and how investments, a home or a car go in: as accounts at the value you last entered                                                    |
+| A subscription tracker                                | `/learn/find-your-subscriptions/`             | every payment, Recurring                          | What it gives you, every payment in one place and the ones you keep on Recurring, with no claim that it finds them for you (`content.md` 1.7)      |
 | An alternative to YNAB                                | `/compare/ynab/`                              | YNAB, bank, free, Simple Balance                  | Both apps' prices with their subjects, the bank difference said as what you do, and a source for every fact about YNAB                             |
 | An alternative to Monarch                             | `/compare/monarch/`                           | Monarch, bank, free, MCP                          | The same, and that both connect to an assistant through MCP, which Monarch's own page says                                                         |
 | An alternative to Quicken Simplifi                    | `/compare/quicken-simplifi/`                  | Simplifi, bank, free, trial                       | The same, and that Simplifi has neither a free plan nor a trial                                                                                    |
@@ -165,6 +171,13 @@ its opening answers it. "The best budget app" is answered from other
 people's lists, so that work is the listings in §9. "An alternative to
 YNAB" has rows now, because the comparison pages exist (`content.md` 5.19),
 and other people's lists still carry most of its answers.
+
+**A row can run ahead of the snapshot**, when app.smpl.money takes a release
+before this site's snapshot does (`legal-review` §6 reads which one it runs),
+as the import, assistant and moving rows did for 0.2.2 on 2026-11-04. While
+it does, a page that still says what the snapshot's release does is
+`sync-from-app`'s to bring forward (its §5 for the docs), so report it rather
+than rewriting it here.
 
 **A prompt is added as a row.** The command reads the table above, so the
 list lives in one place. For each row it prints the page's description and
@@ -279,26 +292,39 @@ out of the page, and ask five things of the one that answers.
    the directory listings, whose reviews read setup steps, example prompts
    and troubleshooting on the listed docs page. Their steps were written from
    each vendor's own documentation and the application's source, and the
-   live sign-in that confirms them is the connectors repository's item 11 in
-   `submissions/prerequisites.md`; a failure there is a fix to the page. A
-   client the page doesn't name stays unnamed until somebody has connected
-   it.
+   live sign-in that confirms them is owed. The connectors repository's item
+   11 in `submissions/prerequisites.md` signs in some of those paths and not
+   all, and §9 says which are left. A failure in either is a fix to the
+   page. A client the page doesn't name stays unnamed until somebody has
+   connected it, and that includes the other clients and the plugin installs
+   the connectors repository's README documents.
 4. **Is it current?** A date, a version number, "new", "soon" or "coming"
    is true on the day it's written. A sentence naming a release names the
    snapshot's (`content.md` 2.6).
 5. **Is it no stronger than the privacy policy** (`content.md` 2.4)? The
-   data question is where this bites. The policy says "We don't sell your
-   data or rent it", and under Your rights it says that Google's advertising
-   cookies personalizing ads in the application "can count as selling or
-   sharing personal information" under California's law and laws like it.
-   "Simple Balance never sells or shares anything about you", on any page an
-   engine might quote, promises more than the policy does.
+   data question is where this bites. The policy's selling sentence, under
+   Who else sees your data, says Simple Balance doesn't sell your data or
+   rent it, and carries its qualifier in the same sentence: what California's
+   law and laws like it can count as selling or sharing. Read that qualifier
+   in the policy as it stands rather than here, since it was written about
+   Google's advertising cookies and can move with the ad production serves,
+   which is `legal-review` §6's read (reuse it when that ran earlier in the
+   run, or take its `/ads.txt` live check). Whatever the qualifier says, an
+   answer is held to it: "Simple Balance never sells or shares anything about
+   you", on any page an engine might quote, promises more than a policy that
+   qualifies its selling sentence. While production serves no AdSense, a
+   sentence saying Google's ads run, are personalized or ask for consent, in
+   the policy or in the pricing FAQ's answer on what the ads are like, is
+   false of the shipped service, and it's the owner's decision
+   `legal-review` §2 describes rather than a rewrite here (§11).
    `tests/legal.test.tsx` holds the homepage and the pricing page to the
    policy, and nothing holds a docs page or `/llms.txt` to it. Nothing holds
-   the policy to itself, either. The data row's answer is the policy's own
-   sentence, and lifted alone, "We don't sell your data or rent it" names
-   no subject and says more than the policy does once Your rights qualifies
-   it. A policy sentence that fails check 2 or this one goes where §10 says.
+   the policy to itself, either. The data row's answer
+   is the policy's own sentence lifted alone, which is why it names its
+   subject and carries its own qualifier: "We don't sell your data or rent
+   it", the sentence it replaced in October 2026, named nobody and said more
+   than the policy did once Your rights qualified it. A policy sentence that
+   fails check 2 or this one goes where §10 says.
 
 ## 4. One story about the product
 
@@ -417,6 +443,12 @@ both graph nodes at once; a docs page's Markdown for the docs. **Never
 editing it to agree moves the answer key rather than the answer. A change to
 the tagline or a price moves `public/og.png` as well, and the homepage
 card's test in `tests/export-shape.test.ts` fails until it's redrawn.
+
+**The same words tell the story off this site, too.** The
+[connectors repository](https://github.com/thtmnisamnstr/simple-balance-mcp-connectors)'s
+listings and its GitHub About box reuse several of the strings above, which
+the command doesn't read. A fix here that moves one leaves the owner item §9
+carries, and doesn't wait for it.
 
 ## 5. Openings that can be quoted
 
@@ -565,7 +597,13 @@ Balance":
   sentence says how data gets in, in the present tense, is still a read.
 - **The MCP note agrees with `/docs/agents-and-mcp/`**: the address, the
   OAuth sign-in, and what an assistant may do there. Saying less than the
-  docs is fine. Saying something different isn't.
+  docs is fine. Saying something different isn't. 0.2.2 gave an assistant a
+  Simple Balance file to export, add and move, and the money guides to read.
+  The contract still describes a server with the same capabilities as the
+  web app that carries the guides, which add none, because a person reads
+  them on this site. So the page's parity sentence stays true, and a note or
+  page that presents the guides as something only an assistant gets says
+  more than the application does. The page's fix is `sync-from-app` §5's.
 - **Each listed page's note is its description**, so a description that
   doesn't answer its page shows here as a weak line, and the fix is the
   description, in the page's frontmatter.
@@ -576,7 +614,8 @@ the configuration block and the commands intact and ready to paste? Does
 each callout's warning still sit beside the step it warns about, and does
 each table still read as a table? A copy is generated
 (`src/lib/markdown.ts`), so a fault in one is a fault in the conversion,
-and it's fixed there for every page at once.
+and it's fixed there for every page at once. That fix can change every
+guide's copy as well, which the application reads (below).
 
 **Every address in a copy is absolute** (`content.md` 5.15). The test
 refuses a root-relative link and a fragment-only one (§2), and this lists
@@ -591,6 +630,45 @@ Expect nothing. A `](#…)` inside a text file leads nowhere, and quoted away
 from the page it's a dead link. The fix is in the conversion, which points
 it at the HTML page that has the anchor,
 `https://smpl.money/<section>/<slug>/#…`, for every copy at once.
+
+**The application reads the guides' copies, and holds them to a shape.**
+Since 0.2.2 its MCP server hands the learn guides to any assistant connected
+to it, through `list_learn_articles` and `get_learn_article`, from a pack its
+`scripts/sync-learn.mjs` builds out of the published
+`https://smpl.money/llms.txt` and each guide's
+`https://smpl.money/learn/<slug>/index.md`. `write-content` §3 has the
+shapes it reads: the learn links' form and order in `/llms.txt`, each copy's
+five-line header, and the exact product heading with the `###` steps the
+application maps to its tools. No test here holds them as tightly as the
+application reads them, and `write-content` §3 lists every change that
+reaches it. `src/lib/markdown.ts` and `src/app/llms.txt/route.ts` can break
+its sync outright, and short of that change every guide's bytes, which it
+compares by hash. After any of them, and after a branch that touched a guide,
+read the shape on the build:
+
+```sh
+grep -cE '^- \[[^]]*\]\(https://smpl\.money/learn/[a-z0-9-]+/index\.md\)' out/llms.txt
+ls out/learn/*/index.md | wc -l
+grep -L '^## How to do it in Simple Balance$' out/learn/*/index.md
+for copy in out/learn/*/index.md; do
+  slug=$(basename "$(dirname "$copy")")
+  { sed -n 1p "$copy" | grep -q '^# .'; } && [ -z "$(sed -n 2p "$copy")$(sed -n 4p "$copy")" ] &&
+    { sed -n 3p "$copy" | grep -q '^> .'; } &&
+    { sed -n 5p "$copy" | grep -qxE "From Simple Balance: https://smpl\.money/learn/$slug/\. Updated [0-9]{4}-[0-9]{2}-[0-9]{2}\."; } ||
+    echo "$copy: its header isn't the five lines the application reads"
+done
+```
+
+Expect the two counts to match and nothing else. A failure is fixed here,
+under `write-content` §3, before the branch merges. The application's sync
+reads a shape it doesn't know as "could not tell" and keeps the copy it has,
+so assistants would go on getting the old guides, with nothing on this side
+saying so.
+
+None of it reaches an assistant on the day it merges: a branch that reached a
+guide's copy, by `write-content` §3's list, leaves that section's owner item,
+and a renamed or removed guide takes `seo-review` §4's rule for its old
+address.
 
 **If the branch announced the blog**, its posts join `/llms.txt` by their
 pages, and they have no copies. Giving them copies is a route like the
@@ -672,40 +750,92 @@ Report it.
 - **The repositories' descriptions, website fields and topics.** The
   descriptions are this skill's, since they're the product's description on
   the page that's linked to most, and the website field is that page's link
-  back to this site. `seo-review` reads the application's website field as
-  well (`operations.md` 8), and a run on its own reports both repositories'
-  here too, so this report carries the owner's half whole. Read them, and
-  leave setting them to the owner:
+  back to this site. `seo-review` reads the website fields as well
+  (`operations.md` 8), and a run on its own reports every repository's
+  here too, so this report carries the owner's half whole. There are three
+  public ones: the application, this site, and the
+  [connectors repository](https://github.com/thtmnisamnstr/simple-balance-mcp-connectors),
+  which holds the MCP listings and whose About box was written in the site's
+  words. Read them, and leave setting them to the owner:
 
   ```sh
   gh repo view thtmnisamnstr/simple-balance --json description,homepageUrl,repositoryTopics
   gh repo view thtmnisamnstr/simple-balance-web --json description,homepageUrl,repositoryTopics
+  gh repo view thtmnisamnstr/simple-balance-mcp-connectors --json description,homepageUrl,repositoryTopics
   ```
 
-  Both descriptions should tell §4's story. One in other words, such as
+  All three descriptions should tell §4's story. One in other words, such as
   "personal accounting software", or a tagline the site has retired,
-  describes a second product to an engine that reads both. Both website
-  fields should be https://smpl.money, and an empty `homepageUrl` on either
-  is an owner item in this report. The topics are what GitHub's search and
-  the listings read, so they carry the homepage's category words, budget
-  and spending tracker, and not only the bookkeeping ones.
+  describes a second product to an engine that reads them all. The
+  application's and this site's website fields should be https://smpl.money,
+  and an empty `homepageUrl` on any of the three is an owner item in this
+  report. The connectors repository's is
+  https://smpl.money/docs/agents-and-mcp/ on purpose, the page its listings
+  send people to, so that one isn't a finding, and neither is a description
+  there that leads with the listings before the category words. The topics
+  are what GitHub's search and the listings read, so they carry the
+  homepage's category words, budget and spending tracker, and not only the
+  bookkeeping ones. The connectors repository's also carry the MCP ones and
+  the Gemini CLI extension topic that gallery's crawler searches for, and
+  changing them is that repository's own procedure (its
+  `submissions/gemini-cli.md`), not a fix to report from here.
 
 - **Listings.** AlternativeTo, openalternative.co and Product Hunt are what
   engines cite for "an alternative to" prompts. awesome-selfhosted, under
   Money, Budgeting & Management, takes an entry once the first release is
   four months old, which is 3 December 2026, and its contributing rules
   refuse an entry an agent drafted or submitted, so the owner writes that
-  one. A price or limit change makes every listing that states one stale.
-- **The MCP Registry**, for the server at `https://app.smpl.money/mcp`. The
-  entry is published by the [connectors repository](https://github.com/thtmnisamnstr/simple-balance-mcp-connectors)'s
-  release workflow, with the directory listings beside it.
+  one. A price or limit change makes every listing that states one stale,
+  the MCP listings below among them.
+- **The MCP Registry and the MCP directories**, for the server at
+  `https://app.smpl.money/mcp`. The registry entry is published by the
+  [connectors repository](https://github.com/thtmnisamnstr/simple-balance-mcp-connectors)'s
+  release workflow, with the directory listings beside it. Which of them are
+  live, and what each waits on, is that repository's `submissions/README.md`
+  status table and its `submissions/prerequisites.md`, so read those rather
+  than a list here. Its Website items can read older than the site, so check
+  each against the site before reporting it as work, and report one that's
+  met as a status for the owner to update there.
+
+  A change to a listing reaches it only through that repository. A new
+  version and tag republishes the registry entry, whose published versions
+  never change, and builds a new OpenAI package; uploading it, Claude's
+  **Publish**, Cursor's re-index and the other directories stay manual, and
+  all of it is the owner's. Nothing there reads this site's words, only
+  whether its pinned pages and icons answer, so only this side notices a
+  listing's copy gone stale. The listing copy reuses this site's strings,
+  and that repository's `submissions/copy.md` says which (§4): `titleTagline`
+  and the description in `src/content/home.ts`, the homepage's assistant
+  section, its import card and its plans line, the agents page's approval
+  screen and scopes, and `content.md` 1.1, 1.3, 1.4 and 1.5. Its answers to
+  the directories also restate the privacy policy and the terms. So a branch
+  that rewrote any of those strings, the agents page's setup steps or example
+  prompts, or the FAQ's help answer (`write-content` §3), changed a price or
+  the free limit, or changed what the policy or the terms say about hosting,
+  logs, backups, the copies of replies to your changes, the minimum age,
+  advice, ads or the operator, leaves an owner item
+  naming that repository's `submissions/copy.md` and its manifests. So does a
+  renamed or removed page or icon it links to, which `seo-review` §4 lists, a
+  pinned screenshot refreshed, a moved `--green` (`sync-from-app` §1) and a
+  tool a release adds or renames.
+
 - **Connecting Claude and ChatGPT**, and any other client the docs'
   configuration block is shaped for, to app.smpl.money at the snapshot's
   release, noting what each needed. The docs name five clients ahead of
   that, as §3 check 3 says, so for those five this is the live confirmation
-  still owed. Once it's done, the homepage could say "such as Claude or
-  ChatGPT", which is a proposal (§10). A release that changes the MCP server
-  makes this due again.
+  still owed. The connectors repository's item 11 signs in some of the page's
+  paths, and some of its rows test that repository's own extension or plugin
+  rather than the page's steps (on 2026-11-04, the Gemini app's and Codex's
+  paths had no row). Every path its rows don't sign in is owed here and
+  nowhere else. Once it's done, the homepage
+  could say "such as Claude or ChatGPT", which is a proposal (§10). A release
+  that changes the MCP server makes this due again, as 0.2.2 did with six
+  new tools, a first refusal that names every scope, an approval screen that
+  names where it sends you and which account it grants, and smaller replies
+  per call. Item 11's expectations, its tool count among them, are those of
+  the release its file was written against. So read its rows for what they
+  sign in rather than for their counts or statuses, and report a count
+  behind the release as that repository's update.
 - **The application's own pages**: titles that say what they are, a link
   back to smpl.money, a 404 for an address that isn't a page, and `noindex`
   on every screen, so the sign-in page doesn't answer for the product. Read
@@ -729,6 +859,25 @@ Report it.
   Balance", with no link to smpl.money. Each of those is the application's
   repository's to fix.
 
+  The application fixed the first two in 0.2.2, so on app.smpl.money they
+  hold from the day it runs 0.2.2 or later (`legal-review` §6 reads which
+  release that is). Its `robots.txt` lets every crawler in, with the
+  AdSense group kept, and every response, the shell, `robots.txt`
+  and the API included, says `X-Robots-Tag: noindex`. So expect `Allow: /`
+  under `User-agent: *` and no `Disallow` from the first line, and
+  `x-robots-tag: noindex` from the second. A `Disallow` or a missing header
+  means the host is serving an older release or something in front of it
+  changed the answer, and that's the finding. Three are still open, and all
+  three are the application's. The static title is still "Simple Balance",
+  so the third line prints `<title>Simple Balance</title>` and no smpl.money
+  address: the only links back are the privacy and terms links the browser
+  app draws once its script runs. And the last line still prints 200,
+  because an address that isn't a page gets the app's shell by design, the
+  browser app being what knows its pages; an unknown address under `/api/`
+  does answer 404 now. That one is a decision the application made, not an
+  oversight, and with `noindex` on every response the 200 no longer lets a
+  stray address into an index, so report it as the smallest of the three.
+
 - **A prompt panel, once a month.** The prompts in §3, asked in ChatGPT,
   Claude, Perplexity, Gemini, Copilot and Google's AI Mode, noting for each
   whether Simple Balance is named, whether smpl.money is cited, and whether
@@ -740,9 +889,15 @@ Report it.
   it's one engine, signed out, on one day.
 
 Under `merge-prep`, name only what the branch made due or stale: a new price
-or limit (every listing), a new assistant capability (the registry entry,
-and connecting the clients again), a new description (both repositories).
-On its own, report the whole list, with what `gh` and `curl` read.
+or limit (every listing, the MCP listings among them), a new assistant
+capability (the registry entry, and connecting the clients again), a new
+description or tagline (all three repositories), and anything the MCP
+listings reuse or link to, as the MCP bullet above lists. The connectors
+repository is the one a branch here can make stale with nothing there
+noticing, because nothing in it reads this site's words. A branch that
+reached a guide's copy carries §7's item as well: run the application's
+`product-kit` §6 after this deploys. On its own, report the whole list, with
+what `gh` and `curl` read.
 
 ## 10. Fix here, propose there
 
@@ -754,9 +909,12 @@ On its own, report the whole list, with what `gh` and `curl` read.
   move its `updated` date. A sentence about what the product does is checked
   against the application's source at the snapshot's release, the way
   `content.md` 2.7 describes; if that check didn't run on a claim this
-  wrote, say so in the report, as `merge-prep` §3 asks.
+  wrote, say so in the report, as `merge-prep` §3 asks. A fix to a guide
+  changes the copy the application carries, so it leaves §7's owner item.
 - `src/content/llms.ts`, for the summary or a note, because `/llms.txt` is
-  generated from it.
+  generated from it. A note that links a guide's copy reaches the
+  application's list of guides as well (`write-content` §3), so link the
+  page instead.
 - A structured-data field that reads a module follows that module. A new
   property describes something a reader can see (`content.md` 5.13).
 
@@ -767,16 +925,17 @@ rule, and their words change only for a reason a reader could name
 (`content.md` 1.3, 1.4 and 6.5). A sentence an engine would quote more
 readily and a reader would read less easily is a bad trade there above all.
 A wrong fact on either page, such as a price, a limit or a claim stronger
-than the policy, is a fix rather than a proposal.
+than the policy, is a fix rather than a proposal, except a sentence about
+which ads run, which check 5 in §3 leaves to the owner.
 
 **A privacy-policy sentence goes to `legal-review`.** The policy is neither
 a page fixed here nor one proposed, and its words are a statement about
 somebody's data. So a sentence in it that fails §3's check 2, by not
 standing alone, or check 5, by reading stronger lifted out than the policy
 does as a whole, is rewritten by running `legal-review` for it. Report the
-rewrite as copy, old beside new. "We don't sell your data or rent it" is
-the case this was written for: it names no subject, and its qualifier sits
-under Your rights.
+rewrite as copy, old beside new. "We don't sell your data or rent it" was
+the case this was written for: it named no subject, and its qualifier sat
+under Your rights, until it was rewritten in October 2026.
 
 **A finding a machine can decide becomes a test**, in the same change and
 mutation-proved (`code/testing.md` 2.3), so the next run doesn't have to
@@ -806,8 +965,14 @@ the measurements (`content.md` 5.15).
 Lead with what's waiting on the owner, since `merge-prep` puts it at the top
 of its own report.
 
-- **Waiting on the owner**: the open items from §9, and every proposal for
-  the homepage or the pricing page from §10, with its wording.
+- **Waiting on the owner**: first, if check 5 in §3 found the site's words
+  about the ads apart from the ad production serves, that state, as the
+  owner's decision, with the read it came from (`legal-review` §6). Then the
+  open items from §9, the connectors repository's listings among them with
+  the strings or pages that made them stale; the application's
+  `product-kit` §6 after this deploys, when §7 says the branch reached a
+  guide's copy; and every proposal for the homepage or the pricing page from
+  §10, with its wording.
 - **Scope**: the whole site or the pages the branch reached, and why.
 - **The prompts**: for each one read, the page, the sentence an engine would
   quote, and whether it answers, stands alone, is true and current, and
@@ -819,7 +984,9 @@ of its own report.
   sentence `legal-review` rewrote (§10).
 - **The pricing FAQ**: each §3 prompt paired with the question that answers
   it, and any proposed question or answer (§6).
-- **`/llms.txt` and the copies**: read, and what changed.
+- **`/llms.txt` and the copies**: read, and what changed, with the result of
+  §7's shape check and whether the application's copy of the guides is now
+  stale.
 - **Crawlers and snippet controls**: the result, and the live check if it
   ran.
 - **A rule that should change**: name it, for `guides-update`.

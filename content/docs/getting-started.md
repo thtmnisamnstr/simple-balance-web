@@ -3,7 +3,7 @@ title: Getting started
 description: Sign up at app.smpl.money, add your first account, bring in a statement, and see where your money goes. There's nothing to install.
 section: Get started
 order: 1
-updated: 2026-10-25
+updated: 2026-11-04
 ---
 
 Simple Balance runs in your web browser at
@@ -17,8 +17,7 @@ work.
 
 ## Sign up
 
-1. Go to [app.smpl.money](https://app.smpl.money/) and choose
-   **Create an account**.
+1. Go to [app.smpl.money](https://app.smpl.money/) and choose **Sign up**.
 2. Fill in **Your name**, **Email address** and a **Password** of at least 12
    characters, then type the password again under **Confirm password**.
 3. Press **Create account**.
@@ -45,11 +44,12 @@ credit card, a loan or cash.
 1. Open **Accounts** and press **New account**.
 2. Give it a name, choose its **Account type**, and set the **Opening date**
    to the day you want to start tracking from.
-3. Enter what it held on that day as the **Opening balance**.
+3. Enter what it held on that day as the **Opening balance (USD)**. The label
+   names whichever currency the account is in.
 4. Press **Create account**.
 
 For a credit card or a loan, leave **Starting balance type** on
-**Amount owed** and type what you owe in **Starting amount** as a plain
+**Amount owed** and type what you owe in **Starting amount (USD)** as a plain
 number, like `500`. The
 account opens below zero, because that's money you owe rather than money you
 have.
@@ -60,7 +60,7 @@ transaction. [Accounts](/docs/accounts/) covers every field on the form.
 
 <Shot
   name="accounts"
-  alt="The accounts page: a search box and sort controls, then accounts grouped by type. Under Checking, a euro account at €1,621.10 and Everyday Checking at $7,663.45. Under Savings, Savings at $20,200.00. Under Credit card, a card named Travel Card."
+  alt="The accounts page: a search box, sort controls and a box for showing archived accounts, then accounts grouped by type. Under Checking, Euro Account at €1,121.10 and Everyday Checking at $8,108.30. Under Savings, Savings at $20,200.00. Under Credit card, a card named Travel Card."
   width="1600"
   height="1000"
 />
@@ -76,7 +76,8 @@ the file your bank lets you download, or you type them in.
 **From a statement.** Most banks let you download your transactions from their
 website as a CSV file, which is a simple spreadsheet file.
 
-1. Open **Import CSV**, choose the file, and pick the account it belongs to.
+1. Open **Import/Export**, choose the file under **Import a CSV**, and pick
+   the account it belongs to.
 2. Check which column is the date, the payee and the amount, and set
    **Date format**. It starts on `YYYY-MM-DD`, and many US banks write the
    month first, `MM/DD/YYYY`, so `03/04/2026` is March 4.
@@ -86,7 +87,7 @@ website as a CSV file, which is a simple spreadsheet file.
 
 <Shot
   name="import"
-  alt="The import screen before a file is picked: a step headed Choose a CSV file, an empty drop target reading Drop in a file or browse, and a preview panel saying no file has been chosen yet."
+  alt="The Import and export page before a file is picked: under Import a CSV, a step headed Choose a CSV file with an empty drop target reading Drop in a file or browse, beside a file preview saying No file yet. Below it, Import a Simple Balance file, with a drop target of its own."
   width="1600"
   height="1000"
 />
@@ -96,7 +97,8 @@ example spending._
 
 The import screen then links you to the rows on **Staged**, where nothing
 counts toward a balance yet. If you open **Staged** from the menu instead, set its
-dates to **All time**, because it starts on **This month**. Click a row's
+dates to **All time**, because it opens on the dates you were viewing, or on
+**This month** if you hadn't picked any. Click a row's
 category to set it. Typing a name you haven't used before adds that category
 when the row is committed. Anything that looks like a transaction you already
 have is flagged, and isn't committed unless you say so, so bringing in the
@@ -135,7 +137,7 @@ to your net worth. [The overview](/docs/the-overview/) and
 
 <Shot
   name="dashboard"
-  alt="The Simple Balance overview for one month: a dollar total with balance, deposits, withdrawals and net cash flow across the top, then a checking account, a savings account and a credit card with their balances, beside spending by category as bars from rent down to subscriptions."
+  alt="The Simple Balance overview for one month: an Include archived accounts checkbox, a dollar total with balance, deposits, withdrawals and net cash flow across the top, then a checking account, a savings account and a credit card with their balances, beside spending by category as bars from rent down to subscriptions."
   width="1600"
   height="1000"
 />
@@ -174,4 +176,4 @@ covers changing plans, canceling, and taking your data with you.
 Would you rather self-host it? [Self-hosting: running your own copy](/docs/self-hosting/)
 covers that.
 [Moving between the cloud app and your own copy](/docs/moving-between-cloud-and-self-hosted/)
-brings your transactions with you and says what to set up again by hand.
+takes your whole ledger with you in one file.

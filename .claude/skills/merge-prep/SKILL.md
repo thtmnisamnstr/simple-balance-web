@@ -112,6 +112,14 @@ run the block again through the skills they call, though after a sync §6
 judges only what isn't staged, and §10 walks the list as §9's run left it,
 with whatever §7 to §9 fixed added.
 
+**Mark on it what another repository reads from this site**, because
+nothing here fails when one of them changes: a learn guide's Markdown copy,
+which the application's MCP server serves (`write-content` §3 and
+`aeo-review` §7 list what reaches it), and a page, an icon or a string the
+[connectors repository](https://github.com/thtmnisamnstr/simple-balance-mcp-connectors)'s
+listings link or quote (`seo-review` §4 and `aeo-review` §9). §13 owes the
+owner a line for each.
+
 ## 2. Dependencies
 
 Run **`update-dependencies`**. First, because an upgrade can change how a page
@@ -144,18 +152,27 @@ for reassurance.
 The ones that matter on this site, because each is invisible when broken:
 
 - **`ads.txt` and the redirects.** `docs/standards/operations.md` 2. This
-  site shows no ads, and its `ads.txt` is still what authorizes the
-  application's, so a catch-all rewrite in `netlify.toml`, or the file
-  deleted as a leftover, costs the application's revenue silently. If the
-  diff touches `netlify.toml` or `public/ads.txt`, read that section again
-  before approving it.
+  site shows no ads, and its `ads.txt` stays whichever ad the application
+  serves. It verifies the domain to the AdSense account, and whenever
+  app.smpl.money has AdSense configured it's what that inventory rests on,
+  because Google reads the root domain's file for a subdomain's ads. So a
+  catch-all rewrite in `netlify.toml`, or the file deleted as a leftover,
+  costs the application's revenue silently whenever AdSense is configured,
+  the day it's configured again included. `AGENTS.md` forbids the first
+  outright, and removing the file is the owner's decision, which it records
+  first. Which ad production serves is in no diff (§6). If the diff touches
+  `netlify.toml` or `public/ads.txt`, read that section again before
+  approving it.
 - **Announced versus built.** `content.md` 7. Did anything link to `/blog`, or
   add it to the sitemap, while its `announced` is still false? One flag
   decides three things and the test holds all three.
 - **Claims.** `content.md` 2.1. Every statement about the product has to be
   true of the shipped application. Nothing in this repository can check that —
   it is a different repository — so this is the phase where a person reads the
-  copy against reality.
+  copy against reality. A sentence about app.smpl.money's ads, mail or
+  backups is a claim about production's settings, not the application's
+  code, so its source can't settle it either: `legal-review` §6 reads what
+  production runs.
 - **The brand contract.** `web.md` 1.1. If `brand.css` changed, it changed
   because the application's palette changed. If it changed for any other
   reason, that is the defect.
@@ -183,11 +200,22 @@ The ones that matter on this site, because each is invisible when broken:
   the moved-page block in `netlify.toml`, and every link to the old slug in
   `content/` and `src/content/` is fixed in the same change, because the
   redirect is for links from outside the repository (`operations.md` 2.1).
+  **A path `seo-review` §4 pins never falls to a 404** without the owner's
+  decision, even when its page goes with no successor: it gets a 301 to
+  whatever answers it now, an icon keeps its path, format and Content-Type,
+  and either is §13's item for the connectors repository. A learn guide
+  isn't pinned: renamed, it gets its slug's 301 like any page, and removed
+  with no successor, the real 404 (`write-content` §3). Either way it's
+  §13's item for the application, whose pack refresh is what stops
+  assistants handing out the old address.
 - **A new file that isn't a page**, such as a feed, a Markdown copy or a JSON
   index. It needs a `[[headers]]` block in `netlify.toml` naming its content
   type, with `X-Robots-Tag = "noindex"` if it repeats a page's words; an
   allowance in `tests/budget.test.ts` if its extension is one the stray-file
-  check refuses; and a test that it's in `out/` (`operations.md` 1.2).
+  check refuses; and a test that it's in `out/` (`operations.md` 1.2). A
+  proof file the connectors repository's `submissions/prerequisites.md`
+  proposes under `public/.well-known/` is one of these, and the registry's
+  is read without following a redirect.
 - **`public/og.png`, if what it draws moved.** It draws the hero's title, its
   tagline, one price line, "Free, or" the yearly price "a year", with the
   price read from the snapshot in `src/content/app-facts.json`, and the colors
@@ -209,6 +237,13 @@ The ones that matter on this site, because each is invisible when broken:
   `sync-from-app` §5 do, against the application's source at the commit
   `content.md` 2.7 says each page follows. If the branch wrote or changed
   such claims and those steps didn't run on them, say so in the report.
+  A learn guide's steps are also what the application's MCP server maps,
+  one by one, to the tools that do them: it reads the exact heading
+  `## How to do it in Simple Balance` and each `###` step under it, which
+  this repository's tests hold more loosely than that (`write-content` §3
+  has the shapes it reads). A step renamed, added, removed or reordered
+  needs an edit in the application when it next takes the pack, which §13's
+  item says.
 
 Argue every finding against itself before acting on it. **Record the rejected
 ones with their reasons in §13's commit body** — a rejected finding that is
@@ -301,6 +336,21 @@ there's no review to avoid repeating.
 `sync-from-app` §1's check to learn whether the application has moved; a
 release nobody has synced goes at the top of the report as waiting on the
 owner, because a sync is its own run, ending in its own run of this skill.
+
+**Production can make the policy false with no diff anywhere.** Which ad
+app.smpl.money serves, where its mail goes, how many backups it keeps and
+where they're copied can all change through the private deployment
+repository's configuration and commands, with no diff on this branch or in
+the application. Production moved from AdSense to the application's own
+house ad on 2026-11-04, the day after the policy's 2026-11-03 update, and no
+diff here or in the application said so. `legal-review` §6 reads what
+production runs, and this skill keeps no second copy of that read. When it finds the policy
+describing something production no longer runs, such as the AdSense
+disclosures `AGENTS.md` still requires, that goes at the top of the report as
+the owner's decision, not a rewrite: the disclosures, the tests that hold
+them and `public/ads.txt` move only after `AGENTS.md` records it. If the read
+didn't run on this branch, or couldn't, the report says the policy wasn't
+checked against production.
 
 A material change carries a promise the policy makes: notice by email before
 it takes effect. Sending it is the owner's, so it goes at the top of the
@@ -519,15 +569,31 @@ split this way.
   the one the sync ends with, and the pull request's body carries the same.
 - What changed, in behavior rather than in files.
 - Anything waiting on the owner: an upgrade held back for a decision (§2), a
-  material legal change whose email notice is theirs to send (§6), an
+  material legal change whose email notice is theirs to send (§6), a policy
+  that describes something production no longer runs, such as which ad
+  app.smpl.money serves, when `legal-review` raised it (§6), an
   application release nothing has synced yet (§6), a search console, a
   listing or a dashboard setting the search reviews found undone (§8 and §9),
   a push to an open pull request they haven't agreed to (§13), a phase that
   couldn't be done here.
+- What another repository now owes, for each of §1's marks the branch
+  carries, judged from the branch as it is now rather than §1's list, since
+  §8 and §9 can rewrite a tagline after it. `--name-status` says only that a
+  file moved, and most of the quoted strings share `src/content/home.ts`, so
+  read `git diff --merge-base origin/main -- src/content/home.ts` for the
+  ones `aeo-review` §9 names. A guide's copy: run the application's
+  `product-kit` §6 after this deploys, naming what `write-content` §3 says
+  the item names, and the same item when `update-dependencies` §7 reports
+  that `gray-matter` or a Next major moved, which no mark in §1 shows. A
+  pinned path or a quoted string: an item for the
+  [connectors repository](https://github.com/thtmnisamnstr/simple-balance-mcp-connectors)
+  (`seo-review` §4 and `aeo-review` §9). These are the items those reviews
+  raised, said once here, and neither repository is this skill's to edit.
 - What §2 moved and what it didn't take, with the reason.
 - What §3 found, what was fixed, and what was rejected with the reason.
 - Whether anything was dead, including "nothing was".
-- What the legal review concluded, "nothing about data changed" included.
+- What the legal review concluded, "nothing about data changed" included,
+  and whether it read what production runs (§6).
 - What the design review looked at, by page, theme, width and state, and what
   it fixed.
 - What the SEO and AEO reviews found and fixed, and every title,

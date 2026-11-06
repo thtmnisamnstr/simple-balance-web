@@ -3,7 +3,7 @@ title: Saving goals, automatic amounts and the forecast
 description: Save toward a date, let a budget set its own amount from past spending or income, choose what gets funded first, and see where your balances are heading.
 section: Budgets and reports
 order: 2
-updated: 2026-10-25
+updated: 2026-11-04
 ---
 
 A saving goal on **Budgets** puts a little aside each period for a bill you
@@ -22,7 +22,9 @@ a vacation in August and holiday gifts in December are the usual examples.
 
 1. Open **Budgets**. Under **Set a budget**, choose the category the money will
    be spent from, such as Car insurance, in **Category or group**.
-2. Type the total you need in **Saving up for**.
+2. Type the total you need in **Saving up for**. Like the form's other money
+   fields, its label ends with the budget's currency, as in
+   **Saving up for (USD)**.
 3. Set **Needed by** to the date you need it.
 4. Set **Starting**, and press **Set budget**.
 
@@ -57,8 +59,11 @@ like **Saving $600.00 by June 2027**.
 
 ### When a saving goal is refused
 
-- A **Needed by** date before **Starting**: "A sinking fund cannot be needed
-  before it starts saving."
+- A **Needed by** date in an earlier month than **Starting**: "A sinking fund
+  cannot be needed before it starts saving. This one starts in the period
+  beginning 2027-03-01 and the target period begins 2027-02-01." Both dates
+  count as the month they fall in, so an earlier day in the same month is
+  accepted.
 - A **Most to carry** below the goal: "This cap is below what the fund is
   saving for, so it would throw away each period's contribution and leave the
   whole amount due at the end. Raise the cap to at least the target, or remove
@@ -67,7 +72,7 @@ like **Saving $600.00 by June 2027**.
 
 ### Change a saving goal
 
-The pencil on a saving goal only changes **Funded first** and **Ends after**,
+**Edit** on a saving goal only changes **Funded first** and **Ends after**,
 and its box says "Delete it and set a plain budget if that is not what you
 want." To change the goal or the date, delete the budget and set it again with
 the same **Starting** date. Nothing is stored month by month, so the fund is
@@ -123,7 +128,7 @@ puts it to use.
   [Set a different amount for one month](/docs/budgets/#set-a-different-amount-for-one-month))
   and that month uses it. A budget that steps up by a percentage steps from
   your amount the month after.
-- **The rule can't be changed afterward.** On an average or a step, the pencil
+- **The rule can't be changed afterward.** On an average or a step, **Edit**
   changes the starting **Amount**, carrying, **Funded first** and
   **Ends after**, but not the number of months or the percentage. On a share of
   income it changes only **Funded first** and **Ends after**. To use a
@@ -139,8 +144,9 @@ When a month's income won't cover every budget, **Funded first** says which
 ones come first. It changes no budget and no balance. It works out how much of
 each budget the income actually covers.
 
-1. On **Set a budget**, or with the pencil on a budget you have, type a number
-   in **Funded first**. Lower goes first, so 1 comes before 2.
+1. On **Set a budget**, or with **Edit** in the **⋯** menu of a budget you
+   have, type a number in **Funded first**. Lower goes first, so 1 comes
+   before 2.
 2. Leave it blank for budgets that don't need a place in line. Unranked budgets
    are funded last, after every ranked one.
 3. Press **Set budget** or **Save budget**.
@@ -211,21 +217,28 @@ from Oct 6, 2026". Each row is a month.
 - **It starts from what every account in that currency holds today**, cards
   and loans included, and whether or not the account is part of your budget.
   Recurring transactions count from today on.
-- **The month you're in counts only what's left.** Today's balance already
-  reflects what you've spent this month, so budgets and usual spending count
-  only the part you haven't spent yet.
+- **The month you're in counts only what's left to spend.** Today's balance
+  already reflects what you've spent this month, so budgets and usual spending
+  count only the part you haven't spent yet. Usual income isn't treated that
+  way: under **Recurring plus what you usually spend**, the month you're in
+  counts a whole month of usual income, even if some of it has already come in.
 - **A transfer between two of your accounts in one currency** changes no total,
   so it isn't counted. A recurring transfer between currencies is counted on
   both sides.
 - **Budgets intend** counts category budgets with an amount you typed,
-  including steps, which grow the same way the budget does. It leaves out
-  group budgets, which would count the same spending twice, and one-month
-  amounts.
+  including steps, which grow from the first month's amount the same way the
+  budget does until a month has a one-month amount. From then on the budget
+  steps from your amount, and the forecast still steps from the first month's.
+  It leaves out group budgets, which would count the same spending twice, and
+  one-month amounts.
 - **Anything that can't be projected is named under the table**: "Rent could
   not be projected, so the figures above are short by whatever they are worth."
   That's a recurring transaction with no amount, a recurring transfer between
-  currencies that doesn't say what arrives, and any budget that works out its
-  own amount: saving goals, averages and shares of income.
+  currencies that doesn't say what arrives, a recurring split that names both
+  an income category and a spending category, and any budget that works out
+  its own amount: saving goals, averages and shares of income. A recurring
+  transaction that falls more than 960 times in the periods shown, such as a
+  daily one over 24 quarters, is named there too, and counted only up to then.
 - **Only budgets of the Budgeting by length are read.** If you have others, a
   note says so: "You also budget by week, and this projection reads only
   monthly budgets."

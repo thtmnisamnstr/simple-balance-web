@@ -3,7 +3,7 @@ title: Activity history
 description: Every change made to your books, by you, a connected AI assistant or a schedule, listed newest first, kept in order and never rewritten.
 section: Your account
 order: 2
-updated: 2026-10-25
+updated: 2026-11-04
 ---
 
 **Activity history** is a list of every change made to your books in Simple
@@ -14,7 +14,7 @@ written.
 
 <Shot
   name="activity"
-  alt="The activity history, newest first: staged rows created and budget plans created, each with the date and time it happened."
+  alt="The activity history, newest first: a budget plan, categories, transactions, a staged row and a recurring transaction, each brought in from a Simple Balance file, with the date and time it happened."
   width="1600"
   height="1000"
 />
@@ -30,6 +30,8 @@ it:
 - **Transaction "Corner Market" edited**
 - **Category "Dining" merged into another**
 - **Staged row "Rent" proposed by a recurring transaction**
+- **Transaction "Greenline Market" brought in from a Simple Balance file**
+- **Account "Travel Card" frozen by the choice of accounts in use**
 - **Agent connection "Claude" disconnected**
 
 Something without a name of its own, like a budget, reads as just
@@ -64,16 +66,26 @@ Every change to your:
 - templates and recurring transactions
 - budgets
 - preferences, down to a change of theme
+- which accounts stay in use on the free plan, when you choose them
 
 Disconnecting an AI assistant is recorded too.
 
 Signing in, changing your password, changing your plan and exporting don't
 appear here. Nor does anything that only reads, like opening a report or an
-assistant looking at your transactions.
+assistant looking at your transactions. Changing or resetting your password
+does disconnect every AI assistant you've connected, though, and that adds
+**Agent connection disconnected**, under the **Web** badge.
 
 **One action can add many lines.** An import adds a line for every row it
 staged, and a merge adds a line for everything it moved to the category or
 payee you kept. A single import or merge can fill a page.
+
+A Simple Balance file adds a line for every account, category, transaction,
+budget and other record it brings in, each ending "brought in from a Simple
+Balance file", whether you added it or moved it in. A transaction that was
+deleted where the file came from gets a second line, ending "brought in
+deleted from a Simple Balance file", so the list doesn't say you deleted it on
+the day you moved.
 
 ## See older activity
 

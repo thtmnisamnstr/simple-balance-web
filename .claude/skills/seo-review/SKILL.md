@@ -93,9 +93,11 @@ and names what failed:
 - **`tests/markdown.test.ts`**: a Markdown copy of every guide and docs page,
   linked from the page, with absolute links, and `/llms.txt` listing only what
   is announced.
-- **`tests/export-shape.test.ts`**: no redirect that could answer `/ads.txt`,
-  the copies and `/llms.txt` served `noindex`, and every card the page's own,
-  1200 by 630, drawn from its current title.
+- **`tests/export-shape.test.ts`**: no redirect that could answer `/ads.txt`
+  and an `ads.txt` that names the publisher and nothing else, both of which
+  stand whichever kind of ad the application shows (§4), the copies and
+  `/llms.txt` served `noindex`, and every card the page's own, 1200 by 630,
+  drawn from its current title.
 - **The homepage's card**, `public/og.png`:
   `scripts/build-images.sources.json` records the hero title, the tagline and
   the price line the card was drawn with, and `tests/export-shape.test.ts`
@@ -291,7 +293,8 @@ pricing page, read it too against the reader those pages are for, who has
 never used a finance product (`content.md` 1.3), and against the
 bank-connection rule (`content.md` 1.4): a title or description is the worst
 place to imply a connection and the wrong place to disclaim one, since the
-disclosure goes after the value, inside the import copy. A docs page under
+disclosure goes in the pricing page's questions, and neither page names a
+weakness anywhere else (`content.md` 1.7). A docs page under
 Self-hosting may use an operator's words (`content.md` 5.18), and that's
 where "self-hosted" and "open source" earn their place.
 
@@ -303,6 +306,14 @@ wants a reason a searcher would name; when the reason is yours rather than
 the reader's, put the proposal in the report with the old words beside it
 and leave the page. A retitled guide or docs page needs its card redrawn
 (§6) and its `updated` set (§5).
+
+Two rewrites reach past this site. The [connectors repository](https://github.com/thtmnisamnstr/simple-balance-mcp-connectors)'s
+listings quote `site.titleTagline` and `site.description`, so changing
+either leaves an owner item there, which `aeo-review` §9 carries. And the
+application's MCP server serves each guide from the copy its last release
+took, so any rewrite of a guide, its title, description, opening or date,
+leaves the owner item `write-content` §3 names: run the application's
+`product-kit` §6 once this deploys.
 
 ## 4. Internal links
 
@@ -393,9 +404,87 @@ because the redirect is for links from outside the repository
 (`operations.md` 2.1). `grep -rn "<old slug>" content src/content` finds them,
 and `node scripts/check-links.mjs` finds one left in a built page. A removed
 page whose search another page now answers redirects there; one with no
-successor is left to the real 404, which tells a search engine to drop it.
+successor is left to the real 404, which tells a search engine to drop it,
+unless something outside the repository pins its address (below).
 Never a catch-all: `AGENTS.md` says why, and `tests/export-shape.test.ts`
-refuses one that could answer `/ads.txt`.
+refuses one that could answer `/ads.txt`. That holds whichever ad production
+serves (`legal-review` §2). A catch-all is wrong for search as well: it
+answers every removed address with a 200 of HTML, which a search engine has
+to guess is gone, where the real 404 tells it.
+
+**Some addresses are pinned outside this repository**, and for those the 301
+is where the cost starts. The connectors repository's manifests, its MCP
+Registry entry and its directory guides name them, and nothing there changes
+when this site does. As of the connectors repository's 1.0.1, on 2026-11-04:
+
+- **Six pages**: `/`, the OpenAI listing's website and the author's address
+  in most of the manifests; `/docs/agents-and-mcp/`, the registry entry's
+  website, Claude's documentation address, the plugins' homepage and that
+  repository's own; `/docs/frequently-asked-questions/`, the support address
+  on the OpenAI and Claude listings; `/privacy/` and `/terms/`, those two
+  listings' policy and terms, which app.smpl.money also links from every
+  page through its `PRIVACY_POLICY_URL` and `TERMS_OF_USE_URL` configuration,
+  so renaming either also owes the owner those two settings in the private
+  deployment repository (`legal-review` §6); and `/pricing/`, in a drafted
+  directory answer about
+  the plans.
+- **Three icons**, hotlinked by the registry entry, and the touch icon by
+  Docker's catalog too: `/favicon.svg` as `image/svg+xml`,
+  `/apple-touch-icon.png` as a 180 by 180 `image/png`, and `/favicon-48.png`
+  as a 48 by 48 `image/png`.
+- **Seven screenshots**, the 1200 by 750 WebP light copies at
+  `/screenshots/1200/<name>-light.webp` for dashboard, accounts, reports,
+  budgets, import, staged and activity, which the directory guides download.
+
+None of them falls to a 404 without the owner's decision. A rename gets its
+301 like any page. A removal with no successor isn't left to the 404 above:
+the branch gives it a 301 to the page nearest its job, and the report puts
+that to the owner, who alone decides the address may fall to a 404, because
+a 404 on one of the first five
+pages or an icon leaves a live listing pointing nowhere and fails the
+connectors repository's live check, which runs before every registry
+publish, and on `/pricing/` or a screenshot it breaks a directory answer or
+the next upload. Either way it's an owner item for that repository, whose
+listings change only through its own release steps (`aeo-review` §9) and
+whose published registry versions never change, so the redirect stays for
+good. An icon may not survive a redirect at all, since nobody has confirmed
+that the registry's readers or Docker's check follow one, so it keeps its
+path, its format, its size and its Content-Type, and a `[[headers]]` block
+in `netlify.toml` that gives one another type breaks it as surely as
+deleting it.
+
+A guide isn't on this list, though the application's MCP server hands out
+its address too, from the copy each release carries. A renamed guide gets
+its 301 like any page, and a removed one is any removed page: a 301 to the
+guide that now answers its search, or the real 404. Either leaves the owner
+item `write-content` §3 names, to refresh the application's learn pack,
+which is what stops assistants handing out the old address.
+
+The first command reads the addresses again from that repository's `main`,
+and the rest check that the build still has every pinned file, at its size:
+
+```sh
+curl -fsSL https://codeload.github.com/thtmnisamnstr/simple-balance-mcp-connectors/tar.gz/refs/heads/main |
+  tar -xzOf - | grep -aoE 'https://smpl\.money/[A-Za-z0-9./_-]*' | sed 's/\.$//' | sort -u
+for page in index.html pricing/index.html privacy/index.html terms/index.html \
+  docs/agents-and-mcp/index.html docs/frequently-asked-questions/index.html favicon.svg; do
+  [ -f "out/$page" ] || echo "MISSING /$page, which another repository pins"
+done
+file out/apple-touch-icon.png | grep -q 'PNG image data, 180 x 180' || echo "NOT A 180 x 180 PNG: /apple-touch-icon.png"
+file out/favicon-48.png | grep -q 'PNG image data, 48 x 48' || echo "NOT A 48 x 48 PNG: /favicon-48.png"
+for name in dashboard accounts reports budgets import staged activity; do
+  file "out/screenshots/1200/$name-light.webp" | grep -q 'Web/P image.*1200x750' ||
+    echo "NOT A 1200 x 750 WebP: /screenshots/1200/$name-light.webp, which a directory guide downloads"
+done
+```
+
+An address the first prints that the list above lacks is new to it. The
+screenshots print as the bare `/screenshots/1200/` prefix, since those guides
+build each name, and that repository's `submissions/copy.md` lists the seven.
+One the
+site doesn't serve, such as `/support/` or a file under `/.well-known/`, is
+a proposal in that repository's `submissions/prerequisites.md`, not a page to
+keep. The rest print nothing while every pinned file is built at its size.
 
 ## 5. Indexing
 
@@ -636,6 +725,7 @@ section of its own (§11), first when anything in it is due.
       "  description: \(if (.description // "") == "" then "EMPTY, an owner item" else .description end)"'
   done
   dig +short TXT smpl.money | grep google-site-verification || echo "NO Search Console record in DNS"
+  dig +short TXT smpl.money | grep 'v=MCPv1' || echo "NO MCP Registry record in DNS"
   ```
 
   An empty field prints `EMPTY`, because `gh` answers an unset one with a
@@ -654,13 +744,22 @@ section of its own (§11), first when anything in it is due.
   or a file keeps every page as this repository builds it, so if a console
   offers the other two, DNS is the one to choose.
 
+  Whatever a console asks for, its record goes beside the others, not in
+  place of them. The apex also holds the MCP Registry's
+  `v=MCPv1; k=ed25519; p=…` record, which proves the registry name
+  `money.smpl/simple-balance` and which the connectors repository's release
+  workflow logs in with. A DNS change that drops it, a nameserver move
+  included, fails that repository's next registry publish, with nothing on
+  this site to show it. The last `dig` line names it missing.
+
 - **Pages added**: they reach the index through the sitemap on their own.
   Inspecting a new hub or an important guide in Search Console and asking
   for it to be indexed is the owner's optional nudge.
 - **Pages renamed or removed**: once deployed, Search Console's pages report
   should show the old address as a redirect or not found, and the new one
   indexed. It's worth the owner's look a week or two after the merge, and
-  nothing needs resubmitting.
+  nothing needs resubmitting. An address §4 lists as pinned outside the
+  repository carries its own owner item too, from there.
 - **Hosting**: that no Netlify extension or firewall rule blocks crawlers,
   which `robots.txt` can't see past. Once, before a launch, ask the deployed
   site for every page its sitemap lists, as each search engine's crawler:
@@ -687,7 +786,8 @@ section of its own (§11), first when anything in it is due.
   already has is how it learns a page moved.
 
 Listings, the MCP Registry and asking assistants about the product are
-`aeo-review`'s half, and that report carries them.
+`aeo-review`'s half, and that report carries them. This half's part in them
+is §4's pinned addresses and the registry's DNS record above.
 
 ## 10. Finish
 
@@ -719,7 +819,8 @@ want it shipped, because every push is a build on their credits.
 - **Links**: orphans and pages linked only from menus or their hub, guides
   and docs pages missing the cross link between them and each one left
   without it on purpose, vague labels, the links added and from where, and
-  every redirect and old link a rename needed.
+  every redirect and old link a rename needed, naming any address §4 lists
+  as pinned outside the repository.
 - **Indexing**: whether the `noindex` list was the expected one, any
   canonical that wasn't the page's own, and dates moved or put back.
 - **Pictures**: alt text changed, cards redrawn with the test failure that

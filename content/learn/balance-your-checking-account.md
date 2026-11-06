@@ -2,7 +2,7 @@
 title: How to balance your checking account
 description: Match your record to your bank's statement line by line, allow for what's still on its way, and track down any difference. It takes about ten minutes a month.
 date: 2026-10-24
-updated: 2026-10-26
+updated: 2026-11-05
 section: Keeping it accurate
 order: 1
 ---
@@ -94,7 +94,8 @@ the month. Once it's a habit, it takes about ten minutes.
 ### Bring in the statement
 
 Download the statement period from your bank as a CSV file, then open
-[**Import CSV**](/docs/importing-a-statement/). Rows that look like something
+[**Import/Export**](/docs/importing-a-statement/) and choose it under
+**Import a CSV**. Rows that look like something
 you've already entered get flagged as possible duplicates. Each one is shown
 side by side with the entry it looks like, so bringing in purchases you already
 typed won't count them twice. Check the rows on
@@ -119,7 +120,7 @@ laid out the same way as the bank's.
 
 <Shot
   name="accounts"
-  alt="The accounts page: a search box and sort controls, then accounts grouped by type. Under Checking, a euro account at €1,621.10 and Everyday Checking at $7,663.45. Under Savings, Savings at $20,200.00. Under Credit card, a card named Travel Card."
+  alt="The accounts page: a search box, sort controls and a box for showing archived accounts, then accounts grouped by type. Under Checking, Euro Account at €1,121.10 and Everyday Checking at $8,108.30. Under Savings, Savings at $20,200.00. Under Credit card, a card named Travel Card."
   width="1600"
   height="1000"
 />
@@ -146,7 +147,7 @@ button to correct it.
 
 <Shot
   name="transactions"
-  alt="A list of transactions, newest first, each with who it was with, which account it was in, its category and its amount, all in dollars. Most are spending on groceries, a lunch, cinema tickets and a transit pass. One is a $750 freelance payment coming in, and one is $600 moved from checking to savings, which shows both accounts and no category."
+  alt="A list of transactions, newest first, each with who it was with, which account it was in, its category and its amount, all in dollars. Most are spending: groceries, a dental check-up, a subscription, a transit pass and cinema tickets. One is a $750 freelance payment coming in, and one is $600 moved from checking to savings, which shows both accounts and no category."
   width="1600"
   height="1000"
 />
@@ -160,7 +161,7 @@ erasing it. The history of the mistake stays, and
 
 <Shot
   name="activity"
-  alt="The activity history, newest first: staged rows created and budget plans created, each with the date and time it happened."
+  alt="The activity history, newest first: a budget plan, categories, transactions, a staged row and a recurring transaction, each brought in from a Simple Balance file, with the date and time it happened."
   width="1600"
   height="1000"
 />
@@ -168,11 +169,11 @@ erasing it. The history of the mistake stays, and
 _The money in this picture is made up. It's the real product, filled with
 example spending._
 
-<Callout kind="note" title="What Simple Balance can't see">
-Simple Balance doesn't pull anything from your bank today, so it only knows
-what you've brought in or typed. It doesn't know about holds, pending charges,
-or what your bank calls your available balance. And money you date in the
-future doesn't count toward any balance until that date comes.
+<Callout kind="note" title="Which balance to compare">
+Your balance in Simple Balance is built from what you've brought in or typed,
+so compare it with your statement's ending balance. Holds, pending charges and
+what your bank calls your available balance are kept by the bank, and a
+transaction you date in the future counts from that date.
 </Callout>
 
 ## Sources

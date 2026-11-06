@@ -2,7 +2,7 @@
 title: How to track your spending
 description: Gather a month or two of bank and card statements, give every purchase a category, and add up each one, in a notebook, a spreadsheet or Simple Balance.
 date: 2026-10-24
-updated: 2026-10-26
+updated: 2026-11-05
 section: Start here
 order: 1
 ---
@@ -101,9 +101,8 @@ you can still remember what most of the charges were.
 ## How to do it in Simple Balance
 
 Simple Balance is an expense tracker: it keeps your accounts, purchases and
-categories in one place and does the adding up for you. It doesn't pull anything from your bank today.
-You download the file your bank gives you and bring it in, or type in a
-purchase yourself.
+categories in one place and does the adding up for you. You download the file
+your bank gives you and bring it in, or type in a purchase yourself.
 
 ### Set up your accounts
 
@@ -114,7 +113,7 @@ type** on **Amount owed**.
 
 <Shot
   name="accounts"
-  alt="The accounts page: a search box and sort controls, then accounts grouped by type. Under Checking, a euro account at €1,621.10 and Everyday Checking at $7,663.45. Under Savings, Savings at $20,200.00. Under Credit card, a card named Travel Card."
+  alt="The accounts page: a search box, sort controls and a box for showing archived accounts, then accounts grouped by type. Under Checking, Euro Account at €1,121.10 and Everyday Checking at $8,108.30. Under Savings, Savings at $20,200.00. Under Credit card, a card named Travel Card."
   width="1600"
   height="1000"
 />
@@ -126,7 +125,8 @@ example spending._
 
 1. Download your statement from your bank's website as a CSV file, a simple
    spreadsheet file that many banks offer.
-2. Open **Import CSV**, choose the file, and pick the account it belongs to.
+2. Open **Import/Export**, choose the file under **Import a CSV**, and pick the
+   account it belongs to.
 3. Check which column is the date, which is the payee and which is the amount.
    Check the date order too. Many US banks put the month first, so 03/04/2026
    means March 4.
@@ -135,7 +135,7 @@ example spending._
 
 <Shot
   name="import"
-  alt="The import screen before a file is picked: a step headed Choose a CSV file, an empty drop target reading Drop in a file or browse, and a preview panel saying no file has been chosen yet."
+  alt="The Import and export page before a file is picked: under Import a CSV, a step headed Choose a CSV file with an empty drop target reading Drop in a file or browse, beside a file preview saying No file yet. Below it, Import a Simple Balance file, with a drop target of its own."
   width="1600"
   height="1000"
 />
@@ -180,7 +180,7 @@ of money you spent**.
 
 <Shot
   name="transactions"
-  alt="A list of transactions, newest first, each with who it was with, which account it was in, its category and its amount, all in dollars. Most are spending on groceries, a lunch, cinema tickets and a transit pass. One is a $750 freelance payment coming in, and one is $600 moved from checking to savings, which shows both accounts and no category."
+  alt="A list of transactions, newest first, each with who it was with, which account it was in, its category and its amount, all in dollars. Most are spending: groceries, a dental check-up, a subscription, a transit pass and cinema tickets. One is a $750 freelance payment coming in, and one is $600 moved from checking to savings, which shows both accounts and no category."
   width="1600"
   height="1000"
 />
@@ -196,7 +196,7 @@ never shows up as spending.
 
 <Shot
   name="dashboard"
-  alt="The Simple Balance overview for one month: a dollar total with balance, deposits, withdrawals and net cash flow across the top, then a checking account, a savings account and a credit card with their balances, beside spending by category as bars from rent down to subscriptions."
+  alt="The Simple Balance overview for one month: an Include archived accounts checkbox, a dollar total with balance, deposits, withdrawals and net cash flow across the top, then a checking account, a savings account and a credit card with their balances, beside spending by category as bars from rent down to subscriptions."
   width="1600"
   height="1000"
 />

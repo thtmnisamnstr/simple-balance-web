@@ -3,7 +3,7 @@ title: More than one currency
 description: Keep accounts in different currencies or crypto assets. Simple Balance records what moved in each one and never converts at an exchange rate.
 section: Using Simple Balance
 order: 10
-updated: 2026-10-25
+updated: 2026-11-04
 ---
 
 Simple Balance can keep accounts in any number of currencies and crypto assets
@@ -29,7 +29,8 @@ You choose it when you add the account, in **Currency or crypto asset**.
 - **The type and the currency are separate choices.** A **Savings** account in
   euros is fine.
 - **It's fixed once the account is in use**, meaning once it has an opening
-  balance, a transaction or a staged row. Changing it after that is refused with
+  balance other than zero, a transaction or a staged row. Changing it after
+  that is refused with
   "Currency cannot change after the account is in use."
 
 So one bank account that holds two currencies is two accounts in Simple
@@ -70,10 +71,11 @@ changing dollars to euros, buying crypto with dollars, or selling it again.
 1. Press **Add transaction** and choose **Transfer**.
 2. Fill in the date and the payee as usual, then pick the **From account** and
    the **To account**.
-3. When their currencies differ, the form asks for two amounts.
-   **Amount sent** is in the From account's currency, and **Amount received**
-   is in the To account's currency. Copy both from your bank's or exchange's
-   confirmation.
+3. When their currencies differ, the form asks for two amounts, each with its
+   account's currency after the label. Changing dollars to euros, that's
+   **Amount sent (USD)** for what left the From account and
+   **Amount received (EUR)** for what arrived in the To account. Copy both
+   from your bank's or exchange's confirmation.
 4. Press **Commit transaction**.
 
 You never type a rate. The rate those two amounts imply is saved with the
@@ -109,12 +111,15 @@ one set of figures per currency.
 
 ## Templates and recurring transactions
 
-A template for a transfer has an **Amount received** field. Leave it blank to
+A template for a transfer has an amount received field, which shows the To
+account's currency once you pick one, like **Amount received (EUR)**. Leave it
+blank to
 fill it in each time you use the template, or when both accounts share a
 currency. [Templates](/docs/templates/) covers the rest.
 
-A recurring transfer between currencies also has an optional
-**Amount received**. Leave it blank while the rate moves, and each time the
+A recurring transfer between currencies also has an optional amount received,
+like **Amount received (EUR)**. Leave it blank while the rate moves, and each
+time the
 transfer is due it waits on **Staged** for you to fill in what arrived. Fill it
 in only when the rate is agreed in advance, because every occurrence then
 proposes that same figure.
@@ -136,11 +141,16 @@ the rest.
 
 - **Export CSV** writes both sides of every transfer: each account, its amount
   and its currency, plus the rate.
-- **Import CSV** puts every row of a file into the one account you pick, in
-  that account's currency. Bring a statement in euros into a euro account.
+- **Import a CSV**, on **Import/Export**, puts every row of a file into the
+  one account you pick, in that account's currency. Bring a statement in
+  euros into a euro account.
   [Importing a statement](/docs/importing-a-statement/) covers the rest.
-- **A transfer in a file Simple Balance exported** comes back as a staged row
+- **A transfer in a CSV Simple Balance exported** comes back as a staged row
   that keeps both amounts and asks you to pick both accounts.
+- **A Simple Balance file** carries each account with its currency, and every
+  transfer with both of its accounts and, between two currencies, both
+  amounts. Bringing one in never takes the file's account for one of yours in
+  another currency, even with the same name.
 
 That's what lets a ledger in several currencies move between the cloud app and
 a copy you run yourself without losing a side of any transfer.

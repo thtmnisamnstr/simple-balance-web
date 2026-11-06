@@ -3,7 +3,7 @@ title: Categories and payees
 description: Add, group, rename, archive, delete and merge categories, and merge payee spellings, so your spending adds up under names you recognize.
 section: Using Simple Balance
 order: 6
-updated: 2026-10-25
+updated: 2026-11-04
 ---
 
 A category says what money was for, like groceries or rent. A payee says who
@@ -32,7 +32,7 @@ categories you've archived. To get an archived one back,
 
 <Shot
   name="categories"
-  alt="The categories page: a form for a new category with its name, what it applies to and its group, a panel for making groups with no groups yet, and the list of categories below, each with its type, how many transactions use it and a group picker, starting with Dining out, Freelance and Groceries."
+  alt="The categories page: a form for a new category with its name, what it applies to and its group, a panel for making groups that holds one, Essentials, with three categories in it, and the list of categories below, each with its type, how many transactions use it and a group picker, starting with Dining out, Freelance and Groceries."
   width="1600"
   height="1000"
 />
@@ -80,10 +80,12 @@ in your balances. Staged ones are waiting on **Staged** for you to review. The
 counts cover all your history, not just the dates you're viewing, and they
 leave out transactions you've deleted.
 
-- **Search categories** narrows the list by name.
+- The search box, "Search by name", narrows the list by name.
 - **Sort by** orders it by **Name**, **Kind**, **Status**, **Committed**,
   **Staged** or **Total transactions**. The arrow beside it reverses the order.
 - **Show archived** adds the categories you've archived, marked **Archived**.
+  It's kept in the page's address, so it's still on when you come back from a
+  category's page.
 
 Click a category's name to open [its own page](#a-categorys-page).
 
@@ -233,10 +235,10 @@ apart again. Check the one you're keeping before you confirm.
 ### Possible duplicates
 
 When two categories have the same name apart from capitals or extra spaces,
-a **Possible duplicates** panel lists them. Press **Review merge** beside a set
-and it checks all of them, turns on **Show archived**, and picks one that isn't
-archived to keep. Then carry out steps 3 and 4 above, or pick a different one
-to keep first.
+**Possible duplicates** lists them, one set to a line. Press **Review merge**
+beside a set and it checks all of them, turns on **Show archived**, and picks
+one that isn't archived to keep. Then carry out steps 3 and 4 above, or pick a
+different one to keep first.
 
 Only differences in capitals and spacing are flagged. Two names spelled
 differently, like "Groceries" and "Grocery", are never listed, so check those
@@ -290,7 +292,9 @@ accounts you've archived.
 
 **Export CSV** saves what the list shows. **Add transaction** starts a new one
 with this category filled in, as a deposit for an **Income** category and as a
-withdrawal otherwise. An archived category's page has no **Add transaction**.
+withdrawal otherwise. An archived category's page has no **Add transaction**,
+and with nothing listed it says "This category is archived. Restore it from
+Categories to file entries under it."
 
 ## Payees
 
@@ -312,7 +316,8 @@ Each row shows the name, "15 committed · 0 staged" or similar, and the total
 number of transactions. Like the category counts, these cover all your history
 and leave out deleted transactions.
 
-- **Search payees** narrows the list by name.
+- The search box, "Search by name", narrows the list by name, ignoring
+  capitals and extra spaces.
 - **Sort by** orders it by **Name**, **Committed**, **Staged** or
   **Total transactions**.
 
@@ -347,9 +352,9 @@ A merge is recorded in [your activity history](/docs/activity-history/), but it
 can't be undone in one step. Like a category merge, it's refused whole if it
 would change a transaction in a frozen account.
 
-When names differ only by capitals or spacing, a **Possible duplicates** panel
-lists them. **Review merge** checks the set and picks the spelling used most to
-keep.
+When names differ only by capitals or spacing, **Possible duplicates** lists
+them, one set to a line. **Review merge** checks the set and picks the spelling
+used most to keep.
 
 ### Give a payee a name you haven't used
 

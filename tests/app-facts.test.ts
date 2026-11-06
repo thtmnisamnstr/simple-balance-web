@@ -339,34 +339,50 @@ describe("the FAQ", () => {
   });
 
   /*
-   * The move answer is a procedure, and four of its steps exist because the
-   * application does something nobody would guess. Leaving out any one of
+   * The move answer is a procedure, and four of its conditions exist because
+   * the application does something nobody would guess. Leaving out any one of
    * them makes "Yes" stronger than the product:
    *
-   * - an opening balance is posted with no transaction (`postOpeningBalance`),
-   *   so no export carries it, and a move that skips it leaves every account
-   *   off by where it started. Saying it is missing is not enough: the step
-   *   is making each account with the same one;
-   * - an account page exports what its date bar shows, and the bar starts on
-   *   This month, so a reader who never sets it to All time moves a month;
-   * - a transfer is in both accounts' files, and once its accounts are picked
-   *   in the second file it matches the first, so a reader told only to pick
-   *   both would hit a refused commit or record it twice;
-   * - the importer takes 10,000 rows and its own refusal says to go a date
-   *   range at a time.
+   * - the Simple Balance file arrived in 0.2.2, so a copy older than that can
+   *   neither make one nor read one (`src/shared/ledger-file.ts`), and the
+   *   reader running their own copy is the one who has to upgrade first;
+   * - a move is offered only into a ledger whose every transaction, deleted
+   *   ones included, came from a file (`moveBlocked` in the application's
+   *   `src/server/services/ledger-file.ts`), so somebody who types one
+   *   transaction into the new side, or commits a CSV there, finds only
+   *   adding left;
+   * - one export holds 100,000 rows, and a ledger past that moves a date range
+   *   at a time, oldest first, because each range is held to its own last
+   *   day's balances, with the recurring transactions in the last range only,
+   *   because one an earlier range creates can propose a row into Staged and
+   *   stop the next range's move;
+   * - on a plan that limits accounts in use, the person chooses which new
+   *   accounts arrive archived and none is chosen for them, so a reader moving
+   *   more than three into the free plan meets a question with no default.
+   *
+   * These replaced four facts about the CSV route this page taught until 0.2.2
+   * (the same opening balance by hand, because a CSV does not carry it; All
+   * time before each export; a transfer in both files; 10,000 rows an import).
+   * The Simple Balance file carries the opening balances and both sides of
+   * every transfer, and its export has a range of its own rather than the
+   * account page's date bar, so a correct page stopped saying all four, and
+   * the check was narrowed to what the new procedure turns on
+   * (`docs/standards/code/testing.md` 2.5) rather than the page kept wrong to
+   * satisfy it.
    *
    * Held to the substance rather than the sentences, so a rewording passes
    * as long as it still says all four.
    */
   it("tells somebody moving to their own copy what the files will not do for them", () => {
     /*
-     * The procedure moved to `content/docs/moving-between-cloud-and-self-hosted.md`
+     * The procedure lives in `content/docs/moving-between-cloud-and-self-hosted.md`
      * (it was `moving-to-your-own-copy.md` until it covered both directions), so
      * this reads the guide rather than the FAQ answer. A pricing page settles
      * whether somebody is locked in; it does not teach a data migration
      * before they have signed up. What must not move is this check: the four
-     * steps below exist because the application does something nobody would
-     * guess, and the page that carries them is the page that has to say them.
+     * conditions below exist because the application does something nobody
+     * would guess, and the page that carries them is the page that has to say
+     * them.
      *
      * The FAQ still has to point somewhere, so it is held to naming the guide
      * rather than to carrying it. A pointer at a page that does not exist is
@@ -380,20 +396,21 @@ describe("the FAQ", () => {
     const guide = join(process.cwd(), "content/docs/moving-between-cloud-and-self-hosted.md");
     expect(existsSync(guide), `${guide} is missing; the FAQ points at it`).toBe(true);
     const answer = readFileSync(guide, "utf8").toLowerCase();
-    expect(answer, "each account is made with the same starting balance").toMatch(
-      /same[^.]*(?:starting|opening) balance/,
+    expect(answer, "both copies need the release the file arrived in").toMatch(
+      /0\.2\.2\s+or\s+later/,
     );
-    expect(answer, "the starting balance is not in the file").toMatch(
-      /(?:starting|opening) balance[^.]*(?:isn't|is not|aren't|are not) in the file/,
+    expect(answer, "the side moved to is new and empty").toMatch(/new\s+and\s+empty/);
+    expect(answer, "a transaction typed in or committed from a CSV rules a move out").toMatch(
+      /typed\s+in[^.]*committed\s+from\s+a\s+csv[^.]*rules\s+it\s+out/,
     );
-    expect(answer, "the export is set to all time first").toMatch(
-      /all time[^.]*export|export[^.]*all time/,
+    expect(answer, "a large ledger moves a date range at a time, oldest first").toMatch(
+      /date\s+range\s+at\s+a\s+time[^.]*oldest\s+first/,
     );
-    expect(answer, "a transfer is in both files and the second is left out").toMatch(
-      /transfer[^.]*both files[\s\S]*(?:leave it out|skip it)[\s\S]*already have/,
+    expect(answer, "only the last range carries the recurring transactions").toMatch(
+      /recurring\s+transactions\W+in\s+every\s+file\s+but\s+the\s+last/,
     );
-    expect(answer, "a large account moves a range of dates at a time").toMatch(
-      /10,000 transactions[^.]*(?:range of dates|date range)/,
+    expect(answer, "on the free plan the reader chooses which accounts arrive archived").toMatch(
+      /choose\s+which[^.]*arrive\s+archived/,
     );
   });
 });

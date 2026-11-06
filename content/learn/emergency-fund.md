@@ -2,7 +2,7 @@
 title: How much should you have in an emergency fund?
 description: Three to six months of expenses is the usual answer. What counts as an emergency, how to work out your own number, and how to build the fund a step at a time.
 date: 2026-10-24
-updated: 2026-10-25
+updated: 2026-11-04
 section: The bigger picture
 order: 2
 ---
@@ -107,7 +107,7 @@ dates, and add up the essential ones.
 
 <Shot
   name="dashboard"
-  alt="The Simple Balance overview for one month: a dollar total with balance, deposits, withdrawals and net cash flow across the top, then a checking account, a savings account and a credit card with their balances, beside spending by category as bars from rent down to subscriptions."
+  alt="The Simple Balance overview for one month: an Include archived accounts checkbox, a dollar total with balance, deposits, withdrawals and net cash flow across the top, then a checking account, a savings account and a credit card with their balances, beside spending by category as bars from rent down to subscriptions."
   width="1600"
   height="1000"
 />
@@ -125,7 +125,7 @@ job now.
 
 <Shot
   name="accounts"
-  alt="The accounts page: a search box and sort controls, then accounts grouped by type. Under Checking, a euro account at €1,621.10 and Everyday Checking at $7,663.45. Under Savings, Savings at $20,200.00. Under Credit card, a card named Travel Card."
+  alt="The accounts page: a search box, sort controls and a box for showing archived accounts, then accounts grouped by type. Under Checking, Euro Account at €1,121.10 and Everyday Checking at $8,108.30. Under Savings, Savings at $20,200.00. Under Credit card, a card named Travel Card."
   width="1600"
   height="1000"
 />
@@ -143,7 +143,7 @@ really moved. It never posts on its own.
 
 <Shot
   name="recurrences"
-  alt="The recurring page before anything is set up: a New recurring transaction button, and a note that each due date puts a row on Staged transactions for you to check."
+  alt="The recurring page with five recurring transactions, each with its schedule, amount and next date: a $4,200.00 salary on day 1 of each month, $1,850.00 rent on day 2, an electricity bill whose amount is filled in each time, a $17.99 subscription on day 5 and $600.00 moved to savings on day 17."
   width="1600"
   height="1000"
 />

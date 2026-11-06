@@ -3,100 +3,100 @@
   "width": 1200,
   "copies": {
     "accounts-dark.webp": {
-      "original": "b2768df6dc254eed7b2ac9f386494b151ec80425a1e978ea852c4d732db928a8",
-      "copy": "496b6036ead7f42019c0b2f46d91a3eae5091651762a0b592e7d6cbe456ec434"
+      "original": "aabc49d6ec7832743f9df48165e1b6c78eda83cb437d8a948d4c6c9dbcef06ae",
+      "copy": "e5bf8043b37016f6d21118ae23be20094683cd6fbece02e0d118006a5980be96"
     },
     "accounts-light.webp": {
-      "original": "b4491e9fe4203f806a433881c2677f6cc8b4ee7161e1db62b6aa0cf1fc0c460e",
-      "copy": "6d0912b5e74cffce775c348685785160343c7de4649d56de3a468ac5a2d8786a"
+      "original": "977b8f518e5a04fc8ea2984cc127fd6b34455919a29afe577d21afe16f827344",
+      "copy": "afa7c15d9caabf9797f32eff1eb306d4fc3371022259750ce4d9051a100983cd"
     },
     "activity-dark.webp": {
-      "original": "b06e7d694e9cc05ac0e1f6adc566e58acdebbb5b27b3cfd5395af213e27adb17",
-      "copy": "64cc19fa922081ecae374d125382da827d772ba7299059efbb4f60d6d83396d6"
+      "original": "24a7584adabcdb9e856b585a45f3d861cf5ae81d0630aca87a43b96a30be1d5c",
+      "copy": "82bcb1d11d706fb8cb2f5e19332074973b4ea4c9e19a2585f9d15860f980bc45"
     },
     "activity-light.webp": {
-      "original": "c2cb975c9f98ec49f8bf81ae6afb424bb2fa83ea94a4864143135a0ebee3c047",
-      "copy": "0f1e45ccd4b9c847f4a0d5313727aa6347b303038a8438ab80c52c1cf648a643"
+      "original": "748927bf5cee8b969a617c97cac3d3204c582053aab1029d19c7eb579b310551",
+      "copy": "d335f9db9ca17f3de45243c01ef3de774a9ef5746dcb084757c089608f9508d1"
     },
     "budgets-dark.webp": {
-      "original": "b495c201535f5f4dc998ba348467ab73f5ccc1af1766718619a1138639060f8d",
-      "copy": "47d69af78eb49e2fb4767fcfcd24721dcf4cb3abab423916c62744c4b3a70cf4"
+      "original": "7a5a416006f624a7b61fe534ad6d54344108c00898f632e7009fefe9760aa223",
+      "copy": "c6bfc267db8fb7bb3392d30257c557ae1ce4b46b48d277a19a22d896b9e59c6b"
     },
     "budgets-light.webp": {
-      "original": "14f64ded202c7a26fb99bdcb2ce21b2a24369d4ddb0504d7b6e7cb17f072fde7",
-      "copy": "87919645f796f4562dfe705d997d1540b9d37459df39a0589c7a6f5664fb65e9"
+      "original": "80ba6f797ad837d7e5b1511c4a19103779fa1fd8fc29ecfc80ed76c32bc6e7b5",
+      "copy": "b97396ca7c3746fe91ed98c2722cef97ef200acafbdb0b21126f8acfff1fddac"
     },
     "categories-dark.webp": {
-      "original": "57025c09ce80b5e7674e41d08607c6807985b91e8c5a7bea51e4dad39ab4bf0a",
-      "copy": "1e4f7d6218af30825ac6baccb71f694bc8cd4d3a71a8b9ace3ae18a40f5f7ae9"
+      "original": "78245186d2aba9034998c1db101f73297ab31840bfa51e2346637ffa7ba8ebff",
+      "copy": "0a0a2646b863a837b60bb8d707d4c9fb6b2529ae2920d5ed8b8425cd4c30619a"
     },
     "categories-light.webp": {
-      "original": "89504f376f0076174b4c99b8be3e2a3273d2d53a8f861fa8d7419857ce5c0e3d",
-      "copy": "ab13fa20b05288638959607d614327f9f36d058aae71589b96dd6a2ab175d951"
+      "original": "c365cfb176c49f3b94ca4890b69f6e4ed7c08038f392e1808ed503182c9b1986",
+      "copy": "d631dd58085ea9c710828a51e25ce03ffdce6618076e3c6a270470f367bee540"
     },
     "dashboard-dark.webp": {
-      "original": "44d2de0e7e8af7884c5ce24ed5d59da0ff23bc5abdf22d586007b91c8eaa0788",
-      "copy": "9f2cb21d83b5ce85aa172a9d3b83d3939d97818b39b34cc2ab4bf4519344af61"
+      "original": "00db720a6919b9c770ca7184cc002bde749ff5d0491fcf25ce5b24ea59dd5b37",
+      "copy": "a4a569752f9573e7b7e9e5ecabc976aa5aaa98b8cc398a29d5ec55b1fbe1f1fb"
     },
     "dashboard-light.webp": {
-      "original": "a68d859e127742377c9bb23736fdce96e11f2ddba505d1d3518a40a815863e8e",
-      "copy": "cd3c85bf196afa5c60c278b34b06d47b364411b4e9641b54972bab760fda3600"
+      "original": "544b877bf2b3d2dab841661d12b9060fe6fcb84ee98127812d9c65ab64bcd524",
+      "copy": "def5c009dbad402e22ecce8452071edc36695f401db8e8dc49225a98d9788fdc"
     },
     "import-dark.webp": {
-      "original": "1243abc97618acbfae866fb183f256435c92c324f5ee1c46a039e934a5966e35",
-      "copy": "ffbd6c977b5ec3e3e73d2f4846ae7d2ecf740a497c46dd687c3a5a1533436cfa"
+      "original": "5f9fea58d78c7f6e531d7ff02b189c8acf7e617921209254bed91739d96292de",
+      "copy": "5ec6d9af653f3c67336d918619580c068f0599005c466c0d523955ef633428d1"
     },
     "import-light.webp": {
-      "original": "71fe16f84e34345bf7b661a02d0adb343367a8c4739efaf61eb142343277004d",
-      "copy": "197bb06b4d1da101055befc3ca5a09cefcc1119ce8a0b9e1e4f2ca54c5bd8662"
+      "original": "1342882a346fd7f211589b446c26d8b5a475ba4fa9760cc3b9937fc19f0b541a",
+      "copy": "19b35dd42a741b7005473f835e95146be4a333872362024757fbec9e8106bf10"
     },
     "payees-dark.webp": {
-      "original": "39a878f48db802ab6f587bd25ce0f8c3b217c38cdd4db92b2fac95042d33bf1e",
-      "copy": "89c82dd09bd8bad9846c68b964b1d08948dd9191b4a74d1923db04bfd3491cbe"
+      "original": "b1d04f8e3fd47f6c8272f3f23ff7b3fb5f7845822afd1c65c6acedee7fc00b43",
+      "copy": "9c08162888694b45d54922f15b3822a2f9af6251527daf3ea0382294731329e9"
     },
     "payees-light.webp": {
-      "original": "fb5288255dbc2aea5bee40965099515afdc69c4b2a88d4fefb6b743ccc107edf",
-      "copy": "7bc7b695fa5b835fc9a4d9756c414d5fb1766f75ddc3d0041d975f76481f1405"
+      "original": "aaf9285b6ce662a27482be83b258ce377887a1c324f3eb913067f73f83fbe27c",
+      "copy": "e9cbcad884450b41eb7f65d502ad3e88149dd58ddd78eba24cf68e27f61d221f"
     },
     "recurrences-dark.webp": {
-      "original": "730a93d2d11fc3105774acfc116e43350b744e179b09784f0e50ebeb17d64161",
-      "copy": "a35d9781b51bec06699da69ff729e7e6c5c71e3bf99ed40f1d37dadd55339523"
+      "original": "27cf4f99457412eca9704bd59ba93e1d95131104fc3caaf7bcd4e2b511fc41f6",
+      "copy": "ca6e80de625a0260948e845c7fe0c04f53e4c6169ca95ff2fcba6f02a88e3505"
     },
     "recurrences-light.webp": {
-      "original": "5ade1c82617f66bd423dcbb9ffb535e05bab9c7a0c597adcf12e27986a4f3297",
-      "copy": "e3ff259b82b841ed5ce418abb12b7d293b0caebeda221ae0489cfa7c50ddd251"
+      "original": "a5d47d0d122d7e2e54582a49b9141c925e9b2ad33b7b08f31e7f4b7b4510e925",
+      "copy": "e8ad215b009b7170c30e66303f71505f18d3818f274a22ee854ee06f515c1dd6"
     },
     "reports-dark.webp": {
-      "original": "fb7a02b0644ab79ab5c3529586ad188a5b858e2f2e7a2c915fda8bddabcef15d",
-      "copy": "36026454fff4953dcccbe8d56fb782610b29706f46209ac9c120352b45bc12ff"
+      "original": "ea15086578e0af6bcdeafe311195f3c9ef356e0539843244be40751eeb5bee11",
+      "copy": "4f07db59017973c5297b70ba5d84aaeb0c795f1b3f8d0289580de7151714e38d"
     },
     "reports-light.webp": {
-      "original": "63a8ad632f994a674fc45dfde0f7403244a08b554cd4c50310ecf026c802edb7",
-      "copy": "018c035c86e436b3a04c86adeff7f5060f97896344f535bf79afd0f61197e277"
+      "original": "161bbf0bb2dfc0cbf096d58a2b81e0767af3f8d0e0a63ca49f12ced94ed3fc92",
+      "copy": "f0303019d4cc721f418d346014053d856fa90d74b17a0f53066148f1c2b238b7"
     },
     "staged-dark.webp": {
-      "original": "5518d1aa9fd7c9307e901c3d4a4f137b192030292add039f98fe3c54913a2c00",
-      "copy": "874756d0d96bd21cff3b962676e838bae8cf962d52efdd80e55c588e6ca353fb"
+      "original": "26fb6758f140aba6492060c6c64b3d706ca86b640239bb2e456f5b2ecfc77305",
+      "copy": "3cca26bd249602d300677b84da5f457330c914010fda928dc82f5596147da380"
     },
     "staged-light.webp": {
-      "original": "dbef2376239fd5365aee9282ca202078c07f9dd2c95e929c1583b04dfa1176f5",
-      "copy": "dda247cfbbee54c51fc363615b423f234c6ed7d62b0ec404e915c85ce026c9ad"
+      "original": "063591e8d99ed2a4908a64f04465d85c5092152b73265154d28783bd3e498857",
+      "copy": "700fde7a5492d4def4dd19b9404cfd49be8cce426c27aaec950756a7c62941de"
     },
     "templates-dark.webp": {
-      "original": "8a06b62be305fd3b9c97ce14146bb9abc00135bc5269429a10c070fb6c519a51",
-      "copy": "26a6be00918161ecc39f948aad501552064f1237f90194b645215a13e609172a"
+      "original": "43d176d357f48766996bc6255f7c498d4401a5dd8a99be646187450b72b48ba3",
+      "copy": "a9398dcd050ea90ca9d64e3f17796be28fdf68376ce10b388beedafd253b8dc8"
     },
     "templates-light.webp": {
-      "original": "c384d2a994545d118f12bda6ff4117eb3f6a5eefa07ef0f3f479f42234d3fbb8",
-      "copy": "420a033920e9b21521e70d604cdcfcc416b7082bc471c10a3a749b920fa38baf"
+      "original": "a859ad9e57cb48f0ebe0d92f7bbe401ccb8b01dd6f6d065552bad6716561811a",
+      "copy": "d6c30f9a5da0a8c611aaa736f332714e018d62a847c7afcad2eaca38f39ee940"
     },
     "transactions-dark.webp": {
-      "original": "0bb0354922460b13123588032c73aae2fe8b8cae2fca43bf13af48e59bd87982",
-      "copy": "27ed43c950c632b2ab177186832506b3ff53dde4f1aaebd88c87cf8a8da32743"
+      "original": "b8ee3ee75ca7ccfa9807132a199b94d5fdeb7c4984dd7a92a31ced60516933ed",
+      "copy": "5f76cf24a60c78f032ca8b9ab3f6ac64c0f67e7fb470d967121ea972f7492cd2"
     },
     "transactions-light.webp": {
-      "original": "89f7f2e82816b1e092c4994b267dbffac975939cf008de094a5a78cd7a18d7e0",
-      "copy": "507ac0b8ea69cf6456160c6da7e7c62a316271e8ab076d781ad8ef7d8d153f27"
+      "original": "1d3f2058a62eec60cf772d65e859fc7069c454f5b260bef83016d0e49c171652",
+      "copy": "90cc384d1e0545dfb8f000460d2f860f3fea709f53ac3efe4026297ca59a5548"
     }
   },
   "site": {

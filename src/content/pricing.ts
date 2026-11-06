@@ -68,7 +68,7 @@ export type Tier = {
  * The day the pricing page's words last changed, for its `lastmod`, set by
  * hand with the copy as `homeUpdated` is in `src/content/home.ts`.
  */
-export const pricingUpdated = "2026-10-25";
+export const pricingUpdated = "2026-11-04";
 
 export const MAX_FREE_ACCOUNTS = 3;
 
@@ -309,13 +309,14 @@ export const included: readonly string[] = [
   "Budgets, with what you don't spend carried over",
   "Bringing in a file from your bank, with anything that looks like a duplicate shown first",
   "Taking every transaction out as a spreadsheet",
+  "Moving everything to or from a copy you run yourself, in one file",
   "Rent, payday and renewals, set up once",
   "Saved entries for what you record often",
   "One purchase split across categories",
   "Changing thousands of lines at once",
   "As many payments and as many currencies as you like",
   "Letting an AI assistant do the filing",
-  "Email reminders, where there's a mail server to send them",
+  "Email reminders when a payment is due",
 ];
 
 export type FaqItem = {
@@ -385,44 +386,20 @@ export const faq: readonly FaqItem[] = [
     q: "What are the ads like?",
     /*
      * Worded against the privacy policy rather than against the impression we
-     * would like to give. The first version said the ads were "requested
-     * without anything about you attached", which the policy contradicts in
-     * its own words: a non-personalized ad is still chosen from the page and
-     * your rough location. `tests/legal.test.tsx` holds the two surfaces
-     * together now, because a pricing page that undersells what is collected
-     * is the same failure as a policy that oversells it.
-     */
-    /*
-     * Shorter than it was, and still holding the two things
-     * `content.md` 2.4 requires of it: it must name personalization and
-     * consent, and it must not round the policy down to "nothing about you".
-     * The detail it used to carry — what does reach Google, and that a page
-     * address can name a record — lives in the policy, which this now points
-     * at rather than paraphrasing.
-     */
-    /*
-     * **It said "you get asked before any advertising cookie is set"**, which
-     * was false for a while: no consent message was published, so it was a
-     * promise to everybody that nobody kept, and the answer was rewritten to
-     * say none was published. The operator has since published Google's
-     * European and US-state messages for both origins and turned off the
-     * forced non-personalized flag, so the answer now says what happens by
-     * region, and never as a promise to everybody: a reader in Ohio is not
-     * asked, and a sentence telling them they are would be the old failure
-     * back again. `tests/legal.test.tsx` holds every "asked before" to the
-     * region it is true in.
+     * would like to give, and for the ad production serves today, which is
+     * `freePlanAd` in `src/content/legal.ts`: the application's own bar for
+     * Premium. It loads nothing, sets no cookie and records nothing, and the
+     * policy says so in the same words, so this may say so too.
      *
-     * The invariant is one-directional: a marketing claim may not be
-     * *stronger* than the policy it links to. "They are only personalized if
-     * you specifically agreed" went for that reason — outside Europe they
-     * can be, without anybody agreeing.
-     *
-     * It ended "and the cookie this website itself sets", which was Google's
-     * advertising identifier while smpl.money carried AdSense. The ads are
-     * the application's alone now and this site sets no cookie, so the
-     * pointer names only what the policy still covers.
+     * It was "Ordinary Google ads", with what personalization and Google's
+     * consent messages do region by region, while app.smpl.money served
+     * AdSense. The owner kept that as a dormant section of the policy for if
+     * Google's ads return, and `tests/legal.test.tsx` holds this answer to
+     * the house ad while `freePlanAd` says so, and to the AdSense answer's
+     * old rules (personalization, consent by region, what declining does) the
+     * day it says otherwise. That day this is rewritten first.
      */
-    a: "Ordinary Google ads, never on the billing page or the sign-in screen. They aren't picked from what you spend, but they can be personalized from what Google knows of your browsing. In the UK, the EEA and Switzerland, Google's message asks for your consent before any advertising cookie is set; in US states with privacy laws, it offers a link to opt out instead. Saying no doesn't remove the ads. It keeps them from being personalized. The privacy policy covers the rest, including what does reach Google.",
+    a: "The free plan shows one ad, and it's Simple Balance's own: a bar along the bottom of the window that says what Premium adds, with a button that opens the plan page. It's never on the plan page or the sign-in screen, and Premium takes it away. Simple Balance draws it itself, so it loads nothing from any other company, sets no cookie and records nothing about who sees it. The privacy policy says the same.",
   },
   {
     q: "How do I cancel, and will you keep charging me?",
@@ -452,7 +429,7 @@ export const faq: readonly FaqItem[] = [
      * is worse than no promise, so the split is stated rather than blurred.
      */
     q: "Do you keep a copy of what I spend?",
-    a: "If you use our cloud app, your records live on computers we rent for it. That's what a cloud app is, and the privacy policy says exactly what's stored, where, and who can get at it. Self-host it, on a computer you control, and we never see your records. Nothing about your spending is used to pick the ads. The product itself has no analytics either way, though on the free plan the ads bring Google's script with them.",
+    a: "If you use our cloud app, your records live on computers we rent for it. That's what a cloud app is, and the privacy policy says exactly what's stored, where, and who can get at it. Self-host it, on a computer you control, and we never see your records. Nothing about your spending is used to pick the ads. The product itself has no analytics either way, and the free plan's ad is our own, so it brings no script from anybody else.",
   },
   {
     /*
@@ -464,8 +441,11 @@ export const faq: readonly FaqItem[] = [
      * eleven-sentence version that did was the longest answer on the page by
      * a distance.
      *
-     * What stays is the part that bears on the purchase: it is possible, it
-     * is not one button, and two things do not travel.
+     * What stays is the part that bears on the purchase: whether it is
+     * possible, what travels, and what it needs. It said "it isn't one
+     * button", one account at a time as spreadsheets with budgets and
+     * repeating payments set up again, until 0.2.2's Simple Balance file
+     * carried all of it in one move.
      */
     /*
      * Both directions, because the guide covers both now: somebody trying
@@ -473,7 +453,7 @@ export const faq: readonly FaqItem[] = [
      * would rather not any more, are the same procedure run the other way.
      */
     q: "Can I move between the cloud app and my own copy later?",
-    a: "Yes, either way, and it's worth knowing up front that it isn't one button. Your transactions move, one account at a time, as spreadsheets you export from one and bring into the other. Budgets and repeating payments you set up again, and each account's starting balance is carried over by hand, because it isn't in the file. The guide to moving between the cloud app and your own copy has every step.",
+    a: "Yes, either way, in one file. Export everything from the side you're leaving as a Simple Balance file, and move it into the other side before you add anything there. Your accounts with their starting balances come across, with every transaction, your budgets, saved entries and repeating payments, and the balances are checked against the file. A copy you run yourself needs version 0.2.2 or later, which our cloud app already runs. The guide to moving between the cloud app and your own copy has every step.",
     link: {
       label: "Moving between the cloud app and your own copy",
       href: "/docs/moving-between-cloud-and-self-hosted/",

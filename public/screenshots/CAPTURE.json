@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-10-06",
+  "capturedAt": "2026-11-04",
   "viewport": "1440x900@2x",
   "shippedWidth": 1600,
   "images": [
@@ -17,13 +17,13 @@
     },
     {
       "file": "public/screenshots/activity-dark.webp",
-      "kb": 47,
+      "kb": 66,
       "w": 1600,
       "h": 1000
     },
     {
       "file": "public/screenshots/activity-light.webp",
-      "kb": 47,
+      "kb": 66,
       "w": 1600,
       "h": 1000
     },
@@ -35,19 +35,19 @@
     },
     {
       "file": "public/screenshots/budgets-light.webp",
-      "kb": 62,
+      "kb": 61,
       "w": 1600,
       "h": 1000
     },
     {
       "file": "public/screenshots/categories-dark.webp",
-      "kb": 53,
+      "kb": 55,
       "w": 1600,
       "h": 1000
     },
     {
       "file": "public/screenshots/categories-light.webp",
-      "kb": 53,
+      "kb": 56,
       "w": 1600,
       "h": 1000
     },
@@ -59,55 +59,55 @@
     },
     {
       "file": "public/screenshots/dashboard-light.webp",
-      "kb": 44,
+      "kb": 45,
       "w": 1600,
       "h": 1000
     },
     {
       "file": "public/screenshots/import-dark.webp",
-      "kb": 36,
+      "kb": 65,
       "w": 1600,
       "h": 1000
     },
     {
       "file": "public/screenshots/import-light.webp",
-      "kb": 36,
+      "kb": 65,
       "w": 1600,
       "h": 1000
     },
     {
       "file": "public/screenshots/payees-dark.webp",
-      "kb": 52,
+      "kb": 51,
       "w": 1600,
       "h": 1000
     },
     {
       "file": "public/screenshots/payees-light.webp",
-      "kb": 53,
+      "kb": 52,
       "w": 1600,
       "h": 1000
     },
     {
       "file": "public/screenshots/recurrences-dark.webp",
-      "kb": 34,
+      "kb": 44,
       "w": 1600,
       "h": 1000
     },
     {
       "file": "public/screenshots/recurrences-light.webp",
-      "kb": 34,
+      "kb": 44,
       "w": 1600,
       "h": 1000
     },
     {
       "file": "public/screenshots/reports-dark.webp",
-      "kb": 46,
+      "kb": 47,
       "w": 1600,
       "h": 1000
     },
     {
       "file": "public/screenshots/reports-light.webp",
-      "kb": 46,
+      "kb": 47,
       "w": 1600,
       "h": 1000
     },
@@ -125,25 +125,25 @@
     },
     {
       "file": "public/screenshots/templates-dark.webp",
-      "kb": 27,
+      "kb": 40,
       "w": 1600,
       "h": 1000
     },
     {
       "file": "public/screenshots/templates-light.webp",
-      "kb": 27,
+      "kb": 40,
       "w": 1600,
       "h": 1000
     },
     {
       "file": "public/screenshots/transactions-dark.webp",
-      "kb": 64,
+      "kb": 63,
       "w": 1600,
       "h": 1000
     },
     {
       "file": "public/screenshots/transactions-light.webp",
-      "kb": 64,
+      "kb": 63,
       "w": 1600,
       "h": 1000
     }

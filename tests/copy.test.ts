@@ -369,6 +369,93 @@ describe("the claim this site must never make", () => {
   });
 });
 
+/** The Markdown of every learn guide, a paragraph at a time, frontmatter dropped. */
+function guides(): readonly (readonly [string, string])[] {
+  const dir = join(process.cwd(), "content/learn");
+  return readdirSync(dir)
+    .filter((name) => name.endsWith(".md") && !name.startsWith("_"))
+    .flatMap((name) =>
+      readFileSync(join(dir, name), "utf8")
+        .replace(/^---\n[\s\S]*?\n---\n/, "")
+        .split(/\n\s*\n/)
+        .map((paragraph, i) => [`learn/${name}#${i}`, paragraph.replace(/\s+/g, " ")] as const),
+    );
+}
+
+describe("the pages that make the case", () => {
+  /*
+   * `docs/standards/content.md` 1.7, the owner's decision of 2026-11-05: the
+   * homepage, the learn guides and the pricing page outside its questions say
+   * what Simple Balance does, and name nothing it doesn't. The import card
+   * said "there's no automatic pull from your bank today", and four guides
+   * said what it "can't see", "isn't" or "doesn't look up". Every one was
+   * true, and each still has a page: the pricing questions, the docs and the
+   * comparisons, which this doesn't read.
+   *
+   * **Narrow, like the bank list above.** The product has to be the subject,
+   * and the verb has to be something it would be doing for you, so "a budget
+   * never changes your balances" (a promise) and "you don't have to set up
+   * categories first" (the reader) pass. A weakness in other words is still
+   * `human`.
+   */
+  const NAMES_A_WEAKNESS = [
+    /\bno automatic\b/i,
+    /\b(simple balance|it)\s+(doesn['’]t|does not|can['’]t|cannot|won['’]t|will not)\s+(pull|connect|fetch|find|cancel|look up|know|see|sync|download)\b/i,
+    /\bsimple balance\s+(isn['’]t|is not)\s+an?\b/i,
+    /\bwhat simple balance can['’]t\b/i,
+  ];
+
+  const surfaces = [
+    ...strings(content),
+    ...strings(pricingContent, "pricing").filter(([path]) => !path.startsWith("pricing.faq")),
+    ...strings(learnContent, "learn"),
+    ...guides(),
+  ];
+
+  it("has the three surfaces to read", () => {
+    expect(surfaces.filter(([path]) => path.startsWith("learn/")).length).toBeGreaterThan(100);
+    expect(surfaces.some(([path]) => path.startsWith("pricing.faq"))).toBe(false);
+  });
+
+  it("names no weakness of the product", () => {
+    const offenders: string[] = [];
+    for (const [path, text] of surfaces) {
+      for (const pattern of NAMES_A_WEAKNESS) {
+        const hit = pattern.exec(text);
+        if (hit) offenders.push(`${path}: "${hit[0]}" — ${text.slice(0, 70)}`);
+      }
+    }
+    expect(offenders).toEqual([]);
+  });
+
+  it("catches the sentences it was written for, and lets the others through", () => {
+    const named = [
+      "There's no automatic pull from your bank today.",
+      "Simple Balance isn't a subscription tracker that finds them for you, and it can't cancel anything.",
+      "Simple Balance doesn't look up what investments, a home or a car are worth.",
+      "It doesn't know about holds, pending charges, or your available balance.",
+      "What Simple Balance can't see",
+      "Simple Balance doesn't pull anything from your bank today.",
+    ];
+    for (const sentence of named) {
+      const hit = NAMES_A_WEAKNESS.find((pattern) => pattern.test(sentence));
+      expect(hit, `misses "${sentence}"`).toBeDefined();
+    }
+    const allowed = [
+      "A budget never changes your balances, so deleting one changes nothing else.",
+      "You don't have to set up categories first.",
+      "Nothing reaches your accounts until you say so.",
+      "An envelope you never touch can't grow forever.",
+      "Simple Balance totals each one separately and never converts between them.",
+      "Free gives you everything Simple Balance does, for three accounts you can use at once, with ads on the page.",
+    ];
+    for (const sentence of allowed) {
+      const hit = NAMES_A_WEAKNESS.find((pattern) => pattern.test(sentence));
+      expect(hit, `too wide: it would refuse "${sentence}"`).toBeUndefined();
+    }
+  });
+});
+
 describe("the reader is American", () => {
   /*
    * `docs/standards/content.md` 1.5. The site prices in US dollars and the
